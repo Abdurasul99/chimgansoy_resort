@@ -12,6 +12,7 @@ import { buildMetadata } from "@/lib/metadata";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -19,8 +20,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return buildMetadata(locale, pageSeo.booking, "/bron");
 }
 
-export default async function BookingPage({ params }: PageProps) {
+export default async function BookingPage({ params, searchParams }: PageProps) {
   const locale = await getLocaleParam(params);
+  const bookingSearchParams = await searchParams;
   const dict = dictionaries[locale];
 
   return (
@@ -33,7 +35,7 @@ export default async function BookingPage({ params }: PageProps) {
         eyebrow="CHIMGANSOY"
       />
 
-      <BookingWidget locale={locale} variant="full" />
+      <BookingWidget locale={locale} variant="full" searchParams={bookingSearchParams} />
 
       <section className="px-4 py-14 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">

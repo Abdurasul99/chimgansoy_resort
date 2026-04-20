@@ -75,9 +75,9 @@ src/
       bron/
       legal/
     globals.css
-    opengraph-image.tsx
     robots.ts
     sitemap.ts
+    [locale]/opengraph-image.tsx
   components/
     layout/
     sections/
@@ -126,6 +126,28 @@ Open:
 ```txt
 http://localhost:3000/ru
 ```
+
+## Environment Variables
+
+Create `.env.local` from `.env.example` for local secrets and integration IDs:
+
+```bash
+cp .env.example .env.local
+```
+
+On Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env.local
+```
+
+Variables:
+
+- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Google Maps Embed API key. Keep the key restricted to approved domains in Google Cloud.
+- `NEXT_PUBLIC_BNOVO_IFRAME_URL`: official Bnovo booking iframe URL generated in the Bnovo cabinet or provided by Bnovo support.
+- `NEXT_PUBLIC_BNOVO_UID`: optional Bnovo object UID for integration documentation.
+
+Do not commit `.env.local`.
 
 ## Production Build
 
@@ -176,19 +198,46 @@ Primary content files:
 
 The booking funnel is intentionally frontend-only. There is no fake booking backend.
 
-Replace the placeholder in:
+The booking form submits selected values to the localized booking page as query params:
 
 ```txt
-src/components/sections/BookingWidget.tsx
+/{locale}/bron?checkin=YYYY-MM-DD&checkout=YYYY-MM-DD&guests=2&promo=CODE
 ```
 
-The full booking page renders:
+The Bnovo adapter lives in:
 
-```html
-<div id="bnovo-widget" data-bnovo-placeholder="replace-with-bnovo-embed-script-or-iframe">
+```txt
+src/components/sections/BnovoEmbed.tsx
 ```
 
-Use that area for the Bnovo embed, iframe, or script after production credentials are available.
+Set this env variable after receiving the official Bnovo iframe/module URL:
+
+```txt
+NEXT_PUBLIC_BNOVO_IFRAME_URL=
+```
+
+Official Bnovo documentation states that the widget code is generated in the Bnovo widget configurator and that iframe/module installation data can be generated with the object's UID or requested from Bnovo support. The current implementation keeps the site ready for that production iframe without adding a custom booking backend.
+
+## Google Maps
+
+The contact/map block uses the supplied Google Maps location:
+
+```txt
+https://maps.app.goo.gl/AE7scBBU9DykP3st5
+```
+
+Resolved place:
+
+```txt
+Surpa dam olish oromgohi
+41.5193897, 69.9904599
+```
+
+Map logic:
+
+- Uses `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` with Google Maps Embed API when present.
+- Falls back to a no-key Google Maps iframe when the env key is missing.
+- Keeps the external Google Maps link in `src/content/contacts.ts`.
 
 ## Images
 
@@ -198,10 +247,17 @@ Demo imagery is centralized in:
 src/content/images.ts
 ```
 
-When real CHIMGANSOY photography is ready:
+The supplied photo placement plan is documented in:
 
-1. Add optimized images to `public/images/placeholders/` or another organized public folder.
-2. Replace the URLs in `src/content/images.ts` with local paths such as `/images/placeholders/hero.jpg`.
+```txt
+src/content/photo-plan.ts
+public/images/resort/README.md
+```
+
+When real CHIMGANSOY photography files are available in the filesystem:
+
+1. Add optimized images to `public/images/resort/` using the names from `public/images/resort/README.md`.
+2. Replace the URLs in `src/content/images.ts` with local paths such as `/images/resort/01-aerial-masterplan-day.jpg`.
 3. Keep alt text translated for `ru`, `uz`, and `en`.
 
 ## Remaining Real Content Work

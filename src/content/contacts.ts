@@ -5,10 +5,11 @@ export const contacts = {
   email: "info@chimgansoy.uz",
   whatsapp: "https://wa.me/998900000000",
   telegram: "https://t.me/chimgansoy",
+  googleMapsUrl: "https://maps.app.goo.gl/AE7scBBU9DykP3st5",
   address: {
-    ru: "Ташкентская область, Бостанлыкский район, курортная территория Чимгансой",
-    uz: "Toshkent viloyati, Bo'stonliq tumani, Chimgansoy kurort hududi",
-    en: "Chimgansoy resort area, Bostanlyk district, Tashkent region",
+    ru: "Surpa dam olish oromgohi, Бостанлыкский район, Ташкентская область",
+    uz: "Surpa dam olish oromgohi, Bo'stonliq tumani, Toshkent viloyati",
+    en: "Surpa dam olish oromgohi, Bostanlyk district, Tashkent region",
   } satisfies LocalizedString,
   shortAddress: {
     ru: "Ташкентская область",
@@ -20,5 +21,5 @@ export const contacts = {
     uz: "Har kuni, 09:00-22:00",
     en: "Daily, 09:00-22:00",
   } satisfies LocalizedString,
-  mapCoordinates: "41.54, 70.02",
+  mapCoordinates: "41.5193897, 69.9904599",
 };

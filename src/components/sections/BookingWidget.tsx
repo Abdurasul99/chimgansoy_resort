@@ -1,15 +1,20 @@
 import { dictionaries } from "@/content/translations";
 import type { Locale } from "@/i18n/config";
+import { localizePath } from "@/i18n/routing";
+import { getFirstSearchParam, type SearchParams } from "@/lib/bnovo";
 import { Icon } from "@/components/ui/Icon";
+import { BnovoEmbed } from "./BnovoEmbed";
 
 type BookingWidgetProps = {
   locale: Locale;
   variant?: "compact" | "full";
+  searchParams?: SearchParams;
 };
 
-export function BookingWidget({ locale, variant = "compact" }: BookingWidgetProps) {
+export function BookingWidget({ locale, variant = "compact", searchParams }: BookingWidgetProps) {
   const dict = dictionaries[locale];
   const isFull = variant === "full";
+  const selectedGuests = getFirstSearchParam(searchParams, "guests") || "2";
 
   return (
     <section className={`relative z-10 ${isFull ? "py-10" : "-mt-8 px-4 pb-10"}`} aria-labelledby="booking-widget-title">
@@ -23,18 +28,22 @@ export function BookingWidget({ locale, variant = "compact" }: BookingWidgetProp
             <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{dict.bookingWidget.subtitle}</p>
           </div>
 
-          <form className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_0.8fr_0.9fr]">
+          <form
+            action={localizePath(locale, "/bron")}
+            method="get"
+            className={`grid gap-3 sm:grid-cols-2 ${isFull ? "lg:grid-cols-[1fr_1fr_0.8fr_0.8fr_0.9fr]" : "lg:grid-cols-[1fr_1fr_0.8fr_0.9fr]"}`}
+          >
             <label className="booking-field">
               <span><Icon name="calendar" className="h-4 w-4" /> {dict.checkIn}</span>
-              <input type="date" aria-label={dict.checkIn} />
+              <input type="date" name="checkin" aria-label={dict.checkIn} defaultValue={getFirstSearchParam(searchParams, "checkin")} />
             </label>
             <label className="booking-field">
               <span><Icon name="calendar" className="h-4 w-4" /> {dict.checkOut}</span>
-              <input type="date" aria-label={dict.checkOut} />
+              <input type="date" name="checkout" aria-label={dict.checkOut} defaultValue={getFirstSearchParam(searchParams, "checkout")} />
             </label>
             <label className="booking-field">
               <span><Icon name="user" className="h-4 w-4" /> {dict.guests}</span>
-              <select aria-label={dict.guests} defaultValue="2">
+              <select name="guests" aria-label={dict.guests} defaultValue={selectedGuests}>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -42,23 +51,20 @@ export function BookingWidget({ locale, variant = "compact" }: BookingWidgetProp
                 <option value="5">5+</option>
               </select>
             </label>
-            <button type="button" className="group inline-flex min-h-14 items-center justify-center gap-2 rounded-[6px] bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-white transition duration-300 hover:bg-[var(--accent-strong)]">
+            {isFull ? (
+              <label className="booking-field">
+                <span>{dict.promoCode}</span>
+                <input type="text" name="promo" aria-label={dict.promoCode} defaultValue={getFirstSearchParam(searchParams, "promo")} />
+              </label>
+            ) : null}
+            <button type="submit" className="group inline-flex min-h-14 items-center justify-center gap-2 rounded-[6px] bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-white transition duration-300 hover:bg-[var(--accent-strong)]">
               <span>{dict.bookingWidget.submit}</span>
               <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </button>
           </form>
         </div>
 
-        {isFull ? (
-          <div
-            id="bnovo-widget"
-            data-bnovo-placeholder="replace-with-bnovo-embed-script-or-iframe"
-            className="mt-6 rounded-[8px] border border-dashed border-[var(--line-strong)] bg-[var(--surface)] p-5"
-          >
-            <p className="text-sm font-bold uppercase text-[var(--accent-strong)]">{dict.bookingWidget.integrationTitle}</p>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)]">{dict.bookingWidget.integrationCopy}</p>
-          </div>
-        ) : null}
+        {isFull ? <BnovoEmbed locale={locale} searchParams={searchParams} /> : null}
       </div>
     </section>
   );
