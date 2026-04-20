@@ -58,7 +58,7 @@ export default async function AboutPage({ params }: PageProps) {
         locale={locale}
         title={dict.pages.about.title}
         lead={dict.pages.about.lead}
-        image={resortImages.nature}
+        image={resortImages.territoryAerial}
         eyebrow="CHIMGANSOY"
       />
       <BookingWidget locale={locale} />
@@ -76,7 +76,7 @@ export default async function AboutPage({ params }: PageProps) {
               </ButtonLink>
             </div>
           </div>
-          <ImageFrame image={resortImages.mountains} locale={locale} className="aspect-[16/11]" />
+          <ImageFrame image={resortImages.receptionDay} locale={locale} className="aspect-[16/11]" />
         </div>
       </section>
 

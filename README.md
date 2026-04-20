@@ -241,11 +241,18 @@ Map logic:
 
 ## Images
 
-Demo imagery is centralized in:
+Image usage is centralized in:
 
 ```txt
 src/content/images.ts
 ```
+
+Each image entry now has two layers:
+
+- `localSrc`: the expected CHIMGANSOY resort file in `public/images/resort/`
+- `src`: a temporary remote fallback so the interface still renders before the real files are copied
+
+The fallback route is implemented in `src/app/images/resort/[file]/route.ts`. It serves a real local file when present and redirects to the temporary fallback when the file is still missing.
 
 The supplied photo placement plan is documented in:
 
@@ -257,8 +264,8 @@ public/images/resort/README.md
 When real CHIMGANSOY photography files are available in the filesystem:
 
 1. Add optimized images to `public/images/resort/` using the names from `public/images/resort/README.md`.
-2. Replace the URLs in `src/content/images.ts` with local paths such as `/images/resort/01-aerial-masterplan-day.jpg`.
-3. Keep alt text translated for `ru`, `uz`, and `en`.
+2. Keep the exact filenames already referenced by `localSrc`; no component changes are needed.
+3. Keep alt text translated for `ru`, `uz`, and `en` when image meaning changes.
 
 ## Remaining Real Content Work
 

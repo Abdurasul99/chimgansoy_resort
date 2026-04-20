@@ -11,12 +11,14 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { ImageFrame } from "@/components/ui/ImageFrame";
 import { resortImages } from "@/content/images";
+import { homeShowcase } from "@/content/home-showcase";
 import { promotions } from "@/content/promotions";
 import { testimonials } from "@/content/testimonials";
 import { dictionaries } from "@/content/translations";
 import { pageSeo } from "@/content/seo";
 import { getLocaleParam } from "@/lib/content";
 import { buildMetadata } from "@/lib/metadata";
+import { imageStyle } from "@/lib/images";
 import { text } from "@/lib/localize";
 import { localizePath } from "@/i18n/routing";
 
@@ -37,6 +39,38 @@ export default async function HomePage({ params }: PageProps) {
     <>
       <Hero locale={locale} />
       <BookingWidget locale={locale} />
+
+      <section className="px-4 pb-14 pt-2 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+          {homeShowcase.map((item, index) => {
+            const image = resortImages[item.image];
+
+            return (
+              <article
+                key={item.image}
+                className={`group relative isolate overflow-hidden rounded-[8px] bg-[var(--ink)] ${
+                  index === 0 ? "min-h-[30rem] lg:row-span-2" : "min-h-72"
+                }`}
+              >
+                <div
+                  className="absolute inset-0 -z-20 bg-cover transition duration-700 group-hover:scale-[1.025]"
+                  style={imageStyle(image)}
+                  role="img"
+                  aria-label={text(image.alt, locale)}
+                />
+                <div className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgba(12,18,14,0.84),rgba(12,18,14,0.22)_62%,rgba(12,18,14,0.05))]" />
+                <div className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-7">
+                  <p className="text-xs font-bold uppercase text-white/58">CHIMGANSOY</p>
+                  <h2 className={`mt-3 max-w-2xl font-serif font-semibold leading-tight ${index === 0 ? "text-4xl sm:text-5xl" : "text-3xl"}`}>
+                    {text(item.title, locale)}
+                  </h2>
+                  <p className="mt-3 max-w-xl text-sm leading-6 text-white/74">{text(item.copy, locale)}</p>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
 
       <section className="px-4 py-14 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">

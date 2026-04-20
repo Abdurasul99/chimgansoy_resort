@@ -31,7 +31,7 @@ export default async function BookingPage({ params, searchParams }: PageProps) {
         locale={locale}
         title={dict.pages.booking.title}
         lead={dict.pages.booking.lead}
-        image={resortImages.glamping}
+        image={resortImages.nightHero}
         eyebrow="CHIMGANSOY"
       />
 

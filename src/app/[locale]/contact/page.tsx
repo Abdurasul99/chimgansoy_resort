@@ -38,7 +38,7 @@ export default async function ContactPage({ params }: PageProps) {
         locale={locale}
         title={dict.pages.contact.title}
         lead={dict.pages.contact.lead}
-        image={resortImages.hero}
+        image={resortImages.entranceDay}
         eyebrow="CHIMGANSOY"
       />
       <BookingWidget locale={locale} />

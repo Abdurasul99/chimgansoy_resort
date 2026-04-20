@@ -6,6 +6,7 @@ import { roomCategories, rooms, type RoomCategory } from "@/content/rooms";
 import { dictionaries } from "@/content/translations";
 import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
+import { imageStyle } from "@/lib/images";
 import { list, text } from "@/lib/localize";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Icon } from "@/components/ui/Icon";
@@ -44,31 +45,37 @@ export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
         ))}
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-2">
         {visibleRooms.map((room) => {
           const image = resortImages[room.image];
 
           return (
-            <article key={room.slug} className="group overflow-hidden rounded-[8px] border border-[color:var(--line)] bg-white">
-              <div className="grid min-h-full md:grid-cols-[0.95fr_1.05fr]">
+            <article key={room.slug} className="group overflow-hidden rounded-[8px] border border-[color:var(--line)] bg-white shadow-[0_18px_70px_rgba(21,29,24,0.08)]">
+              <div className="grid min-h-full">
                 <div
-                  className="min-h-72 bg-cover bg-center transition duration-700 group-hover:scale-[1.02]"
-                  style={{ backgroundImage: `url(${image.src})` }}
+                  className="relative min-h-80 overflow-hidden bg-cover transition duration-700 group-hover:scale-[1.015] sm:min-h-[26rem]"
+                  style={imageStyle(image)}
                   role="img"
                   aria-label={text(image.alt, locale)}
-                />
+                >
+                  <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,18,14,0.82),rgba(12,18,14,0.08)_58%,rgba(12,18,14,0))]" />
+                  <div className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-7">
+                    <p className="text-xs font-bold uppercase text-white/64">{text(room.eyebrow, locale)}</p>
+                    <h3 className="mt-2 font-serif text-4xl font-semibold leading-tight sm:text-5xl">{text(room.title, locale)}</h3>
+                    <p className="mt-3 max-w-md text-sm font-semibold text-white/78">{text(room.priceFrom, locale)}</p>
+                  </div>
+                </div>
+
                 <div className="flex flex-col p-5 sm:p-7">
-                  <p className="text-xs font-bold uppercase text-[var(--accent-strong)]">{text(room.eyebrow, locale)}</p>
-                  <h3 className="mt-3 font-serif text-4xl font-semibold text-[var(--ink)]">{text(room.title, locale)}</h3>
-                  <p className="mt-3 text-sm leading-6 text-[var(--muted)]">{text(room.shortDescription, locale)}</p>
+                  <p className="text-sm leading-7 text-[var(--muted)]">{text(room.shortDescription, locale)}</p>
 
                   <div className="mt-5 grid grid-cols-2 gap-3 text-sm text-[var(--ink)]">
-                    <span className="rounded-[6px] bg-[var(--surface)] px-3 py-2">{text(room.capacity, locale)}</span>
-                    <span className="rounded-[6px] bg-[var(--surface)] px-3 py-2">{text(room.size, locale)}</span>
+                    <span className="rounded-[6px] bg-[var(--surface)] px-3 py-3 font-bold">{text(room.capacity, locale)}</span>
+                    <span className="rounded-[6px] bg-[var(--surface)] px-3 py-3 font-bold">{text(room.size, locale)}</span>
                   </div>
 
-                  <ul className="mt-5 grid gap-2 text-sm text-[var(--muted)]">
-                    {list(room.amenities, locale).slice(0, 3).map((item) => (
+                  <ul className="mt-5 grid gap-2 text-sm text-[var(--muted)] sm:grid-cols-2">
+                    {list(room.amenities, locale).slice(0, 4).map((item) => (
                       <li key={item} className="flex items-center gap-2">
                         <Icon name="check" className="h-4 w-4 text-[var(--green)]" />
                         {item}
@@ -77,7 +84,6 @@ export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
                   </ul>
 
                   <div className="mt-auto pt-6">
-                    <p className="mb-4 text-sm font-bold text-[var(--accent-strong)]">{text(room.priceFrom, locale)}</p>
                     <div className="flex flex-col gap-3 sm:flex-row">
                       <ButtonLink href={localizePath(locale, `/nomera/${room.slug}`)} variant="secondary">
                         {dict.details}

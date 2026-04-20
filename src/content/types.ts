@@ -5,6 +5,8 @@ export type LocalizedList = Record<Locale, string[]>;
 
 export type ImageAsset = {
   src: string;
+  localSrc?: string;
+  position?: string;
   alt: LocalizedString;
 };
 

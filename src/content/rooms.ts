@@ -25,7 +25,7 @@ export const rooms: Room[] = [
     slug: "glamping",
     category: "glamping",
     image: "glamping",
-    gallery: ["glamping", "nature", "tapchan", "mountains"],
+    gallery: ["glamping", "glampingDay", "poolLifestyle", "territoryAerial"],
     title: { ru: "Глэмпинг", uz: "Glemping", en: "Glamping" },
     eyebrow: {
       ru: "Проживание на природе",
@@ -61,7 +61,7 @@ export const rooms: Room[] = [
     slug: "cottage",
     category: "cottage",
     image: "cottage",
-    gallery: ["cottage", "grill", "kids", "nature"],
+    gallery: ["cottage", "cottageDay", "grill", "kids"],
     title: { ru: "Коттедж", uz: "Kottej", en: "Cottage" },
     eyebrow: {
       ru: "Для семьи и компании",

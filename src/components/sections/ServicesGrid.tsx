@@ -6,6 +6,7 @@ import { serviceCategories, services } from "@/content/services";
 import { dictionaries } from "@/content/translations";
 import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
+import { imageStyle } from "@/lib/images";
 import { text } from "@/lib/localize";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 
@@ -51,17 +52,21 @@ export function ServicesGrid({ locale, limit, showFilters = true, slugs }: Servi
           const image = resortImages[service.image];
 
           return (
-            <article key={service.slug} className="group overflow-hidden rounded-[8px] border border-[color:var(--line)] bg-white">
+            <article key={service.slug} className="group overflow-hidden rounded-[8px] border border-[color:var(--line)] bg-white shadow-[0_14px_54px_rgba(21,29,24,0.07)]">
               <div
-                className="aspect-[4/3] bg-cover bg-center transition duration-700 group-hover:scale-[1.03]"
-                style={{ backgroundImage: `url(${image.src})` }}
+                className="relative aspect-[5/4] overflow-hidden bg-cover transition duration-700 group-hover:scale-[1.02]"
+                style={imageStyle(image)}
                 role="img"
                 aria-label={text(image.alt, locale)}
-              />
+              >
+                <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,18,14,0.66),rgba(12,18,14,0.02)_62%)]" />
+                <p className="absolute bottom-4 left-4 right-4 rounded-[6px] border border-white/16 bg-white/12 px-3 py-2 text-xs font-bold uppercase text-white/78 backdrop-blur">
+                  {text(service.bestFor, locale)}
+                </p>
+              </div>
               <div className="p-5">
-                <p className="text-xs font-bold uppercase text-[var(--accent-strong)]">{text(service.bestFor, locale)}</p>
                 <h3 className="mt-3 font-serif text-3xl font-semibold leading-tight text-[var(--ink)]">{text(service.title, locale)}</h3>
-                <p className="mt-3 min-h-24 text-sm leading-6 text-[var(--muted)]">{text(service.shortDescription, locale)}</p>
+                <p className="mt-3 text-sm leading-6 text-[var(--muted)]">{text(service.shortDescription, locale)}</p>
                 <ButtonLink href={localizePath(locale, `/services/${service.slug}`)} variant="ghost" className="mt-5">
                   {dict.details}
                 </ButtonLink>
