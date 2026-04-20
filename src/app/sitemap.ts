@@ -1,0 +1,24 @@
+import type { MetadataRoute } from "next";
+import { locales } from "@/i18n/config";
+import { localizePath } from "@/i18n/routing";
+import { rooms } from "@/content/rooms";
+import { services } from "@/content/services";
+import { policies } from "@/content/policies";
+
+const baseUrl = "https://chimgansoy.uz";
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  const staticPaths = ["/", "/nomera", "/services", "/about", "/place", "/contact", "/bron"];
+  const roomPaths = rooms.map((room) => `/nomera/${room.slug}`);
+  const servicePaths = services.map((service) => `/services/${service.slug}`);
+  const policyPaths = policies.map((policy) => `/legal/${policy.slug}`);
+
+  return [...staticPaths, ...roomPaths, ...servicePaths, ...policyPaths].flatMap((path) =>
+    locales.map((locale) => ({
+      url: `${baseUrl}${localizePath(locale, path)}`,
+      lastModified: new Date(),
+      changeFrequency: path === "/" ? "weekly" : "monthly",
+      priority: path === "/" ? 1 : 0.7,
+    })),
+  );
+}
