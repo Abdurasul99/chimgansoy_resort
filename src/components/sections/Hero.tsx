@@ -6,6 +6,7 @@ import { imageStyle } from "@/lib/images";
 import { text } from "@/lib/localize";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { WeatherWidget } from "@/components/sections/WeatherWidget";
+import { EmotionCycle } from "@/components/ui/EmotionCycle";
 
 type HeroProps = {
   locale: Locale;
@@ -52,10 +53,15 @@ export function Hero({ locale }: HeroProps) {
           {dict.home.title}
         </h1>
 
+        {/* Cycling emotion phrase */}
+        <div className="motion-rise mt-5" style={{ animationDelay: "140ms" }}>
+          <EmotionCycle locale={locale} />
+        </div>
+
         {/* Lead */}
         <p
-          className="motion-rise mt-6 max-w-lg text-[1.1rem] leading-[1.75] text-white/68"
-          style={{ animationDelay: "160ms" }}
+          className="motion-rise mt-4 max-w-lg text-[1.1rem] leading-[1.75] text-white/68"
+          style={{ animationDelay: "200ms" }}
         >
           {dict.home.lead}
         </p>

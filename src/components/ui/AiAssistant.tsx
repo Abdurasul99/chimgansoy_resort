@@ -1,300 +1,126 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Message = { role: "user" | "assistant"; content: string };
-type CelestialMode = "day" | "night";
-type IntroStyle = CSSProperties & {
-  "--assistant-star-end-x"?: string;
-  "--assistant-star-end-y"?: string;
-};
-
-const INTRO_STORAGE_KEY = "chimgansoy-assistant-intro";
 
 const GREETINGS: Record<string, string> = {
-  ru: "\u0417\u0434\u0440\u0430\u0432\u0441\u0442\u0432\u0443\u0439\u0442\u0435! \u042f \u043a\u043e\u043d\u0441\u044c\u0435\u0440\u0436 CHIMGANSOY. \u041f\u043e\u043c\u043e\u0433\u0443 \u0432\u044b\u0431\u0440\u0430\u0442\u044c \u043d\u043e\u043c\u0435\u0440, \u043f\u043e\u0434\u0441\u043a\u0430\u0436\u0443 \u043f\u043e \u0430\u043a\u0442\u0438\u0432\u043d\u043e\u0441\u0442\u044f\u043c \u0438 \u043e\u0442\u0432\u0435\u0447\u0443 \u043d\u0430 \u0432\u043e\u043f\u0440\u043e\u0441\u044b \u043e \u0432\u0430\u0448\u0435\u043c \u043e\u0442\u0434\u044b\u0445\u0435.",
-  uz: "Salom! Men CHIMGANSOY konsyerjiman. Xona tanlashda, faoliyatlar bo'yicha yoki dam olish haqidagi savollarda yordam beraman.",
-  en: "Hello! I'm the CHIMGANSOY concierge. I can help you choose a room, suggest activities, and answer questions about your stay.",
+  ru: "Привет! Я помощник курорта CHIMGANSOY 🏔️ Помогу выбрать номер, расскажу об активностях или отвечу на любые вопросы.",
+  uz: "Salom! Men CHIMGANSOY kurortining yordamchisiman 🏔️ Xona tanlashda, faoliyatlar haqida yoki boshqa savollarda yordam beraman.",
+  en: "Hello! I'm the CHIMGANSOY resort assistant 🏔️ I can help you choose a room, tell you about activities, or answer any questions.",
 };
 
 const PLACEHOLDERS: Record<string, string> = {
-  ru: "\u0421\u043f\u0440\u043e\u0441\u0438\u0442\u0435 \u043f\u0440\u043e \u043d\u043e\u043c\u0435\u0440, \u0431\u0430\u043d\u044e \u0438\u043b\u0438 \u0442\u0440\u0430\u043d\u0441\u0444\u0435\u0440...",
-  uz: "Xona, sauna yoki transfer haqida so'rang...",
-  en: "Ask about rooms, the spa, or transfers...",
+  ru: "Напишите вопрос...",
+  uz: "Savol yozing...",
+  en: "Ask a question...",
 };
 
 const TITLES: Record<string, string> = {
-  ru: "\u041a\u043e\u043d\u0441\u044c\u0435\u0440\u0436 \u043a\u0443\u0440\u043e\u0440\u0442\u0430",
-  uz: "Kurort konsyerji",
-  en: "Resort concierge",
+  ru: "Помощник курорта",
+  uz: "Kurort yordamchisi",
+  en: "Resort Assistant",
 };
 
-const BUTTON_LABELS: Record<string, string> = {
-  ru: "\u041a\u043e\u043d\u0441\u044c\u0435\u0440\u0436",
-  uz: "Konsyerj",
-  en: "Concierge",
+const LABELS: Record<string, string> = {
+  ru: "Помощник",
+  uz: "Yordamchi",
+  en: "Assistant",
 };
-
-const OPEN_ARIA_LABELS: Record<string, string> = {
-  ru: "\u041e\u0442\u043a\u0440\u044b\u0442\u044c \u043a\u043e\u043d\u0441\u044c\u0435\u0440\u0436\u0430",
-  uz: "Konsyerjni ochish",
-  en: "Open concierge",
-};
-
-const CLOSE_ARIA_LABELS: Record<string, string> = {
-  ru: "\u0417\u0430\u043a\u0440\u044b\u0442\u044c \u043a\u043e\u043d\u0441\u044c\u0435\u0440\u0436\u0430",
-  uz: "Konsyerjni yopish",
-  en: "Close concierge",
-};
-
-const SEND_ARIA_LABELS: Record<string, string> = {
-  ru: "\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435",
-  uz: "Xabar yuborish",
-  en: "Send message",
-};
-
-const STATUS_LINES: Record<string, Record<CelestialMode, string>> = {
-  ru: {
-    day: "\u0421\u043e\u043b\u043d\u0435\u0447\u043d\u044b\u0439 \u043a\u043e\u043d\u0441\u044c\u0435\u0440\u0436 CHIMGANSOY",
-    night: "\u041b\u0443\u043d\u043d\u044b\u0439 \u043a\u043e\u043d\u0441\u044c\u0435\u0440\u0436 CHIMGANSOY",
-  },
-  uz: {
-    day: "Quyoshli konsyerj CHIMGANSOY",
-    night: "Oyli konsyerj CHIMGANSOY",
-  },
-  en: {
-    day: "Sun concierge CHIMGANSOY",
-    night: "Moon concierge CHIMGANSOY",
-  },
-};
-
-const HINT_LINES: Record<string, string> = {
-  ru: "\u041c\u043e\u0436\u043d\u043e \u0441\u043f\u0440\u043e\u0441\u0438\u0442\u044c \u043f\u0440\u043e \u043d\u043e\u043c\u0435\u0440\u0430, \u0440\u0435\u0441\u0442\u043e\u0440\u0430\u043d, \u0431\u0430\u043d\u044e \u0438\u043b\u0438 \u0430\u043a\u0442\u0438\u0432\u043d\u043e\u0441\u0442\u0438.",
-  uz: "Xonalar, restoran, sauna yoki faoliyatlar haqida so'rashingiz mumkin.",
-  en: "Ask about rooms, dining, the spa, or activities.",
-};
-
-const ERROR_MESSAGES: Record<string, string> = {
-  ru: "\u041d\u0435 \u043f\u043e\u043b\u0443\u0447\u0438\u043b\u043e\u0441\u044c \u043e\u0442\u0432\u0435\u0442\u0438\u0442\u044c. \u041f\u043e\u043f\u0440\u043e\u0431\u0443\u0439\u0442\u0435 \u0435\u0449\u0451 \u0440\u0430\u0437.",
-  uz: "Javob berib bo'lmadi. Iltimos, yana urinib ko'ring.",
-  en: "I couldn't answer just now. Please try again.",
-};
-
-function getText(locale: string, dictionary: Record<string, string>) {
-  return dictionary[locale] ?? dictionary.ru;
-}
-
-function getModeLabel(locale: string, mode: CelestialMode) {
-  return STATUS_LINES[locale]?.[mode] ?? STATUS_LINES.ru[mode];
-}
-
-function getCelestialMode(date = new Date()): CelestialMode {
-  const hour = date.getHours();
-  return hour >= 6 && hour < 19 ? "day" : "night";
-}
-
-function AssistantGlyph() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
-      />
-    </svg>
-  );
-}
-
-function CelestialOrb({ mode }: { mode: CelestialMode }) {
-  return (
-    <span className="assistant-toggle__orb" aria-hidden="true">
-      <span className={`assistant-toggle__halo assistant-toggle__halo--${mode}`} />
-      <span className={`assistant-toggle__celestial assistant-toggle__celestial--${mode}`}>
-        {mode === "night" ? (
-          <>
-            <span className="assistant-toggle__crater assistant-toggle__crater--one" />
-            <span className="assistant-toggle__crater assistant-toggle__crater--two" />
-            <span className="assistant-toggle__crater assistant-toggle__crater--three" />
-          </>
-        ) : null}
-        <span className="assistant-toggle__glyph">
-          <AssistantGlyph />
-        </span>
-      </span>
-    </span>
-  );
-}
 
 export function AiAssistant({ locale }: { locale: string }) {
   const [open, setOpen] = useState(false);
-  const [mode, setMode] = useState<CelestialMode>("day");
-  const [buttonReady, setButtonReady] = useState(false);
-  const [introActive, setIntroActive] = useState(false);
-  const [introStyle, setIntroStyle] = useState<IntroStyle | undefined>(undefined);
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: getText(locale, GREETINGS) },
+    { role: "assistant", content: GREETINGS[locale] ?? GREETINGS.ru },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const toggleRef = useRef<HTMLButtonElement>(null);
+  const [showIntro, setShowIntro] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [isNight, setIsNight] = useState(false);
+  const [starEnd, setStarEnd] = useState({ x: "800px", y: "500px" });
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const h = new Date().getHours();
+    setIsNight(h < 6 || h >= 20);
+
+    setStarEnd({
+      x: `${window.innerWidth - 90}px`,
+      y: `${window.innerHeight - 60}px`,
+    });
+
+    if (!localStorage.getItem("cgs_v")) {
+      localStorage.setItem("cgs_v", "1");
+      setTimeout(() => setShowIntro(true), 700);
+      setTimeout(() => { setShowIntro(false); setReady(true); }, 2400);
+    } else {
+      setReady(true);
+    }
+  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   useEffect(() => {
-    if (!open) {
-      return;
-    }
-
-    const timeoutId = window.setTimeout(() => inputRef.current?.focus(), 120);
-    return () => window.clearTimeout(timeoutId);
+    if (open) setTimeout(() => inputRef.current?.focus(), 100);
   }, [open]);
 
-  useEffect(() => {
-    const syncMode = () => setMode(getCelestialMode());
-    syncMode();
-
-    const intervalId = window.setInterval(syncMode, 60_000);
-    return () => window.clearInterval(intervalId);
-  }, []);
-
-  useEffect(() => {
-    let frameId = 0;
-    let activateId = 0;
-    let revealId = 0;
-    let cleanupId = 0;
-
-    const startIntro = () => {
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const hasSeenIntro = sessionStorage.getItem(INTRO_STORAGE_KEY) === "1";
-
-      if (reduceMotion || hasSeenIntro) {
-        setButtonReady(true);
-        return;
-      }
-
-      const rect = toggleRef.current?.getBoundingClientRect();
-
-      if (!rect) {
-        setButtonReady(true);
-        return;
-      }
-
-      setIntroStyle({
-        "--assistant-star-end-x": `${rect.left + 36}px`,
-        "--assistant-star-end-y": `${rect.top + rect.height / 2 - 6}px`,
-      });
-      setIntroActive(true);
-
-      revealId = window.setTimeout(() => {
-        setButtonReady(true);
-      }, 1180);
-
-      cleanupId = window.setTimeout(() => {
-        sessionStorage.setItem(INTRO_STORAGE_KEY, "1");
-        setIntroActive(false);
-      }, 1700);
-    };
-
-    frameId = window.requestAnimationFrame(() => {
-      activateId = window.setTimeout(startIntro, 80);
-    });
-
-    return () => {
-      window.cancelAnimationFrame(frameId);
-      window.clearTimeout(activateId);
-      window.clearTimeout(revealId);
-      window.clearTimeout(cleanupId);
-    };
-  }, []);
-
   async function send() {
-    const text = input.trim();
-
-    if (!text || loading) {
-      return;
-    }
-
-    const userMsg: Message = { role: "user", content: text };
+    const txt = input.trim();
+    if (!txt || loading) return;
+    const userMsg: Message = { role: "user", content: txt };
     const history = [...messages, userMsg];
     setMessages(history);
     setInput("");
     setLoading(true);
-
-    const assistantMsg: Message = { role: "assistant", content: "" };
-    setMessages([...history, assistantMsg]);
+    setMessages([...history, { role: "assistant", content: "" }]);
 
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: history.map((message) => ({
-            role: message.role,
-            content: message.content,
-          })),
-        }),
+        body: JSON.stringify({ messages: history.map(m => ({ role: m.role, content: m.content })) }),
       });
-
-      if (!res.ok || !res.body) {
-        throw new Error("No response body");
-      }
-
+      if (!res.ok || !res.body) throw new Error();
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
-      let buffer = "";
-      let full = "";
-
+      let buf = "", full = "";
       while (true) {
         const { done, value } = await reader.read();
-
-        if (done) {
-          break;
-        }
-
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop() ?? "";
-
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        const lines = buf.split("\n");
+        buf = lines.pop() ?? "";
         for (const line of lines) {
-          if (!line.startsWith("data: ")) {
-            continue;
-          }
-
+          if (!line.startsWith("data: ")) continue;
           const data = line.slice(6).trim();
-
-          if (data === "[DONE]") {
-            break;
-          }
-
+          if (data === "[DONE]") break;
           try {
-            const chunk = JSON.parse(data);
-            const delta = chunk.choices?.[0]?.delta?.content ?? "";
-
-            if (!delta) {
-              continue;
+            const delta = JSON.parse(data).choices?.[0]?.delta?.content ?? "";
+            if (delta) {
+              full += delta;
+              setMessages(prev => {
+                const next = [...prev];
+                next[next.length - 1] = { role: "assistant", content: full };
+                return next;
+              });
             }
-
-            full += delta;
-            setMessages((prev) => {
-              const next = [...prev];
-              next[next.length - 1] = { role: "assistant", content: full };
-              return next;
-            });
-          } catch {
-            continue;
-          }
+          } catch { /* skip */ }
         }
       }
     } catch {
-      setMessages((prev) => {
+      setMessages(prev => {
         const next = [...prev];
         next[next.length - 1] = {
           role: "assistant",
-          content: getText(locale, ERROR_MESSAGES),
+          content: locale === "uz"
+            ? "Kechirasiz, xato yuz berdi. Qayta urinib ko'ring."
+            : locale === "en"
+            ? "Sorry, something went wrong. Please try again."
+            : "Извините, произошла ошибка. Попробуйте ещё раз.",
         };
         return next;
       });
@@ -303,172 +129,151 @@ export function AiAssistant({ locale }: { locale: string }) {
     }
   }
 
-  const title = getText(locale, TITLES);
-  const label = getText(locale, BUTTON_LABELS);
-  const placeholder = getText(locale, PLACEHOLDERS);
-  const hint = getText(locale, HINT_LINES);
-  const status = getModeLabel(locale, mode);
-  const openAriaLabel = getText(locale, OPEN_ARIA_LABELS);
-  const closeAriaLabel = getText(locale, CLOSE_ARIA_LABELS);
-  const sendAriaLabel = getText(locale, SEND_ARIA_LABELS);
-  const isNight = mode === "night";
+  const mode = isNight ? "night" : "day";
+  const headerBg = isNight
+    ? "radial-gradient(circle at 30% 30%, #2a1a5e, #0d0820)"
+    : "linear-gradient(135deg, #FFD000 0%, #FF8C00 60%, #FF5500 100%)";
 
   return (
     <>
-      {introActive ? (
-        <div className="assistant-intro" style={introStyle} aria-hidden="true">
-          <span className="assistant-intro__trail" />
-          <span className="assistant-intro__head" />
-          <span className="assistant-intro__burst" />
-        </div>
-      ) : null}
-
-      {open ? (
+      {/* Shooting comet — first visit only */}
+      {showIntro && (
         <div
-          className={`fixed bottom-0 left-0 right-0 z-50 flex flex-col overflow-hidden rounded-t-[1.75rem] border-t backdrop-blur-xl sm:bottom-24 sm:left-auto sm:right-5 sm:h-[520px] sm:w-[390px] sm:rounded-[1.75rem] sm:border ${
-            isNight
-              ? "border-white/10 bg-[linear-gradient(180deg,rgba(8,14,27,0.98)_0%,rgba(13,20,30,0.98)_54%,rgba(12,22,17,0.98)_100%)] shadow-[0_28px_90px_rgba(3,8,20,0.55)]"
-              : "border-[rgba(181,99,64,0.18)] bg-[linear-gradient(180deg,rgba(255,251,241,0.98)_0%,rgba(249,241,224,0.98)_60%,rgba(244,235,214,0.98)_100%)] shadow-[0_28px_90px_rgba(92,58,19,0.18)]"
-          }`}
-          style={{ height: "min(74vh, 520px)" }}
+          className="assistant-intro"
+          style={{
+            "--assistant-star-end-x": starEnd.x,
+            "--assistant-star-end-y": starEnd.y,
+          } as React.CSSProperties}
         >
-          <div
-            className={`relative flex items-center justify-between overflow-hidden px-4 py-3.5 ${
-              isNight
-                ? "border-b border-white/10 bg-[linear-gradient(135deg,rgba(17,28,49,0.98)_0%,rgba(34,55,94,0.96)_45%,rgba(17,39,31,0.94)_100%)] text-white"
-                : "border-b border-[rgba(181,99,64,0.14)] bg-[linear-gradient(135deg,rgba(110,61,23,0.96)_0%,rgba(190,120,40,0.92)_48%,rgba(243,185,83,0.88)_100%)] text-white"
-            }`}
-          >
-            <span className="assistant-panel__spark assistant-panel__spark--one" />
-            <span className="assistant-panel__spark assistant-panel__spark--two" />
-            <span className="assistant-panel__spark assistant-panel__spark--three" />
+          <div className="assistant-intro__trail" />
+          <div className="assistant-intro__head" />
+          <div className="assistant-intro__burst" style={{ right: "5rem", bottom: "4rem" }} />
+        </div>
+      )}
 
-            <div className="relative flex items-center gap-3">
-              <CelestialOrb mode={mode} />
+      {/* Chat panel */}
+      {open && (
+        <div
+          className="fixed bottom-0 left-0 right-0 z-50 flex flex-col overflow-hidden rounded-t-2xl border-t border-[color:var(--line)] bg-[var(--paper)] shadow-[0_-8px_40px_rgba(21,29,24,0.20)] sm:bottom-24 sm:left-auto sm:right-4 sm:h-[480px] sm:w-[380px] sm:rounded-2xl sm:border sm:shadow-[0_24px_80px_rgba(21,29,24,0.25)]"
+          style={{ height: "min(70vh,480px)" }}
+        >
+          <div className="flex items-center justify-between px-4 py-3" style={{ background: headerBg }}>
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15">
+                {isNight ? (
+                  <svg className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                  </svg>
+                ) : (
+                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none">
+                    <g style={{ animation: "assistant-spin 12s linear infinite", transformOrigin: "12px 12px" }} stroke="white" strokeWidth="2" strokeLinecap="round">
+                      <line x1="12" y1="2" x2="12" y2="5" /><line x1="12" y1="19" x2="12" y2="22" />
+                      <line x1="2" y1="12" x2="5" y2="12" /><line x1="19" y1="12" x2="22" y2="12" />
+                      <line x1="4.22" y1="4.22" x2="6.34" y2="6.34" /><line x1="17.66" y1="17.66" x2="19.78" y2="19.78" />
+                      <line x1="19.78" y1="4.22" x2="17.66" y2="6.34" /><line x1="6.34" y1="17.66" x2="4.22" y2="19.78" />
+                    </g>
+                    <circle cx="12" cy="12" r="4" fill="white" />
+                  </svg>
+                )}
+              </div>
               <div>
-                <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-white/70">{status}</p>
-                <p className="text-sm font-bold text-white">{title}</p>
+                <p className="text-xs font-bold text-white">{TITLES[locale] ?? TITLES.ru}</p>
+                <p className="text-[10px] text-white/50">CHIMGANSOY · AI</p>
               </div>
             </div>
-
-            <button
-              onClick={() => setOpen(false)}
-              className="relative flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-white/8 text-white/75 transition-colors duration-300 hover:bg-white/14 hover:text-white"
-              aria-label={closeAriaLabel}
-            >
-              <svg aria-hidden="true" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6L6 18" />
+            <button onClick={() => setOpen(false)} className="flex h-7 w-7 items-center justify-center rounded-full text-white/60 hover:bg-white/10 hover:text-white transition-colors">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto px-4 py-4">
-            <div className="space-y-3">
-              {messages.map((message, index) => (
-                <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
-                  {message.role === "assistant" ? (
-                    <div
-                      className={`mr-2 mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-[11px] font-extrabold ${
-                        isNight
-                          ? "border-white/10 bg-[linear-gradient(135deg,#f5f0df_0%,#b2bfdc_100%)] text-[#22304f]"
-                          : "border-[rgba(129,77,23,0.15)] bg-[linear-gradient(135deg,#fff4bc_0%,#eea33b_100%)] text-[#6c360d]"
-                      }`}
-                    >
-                      C
-                    </div>
-                  ) : null}
-
-                  <div
-                    className={`max-w-[82%] rounded-[1.35rem] px-3.5 py-3 text-sm leading-relaxed ${
-                      message.role === "user"
-                        ? isNight
-                          ? "rounded-br-md bg-[linear-gradient(135deg,rgba(83,120,255,0.92)_0%,rgba(70,189,157,0.88)_100%)] text-white shadow-[0_12px_28px_rgba(46,88,180,0.32)]"
-                          : "rounded-br-md bg-[linear-gradient(135deg,rgba(166,100,38,0.95)_0%,rgba(215,154,74,0.92)_100%)] text-white shadow-[0_12px_28px_rgba(166,100,38,0.24)]"
-                        : isNight
-                          ? "rounded-bl-md border border-white/8 bg-white/6 text-white/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
-                          : "rounded-bl-md border border-[color:var(--line)] bg-white/82 text-[var(--ink)] shadow-[0_10px_30px_rgba(116,89,42,0.08)]"
-                    }`}
-                  >
-                    {message.content ? (
-                      message.content
-                    ) : (
-                      <span className="flex h-4 items-center gap-1.5">
-                        <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70 animate-bounce" style={{ animationDelay: "0ms" }} />
-                        <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70 animate-bounce" style={{ animationDelay: "150ms" }} />
-                        <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70 animate-bounce" style={{ animationDelay: "300ms" }} />
-                      </span>
-                    )}
+          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+            {messages.map((m, i) => (
+              <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                {m.role === "assistant" && (
+                  <div className="mr-2 mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[9px] text-white font-bold" style={{ background: headerBg }}>
+                    {isNight ? "🌙" : "☀"}
                   </div>
+                )}
+                <div
+                  className={`max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${m.role === "user" ? "text-white rounded-br-sm" : "bg-[var(--surface)] text-[var(--ink)] rounded-bl-sm border border-[color:var(--line)]"}`}
+                  style={m.role === "user" ? { background: headerBg } : {}}
+                >
+                  {m.content || (
+                    <span className="flex gap-1 items-center h-4">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--muted)] animate-bounce" style={{ animationDelay: "0ms" }} />
+                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--muted)] animate-bounce" style={{ animationDelay: "150ms" }} />
+                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--muted)] animate-bounce" style={{ animationDelay: "300ms" }} />
+                    </span>
+                  )}
                 </div>
-              ))}
-              <div ref={bottomRef} />
-            </div>
+              </div>
+            ))}
+            <div ref={bottomRef} />
           </div>
 
-          <div
-            className={`border-t px-3 py-3 ${
-              isNight ? "border-white/10 bg-white/4" : "border-[color:var(--line)] bg-white/55"
-            }`}
-          >
-            <div
-              className={`flex items-center gap-2 rounded-[1.15rem] border px-3 py-2.5 ${
-                isNight
-                  ? "border-white/10 bg-white/8 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
-                  : "border-[color:var(--line)] bg-white/80 shadow-[0_10px_26px_rgba(116,89,42,0.08)]"
-              }`}
-            >
+          <div className="border-t border-[color:var(--line)] bg-[var(--paper)] px-3 py-3">
+            <div className="flex items-center gap-2 rounded-xl border border-[color:var(--line)] bg-[var(--surface)] px-3 py-2">
               <input
                 ref={inputRef}
                 value={input}
-                onChange={(event) => setInput(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" && !event.shiftKey) {
-                    send();
-                  }
-                }}
-                placeholder={placeholder}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && !e.shiftKey && send()}
+                placeholder={PLACEHOLDERS[locale] ?? PLACEHOLDERS.ru}
                 disabled={loading}
-                className={`flex-1 bg-transparent text-sm focus:outline-none disabled:opacity-50 ${
-                  isNight ? "text-white placeholder:text-white/38" : "text-[var(--ink)] placeholder:text-[var(--muted)]"
-                }`}
+                className="flex-1 bg-transparent text-sm text-[var(--ink)] placeholder-[var(--muted)] focus:outline-none disabled:opacity-50"
               />
-
-              <button
-                onClick={send}
-                disabled={!input.trim() || loading}
-                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white transition-all duration-300 disabled:scale-100 disabled:cursor-not-allowed disabled:opacity-35 ${
-                  isNight
-                    ? "bg-[linear-gradient(135deg,#6f95ff_0%,#4cc6a6_100%)] shadow-[0_14px_32px_rgba(76,143,255,0.32)] hover:scale-105 hover:shadow-[0_18px_36px_rgba(76,143,255,0.42)]"
-                    : "bg-[linear-gradient(135deg,#c37733_0%,#efb75b_100%)] shadow-[0_14px_32px_rgba(195,119,51,0.24)] hover:scale-105 hover:shadow-[0_18px_36px_rgba(195,119,51,0.34)]"
-                }`}
-                aria-label={sendAriaLabel}
-              >
-                <svg aria-hidden="true" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4}>
+              <button onClick={send} disabled={!input.trim() || loading} className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-white transition-all hover:opacity-80 disabled:opacity-30" style={{ background: headerBg }}>
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
                 </svg>
               </button>
             </div>
-
-            <p className={`mt-2 text-center text-[11px] ${isNight ? "text-white/45" : "text-[var(--muted)]"}`}>{hint}</p>
+            <p className="mt-1.5 text-center text-[9px] text-[var(--muted)]">DeepSeek AI · CHIMGANSOY</p>
           </div>
         </div>
-      ) : null}
+      )}
 
+      {/* Magic toggle — Moon or Sun */}
       <button
-        ref={toggleRef}
         type="button"
-        onClick={() => setOpen((value) => !value)}
-        aria-expanded={open}
-        aria-label={open ? closeAriaLabel : openAriaLabel}
-        className={`assistant-toggle assistant-toggle--${mode} ${buttonReady ? "assistant-toggle--ready" : ""} ${
-          open ? "assistant-toggle--open" : ""
-        }`}
+        onClick={() => setOpen(v => !v)}
+        aria-label={open ? "Close assistant" : "Open assistant"}
+        className={[
+          "assistant-toggle",
+          `assistant-toggle--${mode}`,
+          ready ? "assistant-toggle--ready" : "",
+          open ? "assistant-toggle--open" : "",
+        ].join(" ")}
       >
-        <span className="assistant-toggle__spark assistant-toggle__spark--three" />
-        <CelestialOrb mode={mode} />
+        <div className="assistant-toggle__orb">
+          <div className={`assistant-toggle__halo assistant-toggle__halo--${mode}`} />
+          <div className={`assistant-toggle__celestial assistant-toggle__celestial--${mode}`}>
+            {isNight && (
+              <>
+                <span className="assistant-toggle__crater assistant-toggle__crater--one" />
+                <span className="assistant-toggle__crater assistant-toggle__crater--two" />
+                <span className="assistant-toggle__crater assistant-toggle__crater--three" />
+              </>
+            )}
+            <div className="assistant-toggle__glyph">
+              {open ? (
+                <svg viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
+                </svg>
+              )}
+            </div>
+          </div>
+        </div>
         <span className="assistant-toggle__copy">
-          <span className="assistant-toggle__label">{label}</span>
+          <span className="assistant-toggle__label">{LABELS[locale] ?? LABELS.ru}</span>
         </span>
+        <span className="assistant-toggle__spark assistant-toggle__spark--three" />
       </button>
     </>
   );

@@ -8,12 +8,13 @@ import { Faq } from "@/components/sections/Faq";
 import { Gallery } from "@/components/sections/Gallery";
 import { MapBlock } from "@/components/sections/MapBlock";
 import { PromoBand } from "@/components/sections/PromoBand";
+import { TestimonialsCarousel } from "@/components/sections/TestimonialsCarousel";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
+import { AnimatedStat } from "@/components/ui/AnimatedStat";
 import { resortImages } from "@/content/images";
 import { homeShowcase } from "@/content/home-showcase";
 import { promotions } from "@/content/promotions";
-import { testimonials } from "@/content/testimonials";
 import { dictionaries } from "@/content/translations";
 import { pageSeo } from "@/content/seo";
 import { getLocaleParam } from "@/lib/content";
@@ -60,7 +61,9 @@ export default async function HomePage({ params }: PageProps) {
                 className="motion-reveal text-center lg:text-left"
                 data-delay={String(i * 80)}
               >
-                <p className="font-serif text-5xl font-bold text-white lg:text-6xl">{stat.value}</p>
+                <p className="font-serif text-5xl font-bold text-white lg:text-6xl">
+                  <AnimatedStat value={parseInt(stat.value)} />
+                </p>
                 <p className="mt-1 text-[11px] font-bold uppercase tracking-widest text-white/40">
                   {stat.label[locale as keyof typeof stat.label] ?? stat.label.ru}
                 </p>
@@ -270,41 +273,8 @@ export default async function HomePage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* ── Reviews — editorial ───────────────────────── */}
-      <section className="px-4 py-24 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="motion-reveal">
-            <SectionHeader title={dict.home.reviewsTitle} />
-          </div>
-          <div className="mt-12 grid gap-4 sm:gap-6 sm:grid-cols-2 md:grid-cols-3">
-            {testimonials.map((testimonial, i) => (
-              <article
-                key={testimonial.name}
-                className="group relative overflow-hidden rounded-3xl border border-[color:var(--line)] bg-white p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-[var(--shadow-card-hover)] motion-reveal"
-                data-delay={String(i * 100)}
-              >
-                <div className="flex gap-0.5 text-[var(--accent)]" aria-hidden="true">
-                  {"★★★★★".split("").map((s, j) => (
-                    <span key={j} className="text-base">{s}</span>
-                  ))}
-                </div>
-                <p className="mt-5 font-serif text-lg leading-7 text-[var(--ink)] italic">
-                  &ldquo;{text(testimonial.quote, locale)}&rdquo;
-                </p>
-                <div className="mt-6 flex items-center gap-3 border-t border-[color:var(--line)] pt-5">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--accent)]/10 font-serif text-base font-bold text-[var(--accent-strong)]">
-                    {testimonial.name.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="font-bold text-[var(--ink)]">{testimonial.name}</p>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">{text(testimonial.meta, locale)}</p>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ── Reviews — cinematic carousel ──────────────── */}
+      <TestimonialsCarousel locale={locale} />
 
       {/* ── Gallery ───────────────────────────────────── */}
       <section className="bg-[var(--surface)] px-4 py-14 sm:py-24 sm:px-6 lg:px-8">
@@ -315,6 +285,38 @@ export default async function HomePage({ params }: PageProps) {
           <div className="mt-10">
             <Gallery locale={locale} />
           </div>
+        </div>
+      </section>
+
+      {/* ── Emotion photo strip ───────────────────────── */}
+      <section className="overflow-hidden bg-[var(--ink)] py-2">
+        <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-none lg:grid lg:grid-cols-5 lg:overflow-visible">
+          {([
+            { image: "tapchanAerial", caption: locale === "uz" ? "Eshitsa bo'ladigan jimjitlik" : locale === "en" ? "Silence you can hear" : "Тишина,\nкоторую слышно" },
+            { image: "cottage", caption: locale === "uz" ? "Archa isi" : locale === "en" ? "The scent of pine" : "Воздух\nпахнет хвоей" },
+            { image: "poolEvening", caption: locale === "uz" ? "Bolalar balandroq kuladi" : locale === "en" ? "Kids laugh louder here" : "Дети смеются\nгромче" },
+            { image: "glamping", caption: locale === "uz" ? "Ikkalamiz uchun sunset" : locale === "en" ? "A sunset for two" : "Закат\nна двоих" },
+            { image: "territoryAerial", caption: locale === "uz" ? "Tog'lar shoshilmaydi" : locale === "en" ? "Mountains don't rush" : "Горы никуда\nне торопятся" },
+          ] as const).map(({ image, caption }) => {
+            const img = resortImages[image];
+            return (
+              <div
+                key={image}
+                className="relative aspect-[3/4] w-[72vw] flex-none snap-center overflow-hidden lg:w-auto"
+              >
+                <div
+                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-[1.04]"
+                  style={imageStyle(img)}
+                  role="img"
+                  aria-label={text(img.alt, locale)}
+                />
+                <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,18,14,0.88)_0%,rgba(12,18,14,0.15)_55%,transparent_100%)]" />
+                <p className="absolute bottom-5 left-5 right-3 font-serif text-base font-semibold italic leading-snug text-white/90 whitespace-pre-line">
+                  {caption}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </section>
 
