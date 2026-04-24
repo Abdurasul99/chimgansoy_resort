@@ -5,7 +5,7 @@ import { rooms } from "@/content/rooms";
 import { services } from "@/content/services";
 import { policies } from "@/content/policies";
 
-const baseUrl = "https://chimgansoy.uz";
+const baseUrl = "https://chimgansoy.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPaths = ["/", "/nomera", "/services", "/about", "/place", "/contact", "/bron"];

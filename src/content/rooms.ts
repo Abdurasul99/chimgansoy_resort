@@ -42,7 +42,7 @@ export const rooms: Room[] = [
       uz: "Glemping sokinlik, toza havo va qulaylikdan voz kechmasdan tabiatni his qilishni istagan mehmonlar uchun. U romantik dam olish, qisqa hordiq va kichik oilaviy safarlar uchun mos.",
       en: "Glamping is designed for guests who want quiet air and a close-to-nature stay without giving up comfort. It fits romantic escapes, short resets, and intimate family trips.",
     },
-    priceFrom: { ru: "от 1 200 000 сум", uz: "1 200 000 so'mdan", en: "from UZS 1,200,000" },
+    priceFrom: { ru: "Цена по запросу", uz: "Narx so'rov bo'yicha", en: "Price on request" },
     capacity: { ru: "2-4 гостя", uz: "2-4 mehmon", en: "2-4 guests" },
     size: { ru: "до 32 м2", uz: "32 m2 gacha", en: "up to 32 m2" },
     amenities: {
@@ -78,7 +78,7 @@ export const rooms: Room[] = [
       uz: "Kottej to'liq xususiy formatni istagan mehmonlar uchun: alohida dam olish zonalari, bolalar uchun kengroq joy va shaxsiy terrasada kechki vaqt.",
       en: "The cottage is for guests who need a fully private format: separate lounge zones, extra room for kids, and relaxed evenings on a private terrace.",
     },
-    priceFrom: { ru: "от 1 800 000 сум", uz: "1 800 000 so'mdan", en: "from UZS 1,800,000" },
+    priceFrom: { ru: "Цена по запросу", uz: "Narx so'rov bo'yicha", en: "Price on request" },
     capacity: { ru: "4-6 гостей", uz: "4-6 mehmon", en: "4-6 guests" },
     size: { ru: "до 58 м2", uz: "58 m2 gacha", en: "up to 58 m2" },
     amenities: {

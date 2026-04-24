@@ -304,14 +304,22 @@ export const resortImages = {
 } satisfies Record<string, ImageAsset>;
 
 export const galleryImages = [
-  resortImages.hero,
+  resortImages.nightHero,
   resortImages.poolEvening,
   resortImages.glampingDay,
+  resortImages.poolLifestyle,
+  resortImages.glamping,
   resortImages.cottageDay,
+  resortImages.cottage,
+  resortImages.hero,
+  resortImages.territoryAerial,
   resortImages.tapchanAerial,
+  resortImages.pool,
+  resortImages.glampingDay,
   resortImages.restaurantBuilding,
   resortImages.sportParking,
   resortImages.entranceNight,
-  resortImages.poolLifestyle,
-  resortImages.nightHero,
+  resortImages.entranceDay,
+  resortImages.receptionDay,
+  resortImages.workoutPadel,
 ];

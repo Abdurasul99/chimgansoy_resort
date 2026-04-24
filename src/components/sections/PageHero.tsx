@@ -13,18 +13,27 @@ type PageHeroProps = {
 
 export function PageHero({ locale, title, lead, image, eyebrow }: PageHeroProps) {
   return (
-    <section className="relative isolate overflow-hidden bg-[var(--ink)] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-28">
+    <section
+      className="relative isolate flex min-h-[60vh] items-end overflow-hidden bg-[var(--ink)] -mt-[4.5rem]"
+      aria-label={title}
+    >
       <div
-        className="absolute inset-0 -z-20 bg-cover opacity-74"
+        className="absolute inset-0 -z-20 scale-[1.02] bg-cover bg-center"
         style={imageStyle(image)}
         role="img"
         aria-label={text(image.alt, locale)}
       />
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(12,18,14,0.9),rgba(12,18,14,0.5),rgba(12,18,14,0.18))]" />
-      <div className="mx-auto max-w-7xl motion-rise">
-        {eyebrow ? <p className="mb-4 inline-flex rounded-[6px] border border-white/16 bg-white/10 px-3 py-2 text-xs font-bold uppercase text-white/68 backdrop-blur">{eyebrow}</p> : null}
-        <h1 className="max-w-3xl font-serif text-5xl font-semibold leading-tight sm:text-6xl">{title}</h1>
-        <p className="mt-5 max-w-2xl text-lg leading-8 text-white/78">{lead}</p>
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgba(12,18,14,0.97)_0%,rgba(12,18,14,0.55)_50%,rgba(12,18,14,0.12)_100%)]" />
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(12,18,14,0.55)_0%,transparent_60%)]" />
+
+      <div className="mx-auto w-full max-w-7xl px-4 pb-10 pt-28 sm:pb-14 sm:pt-44 sm:px-6 lg:pb-20 lg:px-8">
+        <div className="motion-rise">
+          {eyebrow && (
+            <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">{eyebrow}</p>
+          )}
+          <h1 className="display-md font-serif font-bold text-white">{title}</h1>
+          <p className="mt-5 max-w-xl text-base leading-7 text-white/60">{lead}</p>
+        </div>
       </div>
     </section>
   );

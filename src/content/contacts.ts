@@ -4,10 +4,10 @@ export const contacts = {
   phone: "+998 90 000 00 00",
   email: "info@chimgansoy.uz",
   whatsapp: "https://wa.me/998900000000",
-  telegram: "https://t.me/chimgansoy",
+  telegram: "https://t.me/BayanShirinCMO",
   googleMapsUrl: "https://maps.app.goo.gl/AE7scBBU9DykP3st5",
   address: {
-    ru: "Surpa dam olish oromgohi, Бостанлыкский район, Ташкентская область",
+    ru: "База отдыха Сурпа, Бостанлыкский район, Ташкентская область",
     uz: "Surpa dam olish oromgohi, Bo'stonliq tumani, Toshkent viloyati",
     en: "Surpa dam olish oromgohi, Bostanlyk district, Tashkent region",
   } satisfies LocalizedString,

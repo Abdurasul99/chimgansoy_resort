@@ -28,15 +28,16 @@ export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
 
   return (
     <div>
-      <div className="mb-7 flex flex-wrap gap-2">
+      {/* Filter pills */}
+      <div className="mb-5 sm:mb-8 flex flex-wrap gap-1.5 sm:gap-2">
         {roomCategories.map((category) => (
           <button
             type="button"
             key={category.id}
-            className={`rounded-[6px] border px-4 py-2 text-sm font-semibold transition ${
+            className={`btn-press relative rounded-full border px-4 py-1.5 sm:px-5 sm:py-2 text-xs sm:text-sm font-semibold transition-all duration-300 ${
               filter === category.id
-                ? "border-[var(--green)] bg-[var(--green)] text-white"
-                : "border-[color:var(--line)] bg-white text-[var(--muted)] hover:border-[var(--accent)] hover:text-[var(--ink)]"
+                ? "border-[var(--ink)] bg-[var(--ink)] text-white"
+                : "border-[color:var(--line)] bg-white text-[var(--muted)] hover:border-[var(--ink)]/40 hover:text-[var(--ink)]"
             }`}
             onClick={() => setFilter(category.id as Filter)}
           >
@@ -45,54 +46,69 @@ export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
         ))}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-5 sm:gap-8 lg:grid-cols-2">
         {visibleRooms.map((room) => {
           const image = resortImages[room.image];
 
           return (
-            <article key={room.slug} className="group overflow-hidden rounded-[8px] border border-[color:var(--line)] bg-white shadow-[0_18px_70px_rgba(21,29,24,0.08)]">
-              <div className="grid min-h-full">
-                <div
-                  className="relative min-h-80 overflow-hidden bg-cover transition duration-700 group-hover:scale-[1.015] sm:min-h-[26rem]"
-                  style={imageStyle(image)}
-                  role="img"
-                  aria-label={text(image.alt, locale)}
-                >
-                  <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,18,14,0.82),rgba(12,18,14,0.08)_58%,rgba(12,18,14,0))]" />
-                  <div className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-7">
-                    <p className="text-xs font-bold uppercase text-white/64">{text(room.eyebrow, locale)}</p>
-                    <h3 className="mt-2 font-serif text-4xl font-semibold leading-tight sm:text-5xl">{text(room.title, locale)}</h3>
-                    <p className="mt-3 max-w-md text-sm font-semibold text-white/78">{text(room.priceFrom, locale)}</p>
-                  </div>
+            <article
+              key={room.slug}
+              className="group relative overflow-hidden rounded-3xl bg-[var(--ink)] shadow-[var(--shadow-card)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)]"
+            >
+              {/* Full-bleed image */}
+              <div
+                className="relative h-[65vw] max-h-[500px] min-h-[260px] sm:min-h-[320px] bg-cover bg-center transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]"
+                style={imageStyle(image)}
+                role="img"
+                aria-label={text(image.alt, locale)}
+              >
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,18,14,1.0)_0%,rgba(12,18,14,0.55)_45%,rgba(12,18,14,0.08)_100%)]" />
+
+                {/* Floating price badge */}
+                <div className="absolute right-5 top-5 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 backdrop-blur-sm">
+                  <p className="text-xs font-bold text-white/80">{text(room.priceFrom, locale)}</p>
                 </div>
 
-                <div className="flex flex-col p-5 sm:p-7">
-                  <p className="text-sm leading-7 text-[var(--muted)]">{text(room.shortDescription, locale)}</p>
+                {/* Room title overlay */}
+                <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50">{text(room.eyebrow, locale)}</p>
+                  <h3 className="mt-2 font-serif text-4xl font-bold leading-tight sm:text-5xl">{text(room.title, locale)}</h3>
+                </div>
+              </div>
 
-                  <div className="mt-5 grid grid-cols-2 gap-3 text-sm text-[var(--ink)]">
-                    <span className="rounded-[6px] bg-[var(--surface)] px-3 py-3 font-bold">{text(room.capacity, locale)}</span>
-                    <span className="rounded-[6px] bg-[var(--surface)] px-3 py-3 font-bold">{text(room.size, locale)}</span>
-                  </div>
+              {/* Info block */}
+              <div className="bg-white px-6 pb-6 pt-5 sm:px-8 sm:pb-8">
+                <p className="text-sm leading-7 text-[var(--muted)]">{text(room.shortDescription, locale)}</p>
 
-                  <ul className="mt-5 grid gap-2 text-sm text-[var(--muted)] sm:grid-cols-2">
-                    {list(room.amenities, locale).slice(0, 4).map((item) => (
-                      <li key={item} className="flex items-center gap-2">
-                        <Icon name="check" className="h-4 w-4 text-[var(--green)]" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
+                {/* Capacity + size pills */}
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <span className="rounded-full bg-[var(--surface)] px-4 py-2 text-sm font-bold text-[var(--ink)]">
+                    {text(room.capacity, locale)}
+                  </span>
+                  <span className="rounded-full bg-[var(--surface)] px-4 py-2 text-sm font-bold text-[var(--ink)]">
+                    {text(room.size, locale)}
+                  </span>
+                </div>
 
-                  <div className="mt-auto pt-6">
-                    <div className="flex flex-col gap-3 sm:flex-row">
-                      <ButtonLink href={localizePath(locale, `/nomera/${room.slug}`)} variant="secondary">
-                        {dict.details}
-                      </ButtonLink>
-                      <ButtonLink href={localizePath(locale, "/bron")} variant="ghost">
-                        {dict.book}
-                      </ButtonLink>
-                    </div>
-                  </div>
+                {/* Amenities */}
+                <ul className="mt-5 grid gap-1.5 text-sm text-[var(--muted)] sm:grid-cols-2">
+                  {list(room.amenities, locale).slice(0, 4).map((item) => (
+                    <li key={item} className="flex items-center gap-2">
+                      <Icon name="check" className="h-3.5 w-3.5 shrink-0 text-[var(--green)]" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+
+                {/* CTAs */}
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                  <ButtonLink href={localizePath(locale, `/nomera/${room.slug}`)} variant="secondary" className="btn-press">
+                    {dict.details}
+                  </ButtonLink>
+                  <ButtonLink href={localizePath(locale, "/bron")} variant="ghost" className="btn-press">
+                    {dict.book}
+                  </ButtonLink>
                 </div>
               </div>
             </article>

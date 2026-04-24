@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { WeatherPanel } from "@/components/sections/WeatherPanel";
 import { Hero } from "@/components/sections/Hero";
 import { BookingWidget } from "@/components/sections/BookingWidget";
 import { RoomCatalog } from "@/components/sections/RoomCatalog";
@@ -9,7 +10,6 @@ import { MapBlock } from "@/components/sections/MapBlock";
 import { PromoBand } from "@/components/sections/PromoBand";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
-import { ImageFrame } from "@/components/ui/ImageFrame";
 import { resortImages } from "@/content/images";
 import { homeShowcase } from "@/content/home-showcase";
 import { promotions } from "@/content/promotions";
@@ -31,84 +31,154 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return buildMetadata(locale, pageSeo.home, "/");
 }
 
+const stats = [
+  { value: "18", label: { ru: "зон активностей", uz: "faoliyat zonasi", en: "activity zones" } },
+  { value: "6", label: { ru: "га территории", uz: "ga hududida", en: "hectares" } },
+  { value: "2", label: { ru: "типа размещения", uz: "turar-joy turi", en: "stay types" } },
+  { value: "45", label: { ru: "мин от Ташкента", uz: "min Toshkentdan", en: "min from Tashkent" } },
+] as const;
+
 export default async function HomePage({ params }: PageProps) {
   const locale = await getLocaleParam(params);
   const dict = dictionaries[locale];
 
   return (
     <>
+      {/* ── Hero ──────────────────────────────────────── */}
       <Hero locale={locale} />
+
+      {/* ── Booking widget ────────────────────────────── */}
       <BookingWidget locale={locale} />
 
-      <section className="px-4 pb-14 pt-2 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-          {homeShowcase.map((item, index) => {
-            const image = resortImages[item.image];
-
-            return (
-              <article
-                key={item.image}
-                className={`group relative isolate overflow-hidden rounded-[8px] bg-[var(--ink)] ${
-                  index === 0 ? "min-h-[30rem] lg:row-span-2" : "min-h-72"
-                }`}
-              >
-                <div
-                  className="absolute inset-0 -z-20 bg-cover transition duration-700 group-hover:scale-[1.025]"
-                  style={imageStyle(image)}
-                  role="img"
-                  aria-label={text(image.alt, locale)}
-                />
-                <div className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgba(12,18,14,0.84),rgba(12,18,14,0.22)_62%,rgba(12,18,14,0.05))]" />
-                <div className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-7">
-                  <p className="text-xs font-bold uppercase text-white/58">CHIMGANSOY</p>
-                  <h2 className={`mt-3 max-w-2xl font-serif font-semibold leading-tight ${index === 0 ? "text-4xl sm:text-5xl" : "text-3xl"}`}>
-                    {text(item.title, locale)}
-                  </h2>
-                  <p className="mt-3 max-w-xl text-sm leading-6 text-white/74">{text(item.copy, locale)}</p>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="px-4 py-14 sm:px-6 lg:px-8">
+      {/* ── Stats bar ─────────────────────────────────── */}
+      <section className="bg-[var(--ink)] py-10 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <SectionHeader title={dict.home.newsTitle} text={dict.pageIntro} />
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {promotions.map((promo) => (
-              <article key={text(promo.title, locale)} className="rounded-[8px] border border-[color:var(--line)] bg-white p-6 transition duration-300 hover:-translate-y-1 hover:border-[var(--accent)]">
-                <p className="text-xs font-bold uppercase text-[var(--accent-strong)]">{text(promo.badge, locale)}</p>
-                <h3 className="mt-3 font-serif text-3xl font-semibold leading-tight text-[var(--ink)]">{text(promo.title, locale)}</h3>
-                <p className="mt-3 text-sm leading-6 text-[var(--muted)]">{text(promo.description, locale)}</p>
-              </article>
+          <div className="grid grid-cols-2 gap-4 sm:gap-8 lg:grid-cols-4">
+            {stats.map((stat, i) => (
+              <div
+                key={stat.value}
+                className="motion-reveal text-center lg:text-left"
+                data-delay={String(i * 80)}
+              >
+                <p className="font-serif text-5xl font-bold text-white lg:text-6xl">{stat.value}</p>
+                <p className="mt-1 text-[11px] font-bold uppercase tracking-widest text-white/40">
+                  {stat.label[locale as keyof typeof stat.label] ?? stat.label.ru}
+                </p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div>
-            <SectionHeader title={dict.home.aboutTitle} text={dict.home.aboutText} />
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href={localizePath(locale, "/about")} variant="secondary">
-                {dict.details}
-              </ButtonLink>
-              <ButtonLink href={localizePath(locale, "/place")} variant="ghost">
-                {dict.viewAll}
-              </ButtonLink>
+      {/* ── Editorial showcase ────────────────────────── */}
+      <section className="overflow-hidden bg-[var(--ink)]">
+        {homeShowcase.map((item, index) => {
+          const image = resortImages[item.image];
+          const isEven = index % 2 === 0;
+          return (
+            <article
+              key={item.image}
+              className={`group relative flex items-end overflow-hidden ${
+                index === 0 ? "min-h-[70vh] sm:min-h-[80vh] lg:min-h-[90vh]" : "min-h-[50vh] sm:min-h-[60vh] lg:min-h-[70vh]"
+              }`}
+            >
+              <div
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-[1.4s] ease-out group-hover:scale-[1.04]"
+                style={imageStyle(image)}
+                role="img"
+                aria-label={text(image.alt, locale)}
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,18,14,0.92)_0%,rgba(12,18,14,0.40)_50%,rgba(12,18,14,0.08)_100%)]" />
+              {index > 0 && (
+                <div className={`absolute inset-0 ${isEven ? "bg-[linear-gradient(90deg,rgba(12,18,14,0.70)_0%,transparent_60%)]" : "bg-[linear-gradient(270deg,rgba(12,18,14,0.70)_0%,transparent_60%)]"}`} />
+              )}
+
+              <div className={`relative mx-auto w-full max-w-7xl px-4 pb-14 sm:px-6 lg:pb-20 lg:px-8 ${!isEven && index > 0 ? "text-right" : ""}`}>
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">CHIMGANSOY</p>
+                <h2
+                  className={`mt-3 font-serif font-bold text-white motion-reveal ${
+                    index === 0 ? "display-lg max-w-4xl" : "text-2xl max-w-2xl sm:text-4xl lg:text-5xl"
+                  } ${!isEven && index > 0 ? "ml-auto" : ""}`}
+                >
+                  {text(item.title, locale)}
+                </h2>
+                {index === 0 && (
+                  <p className="mt-4 max-w-lg text-base leading-7 text-white/60 motion-reveal" data-delay="100">
+                    {text(item.copy, locale)}
+                  </p>
+                )}
+                {index === 0 && (
+                  <div className="mt-8 motion-reveal" data-delay="200">
+                    <ButtonLink href={localizePath(locale, "/place")} variant="primary" className="btn-press">
+                      {dict.viewAll}
+                    </ButtonLink>
+                  </div>
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </section>
+
+      {/* ── About — editorial split ───────────────────── */}
+      <section className="overflow-hidden bg-[var(--paper)] px-4 py-14 sm:py-24 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-10 sm:gap-16 lg:grid-cols-[1fr_1.1fr] lg:items-center">
+
+            <div className="motion-reveal">
+              <p className="mb-4 font-serif text-[clamp(5rem,12vw,9rem)] font-bold leading-none text-[var(--surface)]" aria-hidden="true">01</p>
+              <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGANSOY</p>
+              <h2 className="display-md font-serif font-semibold text-[var(--ink)]">
+                {dict.home.aboutTitle}
+              </h2>
+              <p className="mt-6 text-base leading-8 text-[var(--muted)]">{dict.home.aboutText}</p>
+              <div className="mt-10 flex flex-wrap gap-3">
+                <ButtonLink href={localizePath(locale, "/about")} variant="secondary" className="btn-press">
+                  {dict.details}
+                </ButtonLink>
+                <ButtonLink href={localizePath(locale, "/place")} variant="ghost" className="btn-press">
+                  {dict.viewAll}
+                </ButtonLink>
+              </div>
+            </div>
+
+            <div className="relative motion-reveal" data-delay="150">
+              <div
+                className="aspect-[4/5] overflow-hidden rounded-3xl bg-cover bg-center shadow-[var(--shadow-card-hover)]"
+                style={imageStyle(resortImages.glampingDay)}
+                role="img"
+                aria-label={text(resortImages.glampingDay.alt, locale)}
+              />
+              <div className="absolute -bottom-6 -left-6 hidden rounded-2xl border border-[color:var(--line)] bg-white px-6 py-5 shadow-[var(--shadow-float)] lg:block">
+                <p className="font-serif text-4xl font-bold text-[var(--ink)]">45</p>
+                <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">
+                  {locale === "ru" ? "мин от Ташкента" : locale === "uz" ? "min Toshkentdan" : "min from Tashkent"}
+                </p>
+              </div>
+              <div className="absolute -right-4 top-10 hidden rounded-2xl bg-[var(--accent)] px-5 py-4 shadow-[var(--shadow-glow)] lg:block">
+                <p className="font-serif text-3xl font-bold text-white">18</p>
+                <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-white/70">
+                  {locale === "ru" ? "зон" : locale === "uz" ? "zona" : "zones"}
+                </p>
+              </div>
             </div>
           </div>
-          <ImageFrame image={resortImages.nature} locale={locale} className="aspect-[5/4]" />
         </div>
       </section>
 
-      <section className="px-4 py-16 sm:px-6 lg:px-8">
+      {/* ── Weather panel ─────────────────────────────── */}
+      <section className="py-10 sm:py-14">
+        <WeatherPanel locale={locale} />
+      </section>
+
+      {/* ── Rooms ─────────────────────────────────────── */}
+      <section className="bg-[var(--surface)] px-4 py-14 sm:py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <SectionHeader title={dict.home.roomsTitle} text={dict.home.roomsText} />
-            <ButtonLink href={localizePath(locale, "/nomera")} variant="ghost" className="lg:mb-1">
+          <div className="mb-12 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div className="motion-reveal">
+              <SectionHeader title={dict.home.roomsTitle} text={dict.home.roomsText} />
+            </div>
+            <ButtonLink href={localizePath(locale, "/nomera")} variant="ghost" className="lg:mb-1 btn-press motion-reveal" data-delay="100">
               {dict.viewAll}
             </ButtonLink>
           </div>
@@ -116,11 +186,47 @@ export default async function HomePage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
+      {/* ── Territory — full cinematic scene ─────────── */}
+      <section className="relative isolate overflow-hidden min-h-[60vh] lg:min-h-[75vh] flex items-end">
+        <div
+          className="absolute inset-0 -z-10 bg-cover bg-center"
+          style={imageStyle(resortImages.hero)}
+          role="img"
+          aria-label={text(resortImages.hero.alt, locale)}
+        />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgba(12,18,14,0.95)_0%,rgba(12,18,14,0.52)_50%,rgba(12,18,14,0.08)_100%)]" />
+
+        <div className="mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 lg:pb-24 lg:px-8">
+          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40 motion-reveal">CHIMGANSOY</p>
+          <h2 className="display-lg mt-4 font-serif font-bold text-white motion-reveal" data-delay="80">
+            {dict.home.territoryTitle}
+          </h2>
+          <div className="mt-8 flex flex-wrap gap-2 motion-reveal" data-delay="160">
+            {dict.home.territoryPills.map((item) => (
+              <span
+                key={item}
+                className="rounded-full border border-white/16 bg-white/8 px-4 py-2 text-sm font-semibold text-white/70 backdrop-blur-sm transition-colors duration-300 hover:bg-white/14 hover:text-white"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+          <div className="mt-10 motion-reveal" data-delay="240">
+            <ButtonLink href={localizePath(locale, "/place")} variant="light" className="btn-press">
+              {locale === "ru" ? "Исследовать" : locale === "uz" ? "O'rganish" : "Explore"}
+            </ButtonLink>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Services ──────────────────────────────────── */}
+      <section className="px-4 py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <SectionHeader title={dict.home.thingsTitle} text={dict.home.thingsText} />
-            <ButtonLink href={localizePath(locale, "/services")} variant="ghost" className="lg:mb-1">
+          <div className="mb-12 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div className="motion-reveal">
+              <SectionHeader title={dict.home.thingsTitle} text={dict.home.thingsText} />
+            </div>
+            <ButtonLink href={localizePath(locale, "/services")} variant="ghost" className="lg:mb-1 btn-press motion-reveal" data-delay="100">
               {dict.viewAll}
             </ButtonLink>
           </div>
@@ -128,15 +234,35 @@ export default async function HomePage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-          <ImageFrame image={resortImages.mountains} locale={locale} className="aspect-[16/11]" />
-          <div>
-            <SectionHeader title={dict.home.territoryTitle} text={dict.home.territoryText} />
-            <div className="mt-8 grid gap-3 sm:grid-cols-2">
-              {dict.home.territoryPills.map((item) => (
-                <div key={item} className="rounded-[6px] border border-[color:var(--line)] bg-white px-4 py-3 text-sm font-bold text-[var(--ink)]">
-                  {item}
+      {/* ── Year-round — image backed ─────────────────── */}
+      <section className="relative isolate overflow-hidden bg-[var(--green)] px-4 py-24 text-white sm:px-6 lg:px-8">
+        <div
+          className="absolute inset-0 -z-10 bg-cover bg-center opacity-20"
+          style={imageStyle(resortImages.territoryAerial)}
+          role="presentation"
+          aria-hidden="true"
+        />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(135deg,rgba(20,61,45,0.90)_0%,rgba(20,61,45,0.60)_100%)]" />
+
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-10 sm:gap-16 lg:grid-cols-[1fr_1fr] lg:items-center">
+            <div className="motion-reveal">
+              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">CHIMGANSOY</p>
+              <h2 className="display-md mt-4 font-serif font-semibold leading-tight">{dict.home.yearRoundTitle}</h2>
+              <p className="mt-6 text-base leading-8 text-white/65">{dict.home.yearRoundText}</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {promotions.slice(0, 4).map((promo, i) => (
+                <div
+                  key={text(promo.badge, locale)}
+                  className="rounded-2xl border border-white/10 bg-white/6 p-6 backdrop-blur-sm transition-all duration-500 hover:bg-white/10 motion-reveal"
+                  data-delay={String(i * 80)}
+                >
+                  <span className="inline-block rounded-full bg-white/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-white/50">
+                    {text(promo.badge, locale)}
+                  </span>
+                  <h3 className="mt-4 font-serif text-xl font-semibold leading-snug">{text(promo.title, locale)}</h3>
+                  <p className="mt-2 text-sm leading-6 text-white/55">{text(promo.description, locale)}</p>
                 </div>
               ))}
             </div>
@@ -144,35 +270,35 @@ export default async function HomePage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="bg-[var(--green)] px-4 py-16 text-white sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
-          <div>
-            <p className="text-xs font-bold uppercase text-white/56">CHIMGANSOY</p>
-            <h2 className="mt-3 font-serif text-4xl font-semibold leading-tight sm:text-5xl">{dict.home.yearRoundTitle}</h2>
-            <p className="mt-4 text-base leading-7 text-white/74">{dict.home.yearRoundText}</p>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {promotions.slice(0, 2).map((promo) => (
-              <div key={text(promo.badge, locale)} className="rounded-[8px] border border-white/12 bg-white/9 p-5">
-                <p className="text-xs font-bold uppercase text-white/56">{text(promo.badge, locale)}</p>
-                <h3 className="mt-3 font-serif text-2xl font-semibold">{text(promo.title, locale)}</h3>
-                <p className="mt-2 text-sm leading-6 text-white/68">{text(promo.description, locale)}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="px-4 py-16 sm:px-6 lg:px-8">
+      {/* ── Reviews — editorial ───────────────────────── */}
+      <section className="px-4 py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <SectionHeader title={dict.home.reviewsTitle} />
-          <div className="mt-8 grid gap-5 md:grid-cols-3">
-            {testimonials.map((testimonial) => (
-              <article key={testimonial.name} className="rounded-[8px] border border-[color:var(--line)] bg-white p-6">
-                <p className="text-sm leading-7 text-[var(--muted)]">&ldquo;{text(testimonial.quote, locale)}&rdquo;</p>
-                <div className="mt-5">
-                  <p className="font-bold text-[var(--ink)]">{testimonial.name}</p>
-                  <p className="text-xs font-bold uppercase text-[var(--accent-strong)]">{text(testimonial.meta, locale)}</p>
+          <div className="motion-reveal">
+            <SectionHeader title={dict.home.reviewsTitle} />
+          </div>
+          <div className="mt-12 grid gap-4 sm:gap-6 sm:grid-cols-2 md:grid-cols-3">
+            {testimonials.map((testimonial, i) => (
+              <article
+                key={testimonial.name}
+                className="group relative overflow-hidden rounded-3xl border border-[color:var(--line)] bg-white p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-[var(--shadow-card-hover)] motion-reveal"
+                data-delay={String(i * 100)}
+              >
+                <div className="flex gap-0.5 text-[var(--accent)]" aria-hidden="true">
+                  {"★★★★★".split("").map((s, j) => (
+                    <span key={j} className="text-base">{s}</span>
+                  ))}
+                </div>
+                <p className="mt-5 font-serif text-lg leading-7 text-[var(--ink)] italic">
+                  &ldquo;{text(testimonial.quote, locale)}&rdquo;
+                </p>
+                <div className="mt-6 flex items-center gap-3 border-t border-[color:var(--line)] pt-5">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--accent)]/10 font-serif text-base font-bold text-[var(--accent-strong)]">
+                    {testimonial.name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="font-bold text-[var(--ink)]">{testimonial.name}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">{text(testimonial.meta, locale)}</p>
+                  </div>
                 </div>
               </article>
             ))}
@@ -180,24 +306,34 @@ export default async function HomePage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
+      {/* ── Gallery ───────────────────────────────────── */}
+      <section className="bg-[var(--surface)] px-4 py-14 sm:py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <SectionHeader title={dict.home.galleryTitle} text={dict.pageIntro} />
-          <div className="mt-8">
+          <div className="motion-reveal">
+            <SectionHeader title={dict.home.galleryTitle} />
+          </div>
+          <div className="mt-10">
             <Gallery locale={locale} />
           </div>
         </div>
       </section>
 
+      {/* ── Promo band ────────────────────────────────── */}
       <PromoBand locale={locale} />
 
-      <section className="px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.7fr_1.3fr]">
-          <SectionHeader title={dict.home.faqTitle} />
-          <Faq locale={locale} />
+      {/* ── FAQ ───────────────────────────────────────── */}
+      <section className="px-4 py-24 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-8 sm:gap-12 lg:grid-cols-[0.65fr_1.35fr]">
+            <div className="motion-reveal">
+              <SectionHeader title={dict.home.faqTitle} />
+            </div>
+            <Faq locale={locale} />
+          </div>
         </div>
       </section>
 
+      {/* ── Map ───────────────────────────────────────── */}
       <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <MapBlock locale={locale} />

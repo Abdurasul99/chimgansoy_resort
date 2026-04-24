@@ -42,9 +42,9 @@ export const homeShowcase: HomeShowcaseItem[] = [
       en: "Private A-frame glamping and cottages",
     },
     copy: {
-      ru: "Форматы размещения выглядят как отдельный продукт с собственным настроением и CTA.",
-      uz: "Joylashuv formatlari o'z kayfiyati va CTA bilan alohida mahsulot sifatida ko'rinadi.",
-      en: "Accommodation formats feel like distinct products with their own mood and CTA.",
+      ru: "Глэмпинг A-frame и приватные коттеджи — выбирайте формат под настроение и компанию.",
+      uz: "A-frame glemping va xususiy kottejlar — kayfiyat va jamoaga qarab formatni tanlang.",
+      en: "A-frame glamping and private cottages — choose the format for your mood and group.",
     },
   },
 ];

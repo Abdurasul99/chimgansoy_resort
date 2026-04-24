@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import "../globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { StickyBookingCta } from "@/components/layout/StickyBookingCta";
+import { ScrollObserver } from "@/components/ui/ScrollObserver";
+import { AiAssistant } from "@/components/ui/AiAssistant";
 import { dictionaries } from "@/content/translations";
 import { isLocale, locales, type Locale } from "@/i18n/config";
 
@@ -44,7 +45,7 @@ export async function generateMetadata({ params }: LayoutProps): Promise<Metadat
     },
     description: dictionaries[locale].brandLine,
     applicationName: "CHIMGANSOY",
-    metadataBase: new URL("https://chimgansoy.uz"),
+    metadataBase: new URL("https://chimgansoy.com"),
   };
 }
 
@@ -57,11 +58,12 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
 
   return (
     <html lang={locale} className={`${sans.variable} ${serif.variable}`}>
-      <body>
+      <body suppressHydrationWarning>
         <Header locale={locale as Locale} />
         <main>{children}</main>
-        <StickyBookingCta locale={locale as Locale} />
         <Footer locale={locale as Locale} />
+        <ScrollObserver />
+        <AiAssistant key={locale} locale={locale} />
       </body>
     </html>
   );

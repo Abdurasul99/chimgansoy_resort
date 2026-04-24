@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
-import { PageHero } from "@/components/sections/PageHero";
-import { BookingWidget } from "@/components/sections/BookingWidget";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { ImageFrame } from "@/components/ui/ImageFrame";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { resortImages } from "@/content/images";
 import { dictionaries } from "@/content/translations";
 import { pageSeo } from "@/content/seo";
 import { getLocaleParam } from "@/lib/content";
 import { buildMetadata } from "@/lib/metadata";
+import { imageStyle } from "@/lib/images";
 import { text } from "@/lib/localize";
 import { localizePath } from "@/i18n/routing";
 
@@ -18,27 +15,30 @@ type PageProps = {
 
 const values = [
   {
-    title: { ru: "Природа как главный сценарий", uz: "Tabiat asosiy ssenariy", en: "Nature as the main scenario" },
+    num: "01",
+    title: { ru: "Природа как главный сценарий", uz: "Tabiat — asosiy sahna", en: "Nature as the main stage" },
     copy: {
-      ru: "Сайт оставляет визуальное пространство для реальных видов, маршрутов, сезонного света и территории.",
-      uz: "Sayt real manzaralar, marshrutlar, mavsumiy yorug'lik va hudud uchun vizual joy qoldiradi.",
-      en: "The site leaves visual space for real views, routes, seasonal light, and the territory.",
+      ru: "Курорт окружён горами Чимган. Здесь маршруты, виды и сезонный свет формируют атмосферу отдыха.",
+      uz: "Kurort Chimgan tog'lari bilan o'ralgan. Marshrutlar, manzaralar va mavsumiy yorug'lik dam olish muhitini shakllantiradi.",
+      en: "The resort is surrounded by the Chimgan mountains. Routes, views, and seasonal light define the experience.",
     },
   },
   {
-    title: { ru: "Бронирование без трения", uz: "Qulay bron qilish", en: "Low-friction booking" },
+    num: "02",
+    title: { ru: "Приватность и пространство", uz: "Maxfiylik va kengshulik", en: "Privacy and space" },
     copy: {
-      ru: "Каждая ключевая страница ведет к заявке, мессенджеру или будущему Bnovo-модулю.",
-      uz: "Har bir asosiy sahifa so'rov, messenjer yoki kelajakdagi Bnovo moduliga olib boradi.",
-      en: "Every key page leads to a request, messenger, or future Bnovo module.",
+      ru: "Каждый тип размещения — будь то глэмпинг или коттедж — обеспечивает собственное приватное пространство и террасу.",
+      uz: "Har bir turar-joy turi — glemping yoki kottej — o'z xususiy joyi va terrasasiga ega.",
+      en: "Each accommodation type — glamping or cottage — offers its own private space and terrace.",
     },
   },
   {
-    title: { ru: "День собирается из модулей", uz: "Kun modullardan tuziladi", en: "A modular resort day" },
+    num: "03",
+    title: { ru: "Всесезонный курорт", uz: "Barcha mavsumlar uchun", en: "Year-round destination" },
     copy: {
-      ru: "Проживание, ресторан, топчаны, бассейн, спорт и активности работают как единый funnel.",
-      uz: "Yashash, restoran, topchan, basseyn, sport va faoliyatlar yagona funnel sifatida ishlaydi.",
-      en: "Stay, restaurant, tapchan zones, pool, sport, and activities work as one funnel.",
+      ru: "Зима или лето — курорт работает круглый год. Активности, ресторан, spa и детские зоны доступны в любой сезон.",
+      uz: "Qish yoki yoz — kurort butun yil ishlaydi. Faoliyatlar, restoran, spa va bolalar zonalari har qanday mavsumda mavjud.",
+      en: "Winter or summer — the resort operates year-round. Activities, restaurant, spa, and kids zones are available every season.",
     },
   },
 ];
@@ -54,42 +54,98 @@ export default async function AboutPage({ params }: PageProps) {
 
   return (
     <>
-      <PageHero
-        locale={locale}
-        title={dict.pages.about.title}
-        lead={dict.pages.about.lead}
-        image={resortImages.territoryAerial}
-        eyebrow="CHIMGANSOY"
-      />
-      <BookingWidget locale={locale} />
+      {/* ── Cinematic hero ────────────────────────────── */}
+      <section
+        className="relative isolate flex min-h-[70vh] items-end overflow-hidden bg-[var(--ink)] -mt-[4.5rem]"
+        aria-label={dict.pages.about.title}
+      >
+        <div
+          className="absolute inset-0 -z-20 bg-cover bg-center"
+          style={imageStyle(resortImages.territoryAerial)}
+          role="img"
+          aria-label={text(resortImages.territoryAerial.alt, locale)}
+        />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgba(12,18,14,0.97)_0%,rgba(12,18,14,0.52)_55%,rgba(12,18,14,0.12)_100%)]" />
 
-      <section className="px-4 py-14 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div>
-            <SectionHeader title={dict.home.aboutTitle} text={dict.home.aboutText} />
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href={localizePath(locale, "/bron")} variant="primary">
-                {dict.bookNow}
-              </ButtonLink>
-              <ButtonLink href={localizePath(locale, "/contact")} variant="ghost">
-                {dict.pages.contact.title}
-              </ButtonLink>
-            </div>
+        <div className="mx-auto w-full max-w-7xl px-4 pb-10 pt-28 sm:pb-16 sm:pt-44 sm:px-6 lg:pb-24 lg:px-8">
+          <div className="motion-rise">
+            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">CHIMGANSOY</p>
+            <h1 className="display-lg mt-3 font-serif font-bold text-white">{dict.pages.about.title}</h1>
+            <p className="mt-5 max-w-xl text-base leading-7 text-white/60">{dict.pages.about.lead}</p>
           </div>
-          <ImageFrame image={resortImages.receptionDay} locale={locale} className="aspect-[16/11]" />
         </div>
       </section>
 
-      <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
+      {/* ── About editorial split ─────────────────────── */}
+      <section className="px-4 py-14 sm:py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <SectionHeader title={dict.home.yearRoundTitle} text={dict.home.yearRoundText} />
-          <div className="mt-8 grid gap-5 md:grid-cols-3">
-            {values.map((value) => (
-              <article key={text(value.title, locale)} className="rounded-[8px] border border-[color:var(--line)] bg-[var(--paper)] p-6">
-                <h2 className="font-serif text-3xl font-semibold text-[var(--ink)]">{text(value.title, locale)}</h2>
-                <p className="mt-3 text-sm leading-7 text-[var(--muted)]">{text(value.copy, locale)}</p>
-              </article>
+          <div className="grid gap-10 sm:gap-16 lg:grid-cols-[1.1fr_1fr] lg:items-center">
+            <div className="motion-reveal">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGANSOY</p>
+              <h2 className="display-md mt-3 font-serif font-semibold text-[var(--ink)]">{dict.home.aboutTitle}</h2>
+              <p className="mt-6 text-base leading-8 text-[var(--muted)]">{dict.home.aboutText}</p>
+              <div className="mt-10 flex flex-wrap gap-3">
+                <ButtonLink href={localizePath(locale, "/bron")} variant="primary" className="btn-press">
+                  {dict.bookNow}
+                </ButtonLink>
+                <ButtonLink href={localizePath(locale, "/contact")} variant="ghost" className="btn-press">
+                  {dict.pages.contact.title}
+                </ButtonLink>
+              </div>
+            </div>
+            <div className="relative motion-reveal" data-delay="150">
+              <div
+                className="aspect-[4/5] overflow-hidden rounded-3xl bg-cover bg-center shadow-[var(--shadow-card-hover)]"
+                style={imageStyle(resortImages.receptionDay)}
+                role="img"
+                aria-label={text(resortImages.receptionDay.alt, locale)}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Values — editorial list ───────────────────── */}
+      <section className="bg-[var(--surface)] px-4 py-14 sm:py-24 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-16 motion-reveal">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGANSOY</p>
+            <h2 className="display-md mt-3 font-serif font-semibold text-[var(--ink)]">{dict.home.yearRoundTitle}</h2>
+          </div>
+          <div className="space-y-0 divide-y divide-[color:var(--line)]">
+            {values.map((value, i) => (
+              <div
+                key={value.num}
+                className="grid gap-6 py-10 lg:grid-cols-[120px_1fr_1fr] lg:items-start motion-reveal"
+                data-delay={String(i * 100)}
+              >
+                <p className="font-serif text-5xl font-bold text-[var(--mist)]">{value.num}</p>
+                <h3 className="font-serif text-2xl font-semibold text-[var(--ink)]">{text(value.title, locale)}</h3>
+                <p className="text-base leading-7 text-[var(--muted)]">{text(value.copy, locale)}</p>
+              </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Full-width image scene ─────────────────────── */}
+      <section className="relative isolate overflow-hidden min-h-[50vh] flex items-end">
+        <div
+          className="absolute inset-0 -z-10 bg-cover bg-center"
+          style={imageStyle(resortImages.poolLifestyle)}
+          role="img"
+          aria-label={text(resortImages.poolLifestyle.alt, locale)}
+        />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgba(12,18,14,0.90)_0%,rgba(12,18,14,0.30)_60%,rgba(12,18,14,0.05)_100%)]" />
+        <div className="mx-auto w-full max-w-7xl px-4 pb-14 sm:px-6 lg:pb-20 lg:px-8">
+          <div className="motion-reveal">
+            <h2 className="display-md font-serif font-bold text-white">{dict.home.yearRoundTitle}</h2>
+            <p className="mt-5 text-base text-white/60 max-w-md">{dict.home.yearRoundText}</p>
+            <div className="mt-8">
+              <ButtonLink href={localizePath(locale, "/bron")} variant="light" className="btn-press">
+                {dict.bookNow}
+              </ButtonLink>
+            </div>
           </div>
         </div>
       </section>

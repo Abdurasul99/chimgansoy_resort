@@ -5,7 +5,7 @@ import { localizePath } from "@/i18n/routing";
 import type { PageSeo } from "@/content/types";
 import { text } from "./localize";
 
-const siteUrl = "https://chimgansoy.uz";
+const siteUrl = "https://chimgansoy.com";
 
 export function buildMetadata(locale: Locale, seo: PageSeo, path = "/"): Metadata {
   const title = text(seo.title, locale);

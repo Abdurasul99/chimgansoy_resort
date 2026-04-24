@@ -29,15 +29,15 @@ export function ServicesGrid({ locale, limit, showFilters = true, slugs }: Servi
   return (
     <div>
       {showFilters ? (
-        <div className="mb-7 flex flex-wrap gap-2">
+        <div className="mb-5 sm:mb-8 flex flex-wrap gap-1.5 sm:gap-2">
           {serviceCategories.map((category) => (
             <button
               type="button"
               key={category.id}
-              className={`rounded-[6px] border px-4 py-2 text-sm font-semibold transition ${
+              className={`btn-press rounded-full border px-4 py-1.5 sm:px-5 sm:py-2 text-xs sm:text-sm font-semibold transition-all duration-300 ${
                 filter === category.id
-                  ? "border-[var(--green)] bg-[var(--green)] text-white"
-                  : "border-[color:var(--line)] bg-white text-[var(--muted)] hover:border-[var(--accent)] hover:text-[var(--ink)]"
+                  ? "border-[var(--ink)] bg-[var(--ink)] text-white"
+                  : "border-[color:var(--line)] bg-white text-[var(--muted)] hover:border-[var(--ink)]/40 hover:text-[var(--ink)]"
               }`}
               onClick={() => setFilter(category.id)}
             >
@@ -47,27 +47,62 @@ export function ServicesGrid({ locale, limit, showFilters = true, slugs }: Servi
         </div>
       ) : null}
 
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {visibleServices.map((service) => {
+      {/* Editorial grid: every 3rd card is wide */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {visibleServices.map((service, index) => {
           const image = resortImages[service.image];
+          const isWide = (index + 1) % 3 === 0;
 
           return (
-            <article key={service.slug} className="group overflow-hidden rounded-[8px] border border-[color:var(--line)] bg-white shadow-[0_14px_54px_rgba(21,29,24,0.07)]">
+            <article
+              key={service.slug}
+              className={`group relative overflow-hidden rounded-3xl bg-[var(--ink)] motion-reveal ${
+                isWide ? "sm:col-span-2 lg:col-span-1" : ""
+              }`}
+              data-delay={String((index % 3) * 80)}
+            >
+              {/* Image */}
               <div
-                className="relative aspect-[5/4] overflow-hidden bg-cover transition duration-700 group-hover:scale-[1.02]"
+                className={`relative overflow-hidden bg-cover bg-center transition-transform duration-[1.2s] ease-out group-hover:scale-[1.05] ${
+                  isWide ? "aspect-[3/2]" : "aspect-[4/3]"
+                }`}
                 style={imageStyle(image)}
                 role="img"
                 aria-label={text(image.alt, locale)}
               >
-                <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,18,14,0.66),rgba(12,18,14,0.02)_62%)]" />
-                <p className="absolute bottom-4 left-4 right-4 rounded-[6px] border border-white/16 bg-white/12 px-3 py-2 text-xs font-bold uppercase text-white/78 backdrop-blur">
-                  {text(service.bestFor, locale)}
-                </p>
+                {/* Gradient */}
+                <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,18,14,0.92)_0%,rgba(12,18,14,0.30)_55%,rgba(12,18,14,0)_100%)]" />
+
+                {/* Category badge */}
+                <div className="absolute left-4 top-4">
+                  <span className="rounded-full border border-white/16 bg-white/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-white/70 backdrop-blur-sm">
+                    {text(service.bestFor, locale)}
+                  </span>
+                </div>
+
+                {/* Hover overlay CTA */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  <span className="rounded-full border border-white/30 bg-white/14 px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-white backdrop-blur-sm">
+                    {dict.details}
+                  </span>
+                </div>
+
+                {/* Title at bottom */}
+                <div className="absolute inset-x-0 bottom-0 p-5">
+                  <h3 className="font-serif text-2xl font-bold leading-tight text-white">
+                    {text(service.title, locale)}
+                  </h3>
+                </div>
               </div>
-              <div className="p-5">
-                <h3 className="mt-3 font-serif text-3xl font-semibold leading-tight text-[var(--ink)]">{text(service.title, locale)}</h3>
-                <p className="mt-3 text-sm leading-6 text-[var(--muted)]">{text(service.shortDescription, locale)}</p>
-                <ButtonLink href={localizePath(locale, `/services/${service.slug}`)} variant="ghost" className="mt-5">
+
+              {/* Info */}
+              <div className="bg-white px-5 py-4">
+                <p className="text-sm leading-6 text-[var(--muted)]">{text(service.shortDescription, locale)}</p>
+                <ButtonLink
+                  href={localizePath(locale, `/services/${service.slug}`)}
+                  variant="ghost"
+                  className="btn-press mt-4"
+                >
                   {dict.details}
                 </ButtonLink>
               </div>

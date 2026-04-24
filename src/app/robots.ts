@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://chimgansoy.uz/sitemap.xml",
+    sitemap: "https://chimgansoy.com/sitemap.xml",
   };
 }

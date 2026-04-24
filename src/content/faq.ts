@@ -25,9 +25,9 @@ export const faqItems: FaqItem[] = [
       en: "How does booking work?",
     },
     answer: {
-      ru: "Сайт подготовлен к подключению Bnovo. На первом этапе заявки можно направлять через телефон, WhatsApp, Telegram или форму.",
-      uz: "Sayt Bnovo ulanishiga tayyorlangan. Birinchi bosqichda so'rovlarni telefon, WhatsApp, Telegram yoki forma orqali yuborish mumkin.",
-      en: "The site is prepared for Bnovo integration. At launch, requests can be sent by phone, WhatsApp, Telegram, or form.",
+      ru: "Оставьте заявку через форму, или напишите нам в WhatsApp или Telegram — администратор подтвердит даты и детали поездки в течение 15 минут.",
+      uz: "Forma orqali so'rov qoldiring yoki WhatsApp/Telegram orqali yozing — administrator 15 daqiqa ichida sanalar va safar tafsilotlarini tasdiqlaydi.",
+      en: "Submit a request via the form, or message us on WhatsApp or Telegram — the administrator will confirm dates and details within 15 minutes.",
     },
   },
   {
