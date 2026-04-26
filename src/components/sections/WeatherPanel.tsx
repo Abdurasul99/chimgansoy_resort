@@ -121,14 +121,25 @@ function Skeleton({ w = "100%", h = 20 }: { w?: string; h?: number }) {
   );
 }
 
+/* ── Module-level cache: survives locale navigation within session ── */
+let _wxCache: WeatherData | null = null;
+let _wxCacheAt = 0;
+const WX_TTL = 10 * 60 * 1000; // 10 minutes
+
 /* ── Main component ─────────────────────────────────────── */
 export function WeatherPanel({ locale }: { locale: string }) {
-  const [data, setData] = useState<WeatherData|null>(null);
+  const [data, setData] = useState<WeatherData|null>(_wxCache);
   const l = T[locale] ?? T.ru;
   const days = DAYS[locale] ?? DAYS.ru;
   const months = MONTHS[locale] ?? MONTHS.ru;
 
   useEffect(() => {
+    // Serve cache instantly — no re-fetch on language switch
+    if (_wxCache && Date.now() - _wxCacheAt < WX_TTL) {
+      setData(_wxCache);
+      return;
+    }
+
     const base = "https://api.open-meteo.com/v1/forecast?latitude=41.6117&longitude=70.0133";
     const params = "&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m,surface_pressure,uv_index&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=Asia%2FTashkent&forecast_days=7";
     const aqiUrl = "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=41.6117&longitude=70.0133&current=us_aqi&timezone=Asia%2FTashkent";
@@ -146,7 +157,7 @@ export function WeatherPanel({ locale }: { locale: string }) {
         sunrise: (w.daily.sunrise[i] as string).slice(11,16),
         sunset: (w.daily.sunset[i] as string).slice(11,16),
       }));
-      setData({
+      const fresh: WeatherData = {
         current:{
           temp:Math.round(c.temperature_2m),
           feelsLike:Math.round(c.apparent_temperature),
@@ -158,7 +169,10 @@ export function WeatherPanel({ locale }: { locale: string }) {
         },
         daily,
         aqi:Math.round(a.current?.us_aqi??15),
-      });
+      };
+      _wxCache = fresh;
+      _wxCacheAt = Date.now();
+      setData(fresh);
     }).catch(()=>{});
   },[]);
 

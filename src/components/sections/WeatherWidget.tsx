@@ -2,6 +2,11 @@
 
 import { useEffect, useState } from "react";
 
+type WidgetData = { temp: number; code: number; wind: number };
+let _wCache: WidgetData | null = null;
+let _wCacheAt = 0;
+const W_TTL = 10 * 60 * 1000;
+
 const WMO: Record<number, string> = {
   0: "☀️", 1: "🌤", 2: "⛅", 3: "☁️",
   45: "🌫", 48: "🌫",
@@ -19,20 +24,27 @@ const labels: Record<string, { now: string; wind: string }> = {
 };
 
 export function WeatherWidget({ locale }: { locale: string }) {
-  const [data, setData] = useState<{ temp: number; code: number; wind: number } | null>(null);
+  const [data, setData] = useState<WidgetData | null>(_wCache);
 
   useEffect(() => {
+    if (_wCache && Date.now() - _wCacheAt < W_TTL) {
+      setData(_wCache);
+      return;
+    }
     fetch(
       "https://api.open-meteo.com/v1/forecast?latitude=41.6117&longitude=70.0133&current=temperature_2m,weather_code,wind_speed_10m&timezone=Asia%2FTashkent"
     )
       .then((r) => r.json())
-      .then((d) =>
-        setData({
+      .then((d) => {
+        const fresh: WidgetData = {
           temp: Math.round(d.current.temperature_2m),
           code: d.current.weather_code,
           wind: Math.round(d.current.wind_speed_10m),
-        })
-      )
+        };
+        _wCache = fresh;
+        _wCacheAt = Date.now();
+        setData(fresh);
+      })
       .catch(() => {});
   }, []);
 
