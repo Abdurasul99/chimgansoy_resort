@@ -51,20 +51,28 @@ export function Header({ locale }: HeaderProps) {
             className="group min-w-0 shrink-0"
             onClick={() => setIsOpen(false)}
           >
-            <span
-              className={`block font-serif text-xl font-bold leading-none tracking-[0.08em] uppercase transition-colors duration-500 ${
-                isHeroPage ? "text-white" : "text-[var(--ink)]"
+            <div
+              className={`rounded-xl px-2 py-1 transition-all duration-500 ${
+                isHeroPage && !scrolled ? "bg-white/85 backdrop-blur-sm" : "bg-transparent"
               }`}
             >
-              CHIMGANSOY
-            </span>
-            <span
-              className={`mt-1 block text-[9px] font-bold uppercase tracking-[0.18em] transition-colors duration-500 ${
-                isHeroPage ? "text-white/40" : "text-[var(--muted)]"
-              }`}
-            >
-              {dict.brandLine}
-            </span>
+              <div
+                className="relative overflow-hidden"
+                style={{ width: "108px", height: "46px" }}
+              >
+                <img
+                  src="/images/resort/chimgansoy.svg"
+                  alt="CHIMGANSOY Resort logo"
+                  style={{
+                    position: "absolute",
+                    top: "-7px",
+                    left: "0",
+                    width: "108px",
+                    height: "auto",
+                  }}
+                />
+              </div>
+            </div>
           </Link>
 
           {/* Desktop nav */}
@@ -163,9 +171,13 @@ export function Header({ locale }: HeaderProps) {
         aria-hidden={!isOpen}
       >
         <div className="flex h-[4.5rem] items-center justify-between px-4 sm:px-6 border-b border-[var(--line)]">
-          <span className="font-serif text-xl font-bold tracking-[0.08em] uppercase text-[var(--ink)]">
-            CHIMGANSOY
-          </span>
+          <div className="relative overflow-hidden" style={{ width: "108px", height: "46px" }}>
+            <img
+              src="/images/resort/chimgansoy.svg"
+              alt="CHIMGANSOY Resort"
+              style={{ position: "absolute", top: "-7px", left: "0", width: "108px", height: "auto" }}
+            />
+          </div>
           <button
             type="button"
             className="flex h-10 w-10 items-center justify-center rounded-full text-[var(--muted)] hover:text-[var(--ink)] transition-colors"

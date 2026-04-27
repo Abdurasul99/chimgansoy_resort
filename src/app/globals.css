@@ -40,6 +40,44 @@
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ── Summer theme (default: Apr–Nov) ─────────────────── */
+[data-season="summer"] {
+  --paper: #ffffff;
+  --surface: #f8fafc;
+  --surface-warm: #fffbf0;
+  --accent: #f59e0b;
+  --accent-strong: #d97706;
+  --sun: #f59e0b;
+  --sun-dark: #d97706;
+  --sky: #0ea5e9;
+  --forest: #16a34a;
+  --gradient-hero: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(15,25,40,0.60) 68%, rgba(15,25,40,0.86) 100%);
+  --shadow-glow: 0 0 40px rgba(245, 158, 11, 0.30);
+}
+
+/* ── Winter theme (Dec–Mar) ──────────────────────────── */
+[data-season="winter"] {
+  --paper: #f0f9ff;
+  --surface: #e0f2fe;
+  --surface-warm: #e0f2fe;
+  --mist: #bae6fd;
+  --accent: #0ea5e9;
+  --accent-strong: #0284c7;
+  --sun: #0ea5e9;
+  --sun-dark: #0284c7;
+  --sky: #0369a1;
+  --forest: #0ea5e9;
+  --mountain: #0c2d4a;
+  --ink: #0c2d4a;
+  --muted: #475569;
+  --line: rgba(14, 165, 233, 0.12);
+  --line-strong: rgba(14, 165, 233, 0.22);
+  --gradient-hero: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(10,30,60,0.62) 68%, rgba(10,30,60,0.88) 100%);
+  --shadow-glow: 0 0 40px rgba(14, 165, 233, 0.30);
+  --shadow-card: 0 4px 24px rgba(14, 165, 233, 0.08);
+  --shadow-card-hover: 0 12px 48px rgba(14, 165, 233, 0.18);
+}
+
 @theme inline {
   --color-background: var(--paper);
   --color-foreground: var(--ink);
