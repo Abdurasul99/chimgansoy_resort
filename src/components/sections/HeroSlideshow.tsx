@@ -9,7 +9,7 @@ const SUMMER_SLIDES = [
   "/images/resort/photo_2026-03-31_22-24-14.jpg",
 ];
 
-const WINTER_PHOTO = "/images/resort/winter-mountains.jpg";
+const WINTER_PHOTO = "/images/resort/winter-mountains.png";
 
 const INTERVAL_MS = 5500;
 
