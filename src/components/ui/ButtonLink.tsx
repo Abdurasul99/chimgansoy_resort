@@ -12,10 +12,10 @@ type ButtonLinkProps = {
 };
 
 const variants = {
-  primary: "bg-[var(--accent)] text-white hover:bg-[var(--accent-strong)]",
-  secondary: "bg-[var(--ink)] text-white hover:bg-[var(--green)]",
-  ghost: "border border-[color:var(--line)] text-[var(--ink)] hover:border-[var(--accent)] hover:text-[var(--accent-strong)]",
-  light: "bg-white/92 text-[var(--ink)] hover:bg-white",
+  primary: "bg-[var(--sun)] text-white hover:bg-[var(--sun-dark)] shadow-sm",
+  secondary: "bg-[var(--mountain)] text-white hover:bg-slate-700",
+  ghost: "border border-[color:var(--line-strong)] text-[var(--ink)] hover:border-[var(--sun)] hover:text-[var(--sun-dark)]",
+  light: "bg-white text-[var(--ink)] hover:bg-[var(--surface)] shadow-sm",
 };
 
 export function ButtonLink({

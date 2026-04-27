@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
 import { notFound } from "next/navigation";
+import Script from "next/script";
 import "../globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -46,6 +47,12 @@ export async function generateMetadata({ params }: LayoutProps): Promise<Metadat
     description: dictionaries[locale].brandLine,
     applicationName: "CHIMGANSOY",
     metadataBase: new URL("https://chimgansoy.com"),
+    robots: { index: true, follow: true },
+    openGraph: {
+      siteName: "CHIMGANSOY",
+      type: "website",
+      locale: locale === "uz" ? "uz_UZ" : locale === "en" ? "en_US" : "ru_RU",
+    },
   };
 }
 
@@ -56,14 +63,57 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
     notFound();
   }
 
+  const schemaJson = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "LodgingBusiness",
+    name: "CHIMGANSOY Resort",
+    url: "https://chimgansoy.com",
+    telephone: "+998712000000",
+    image: "https://chimgansoy.com/images/resort/hero.jpg",
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "UZ",
+      addressRegion: "Tashkent",
+      addressLocality: "Chimgan",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 41.6117,
+      longitude: 70.0133,
+    },
+    priceRange: "$$",
+    amenityFeature: [
+      { "@type": "LocationFeatureSpecification", name: "Glamping", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Swimming Pool", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Restaurant", value: true },
+    ],
+  });
+
   return (
     <html lang={locale} className={`${sans.variable} ${serif.variable}`}>
+      <head>
+        <Script
+          id="schema-org"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: schemaJson }}
+        />
+      </head>
       <body suppressHydrationWarning>
         <Header locale={locale as Locale} />
         <main>{children}</main>
         <Footer locale={locale as Locale} />
         <ScrollObserver />
         <AiAssistant key={locale} locale={locale} />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-S7FS7C573H"
+          strategy="afterInteractive"
+        />
+        <Script id="ga4-init" strategy="afterInteractive">{`
+          window.dataLayer=window.dataLayer||[];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js',new Date());
+          gtag('config','G-S7FS7C573H',{send_page_view:true});
+        `}</Script>
       </body>
     </html>
   );

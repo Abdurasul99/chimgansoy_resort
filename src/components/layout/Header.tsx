@@ -41,9 +41,7 @@ export function Header({ locale }: HeaderProps) {
         className={`sticky top-0 z-50 transition-all duration-500 ${
           isHeroPage && !scrolled
             ? "bg-transparent"
-            : isHeroPage && scrolled
-              ? "bg-[var(--ink)]/96 backdrop-blur-xl shadow-[0_1px_0_rgba(255,255,255,0.06)]"
-              : "bg-[var(--paper)]/96 backdrop-blur-xl shadow-[0_1px_0_rgba(21,29,24,0.07)]"
+            : "bg-white/96 backdrop-blur-xl shadow-[0_1px_0_rgba(0,0,0,0.07)]"
         }`}
       >
         <div className="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
@@ -84,8 +82,8 @@ export function Header({ locale }: HeaderProps) {
                         ? "text-white active"
                         : "text-white/70 hover:text-white"
                       : isActive
-                        ? "text-[var(--accent-strong)] active"
-                        : "text-[var(--ink)] hover:text-[var(--accent-strong)]"
+                        ? "text-[var(--sun-dark)] active"
+                        : "text-[var(--ink)] hover:text-[var(--sun)]"
                   }`}
                 >
                   {text(item.label, locale)}
@@ -123,7 +121,7 @@ export function Header({ locale }: HeaderProps) {
             {/* Book CTA */}
             <Link
               href={localizePath(locale, "/bron")}
-              className="btn-press inline-flex h-10 items-center justify-center rounded-full bg-[var(--accent)] px-5 text-[13px] font-bold text-white transition-all duration-300 hover:bg-[var(--accent-strong)] hover:shadow-[0_0_24px_rgba(181,99,64,0.40)]"
+              className="btn-press inline-flex h-10 items-center justify-center rounded-full bg-[var(--sun)] px-5 text-[13px] font-bold text-white transition-all duration-300 hover:bg-[var(--sun-dark)] hover:shadow-[0_0_24px_rgba(245,158,11,0.40)]"
             >
               {dict.bookNow}
             </Link>
@@ -159,18 +157,18 @@ export function Header({ locale }: HeaderProps) {
 
       {/* Full-screen mobile overlay */}
       <div
-        className={`fixed inset-0 z-40 flex flex-col bg-[var(--ink)] transition-all duration-500 lg:hidden ${
+        className={`fixed inset-0 z-40 flex flex-col bg-white transition-all duration-500 lg:hidden ${
           isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         aria-hidden={!isOpen}
       >
-        <div className="flex h-[4.5rem] items-center justify-between px-4 sm:px-6">
-          <span className="font-serif text-xl font-bold tracking-[0.08em] uppercase text-white">
+        <div className="flex h-[4.5rem] items-center justify-between px-4 sm:px-6 border-b border-[var(--line)]">
+          <span className="font-serif text-xl font-bold tracking-[0.08em] uppercase text-[var(--ink)]">
             CHIMGANSOY
           </span>
           <button
             type="button"
-            className="flex h-10 w-10 items-center justify-center rounded-full text-white/60 hover:text-white"
+            className="flex h-10 w-10 items-center justify-center rounded-full text-[var(--muted)] hover:text-[var(--ink)] transition-colors"
             onClick={() => setIsOpen(false)}
             aria-label={dict.close}
           >
@@ -194,7 +192,7 @@ export function Header({ locale }: HeaderProps) {
                   <Link
                     href={href}
                     className={`block py-3 font-serif text-4xl font-semibold leading-none tracking-tight transition-colors ${
-                      isActive ? "text-[var(--accent)]" : "text-white hover:text-white/70"
+                      isActive ? "text-[var(--sun)]" : "text-[var(--ink)] hover:text-[var(--sun)]"
                     }`}
                     onClick={() => setIsOpen(false)}
                   >
@@ -209,7 +207,7 @@ export function Header({ locale }: HeaderProps) {
         <div className="px-6 pb-10 space-y-4">
           <Link
             href={localizePath(locale, "/bron")}
-            className="btn-press flex items-center justify-center rounded-full bg-[var(--accent)] py-4 text-base font-bold text-white transition-all duration-300 hover:bg-[var(--accent-strong)]"
+            className="btn-press flex items-center justify-center rounded-full bg-[var(--sun)] py-4 text-base font-bold text-white transition-all duration-300 hover:bg-[var(--sun-dark)]"
             onClick={() => setIsOpen(false)}
           >
             {dict.bookNow}
@@ -217,7 +215,7 @@ export function Header({ locale }: HeaderProps) {
           <div className="flex items-center justify-between">
             <a
               href={`tel:${contacts.phone.replaceAll(" ", "")}`}
-              className="text-sm font-semibold text-white/60 hover:text-white transition-colors"
+              className="text-sm font-semibold text-[var(--muted)] hover:text-[var(--ink)] transition-colors"
             >
               {contacts.phone}
             </a>
@@ -227,7 +225,7 @@ export function Header({ locale }: HeaderProps) {
                   key={item}
                   href={switchLocalePath(pathname, item)}
                   className={`text-sm font-bold uppercase transition-colors ${
-                    item === locale ? "text-white" : "text-white/30 hover:text-white/70"
+                    item === locale ? "text-[var(--ink)]" : "text-[var(--muted)] hover:text-[var(--ink)]"
                   }`}
                   onClick={() => setIsOpen(false)}
                 >

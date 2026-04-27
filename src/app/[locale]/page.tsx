@@ -52,7 +52,7 @@ export default async function HomePage({ params }: PageProps) {
       <BookingWidget locale={locale} />
 
       {/* ── Stats bar ─────────────────────────────────── */}
-      <section className="bg-[var(--ink)] py-10 px-4 sm:px-6 lg:px-8">
+      <section className="bg-[var(--surface-warm)] py-10 px-4 sm:px-6 lg:px-8 border-y border-[var(--line)]">
         <div className="mx-auto max-w-7xl">
           <div className="grid grid-cols-2 gap-4 sm:gap-8 lg:grid-cols-4">
             {stats.map((stat, i) => (
@@ -61,10 +61,10 @@ export default async function HomePage({ params }: PageProps) {
                 className="motion-reveal text-center lg:text-left"
                 data-delay={String(i * 80)}
               >
-                <p className="font-serif text-5xl font-bold text-white lg:text-6xl">
+                <p className="font-serif text-5xl font-bold text-[var(--sun)] lg:text-6xl">
                   <AnimatedStat value={parseInt(stat.value)} />
                 </p>
-                <p className="mt-1 text-[11px] font-bold uppercase tracking-widest text-white/40">
+                <p className="mt-1 text-[11px] font-bold uppercase tracking-widest text-[var(--muted)]">
                   {stat.label[locale as keyof typeof stat.label] ?? stat.label.ru}
                 </p>
               </div>
@@ -74,7 +74,7 @@ export default async function HomePage({ params }: PageProps) {
       </section>
 
       {/* ── Editorial showcase ────────────────────────── */}
-      <section className="overflow-hidden bg-[var(--ink)]">
+      <section className="overflow-hidden bg-[var(--ink)]" aria-label="Showcase">
         {homeShowcase.map((item, index) => {
           const image = resortImages[item.image];
           const isEven = index % 2 === 0;
@@ -237,35 +237,34 @@ export default async function HomePage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* ── Year-round — image backed ─────────────────── */}
-      <section className="relative isolate overflow-hidden bg-[var(--green)] px-4 py-24 text-white sm:px-6 lg:px-8">
+      {/* ── Year-round ────────────────────────────────── */}
+      <section className="relative isolate overflow-hidden bg-[var(--surface)] px-4 py-24 sm:px-6 lg:px-8">
         <div
-          className="absolute inset-0 -z-10 bg-cover bg-center opacity-20"
+          className="absolute inset-0 -z-10 bg-cover bg-center opacity-8"
           style={imageStyle(resortImages.territoryAerial)}
           role="presentation"
           aria-hidden="true"
         />
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(135deg,rgba(20,61,45,0.90)_0%,rgba(20,61,45,0.60)_100%)]" />
 
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-10 sm:gap-16 lg:grid-cols-[1fr_1fr] lg:items-center">
             <div className="motion-reveal">
-              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">CHIMGANSOY</p>
-              <h2 className="display-md mt-4 font-serif font-semibold leading-tight">{dict.home.yearRoundTitle}</h2>
-              <p className="mt-6 text-base leading-8 text-white/65">{dict.home.yearRoundText}</p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--muted)]">CHIMGANSOY</p>
+              <h2 className="display-md mt-4 font-serif font-semibold leading-tight text-[var(--ink)]">{dict.home.yearRoundTitle}</h2>
+              <p className="mt-6 text-base leading-8 text-[var(--muted)]">{dict.home.yearRoundText}</p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               {promotions.slice(0, 4).map((promo, i) => (
                 <div
                   key={text(promo.badge, locale)}
-                  className="rounded-2xl border border-white/10 bg-white/6 p-6 backdrop-blur-sm transition-all duration-500 hover:bg-white/10 motion-reveal"
+                  className="rounded-2xl border border-[var(--line)] bg-white p-6 shadow-[var(--shadow-card)] transition-all duration-500 hover:shadow-[var(--shadow-card-hover)] motion-reveal"
                   data-delay={String(i * 80)}
                 >
-                  <span className="inline-block rounded-full bg-white/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-white/50">
+                  <span className="inline-block rounded-full bg-[var(--sun)]/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-[var(--sun-dark)]">
                     {text(promo.badge, locale)}
                   </span>
-                  <h3 className="mt-4 font-serif text-xl font-semibold leading-snug">{text(promo.title, locale)}</h3>
-                  <p className="mt-2 text-sm leading-6 text-white/55">{text(promo.description, locale)}</p>
+                  <h3 className="mt-4 font-serif text-xl font-semibold leading-snug text-[var(--ink)]">{text(promo.title, locale)}</h3>
+                  <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{text(promo.description, locale)}</p>
                 </div>
               ))}
             </div>
@@ -289,7 +288,7 @@ export default async function HomePage({ params }: PageProps) {
       </section>
 
       {/* ── Emotion photo strip ───────────────────────── */}
-      <section className="overflow-hidden bg-[var(--ink)] py-2">
+      <section className="overflow-hidden bg-[var(--surface)] py-2">
         <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-none lg:grid lg:grid-cols-5 lg:overflow-visible">
           {([
             { image: "tapchanAerial", caption: locale === "uz" ? "Eshitsa bo'ladigan jimjitlik" : locale === "en" ? "Silence you can hear" : "Тишина,\nкоторую слышно" },

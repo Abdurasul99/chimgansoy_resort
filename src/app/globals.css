@@ -1,60 +1,43 @@
 @import "tailwindcss";
 
 :root {
-  --paper: #fbfaf6;
-  --surface: #f4efe6;
-  --mist: #d8e6e0;
-  --ink: #151d18;
-  --green: #143d2d;
-  --accent: #b56340;
-  --accent-strong: #88452c;
-  --muted: #66736b;
-  --line: rgba(21, 29, 24, 0.12);
-  --line-strong: rgba(21, 29, 24, 0.22);
+  /* Backgrounds */
+  --paper: #ffffff;
+  --surface: #f8fafc;
+  --surface-warm: #fffbf0;
+  --mist: #e2e8f0;
+
+  /* Brand colours — from logo */
+  --sun: #f59e0b;
+  --sun-dark: #d97706;
+  --sky: #0ea5e9;
+  --sky-dark: #0284c7;
+  --forest: #16a34a;
+  --mountain: #1e293b;
+
+  /* Semantic tokens */
+  --ink: #1e293b;
+  --green: #16a34a;
+  --accent: #f59e0b;
+  --accent-strong: #d97706;
+  --muted: #64748b;
+  --line: rgba(0, 0, 0, 0.08);
+  --line-strong: rgba(0, 0, 0, 0.15);
 
   /* Gradient tokens */
-  --gradient-hero: linear-gradient(180deg, rgba(12,18,14,0.08) 0%, rgba(12,18,14,0.04) 35%, rgba(12,18,14,0.82) 78%, rgba(12,18,14,0.97) 100%);
-  --gradient-card: linear-gradient(0deg, rgba(12,18,14,0.94) 0%, rgba(12,18,14,0.48) 52%, transparent 100%);
-  --gradient-surface: linear-gradient(135deg, #f4efe6 0%, #fbfaf6 100%);
+  --gradient-hero: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(15,25,40,0.62) 68%, rgba(15,25,40,0.88) 100%);
+  --gradient-card: linear-gradient(0deg, rgba(15,25,40,0.92) 0%, rgba(15,25,40,0.42) 52%, transparent 100%);
+  --gradient-surface: linear-gradient(135deg, #fffbf0 0%, #f8fafc 100%);
 
   /* Shadow tokens */
-  --shadow-card: 0 24px 80px rgba(21,29,24,0.10);
-  --shadow-card-hover: 0 40px 120px rgba(21,29,24,0.18);
-  --shadow-float: 0 20px 60px rgba(21,29,24,0.14);
-  --shadow-glow: 0 0 40px rgba(181,99,64,0.22);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.07);
+  --shadow-card-hover: 0 12px 48px rgba(0, 0, 0, 0.14);
+  --shadow-float: 0 8px 32px rgba(0, 0, 0, 0.10);
+  --shadow-glow: 0 0 40px rgba(245, 158, 11, 0.28);
 
   /* Easing */
   --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* ── Dark mode ─────────────────────────────────────────── */
-[data-theme="dark"] {
-  --paper: #0f1512;
-  --surface: #172018;
-  --mist: #1c2b22;
-  --ink: #e8e5de;
-  --green: #0a2416;
-  --accent: #c47048;
-  --accent-strong: #e08a5a;
-  --muted: #7a8f82;
-  --line: rgba(255, 255, 255, 0.08);
-  --line-strong: rgba(255, 255, 255, 0.16);
-  color-scheme: dark;
-}
-
-[data-theme="dark"] body {
-  background: var(--paper);
-}
-
-[data-theme="dark"] .bg-white {
-  background-color: var(--surface) !important;
-}
-
-[data-theme="dark"] .text-white\/60,
-[data-theme="dark"] .text-white\/70,
-[data-theme="dark"] .text-white\/80 {
-  color: rgba(232,229,222,0.7) !important;
 }
 
 @theme inline {
@@ -92,7 +75,7 @@ textarea {
 }
 
 ::selection {
-  background: var(--green);
+  background: var(--sun);
   color: white;
 }
 
@@ -133,20 +116,20 @@ textarea {
 
 .footer-input {
   width: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid var(--line-strong);
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.08);
-  color: white;
+  background: white;
+  color: var(--ink);
   outline: none;
   padding: 0.9rem 1rem;
 }
 
 .footer-input::placeholder {
-  color: rgba(255, 255, 255, 0.52);
+  color: var(--muted);
 }
 
 .footer-input:focus {
-  border-color: rgba(255, 255, 255, 0.44);
+  border-color: var(--sun);
 }
 
 .mobile-menu {
@@ -301,7 +284,7 @@ textarea {
 
 /* ── Skeleton shimmer ───────────────────────────────── */
 .skeleton {
-  background: linear-gradient(90deg, var(--surface) 25%, var(--mist) 50%, var(--surface) 75%);
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
   background-size: 200% 100%;
   animation: shimmer 1.8s infinite;
 }
