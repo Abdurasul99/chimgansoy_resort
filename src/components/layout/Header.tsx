@@ -10,6 +10,7 @@ import { locales, type Locale } from "@/i18n/config";
 import { localizePath, switchLocalePath } from "@/i18n/routing";
 import { text } from "@/lib/localize";
 import { CurrencySelector } from "@/components/ui/CurrencySelector";
+import { SeasonToggle } from "@/components/ui/SeasonToggle";
 
 type HeaderProps = {
   locale: Locale;
@@ -102,6 +103,9 @@ export function Header({ locale }: HeaderProps) {
 
           {/* Desktop controls */}
           <div className="hidden items-center gap-3 lg:flex">
+            {/* Season toggle */}
+            <SeasonToggle onDark={isHeroPage && !scrolled} />
+
             {/* Currency selector */}
             <CurrencySelector onDark={isHeroPage} />
 
