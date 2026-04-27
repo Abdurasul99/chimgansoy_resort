@@ -1,12 +1,10 @@
-import { resortImages } from "@/content/images";
 import { dictionaries } from "@/content/translations";
 import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
-import { imageStyle } from "@/lib/images";
-import { text } from "@/lib/localize";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { WeatherWidget } from "@/components/sections/WeatherWidget";
 import { EmotionCycle } from "@/components/ui/EmotionCycle";
+import { HeroSlideshow } from "@/components/sections/HeroSlideshow";
 
 type HeroProps = {
   locale: Locale;
@@ -14,24 +12,21 @@ type HeroProps = {
 
 export function Hero({ locale }: HeroProps) {
   const dict = dictionaries[locale];
-  const image = resortImages.nightHero;
 
   return (
     <section
       className="relative isolate flex min-h-[100svh] items-end overflow-hidden -mt-[4.5rem]"
       aria-label="Hero"
     >
-      <div
-        className="absolute inset-0 -z-20 scale-[1.04] bg-cover bg-center motion-hero-image"
-        style={imageStyle(image)}
-        role="img"
-        aria-label={text(image.alt, locale)}
-      />
+      {/* Dynamic photo slideshow — rotates summer photos, switches to winter in Dec–Mar */}
+      <HeroSlideshow />
 
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,rgba(15,25,40,0.62)_68%,rgba(15,25,40,0.88)_100%)]" />
+      {/* Cinematic gradient: clear top, darkened bottom for text */}
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0)_32%,rgba(15,25,40,0.50)_64%,rgba(15,25,40,0.88)_100%)]" />
 
       <div className="relative mx-auto w-full max-w-7xl px-4 pb-16 pt-36 sm:px-6 lg:pb-24 lg:px-8">
 
+        {/* Eyebrow */}
         <div className="motion-rise mb-8">
           <span className="inline-flex items-center gap-2 rounded-full border border-amber-300/30 bg-amber-400/20 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-200 backdrop-blur-sm">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--sun)]" aria-hidden="true" />
@@ -39,6 +34,7 @@ export function Hero({ locale }: HeroProps) {
           </span>
         </div>
 
+        {/* Heading */}
         <h1
           className="display-hero motion-rise font-serif font-bold text-white"
           style={{ animationDelay: "80ms" }}
@@ -46,17 +42,20 @@ export function Hero({ locale }: HeroProps) {
           {dict.home.title}
         </h1>
 
+        {/* Cycling emotion phrase */}
         <div className="motion-rise mt-5" style={{ animationDelay: "140ms" }}>
           <EmotionCycle locale={locale} />
         </div>
 
+        {/* Lead text */}
         <p
-          className="motion-rise mt-4 max-w-lg text-[1.1rem] leading-[1.75] text-white/75"
+          className="motion-rise mt-4 max-w-lg text-[1.1rem] leading-[1.75] text-white/80"
           style={{ animationDelay: "200ms" }}
         >
           {dict.home.lead}
         </p>
 
+        {/* CTAs */}
         <div
           className="motion-rise mt-10 flex flex-wrap items-center gap-3"
           style={{ animationDelay: "240ms" }}
@@ -69,6 +68,7 @@ export function Hero({ locale }: HeroProps) {
           </ButtonLink>
         </div>
 
+        {/* Feature pills */}
         <div
           className="motion-rise mt-12 flex flex-wrap gap-2"
           style={{ animationDelay: "320ms" }}
@@ -76,18 +76,20 @@ export function Hero({ locale }: HeroProps) {
           {dict.home.territoryPills.slice(0, 4).map((item) => (
             <span
               key={item}
-              className="rounded-full border border-white/25 bg-white/12 px-4 py-1.5 text-xs font-semibold text-white/80 backdrop-blur-sm"
+              className="rounded-full border border-white/25 bg-white/12 px-4 py-1.5 text-xs font-semibold text-white/85 backdrop-blur-sm"
             >
               {item}
             </span>
           ))}
         </div>
 
+        {/* Live weather */}
         <div className="motion-rise mt-6" style={{ animationDelay: "400ms" }}>
           <WeatherWidget locale={locale} />
         </div>
       </div>
 
+      {/* Scroll indicator */}
       <div
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 motion-rise"
         style={{ animationDelay: "600ms" }}
