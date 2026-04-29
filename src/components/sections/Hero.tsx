@@ -31,15 +31,105 @@ export function Hero({ locale }: HeroProps) {
       {/* Snow — absolute inside hero section (overflow:hidden clips it to hero only) */}
       <SnowParticles />
 
-      {/* Christmas tree — right side, CSS-hidden in summer */}
+      {/* Santa Claus — flies across upper hero, winter only */}
       <div
-        className="hero-xmas-tree absolute bottom-0 right-[3%] z-[3] lg:right-[6%]"
+        className="hero-santa top-[12%] right-0 z-[3] sm:top-[10%]"
+        aria-hidden="true"
+      >
+        <div className="hero-santa__inner">
+          <svg
+            viewBox="0 0 290 95"
+            xmlns="http://www.w3.org/2000/svg"
+            style={{ width: "clamp(180px, 26vw, 340px)", height: "auto", display: "block" }}
+          >
+            {/* ── Reindeer 1 — Rudolph (front) ── */}
+            <ellipse cx="46" cy="63" rx="23" ry="9" fill="#8B4513" transform="rotate(-10 46 63)"/>
+            <polygon points="26,57 33,48 40,59" fill="#8B4513"/>
+            <circle cx="20" cy="46" r="9" fill="#7a3c10"/>
+            <path d="M16,38 L11,23 L7,15 M11,23 L15,17" stroke="#5a2e0a" strokeWidth="2" fill="none" strokeLinecap="round"/>
+            <path d="M22,37 L24,22 L27,14 M24,22 L20,15" stroke="#5a2e0a" strokeWidth="2" fill="none" strokeLinecap="round"/>
+            <circle cx="13" cy="44" r="1.8" fill="#0f0600"/>
+            <circle cx="11" cy="50" r="5" fill="#e74c3c" opacity="0.28"/>
+            <circle cx="11" cy="50" r="3" fill="#e74c3c"/>
+            <line x1="34" y1="71" x2="25" y2="87" stroke="#7a3c10" strokeWidth="2.5" strokeLinecap="round"/>
+            <line x1="42" y1="72" x2="37" y2="89" stroke="#7a3c10" strokeWidth="2.5" strokeLinecap="round"/>
+            <line x1="53" y1="71" x2="62" y2="87" stroke="#7a3c10" strokeWidth="2.5" strokeLinecap="round"/>
+            <line x1="59" y1="70" x2="69" y2="85" stroke="#7a3c10" strokeWidth="2.5" strokeLinecap="round"/>
+            <ellipse cx="24" cy="88" rx="4" ry="2" fill="#1a0a00"/>
+            <ellipse cx="61" cy="88" rx="4" ry="2" fill="#1a0a00"/>
+
+            {/* ── Reindeer 2 (behind) ── */}
+            <g transform="translate(68,-7)" opacity="0.88">
+              <ellipse cx="46" cy="63" rx="23" ry="9" fill="#6B3410" transform="rotate(-10 46 63)"/>
+              <polygon points="26,57 33,48 40,59" fill="#6B3410"/>
+              <circle cx="20" cy="46" r="9" fill="#5a2e0a"/>
+              <path d="M16,38 L11,23 L7,15 M11,23 L15,17" stroke="#3a1e06" strokeWidth="2" fill="none" strokeLinecap="round"/>
+              <path d="M22,37 L24,22 L27,14 M24,22 L20,15" stroke="#3a1e06" strokeWidth="2" fill="none" strokeLinecap="round"/>
+              <circle cx="13" cy="44" r="1.8" fill="#0f0600"/>
+              <ellipse cx="11" cy="50" rx="3" ry="2" fill="#5a2e0a"/>
+              <line x1="34" y1="71" x2="25" y2="87" stroke="#5a2e0a" strokeWidth="2.5" strokeLinecap="round"/>
+              <line x1="42" y1="72" x2="37" y2="89" stroke="#5a2e0a" strokeWidth="2.5" strokeLinecap="round"/>
+              <line x1="53" y1="71" x2="62" y2="87" stroke="#5a2e0a" strokeWidth="2.5" strokeLinecap="round"/>
+              <ellipse cx="24" cy="88" rx="4" ry="2" fill="#0f0600"/>
+            </g>
+
+            {/* ── Harness & bells ── */}
+            <path d="M30,52 Q100,47 156,56" stroke="#4a2a0a" strokeWidth="1.5" fill="none"/>
+            <path d="M86,46 Q120,47 156,56" stroke="#4a2a0a" strokeWidth="1.5" fill="none"/>
+            <circle cx="118" cy="50" r="3.5" fill="#f0c26a"/>
+            <path d="M116,52 L116,56 M118,52 L118,56 M120,52 L120,56" stroke="#c8962a" strokeWidth="0.8" fill="none"/>
+            <circle cx="100" cy="51" r="2.8" fill="#f0c26a"/>
+
+            {/* ── Sleigh ── */}
+            <path d="M150,33 Q158,17 187,21 L225,23 Q242,25 240,47 Q238,63 222,66 L168,66 Q149,66 148,51 Z" fill="#c0392b"/>
+            <path d="M159,39 Q183,22 220,27" stroke="#f0c26a" strokeWidth="2.2" fill="none" strokeLinecap="round"/>
+            <path d="M152,66 Q188,76 238,72" stroke="#7a4010" strokeWidth="3.5" fill="none" strokeLinecap="round"/>
+            <path d="M152,66 Q143,70 146,77 Q150,83 160,79" stroke="#7a4010" strokeWidth="3" fill="none" strokeLinecap="round"/>
+
+            {/* ── Gift sack ── */}
+            <ellipse cx="170" cy="52" rx="13" ry="11" fill="#7a4010"/>
+            <ellipse cx="170" cy="42" rx="5" ry="3.5" fill="#7a4010"/>
+            <path d="M165,41 Q170,36 175,41" stroke="#f0c26a" strokeWidth="1.5" fill="none"/>
+            <circle cx="170" cy="38" r="3" fill="#f0c26a"/>
+
+            {/* ── Santa ── */}
+            {/* Body */}
+            <ellipse cx="200" cy="51" rx="18" ry="14" fill="#c0392b"/>
+            <path d="M183,58 Q200,65 217,58" stroke="white" strokeWidth="4" fill="none" strokeLinecap="round"/>
+            <path d="M183,51 Q200,54 217,51" stroke="#111" strokeWidth="3" fill="none"/>
+            <rect x="195" y="48" width="9" height="7" rx="1.5" fill="#f0c26a"/>
+            {/* Head */}
+            <circle cx="198" cy="31" r="12" fill="#ffcba4"/>
+            {/* Hat */}
+            <path d="M188,26 L197,4 L207,26" fill="#c0392b"/>
+            <path d="M185,26 Q198,22 210,26" stroke="white" strokeWidth="3.5" fill="none" strokeLinecap="round"/>
+            <circle cx="197" cy="5" r="4.5" fill="white"/>
+            {/* Beard */}
+            <path d="M186,36 Q192,46 198,48 Q204,46 210,36" fill="white"/>
+            <path d="M188,36 Q193,40 198,38 Q203,40 208,36" fill="white"/>
+            {/* Eyes (happy arcs) */}
+            <path d="M191,28 Q193,26 195,28" stroke="#3a2010" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+            <path d="M201,28 Q203,26 205,28" stroke="#3a2010" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+            {/* Cheeks */}
+            <circle cx="189" cy="35" r="4" fill="#e8845a" opacity="0.42"/>
+            <circle cx="207" cy="35" r="4" fill="#e8845a" opacity="0.42"/>
+            {/* Waving arm */}
+            <path d="M184,44 Q173,34 163,25" stroke="#c0392b" strokeWidth="6.5" fill="none" strokeLinecap="round"/>
+            <circle cx="162" cy="24" r="7.5" fill="#c0392b"/>
+            <path d="M157,30 Q163,32 170,28" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+          </svg>
+        </div>
+      </div>
+
+      {/* Christmas tree — right side, raised above assistant btn, CSS-hidden in summer */}
+      <div
+        className="hero-xmas-tree absolute bottom-20 right-[2%] z-[3] sm:bottom-24 lg:right-[5%]"
         aria-hidden="true"
       >
         <svg
           viewBox="0 0 110 200"
           xmlns="http://www.w3.org/2000/svg"
-          style={{ width: "clamp(70px, 9vw, 130px)", height: "auto", display: "block" }}
+          style={{ width: "clamp(110px, 13vw, 175px)", height: "auto", display: "block" }}
         >
           {/* Glowing star */}
           <g className="xmas-star">

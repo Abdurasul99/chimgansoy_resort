@@ -403,9 +403,9 @@ textarea {
 }
 
 /* Lights */
-.xlight-a { animation: xmas-light-a 1.9s ease-in-out infinite; }
-.xlight-b { animation: xmas-light-b 2.4s ease-in-out infinite; }
-.xlight-c { animation: xmas-light-c 1.6s ease-in-out infinite; }
+.xlight-a  { animation: xmas-light-a 1.9s ease-in-out infinite; }
+.xlight-b  { animation: xmas-light-b 2.4s ease-in-out infinite; }
+.xlight-c  { animation: xmas-light-c 1.6s ease-in-out infinite; }
 .xlight-a2 { animation: xmas-light-a 1.9s ease-in-out infinite 0.65s; }
 .xlight-b2 { animation: xmas-light-b 2.4s ease-in-out infinite 0.90s; }
 .xlight-c2 { animation: xmas-light-c 1.6s ease-in-out infinite 1.10s; }
@@ -414,6 +414,37 @@ textarea {
 
 /* Star */
 .xmas-star { animation: xmas-star-pulse 2.2s ease-in-out infinite; transform-origin: 50% 50%; }
+
+/* ── Santa Claus flying animation ───────────────────── */
+/* Outer: horizontal fly (GPU translateX + opacity) */
+@keyframes santa-fly {
+  0%   { transform: translateX(350px); opacity: 0; }
+  6%   { opacity: 1; }
+  87%  { opacity: 1; }
+  94%  { opacity: 0; }
+  100% { transform: translateX(-1900px); opacity: 0; }
+}
+/* Inner: vertical bob (GPU translateY) */
+@keyframes santa-bob {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-16px); }
+}
+
+.hero-santa {
+  display: none;
+  pointer-events: none;
+  position: absolute;
+}
+[data-season="winter"] .hero-santa {
+  display: block;
+  animation: santa-fly 26s linear infinite;
+  animation-delay: 2s;
+  will-change: transform, opacity;
+}
+.hero-santa__inner {
+  animation: santa-bob 3.2s ease-in-out infinite;
+  will-change: transform;
+}
 
 /* Opacity-only aurora — no background-position, no filter */
 @keyframes aurora-fade {
