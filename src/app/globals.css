@@ -340,54 +340,65 @@ textarea {
   100% { background-position: 200% 0; }
 }
 
-/* ── Winter Wonderland Keyframes ────────────────────── */
-@keyframes snow-fall {
-  0%   { opacity: 0; transform: translateY(-10px) translateX(0px); }
-  10%  { opacity: 1; }
-  90%  { opacity: 0.8; }
-  100% { opacity: 0; transform: translateY(100vh) translateX(var(--drift, 20px)); }
+/* ── Winter Wonderland Keyframes ─────────────────────────
+   PERF RULES: only animate opacity + transform (compositor-only).
+   NO: filter, box-shadow, text-shadow, background-position, var() in transforms.
+   ───────────────────────────────────────────────────── */
+
+/* 3 fixed drift variants — no CSS var() so GPU can composite */
+@keyframes snow-fall-0 {
+  0%   { opacity: 0; transform: translateY(-20px); }
+  8%   { opacity: 0.9; }
+  92%  { opacity: 0.7; }
+  100% { opacity: 0; transform: translateY(105vh) translateX(-18px); }
+}
+@keyframes snow-fall-1 {
+  0%   { opacity: 0; transform: translateY(-20px); }
+  8%   { opacity: 0.9; }
+  92%  { opacity: 0.7; }
+  100% { opacity: 0; transform: translateY(105vh) translateX(5px); }
+}
+@keyframes snow-fall-2 {
+  0%   { opacity: 0; transform: translateY(-20px); }
+  8%   { opacity: 0.9; }
+  92%  { opacity: 0.7; }
+  100% { opacity: 0; transform: translateY(105vh) translateX(22px); }
 }
 
-@keyframes aurora-wave {
-  0%   { background-position: 0% 50%; opacity: 0.6; }
-  33%  { background-position: 100% 50%; opacity: 1; }
-  66%  { background-position: 50% 0%; opacity: 0.7; }
-  100% { background-position: 0% 50%; opacity: 0.6; }
+/* Opacity-only aurora — no background-position, no filter */
+@keyframes aurora-fade {
+  0%, 100% { opacity: 0.45; }
+  50%       { opacity: 0.85; }
 }
 
+/* Compositor-safe float — transform only */
 @keyframes float-glow {
-  0%, 100% { transform: translateY(0px); box-shadow: 0 0 20px var(--glass-glow, rgba(0,212,170,0.2)); }
-  50%       { transform: translateY(-6px); box-shadow: 0 8px 40px var(--glass-glow, rgba(0,212,170,0.35)); }
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-6px); }
 }
 
+/* Star twinkle — opacity only (no scale on large gradient bg) */
 @keyframes star-twinkle {
-  0%, 100% { opacity: 0.15; transform: scale(0.8); }
-  50%       { opacity: 1; transform: scale(1.2); }
+  0%, 100% { opacity: 0.2; }
+  50%       { opacity: 0.85; }
 }
 
+/* Crystal shimmer — background-position only (not on critical path) */
 @keyframes crystal-shimmer {
-  0%   { background-position: -200% 0; opacity: 0.4; }
-  50%  { opacity: 0.8; }
-  100% { background-position: 200% 0; opacity: 0.4; }
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
+/* Magic reveal — uses filter only during entrance, ends clean */
 @keyframes magic-reveal {
-  0%   { opacity: 0; transform: translateY(28px) scale(0.95); filter: blur(8px); }
-  60%  { filter: blur(0px); }
-  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); }
+  0%   { opacity: 0; transform: translateY(28px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+/* Glow pulse — opacity only (no text-shadow animation) */
 @keyframes glow-pulse {
-  0%, 100% { text-shadow: 0 0 10px rgba(0,212,170,0.4), 0 0 30px rgba(0,212,170,0.15); }
-  50%       { text-shadow: 0 0 20px rgba(0,212,170,0.7), 0 0 60px rgba(0,212,170,0.25), 0 0 100px rgba(0,212,170,0.10); }
-}
-
-@keyframes aurora-drift {
-  0%   { transform: translateX(0%) scaleY(1); opacity: 0.6; }
-  25%  { transform: translateX(4%) scaleY(1.08); opacity: 0.9; }
-  50%  { transform: translateX(-2%) scaleY(0.95); opacity: 0.7; }
-  75%  { transform: translateX(6%) scaleY(1.04); opacity: 1; }
-  100% { transform: translateX(0%) scaleY(1); opacity: 0.6; }
+  0%, 100% { opacity: 0.85; }
+  50%       { opacity: 1; }
 }
 
 /* ── Stagger utilities ──────────────────────────────── */
@@ -913,26 +924,23 @@ textarea {
 }
 
 .glass-badge {
-  background: rgba(255,255,255,0.12);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.20);
+  /* No backdrop-filter — too expensive above animated slideshow */
+  background: rgba(255,255,255,0.13);
+  border: 1px solid rgba(255,255,255,0.22);
   color: white;
 }
 
 .glass-btn {
-  background: rgba(255,255,255,0.10);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  /* No backdrop-filter — too expensive above animated backgrounds */
+  background: rgba(255,255,255,0.11);
   border: 1px solid rgba(255,255,255,0.28);
   color: white;
-  transition: background 0.3s var(--ease-premium), box-shadow 0.3s var(--ease-premium), border-color 0.3s var(--ease-premium);
+  transition: background 0.3s var(--ease-premium), border-color 0.3s var(--ease-premium);
 }
 
 .glass-btn:hover {
-  background: rgba(255,255,255,0.18);
-  box-shadow: 0 0 24px var(--glass-glow, rgba(0,212,170,0.20));
-  border-color: rgba(255,255,255,0.40);
+  background: rgba(255,255,255,0.20);
+  border-color: rgba(255,255,255,0.42);
 }
 
 /* ── Primary glow CTA button ─────────────────────────── */
@@ -976,6 +984,7 @@ textarea {
 [data-season="winter"] .hero-stars {
   opacity: 1;
   animation: star-twinkle 6s ease-in-out infinite;
+  will-change: opacity; /* compositor-eligible opacity animation */
 }
 
 /* ── Aurora background overlay ──────────────────────── */
@@ -993,19 +1002,18 @@ textarea {
 }
 
 /* ── Aurora top band (footer/sections) ──────────────── */
+/* NO filter:blur + animation — forces repaint every frame */
 .aurora-band {
   background: linear-gradient(
     90deg,
-    rgba(0,212,170,0) 0%,
-    rgba(0,212,170,0.18) 20%,
-    rgba(0,184,217,0.22) 40%,
-    rgba(99,102,241,0.15) 60%,
-    rgba(168,85,247,0.12) 80%,
-    rgba(0,212,170,0) 100%
+    transparent 0%,
+    rgba(0,212,170,0.14) 15%,
+    rgba(0,184,217,0.18) 35%,
+    rgba(99,102,241,0.12) 60%,
+    rgba(168,85,247,0.10) 80%,
+    transparent 100%
   );
-  background-size: 200% 100%;
-  animation: aurora-wave 12s ease-in-out infinite;
-  filter: blur(24px);
+  animation: aurora-fade 8s ease-in-out infinite;
 }
 
 /* ── Default logo shadow ─────────────────────────────── */
@@ -1040,8 +1048,10 @@ footer {
 }
 
 [data-season="winter"] .text-glow-brand {
+  /* opacity-only glow-pulse — no text-shadow animation (causes repaint) */
   animation: glow-pulse 4s ease-in-out infinite;
   color: var(--starlight, #e8f4ff);
+  text-shadow: 0 0 40px rgba(0, 212, 170, 0.30); /* static, not animated */
 }
 
 /* ── Testimonials winter overrides ───────────────────── */
