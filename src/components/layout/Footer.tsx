@@ -15,7 +15,7 @@ export function Footer({ locale }: FooterProps) {
   const dict = dictionaries[locale];
 
   return (
-    <footer className="relative overflow-hidden bg-[var(--mountain)] text-[var(--ink)]">
+    <footer className="relative overflow-hidden bg-[var(--mountain)]">
       {/* Aurora band — animated aurora glow at the top in winter */}
       <div className="aurora-band pointer-events-none absolute left-0 right-0 top-0 h-32" aria-hidden="true" />
 
@@ -104,6 +104,7 @@ export function Footer({ locale }: FooterProps) {
                       <li key={item.href}>
                         <Link
                           href={localizePath(locale, item.href)}
+                          prefetch={false}
                           className="text-sm text-[var(--muted)] transition-colors hover:text-[var(--sun)]"
                         >
                           {text(item.label, locale)}

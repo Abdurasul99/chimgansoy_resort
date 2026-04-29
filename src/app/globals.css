@@ -1008,11 +1008,25 @@ textarea {
   filter: blur(24px);
 }
 
+/* ── Default logo shadow ─────────────────────────────── */
+.logo-img {
+  filter: drop-shadow(0 0 3px rgba(255,255,255,0.90))
+          drop-shadow(0 5px 14px rgba(15,23,42,0.34));
+}
+
 /* ── Winter logo glow ────────────────────────────────── */
 [data-season="winter"] .logo-img {
   filter: drop-shadow(0 0 6px rgba(0,212,170,0.50))
           drop-shadow(0 0 16px rgba(0,184,217,0.25))
           drop-shadow(0 5px 14px rgba(0,0,0,0.34));
+}
+
+/* ── Footer always dark bg — force light text tokens ─── */
+footer {
+  --ink: rgba(255, 255, 255, 0.88);
+  --muted: rgba(255, 255, 255, 0.50);
+  --line: rgba(255, 255, 255, 0.10);
+  --line-strong: rgba(255, 255, 255, 0.18);
 }
 
 /* ── Nav link — winter accent underline ─────────────── */
