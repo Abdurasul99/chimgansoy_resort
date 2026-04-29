@@ -8,7 +8,6 @@ import { Footer } from "@/components/layout/Footer";
 import { ScrollObserver } from "@/components/ui/ScrollObserver";
 import { AiAssistant } from "@/components/ui/AiAssistant";
 import { SeasonDetector } from "@/components/ui/SeasonDetector";
-import { SnowParticles } from "@/components/effects/SnowParticles";
 import { dictionaries } from "@/content/translations";
 import { isLocale, locales, type Locale } from "@/i18n/config";
 import { localizedUrl, originForLocale } from "@/i18n/domains";
@@ -110,7 +109,6 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         <ScrollObserver />
         <AiAssistant key={locale} locale={locale} />
         <SeasonDetector />
-        <SnowParticles />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-S7FS7C573H"
           strategy="afterInteractive"

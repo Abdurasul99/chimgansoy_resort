@@ -49,10 +49,10 @@ export function SnowParticles() {
     <div
       aria-hidden="true"
       style={{
-        position: "fixed",
+        position: "absolute", // clips to parent hero section (not fixed/full-page)
         inset: 0,
         pointerEvents: "none",
-        zIndex: 1,
+        zIndex: 2,
         overflow: "hidden",
       }}
     >

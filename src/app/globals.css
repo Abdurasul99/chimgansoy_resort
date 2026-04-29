@@ -365,6 +365,56 @@ textarea {
   100% { opacity: 0; transform: translateY(105vh) translateX(22px); }
 }
 
+/* ── Christmas tree animations (compositor-safe) ─────── */
+@keyframes tree-sway {
+  0%, 100% { transform: rotate(-1.5deg); }
+  50%       { transform: rotate(1.8deg); }
+}
+@keyframes xmas-light-a {
+  0%, 100% { opacity: 1; }
+  45%, 55% { opacity: 0.08; }
+}
+@keyframes xmas-light-b {
+  0%, 20%, 100% { opacity: 0.15; }
+  50%, 70%      { opacity: 1; }
+}
+@keyframes xmas-light-c {
+  0%, 40%, 100% { opacity: 0.9; }
+  60%, 75%      { opacity: 0.08; }
+}
+@keyframes xmas-star-pulse {
+  0%, 100% { opacity: 0.75; transform: scale(1); }
+  50%       { opacity: 1; transform: scale(1.18); }
+}
+
+/* Tree container — hidden in summer, shown in winter */
+.hero-xmas-tree {
+  display: none;
+  pointer-events: none;
+}
+[data-season="winter"] .hero-xmas-tree {
+  display: block;
+}
+
+/* Sway from bottom center */
+.hero-xmas-tree svg {
+  animation: tree-sway 4s ease-in-out infinite;
+  transform-origin: 50% 100%;
+}
+
+/* Lights */
+.xlight-a { animation: xmas-light-a 1.9s ease-in-out infinite; }
+.xlight-b { animation: xmas-light-b 2.4s ease-in-out infinite; }
+.xlight-c { animation: xmas-light-c 1.6s ease-in-out infinite; }
+.xlight-a2 { animation: xmas-light-a 1.9s ease-in-out infinite 0.65s; }
+.xlight-b2 { animation: xmas-light-b 2.4s ease-in-out infinite 0.90s; }
+.xlight-c2 { animation: xmas-light-c 1.6s ease-in-out infinite 1.10s; }
+.xlight-a3 { animation: xmas-light-a 1.9s ease-in-out infinite 1.30s; }
+.xlight-b3 { animation: xmas-light-b 2.4s ease-in-out infinite 0.40s; }
+
+/* Star */
+.xmas-star { animation: xmas-star-pulse 2.2s ease-in-out infinite; transform-origin: 50% 50%; }
+
 /* Opacity-only aurora — no background-position, no filter */
 @keyframes aurora-fade {
   0%, 100% { opacity: 0.45; }

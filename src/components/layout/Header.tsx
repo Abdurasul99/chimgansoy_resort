@@ -20,7 +20,6 @@ export function Header({ locale }: HeaderProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [isWinter, setIsWinter] = useState(false);
   const dict = dictionaries[locale];
 
   useEffect(() => {
@@ -34,14 +33,6 @@ export function Header({ locale }: HeaderProps) {
     else document.body.style.overflow = "";
     return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
-
-  useEffect(() => {
-    const read = () => setIsWinter(document.documentElement.getAttribute("data-season") === "winter");
-    read();
-    const obs = new MutationObserver(read);
-    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["data-season"] });
-    return () => obs.disconnect();
-  }, []);
 
   const isHeroPage = pathname.split("/").length <= 2;
   const isHeaderOnHero = isHeroPage && !scrolled;
@@ -63,17 +54,13 @@ export function Header({ locale }: HeaderProps) {
             prefetch={false}
           >
             <div className="px-2 py-1 transition-all duration-500">
-              <div className="relative overflow-hidden" style={{ width: "118px", height: "46px" }}>
-                {isWinter ? (
-                  <ChristmasLogo />
-                ) : (
-                  <img
-                    src="/images/resort/chimgansoy.svg"
-                    alt="CHIMGANSOY Resort logo"
-                    className="logo-img"
-                    style={{ position: "absolute", top: "-7px", left: "0", width: "108px", height: "auto" }}
-                  />
-                )}
+              <div className="relative overflow-hidden" style={{ width: "108px", height: "46px" }}>
+                <img
+                  src="/images/resort/chimgansoy.svg"
+                  alt="CHIMGANSOY Resort logo"
+                  className="logo-img"
+                  style={{ position: "absolute", top: "-7px", left: "0", width: "108px", height: "auto" }}
+                />
               </div>
             </div>
           </Link>
@@ -178,17 +165,13 @@ export function Header({ locale }: HeaderProps) {
         aria-hidden={!isOpen}
       >
         <div className="flex h-[4.5rem] items-center justify-between px-4 sm:px-6 border-b border-[var(--line)]">
-          <div className="relative overflow-hidden" style={{ width: "118px", height: "46px" }}>
-            {isWinter ? (
-              <ChristmasLogo />
-            ) : (
-              <img
-                src="/images/resort/chimgansoy.svg"
-                alt="CHIMGANSOY Resort"
-                className="logo-img"
-                style={{ position: "absolute", top: "-7px", left: "0", width: "108px", height: "auto" }}
-              />
-            )}
+          <div className="relative overflow-hidden" style={{ width: "108px", height: "46px" }}>
+            <img
+              src="/images/resort/chimgansoy.svg"
+              alt="CHIMGANSOY Resort"
+              className="logo-img"
+              style={{ position: "absolute", top: "-7px", left: "0", width: "108px", height: "auto" }}
+            />
           </div>
           <button
             type="button"
@@ -264,86 +247,3 @@ export function Header({ locale }: HeaderProps) {
   );
 }
 
-function ChristmasLogo() {
-  return (
-    <svg
-      viewBox="0 0 354 120"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-label="CHIMGANSOY Resort"
-      style={{ width: "118px", height: "auto", overflow: "visible" }}
-    >
-      {/* Christmas tree */}
-      <g transform="translate(4,6)">
-        {/* Star */}
-        <polygon points="22,0 24.5,8 33,8 26.5,13 29,21 22,16.5 15,21 17.5,13 11,8 19.5,8" fill="#f0c26a"/>
-        {/* Top layer */}
-        <polygon points="22,7 12,26 32,26" fill="#1a6b35"/>
-        {/* Mid layer */}
-        <polygon points="22,17 8,40 36,40" fill="#1a6b35"/>
-        {/* Bottom layer */}
-        <polygon points="22,28 5,54 39,54" fill="#1a6b35"/>
-        {/* Trunk */}
-        <rect x="18" y="54" width="8" height="10" rx="2" fill="#7a4f2a"/>
-        {/* Ornaments */}
-        <circle cx="14" cy="34" r="3.5" fill="#e74c3c"/>
-        <circle cx="30" cy="42" r="3" fill="#f0c26a"/>
-        <circle cx="12" cy="46" r="2.5" fill="#00d4aa"/>
-        <circle cx="32" cy="50" r="2.5" fill="#e74c3c"/>
-        <circle cx="21" cy="48" r="2" fill="#c8deff" opacity="0.9"/>
-        {/* Snow caps */}
-        <path d="M22,7 L12,26 L32,26 Z" fill="rgba(232,244,255,0.25)"/>
-      </g>
-
-      {/* CHIMGANSOY */}
-      <text
-        x="52" y="46"
-        fontFamily="Georgia, 'Times New Roman', serif"
-        fontSize="29"
-        fontWeight="700"
-        fill="#e8f4ff"
-        letterSpacing="0.8"
-      >CHIMGANSOY</text>
-
-      {/* RESORT subtitle */}
-      <text
-        x="58" y="64"
-        fontFamily="Arial, Helvetica, sans-serif"
-        fontSize="9"
-        fontWeight="700"
-        fill="#8baec8"
-        letterSpacing="3.5"
-      >MOUNTAIN RESORT</text>
-
-      {/* Snowflakes */}
-      <g stroke="#c8deff" strokeWidth="1.2" opacity="0.7">
-        <line x1="46" y1="20" x2="46" y2="30"/>
-        <line x1="41" y1="25" x2="51" y2="25"/>
-        <line x1="42.9" y1="21.9" x2="49.1" y2="28.1"/>
-        <line x1="49.1" y1="21.9" x2="42.9" y2="28.1"/>
-      </g>
-      <g stroke="#c8deff" strokeWidth="1" opacity="0.5">
-        <line x1="334" y1="18" x2="334" y2="26"/>
-        <line x1="330" y1="22" x2="338" y2="22"/>
-        <line x1="331.3" y1="19.3" x2="336.7" y2="24.7"/>
-        <line x1="336.7" y1="19.3" x2="331.3" y2="24.7"/>
-      </g>
-      <g stroke="#c8deff" strokeWidth="0.8" opacity="0.4">
-        <line x1="346" y1="56" x2="346" y2="62"/>
-        <line x1="343" y1="59" x2="349" y2="59"/>
-        <line x1="344.1" y1="56.9" x2="347.9" y2="60.1"/>
-        <line x1="347.9" y1="56.9" x2="344.1" y2="60.1"/>
-      </g>
-
-      {/* Snow dots */}
-      <g fill="rgba(200,222,255,0.45)">
-        <circle cx="58" cy="14" r="1.5"/>
-        <circle cx="110" cy="8" r="1.8"/>
-        <circle cx="170" cy="5" r="2"/>
-        <circle cx="230" cy="9" r="1.5"/>
-        <circle cx="280" cy="7" r="1.8"/>
-        <circle cx="315" cy="14" r="1.5"/>
-      </g>
-    </svg>
-  );
-}

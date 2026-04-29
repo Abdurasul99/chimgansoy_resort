@@ -4,6 +4,7 @@ import { localizePath } from "@/i18n/routing";
 import { WeatherWidget } from "@/components/sections/WeatherWidget";
 import { EmotionCycle } from "@/components/ui/EmotionCycle";
 import { HeroSlideshow } from "@/components/sections/HeroSlideshow";
+import { SnowParticles } from "@/components/effects/SnowParticles";
 
 type HeroProps = {
   locale: Locale;
@@ -26,6 +27,70 @@ export function Hero({ locale }: HeroProps) {
       {/* Star layers — CSS-controlled, visible only in winter */}
       <div className="hero-stars absolute inset-0 -z-[5]" aria-hidden="true" />
       <div className="hero-stars absolute inset-0 -z-[5]" aria-hidden="true" style={{ animationDelay: "2.1s", filter: "blur(0.3px)" }} />
+
+      {/* Snow — absolute inside hero section (overflow:hidden clips it to hero only) */}
+      <SnowParticles />
+
+      {/* Christmas tree — right side, CSS-hidden in summer */}
+      <div
+        className="hero-xmas-tree absolute bottom-0 right-[3%] z-[3] lg:right-[6%]"
+        aria-hidden="true"
+      >
+        <svg
+          viewBox="0 0 110 200"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ width: "clamp(70px, 9vw, 130px)", height: "auto", display: "block" }}
+        >
+          {/* Glowing star */}
+          <g className="xmas-star">
+            <polygon
+              points="55,4 58,15 70,15 61,22 64,33 55,26 46,33 49,22 40,15 52,15"
+              fill="#f0c26a"
+              filter="url(#star-glow)"
+            />
+          </g>
+          <defs>
+            <filter id="star-glow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          {/* Tree layers — darker on left (shadow), lighter on right */}
+          <polygon points="55,12 40,38 70,38" fill="#145a2e"/>
+          <polygon points="55,12 40,38 70,38" fill="#1a7038" opacity="0.6"/>
+          <polygon points="55,26 34,58 76,58" fill="#145a2e"/>
+          <polygon points="55,42 26,80 84,80" fill="#145a2e"/>
+          <polygon points="55,58 18,106 92,106" fill="#145a2e"/>
+
+          {/* Snow on branches */}
+          <path d="M40,38 Q55,33 70,38" fill="none" stroke="rgba(230,245,255,0.75)" strokeWidth="2.5" strokeLinecap="round"/>
+          <path d="M34,58 Q55,52 76,58" fill="none" stroke="rgba(230,245,255,0.75)" strokeWidth="2.5" strokeLinecap="round"/>
+          <path d="M26,80 Q55,73 84,80" fill="none" stroke="rgba(230,245,255,0.75)" strokeWidth="2.5" strokeLinecap="round"/>
+          <path d="M18,106 Q55,98 92,106" fill="none" stroke="rgba(230,245,255,0.75)" strokeWidth="2.5" strokeLinecap="round"/>
+
+          {/* Trunk */}
+          <rect x="48" y="106" width="14" height="22" rx="3" fill="#6b3f1e"/>
+
+          {/* Ornaments with twinkling classes */}
+          <circle className="xlight-a"  cx="44" cy="34" r="4"   fill="#e74c3c"/>
+          <circle className="xlight-b"  cx="66" cy="34" r="3.5" fill="#f0c26a"/>
+          <circle className="xlight-c"  cx="36" cy="54" r="3.5" fill="#00d4aa"/>
+          <circle className="xlight-a2" cx="74" cy="54" r="3"   fill="#e74c3c"/>
+          <circle className="xlight-b2" cx="30" cy="76" r="3.5" fill="#f0c26a"/>
+          <circle className="xlight-c2" cx="80" cy="76" r="3"   fill="#00d4aa"/>
+          <circle className="xlight-a3" cx="55" cy="62" r="3"   fill="#e8f4ff"/>
+          <circle className="xlight-b3" cx="22" cy="100" r="3.5" fill="#e74c3c"/>
+          <circle className="xlight-c"  cx="88" cy="98" r="3"   fill="#f0c26a"/>
+          <circle className="xlight-a2" cx="48" cy="90" r="2.5" fill="#e8f4ff"/>
+          <circle className="xlight-b3" cx="62" cy="96" r="2.5" fill="#00d4aa"/>
+
+          {/* Subtle light glow dots */}
+          <circle className="xlight-a"  cx="44" cy="34" r="7" fill="#e74c3c" opacity="0.18"/>
+          <circle className="xlight-b"  cx="66" cy="34" r="6" fill="#f0c26a" opacity="0.18"/>
+          <circle className="xlight-c"  cx="36" cy="54" r="6" fill="#00d4aa" opacity="0.18"/>
+        </svg>
+      </div>
 
       <div className="relative mx-auto w-full max-w-7xl px-4 pb-16 pt-36 sm:px-6 lg:pb-24 lg:px-8">
 
