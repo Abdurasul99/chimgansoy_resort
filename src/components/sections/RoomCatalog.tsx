@@ -36,8 +36,8 @@ export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
             key={category.id}
             className={`btn-press relative rounded-full border px-4 py-1.5 sm:px-5 sm:py-2 text-xs sm:text-sm font-semibold transition-all duration-300 ${
               filter === category.id
-                ? "border-[var(--ink)] bg-[var(--ink)] text-white"
-                : "border-[color:var(--line)] bg-white text-[var(--muted)] hover:border-[var(--ink)]/40 hover:text-[var(--ink)]"
+                ? "border-[var(--mountain)] bg-[var(--mountain)] text-white"
+                : "border-[color:var(--line)] bg-[var(--paper)] text-[var(--muted)] hover:border-[var(--mountain)]/40 hover:text-[var(--ink)]"
             }`}
             onClick={() => setFilter(category.id as Filter)}
           >
@@ -66,7 +66,7 @@ export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
                 <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,18,14,1.0)_0%,rgba(12,18,14,0.55)_45%,rgba(12,18,14,0.08)_100%)]" />
 
                 {/* Floating price badge */}
-                <div className="absolute right-5 top-5 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 backdrop-blur-sm">
+                <div className="glass-badge absolute right-5 top-5 rounded-full px-4 py-1.5 backdrop-blur-sm">
                   <p className="text-xs font-bold text-white/80">{text(room.priceFrom, locale)}</p>
                 </div>
 
@@ -78,15 +78,15 @@ export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
               </div>
 
               {/* Info block */}
-              <div className="bg-white px-6 pb-6 pt-5 sm:px-8 sm:pb-8">
+              <div className="room-info-block bg-[var(--paper)] px-6 pb-6 pt-5 sm:px-8 sm:pb-8">
                 <p className="text-sm leading-7 text-[var(--muted)]">{text(room.shortDescription, locale)}</p>
 
                 {/* Capacity + size pills */}
                 <div className="mt-5 flex flex-wrap gap-2">
-                  <span className="rounded-full bg-[var(--surface)] px-4 py-2 text-sm font-bold text-[var(--ink)]">
+                  <span className="rounded-full bg-[var(--mist)] px-4 py-2 text-sm font-bold text-[var(--ink)]">
                     {text(room.capacity, locale)}
                   </span>
-                  <span className="rounded-full bg-[var(--surface)] px-4 py-2 text-sm font-bold text-[var(--ink)]">
+                  <span className="rounded-full bg-[var(--mist)] px-4 py-2 text-sm font-bold text-[var(--ink)]">
                     {text(room.size, locale)}
                   </span>
                 </div>

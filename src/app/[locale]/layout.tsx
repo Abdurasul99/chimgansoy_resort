@@ -8,8 +8,10 @@ import { Footer } from "@/components/layout/Footer";
 import { ScrollObserver } from "@/components/ui/ScrollObserver";
 import { AiAssistant } from "@/components/ui/AiAssistant";
 import { SeasonDetector } from "@/components/ui/SeasonDetector";
+import { SnowParticles } from "@/components/effects/SnowParticles";
 import { dictionaries } from "@/content/translations";
 import { isLocale, locales, type Locale } from "@/i18n/config";
+import { localizedUrl, originForLocale } from "@/i18n/domains";
 
 const sans = Manrope({
   variable: "--font-sans",
@@ -40,6 +42,8 @@ export async function generateMetadata({ params }: LayoutProps): Promise<Metadat
     return {};
   }
 
+  const siteUrl = originForLocale(locale);
+
   return {
     title: {
       default: "CHIMGANSOY",
@@ -47,7 +51,7 @@ export async function generateMetadata({ params }: LayoutProps): Promise<Metadat
     },
     description: dictionaries[locale].brandLine,
     applicationName: "CHIMGANSOY",
-    metadataBase: new URL("https://chimgansoy.com"),
+    metadataBase: new URL(siteUrl),
     robots: { index: true, follow: true },
     openGraph: {
       siteName: "CHIMGANSOY",
@@ -68,9 +72,9 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
     "@context": "https://schema.org",
     "@type": "LodgingBusiness",
     name: "CHIMGANSOY Resort",
-    url: "https://chimgansoy.com",
+    url: localizedUrl(locale, "/"),
     telephone: "+998712000000",
-    image: "https://chimgansoy.com/images/resort/hero.jpg",
+    image: `${originForLocale(locale)}/images/resort/hero.jpg`,
     address: {
       "@type": "PostalAddress",
       addressCountry: "UZ",
@@ -106,6 +110,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         <ScrollObserver />
         <AiAssistant key={locale} locale={locale} />
         <SeasonDetector />
+        <SnowParticles />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-S7FS7C573H"
           strategy="afterInteractive"

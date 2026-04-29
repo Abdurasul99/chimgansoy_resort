@@ -35,14 +35,14 @@ export function Header({ locale }: HeaderProps) {
   }, [isOpen]);
 
   const isHeroPage = pathname.split("/").length <= 2;
+  const isHeaderOnHero = isHeroPage && !scrolled;
+  const languageOptions = [locale, ...locales.filter((item) => item !== locale)];
 
   return (
     <>
       <header
         className={`sticky top-0 z-50 transition-all duration-500 ${
-          isHeroPage && !scrolled
-            ? "bg-transparent"
-            : "bg-white/96 backdrop-blur-xl shadow-[0_1px_0_rgba(0,0,0,0.07)]"
+          isHeaderOnHero ? "bg-transparent" : "glass-nav"
         }`}
       >
         <div className="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
@@ -52,11 +52,7 @@ export function Header({ locale }: HeaderProps) {
             className="group min-w-0 shrink-0"
             onClick={() => setIsOpen(false)}
           >
-            <div
-              className={`rounded-xl px-2 py-1 transition-all duration-500 ${
-                isHeroPage && !scrolled ? "bg-white/85 backdrop-blur-sm" : "bg-transparent"
-              }`}
-            >
+            <div className="px-2 py-1 transition-all duration-500">
               <div
                 className="relative overflow-hidden"
                 style={{ width: "108px", height: "46px" }}
@@ -64,13 +60,8 @@ export function Header({ locale }: HeaderProps) {
                 <img
                   src="/images/resort/chimgansoy.svg"
                   alt="CHIMGANSOY Resort logo"
-                  style={{
-                    position: "absolute",
-                    top: "-7px",
-                    left: "0",
-                    width: "108px",
-                    height: "auto",
-                  }}
+                  className="logo-img"
+                  style={{ position: "absolute", top: "-7px", left: "0", width: "108px", height: "auto" }}
                 />
               </div>
             </div>
@@ -86,7 +77,7 @@ export function Header({ locale }: HeaderProps) {
                   key={item.href}
                   href={href}
                   className={`nav-link text-[13px] font-semibold tracking-wide transition-colors duration-300 ${
-                    isHeroPage
+                    isHeaderOnHero
                       ? isActive
                         ? "text-white active"
                         : "text-white/70 hover:text-white"
@@ -104,24 +95,24 @@ export function Header({ locale }: HeaderProps) {
           {/* Desktop controls */}
           <div className="hidden items-center gap-3 lg:flex">
             {/* Season toggle */}
-            <SeasonToggle onDark={isHeroPage && !scrolled} />
+            <SeasonToggle onDark={isHeaderOnHero} />
 
             {/* Currency selector */}
-            <CurrencySelector onDark={isHeroPage} />
+            <CurrencySelector onDark={isHeaderOnHero} />
 
             {/* Language switcher */}
             <div className="flex items-center gap-1" aria-label="Language switcher">
-              {locales.map((item, i) => (
+              {languageOptions.map((item, i) => (
                 <span key={item} className="flex items-center gap-1">
                   {i > 0 && (
-                    <span className={`text-[10px] ${isHeroPage ? "text-white/20" : "text-[var(--muted)]/40"}`}>{"\u00B7"}</span>
+                    <span className={`text-[10px] ${isHeaderOnHero ? "text-white/20" : "text-[var(--muted)]/40"}`}>{"\u00B7"}</span>
                   )}
                   <Link
                     href={switchLocalePath(pathname, item)}
                     className={`text-[11px] font-bold uppercase tracking-widest transition-colors duration-300 ${
                       item === locale
-                        ? isHeroPage ? "text-white" : "text-[var(--ink)]"
-                        : isHeroPage ? "text-white/40 hover:text-white/80" : "text-[var(--muted)] hover:text-[var(--ink)]"
+                        ? isHeaderOnHero ? "text-white" : "text-[var(--ink)]"
+                        : isHeaderOnHero ? "text-white/40 hover:text-white/80" : "text-[var(--muted)] hover:text-[var(--ink)]"
                     }`}
                   >
                     {item.toUpperCase()}
@@ -133,7 +124,7 @@ export function Header({ locale }: HeaderProps) {
             {/* Book CTA */}
             <Link
               href={localizePath(locale, "/bron")}
-              className="btn-press inline-flex h-10 items-center justify-center rounded-full bg-[var(--sun)] px-5 text-[13px] font-bold text-white transition-all duration-300 hover:bg-[var(--sun-dark)] hover:shadow-[0_0_24px_rgba(245,158,11,0.40)]"
+              className="btn-press btn-glow-primary inline-flex h-10 items-center justify-center rounded-full px-5 text-[13px] font-bold text-white"
             >
               {dict.bookNow}
             </Link>
@@ -143,7 +134,7 @@ export function Header({ locale }: HeaderProps) {
           <button
             type="button"
             className={`inline-flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-300 lg:hidden ${
-              isHeroPage ? "text-white" : "text-[var(--ink)]"
+              isHeaderOnHero ? "text-white" : "text-[var(--ink)]"
             }`}
             aria-expanded={isOpen}
             aria-label={isOpen ? dict.close : dict.menu}
@@ -169,7 +160,7 @@ export function Header({ locale }: HeaderProps) {
 
       {/* Full-screen mobile overlay */}
       <div
-        className={`fixed inset-0 z-40 flex flex-col bg-white transition-all duration-500 lg:hidden ${
+        className={`fixed inset-0 z-40 flex flex-col bg-[var(--paper)] transition-all duration-500 lg:hidden ${
           isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         aria-hidden={!isOpen}
@@ -179,6 +170,7 @@ export function Header({ locale }: HeaderProps) {
             <img
               src="/images/resort/chimgansoy.svg"
               alt="CHIMGANSOY Resort"
+              className="logo-img"
               style={{ position: "absolute", top: "-7px", left: "0", width: "108px", height: "auto" }}
             />
           </div>
@@ -236,7 +228,7 @@ export function Header({ locale }: HeaderProps) {
               {contacts.phone}
             </a>
             <div className="flex items-center gap-3">
-              {locales.map((item) => (
+              {languageOptions.map((item) => (
                 <Link
                   key={item}
                   href={switchLocalePath(pathname, item)}

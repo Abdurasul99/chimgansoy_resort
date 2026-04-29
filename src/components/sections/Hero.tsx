@@ -1,7 +1,6 @@
 import { dictionaries } from "@/content/translations";
 import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
-import { ButtonLink } from "@/components/ui/ButtonLink";
 import { WeatherWidget } from "@/components/sections/WeatherWidget";
 import { EmotionCycle } from "@/components/ui/EmotionCycle";
 import { HeroSlideshow } from "@/components/sections/HeroSlideshow";
@@ -24,15 +23,11 @@ export function Hero({ locale }: HeroProps) {
       {/* Cinematic gradient: clear top, darkened bottom for text */}
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0)_32%,rgba(15,25,40,0.50)_64%,rgba(15,25,40,0.88)_100%)]" />
 
-      <div className="relative mx-auto w-full max-w-7xl px-4 pb-16 pt-36 sm:px-6 lg:pb-24 lg:px-8">
+      {/* Star layers — CSS-controlled, visible only in winter */}
+      <div className="hero-stars absolute inset-0 -z-[5]" aria-hidden="true" />
+      <div className="hero-stars absolute inset-0 -z-[5]" aria-hidden="true" style={{ animationDelay: "2.1s", filter: "blur(0.3px)" }} />
 
-        {/* Eyebrow */}
-        <div className="motion-rise mb-8">
-          <span className="inline-flex items-center gap-2 rounded-full border border-amber-300/30 bg-amber-400/20 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-200 backdrop-blur-sm">
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--sun)]" aria-hidden="true" />
-            {dict.home.eyebrow}
-          </span>
-        </div>
+      <div className="relative mx-auto w-full max-w-7xl px-4 pb-16 pt-36 sm:px-6 lg:pb-24 lg:px-8">
 
         {/* Heading */}
         <h1
@@ -60,12 +55,24 @@ export function Hero({ locale }: HeroProps) {
           className="motion-rise mt-10 flex flex-wrap items-center gap-3"
           style={{ animationDelay: "240ms" }}
         >
-          <ButtonLink href={localizePath(locale, "/bron")} variant="primary" className="btn-press">
-            {dict.bookNow}
-          </ButtonLink>
-          <ButtonLink href={localizePath(locale, "/nomera")} variant="light" className="btn-press">
-            {dict.details}
-          </ButtonLink>
+          <a
+            href={localizePath(locale, "/bron")}
+            className="btn-press btn-glow-primary group inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-7 py-3 text-sm font-bold transition duration-300"
+          >
+            <span>{dict.bookNow}</span>
+            <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </a>
+          <a
+            href={localizePath(locale, "/nomera")}
+            className="btn-press glass-btn group inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-7 py-3 text-sm font-bold transition duration-300"
+          >
+            <span>{dict.details}</span>
+            <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </a>
         </div>
 
         {/* Feature pills */}
@@ -76,7 +83,7 @@ export function Hero({ locale }: HeroProps) {
           {dict.home.territoryPills.slice(0, 4).map((item) => (
             <span
               key={item}
-              className="rounded-full border border-white/25 bg-white/12 px-4 py-1.5 text-xs font-semibold text-white/85 backdrop-blur-sm"
+              className="glass-badge rounded-full px-4 py-1.5 text-xs font-semibold"
             >
               {item}
             </span>

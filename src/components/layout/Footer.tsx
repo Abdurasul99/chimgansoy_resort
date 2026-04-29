@@ -15,8 +15,28 @@ export function Footer({ locale }: FooterProps) {
   const dict = dictionaries[locale];
 
   return (
-    <footer className="bg-[var(--surface)] text-[var(--ink)]">
-      <div className="border-b border-[var(--line)] px-4 py-16 sm:px-6 lg:px-8">
+    <footer className="relative overflow-hidden bg-[var(--mountain)] text-[var(--ink)]">
+      {/* Aurora band — animated aurora glow at the top in winter */}
+      <div className="aurora-band pointer-events-none absolute left-0 right-0 top-0 h-32" aria-hidden="true" />
+
+      {/* Mountain silhouette SVG */}
+      <div className="pointer-events-none absolute left-0 right-0 top-0 overflow-hidden" style={{ height: "120px" }} aria-hidden="true">
+        <svg
+          viewBox="0 0 1440 120"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          preserveAspectRatio="none"
+          className="absolute inset-0 h-full w-full"
+          style={{ opacity: 0.12, color: "rgba(255,255,255,0.9)" }}
+        >
+          <path
+            d="M0 120 L0 80 L80 40 L160 70 L240 20 L320 60 L400 10 L480 50 L560 5 L640 45 L720 0 L800 40 L880 15 L960 55 L1040 8 L1120 48 L1200 22 L1280 62 L1360 30 L1440 70 L1440 120 Z"
+            fill="currentColor"
+          />
+        </svg>
+      </div>
+
+      <div className="relative border-b border-[var(--line)] px-4 py-16 pt-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div>
@@ -25,14 +45,14 @@ export function Footer({ locale }: FooterProps) {
                 {" · "}
                 {locale === "ru" ? "Узбекистан" : locale === "uz" ? "O'zbekiston" : "Uzbekistan"}
               </p>
-              <p className="mt-3 font-serif text-[clamp(2.5rem,7vw,5rem)] font-bold leading-none tracking-tight text-[var(--ink)]">
+              <p className="text-glow-brand mt-3 font-serif text-[clamp(2.5rem,7vw,5rem)] font-bold leading-none tracking-tight text-[var(--ink)]">
                 CHIMGANSOY
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               <a
                 href={`tel:${contacts.phone.replaceAll(" ", "")}`}
-                className="btn-press inline-flex items-center justify-center rounded-full border border-[var(--line-strong)] px-6 py-3 text-sm font-semibold text-[var(--ink)] transition-all duration-300 hover:bg-[var(--sun)] hover:border-[var(--sun)] hover:text-white"
+                className="btn-press glass-btn inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition-all duration-300"
               >
                 {contacts.phone}
               </a>
@@ -40,7 +60,7 @@ export function Footer({ locale }: FooterProps) {
                 href={contacts.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-press inline-flex items-center justify-center rounded-full bg-[var(--line)] px-6 py-3 text-sm font-semibold text-[var(--ink)] transition-all duration-300 hover:bg-[var(--sun)] hover:text-white"
+                className="btn-press glass-btn inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition-all duration-300"
               >
                 WhatsApp
               </a>
@@ -48,7 +68,7 @@ export function Footer({ locale }: FooterProps) {
                 href={contacts.telegram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-press inline-flex items-center justify-center rounded-full bg-[var(--line)] px-6 py-3 text-sm font-semibold text-[var(--ink)] transition-all duration-300 hover:bg-[var(--sky)] hover:text-white"
+                className="btn-press glass-btn inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition-all duration-300"
               >
                 Telegram
               </a>
@@ -111,7 +131,7 @@ export function Footer({ locale }: FooterProps) {
           <p className="text-xs text-[var(--muted)]">
             © 2026 CHIMGANSOY. {dict.footer.legalNote}
           </p>
-          <p className="text-xs text-[var(--muted)]/60">chimgansoy.com</p>
+          <p className="text-xs text-[var(--muted)]/60">chimgansoy.com / chimgansoy.uz</p>
         </div>
       </div>
     </footer>
