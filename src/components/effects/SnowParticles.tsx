@@ -2,22 +2,18 @@
 
 import { useEffect, useState } from "react";
 
-// Fewer particles = better FPS
-const SNOWFLAKE_COUNT = 18;
+const SNOWFLAKE_COUNT = 8; // 8 is enough — each extra = more GPU memory
 
-// 3 fixed animation names — NO CSS custom property in transform
-// so the browser can GPU-composite every particle
 const ANIM_NAMES = ["snow-fall-0", "snow-fall-1", "snow-fall-2"] as const;
 
 function getFlakeProps(i: number) {
   const seed = (i * 137.508 + 42) % 100;
-  const left = ((seed * 9.7 + i * 3.6) % 100).toFixed(1);
-  const size = (0.25 + ((seed * 7.1) % 10) / 10 * 0.75).toFixed(2); // 0.25–1.0rem
-  const dur  = (10 + (seed * 0.25) % 10).toFixed(1);                 // 10–20s
-  const delay = (-(seed * 0.21) % 9).toFixed(1);                     // stagger
-  const opacity = (0.35 + (seed * 0.06) % 0.45).toFixed(2);          // 0.35–0.80
-  const anim = ANIM_NAMES[i % 3];
-  return { left, size, dur, delay, opacity, anim };
+  const left    = ((seed * 9.7 + i * 11.2) % 92).toFixed(1);
+  const size    = (0.3 + ((seed * 7.1) % 10) / 10 * 0.7).toFixed(2); // 0.3–1.0rem
+  const dur     = (12 + (seed * 0.28) % 10).toFixed(1);               // 12–22s
+  const delay   = (-(seed * 0.22) % 10).toFixed(1);                   // stagger start
+  const opacity = (0.4 + (seed * 0.05) % 0.35).toFixed(2);            // 0.4–0.75
+  return { left, size, dur, delay, opacity, anim: ANIM_NAMES[i % 3] };
 }
 
 export function SnowParticles() {
@@ -49,11 +45,13 @@ export function SnowParticles() {
     <div
       aria-hidden="true"
       style={{
-        position: "absolute", // clips to parent hero section (not fixed/full-page)
+        position: "absolute",
         inset: 0,
         pointerEvents: "none",
         zIndex: 2,
         overflow: "hidden",
+        // ONE will-change on the container — not per-particle
+        willChange: "transform",
       }}
     >
       {Array.from({ length: SNOWFLAKE_COUNT }, (_, i) => {
@@ -69,13 +67,12 @@ export function SnowParticles() {
               height: `${size}rem`,
               borderRadius: "50%",
               background: `rgba(210, 230, 255, ${opacity})`,
-              // NO box-shadow — causes paint on every frame
               animationName: anim,
               animationDuration: `${dur}s`,
               animationDelay: `${delay}s`,
               animationTimingFunction: "linear",
               animationIterationCount: "infinite",
-              willChange: "transform, opacity", // GPU layer promotion
+              // NO individual willChange — browser composites transform/opacity natively
             }}
           />
         );

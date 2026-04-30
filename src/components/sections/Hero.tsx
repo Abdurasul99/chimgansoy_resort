@@ -131,20 +131,11 @@ export function Hero({ locale }: HeroProps) {
           xmlns="http://www.w3.org/2000/svg"
           style={{ width: "clamp(110px, 13vw, 175px)", height: "auto", display: "block" }}
         >
-          {/* Glowing star */}
+          {/* Star — opacity animation only, NO SVG filter (feGaussianBlur kills GPU compositing) */}
           <g className="xmas-star">
-            <polygon
-              points="55,4 58,15 70,15 61,22 64,33 55,26 46,33 49,22 40,15 52,15"
-              fill="#f0c26a"
-              filter="url(#star-glow)"
-            />
+            <polygon points="55,4 58,15 70,15 61,22 64,33 55,26 46,33 49,22 40,15 52,15" fill="#f0c26a"/>
+            <polygon points="55,4 58,15 70,15 61,22 64,33 55,26 46,33 49,22 40,15 52,15" fill="rgba(255,220,100,0.4)" transform="scale(1.25) translate(-11,-3)"/>
           </g>
-          <defs>
-            <filter id="star-glow" x="-60%" y="-60%" width="220%" height="220%">
-              <feGaussianBlur stdDeviation="3" result="blur"/>
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-          </defs>
 
           {/* Tree layers — darker on left (shadow), lighter on right */}
           <polygon points="55,12 40,38 70,38" fill="#145a2e"/>
