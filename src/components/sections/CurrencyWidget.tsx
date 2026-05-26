@@ -149,24 +149,26 @@ export function CurrencyWidget({ locale }: { locale: string }) {
             {l.inputLabel}
           </label>
 
-          <div className="flex overflow-hidden rounded-xl border border-[color:var(--line)] bg-[var(--surface-warm)] focus-within:border-[var(--forest)]/50 focus-within:bg-[var(--paper)] focus-within:shadow-sm transition-all">
-            <input
-              type="number"
-              inputMode="decimal"
-              placeholder="0"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              className="min-w-0 flex-1 bg-transparent px-4 py-3.5 text-base font-bold text-[var(--ink)] placeholder-[var(--muted)]/50 focus:outline-none"
-            />
+          {/* Wrapper: relative for dropdown anchor + ref for outside-click — NO overflow-hidden */}
+          <div ref={dropRef} className="relative">
+            {/* Input row: overflow-hidden lives on this inner container only */}
+            <div className="flex overflow-hidden rounded-xl border border-[color:var(--line)] bg-[var(--surface-warm)] focus-within:border-[var(--forest)]/50 focus-within:bg-[var(--paper)] focus-within:shadow-sm transition-all">
+              <input
+                type="number"
+                inputMode="decimal"
+                placeholder="0"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                className="min-w-0 flex-1 bg-transparent px-4 py-3.5 text-base font-bold text-[var(--ink)] placeholder-[var(--muted)]/50 focus:outline-none"
+              />
 
-            {/* Custom dropdown — replaces native <select> */}
-            <div ref={dropRef} className="relative shrink-0 border-l border-[color:var(--line)]">
+              {/* Currency dropdown trigger */}
               <button
                 type="button"
                 onClick={() => setDropOpen((v) => !v)}
                 aria-haspopup="listbox"
                 aria-expanded={dropOpen}
-                className="flex h-full items-center gap-2 px-4 py-3.5 text-sm font-bold text-[var(--ink)] transition-colors hover:bg-[var(--paper)]"
+                className="flex shrink-0 items-center gap-2 border-l border-[color:var(--line)] px-4 py-3.5 text-sm font-bold text-[var(--ink)] transition-colors hover:bg-[var(--paper)]"
               >
                 <span className="text-base leading-none">{CURRENCY_META[base].flag}</span>
                 <span>{CURRENCY_META[base].code}</span>
@@ -182,41 +184,42 @@ export function CurrencyWidget({ locale }: { locale: string }) {
                   <path d="M3 4.5l3 3 3-3" />
                 </svg>
               </button>
-
-              {dropOpen && (
-                <ul
-                  role="listbox"
-                  className="absolute right-0 top-[calc(100%+6px)] z-30 w-36 overflow-hidden rounded-xl border border-[color:var(--line)] bg-[var(--paper)] shadow-[var(--shadow-card-hover)]"
-                >
-                  {(Object.keys(CURRENCY_META) as Array<keyof typeof CURRENCY_META>).map((key) => {
-                    const isActive = key === base;
-                    return (
-                      <li key={key}>
-                        <button
-                          type="button"
-                          role="option"
-                          aria-selected={isActive}
-                          onClick={() => { setBase(key); setDropOpen(false); }}
-                          className={`flex w-full items-center gap-2.5 px-3.5 py-2.5 text-sm font-semibold transition-colors ${
-                            isActive
-                              ? "bg-[var(--forest)] text-white"
-                              : "text-[var(--ink)] hover:bg-[var(--surface-warm)]"
-                          }`}
-                        >
-                          <span className="text-base leading-none">{CURRENCY_META[key].flag}</span>
-                          <span>{CURRENCY_META[key].code}</span>
-                          {isActive && (
-                            <svg className="ml-auto h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                            </svg>
-                          )}
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
             </div>
+
+            {/* Dropdown list — rendered outside overflow-hidden so it isn't clipped */}
+            {dropOpen && (
+              <ul
+                role="listbox"
+                className="absolute right-0 top-[calc(100%+6px)] z-30 w-40 overflow-hidden rounded-xl border border-[color:var(--line)] bg-[var(--paper)] shadow-[var(--shadow-card-hover)]"
+              >
+                {(Object.keys(CURRENCY_META) as Array<keyof typeof CURRENCY_META>).map((key) => {
+                  const isActive = key === base;
+                  return (
+                    <li key={key}>
+                      <button
+                        type="button"
+                        role="option"
+                        aria-selected={isActive}
+                        onClick={() => { setBase(key); setDropOpen(false); }}
+                        className={`flex w-full items-center gap-2.5 px-3.5 py-2.5 text-sm font-semibold transition-colors ${
+                          isActive
+                            ? "bg-[var(--forest)] text-white"
+                            : "text-[var(--ink)] hover:bg-[var(--surface-warm)]"
+                        }`}
+                      >
+                        <span className="text-base leading-none">{CURRENCY_META[key].flag}</span>
+                        <span>{CURRENCY_META[key].code}</span>
+                        {isActive && (
+                          <svg className="ml-auto h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </div>
 
           {/* Result */}
