@@ -152,16 +152,18 @@ export default async function HomePage({ params }: PageProps) {
                 role="img"
                 aria-label={text(resortImages.glampingDay.alt, locale)}
               />
-              <div className="absolute -bottom-6 -left-6 hidden rounded-2xl border border-[color:var(--line)] bg-white px-6 py-5 shadow-[var(--shadow-float)] lg:block">
-                <p className="font-serif text-4xl font-bold text-[var(--ink)]">45</p>
-                <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">
+              {/* Top-right floating badge — cream surface, brand text (Stitch style) */}
+              <div className="editorial-badge absolute -right-6 -top-6 hidden lg:block">
+                <p className="font-serif text-4xl font-bold leading-none text-[var(--forest-dark)]">45</p>
+                <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">
                   {locale === "ru" ? "мин от Ташкента" : locale === "uz" ? "min Toshkentdan" : "min from Tashkent"}
                 </p>
               </div>
-              <div className="absolute -right-4 top-10 hidden rounded-2xl bg-[var(--accent)] px-5 py-4 shadow-[var(--shadow-glow)] lg:block">
-                <p className="font-serif text-3xl font-bold text-white">18</p>
-                <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-white/70">
-                  {locale === "ru" ? "зон" : locale === "uz" ? "zona" : "zones"}
+              {/* Bottom-left floating badge — forest green, white text (Stitch style) */}
+              <div className="editorial-badge editorial-badge--accent absolute -bottom-6 -left-6 hidden lg:block">
+                <p className="font-serif text-4xl font-bold leading-none">18</p>
+                <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-white/80">
+                  {locale === "ru" ? "зон активностей" : locale === "uz" ? "faoliyat zonasi" : "curated zones"}
                 </p>
               </div>
             </div>
@@ -179,7 +181,7 @@ export default async function HomePage({ params }: PageProps) {
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div className="motion-reveal">
-              <SectionHeader title={dict.home.roomsTitle} text={dict.home.roomsText} />
+              <SectionHeader title={dict.home.roomsTitle} text={dict.home.roomsText} align="center" italic />
             </div>
             <ButtonLink href={localizePath(locale, "/nomera")} variant="ghost" className="lg:mb-1 btn-press motion-reveal" data-delay="100">
               {dict.viewAll}
@@ -279,7 +281,7 @@ export default async function HomePage({ params }: PageProps) {
       <section className="bg-[var(--surface)] px-4 py-14 sm:py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="motion-reveal">
-            <SectionHeader title={dict.home.galleryTitle} />
+            <SectionHeader title={dict.home.galleryTitle} align="center" italic />
           </div>
           <div className="mt-10">
             <Gallery locale={locale} />

@@ -1,58 +1,85 @@
 @import "tailwindcss";
 
 :root {
-  /* Backgrounds */
-  --paper: #ffffff;
-  --surface: #f8fafc;
-  --surface-warm: #fffbf0;
-  --mist: #e2e8f0;
+  /* Backgrounds — Alpine Editorial cream palette */
+  --paper: #faf7f1;
+  --surface: #f6f3eb;
+  --surface-warm: #f1ecdf;
+  --mist: #e4ddca;
 
-  /* Brand colours — from logo */
-  --sun: #f59e0b;
-  --sun-dark: #d97706;
-  --sky: #0ea5e9;
-  --sky-dark: #0284c7;
-  --forest: #16a34a;
-  --mountain: #1e293b;
+  /* Brand anchors */
+  --sun: #f4a52a;
+  --sun-dark: #d98a14;
+  --sky: #3fb0e5;
+  --sky-dark: #2d8fbf;
+  --forest: #2f7a3e;
+  --forest-dark: #0f6128;
+  --mountain: #1f2a33;
 
   /* Semantic tokens */
-  --ink: #1e293b;
-  --green: #16a34a;
-  --accent: #f59e0b;
-  --accent-strong: #d97706;
-  --muted: #64748b;
-  --line: rgba(0, 0, 0, 0.08);
-  --line-strong: rgba(0, 0, 0, 0.15);
+  --ink: #1f2a33;
+  --green: #2f7a3e;
+  --accent: #f4a52a;
+  --accent-strong: #d98a14;
+  --muted: #5b6770;
+  --line: rgba(31, 42, 51, 0.10);
+  --line-strong: rgba(31, 42, 51, 0.18);
 
   /* Gradient tokens */
-  --gradient-hero: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(15,25,40,0.62) 68%, rgba(15,25,40,0.88) 100%);
-  --gradient-card: linear-gradient(0deg, rgba(15,25,40,0.92) 0%, rgba(15,25,40,0.42) 52%, transparent 100%);
-  --gradient-surface: linear-gradient(135deg, #fffbf0 0%, #f8fafc 100%);
+  --gradient-hero: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(18,29,37,0.55) 62%, rgba(18,29,37,0.88) 100%);
+  --gradient-card: linear-gradient(0deg, rgba(18,29,37,0.92) 0%, rgba(18,29,37,0.42) 52%, transparent 100%);
+  --gradient-surface: linear-gradient(135deg, #faf7f1 0%, #f1ecdf 100%);
 
-  /* Shadow tokens */
-  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.07);
-  --shadow-card-hover: 0 12px 48px rgba(0, 0, 0, 0.14);
-  --shadow-float: 0 8px 32px rgba(0, 0, 0, 0.10);
-  --shadow-glow: 0 0 40px rgba(245, 158, 11, 0.28);
+  /* Shadow tokens — soft editorial lift */
+  --shadow-card: 0 4px 24px rgba(31, 42, 51, 0.06);
+  --shadow-card-hover: 0 20px 50px rgba(31, 42, 51, 0.12);
+  --shadow-float: 0 8px 32px rgba(31, 42, 51, 0.08);
+  --shadow-glow: 0 0 40px rgba(244, 165, 42, 0.28);
 
   /* Easing */
   --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ── Summer theme (default: Apr–Nov) ─────────────────── */
+/* ── Summer theme — Alpine Editorial (Apr–Nov) ─────────
+   Paper-based palette: cream backgrounds, forest accents,
+   sun gold for CTAs. Quiet luxury, magazine editorial.
+   ───────────────────────────────────────────────────── */
 [data-season="summer"] {
-  --paper: #ffffff;
-  --surface: #f8fafc;
-  --surface-warm: #fffbf0;
-  --accent: #f59e0b;
-  --accent-strong: #d97706;
-  --sun: #f59e0b;
-  --sun-dark: #d97706;
-  --sky: #0ea5e9;
-  --forest: #16a34a;
-  --gradient-hero: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(15,25,40,0.60) 68%, rgba(15,25,40,0.86) 100%);
-  --shadow-glow: 0 0 40px rgba(245, 158, 11, 0.30);
+  --paper: #faf7f1;          /* warm cream — base background */
+  --surface: #f6f3eb;        /* subtle depth */
+  --surface-warm: #f1ecdf;   /* card backgrounds, structural depth */
+  --mist: #e4ddca;           /* dividers, very soft separators */
+
+  --ink: #1f2a33;            /* deep blue-black, core legibility */
+  --muted: #5b6770;          /* secondary text */
+  --line: rgba(31, 42, 51, 0.10);
+  --line-strong: rgba(31, 42, 51, 0.18);
+
+  --accent: #f4a52a;         /* sun gold — primary CTA */
+  --accent-strong: #d98a14;
+  --sun: #f4a52a;
+  --sun-dark: #d98a14;
+  --sky: #3fb0e5;            /* water accent, sparingly */
+  --sky-dark: #2d8fbf;
+  --forest: #2f7a3e;         /* primary brand anchor */
+  --forest-dark: #0f6128;
+  --mountain: #1f2a33;
+
+  --gradient-hero: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(18,29,37,0.55) 62%, rgba(18,29,37,0.88) 100%);
+  --gradient-surface: linear-gradient(135deg, #faf7f1 0%, #f1ecdf 100%);
+
+  --shadow-card: 0 4px 24px rgba(31, 42, 51, 0.06);
+  --shadow-card-hover: 0 20px 50px rgba(31, 42, 51, 0.12);
+  --shadow-float: 0 8px 32px rgba(31, 42, 51, 0.08);
+  --shadow-glow: 0 0 40px rgba(244, 165, 42, 0.28);
+
+  /* Glass tokens — paper-based for light mode */
+  --glass-bg: rgba(250, 247, 241, 0.78);
+  --glass-bg-strong: rgba(250, 247, 241, 0.92);
+  --glass-border: rgba(31, 42, 51, 0.10);
+  --glass-border-strong: rgba(31, 42, 51, 0.18);
+  --glass-glow: rgba(244, 165, 42, 0.20);
 }
 
 /* ── Winter theme — Magical Wonderland (Dec–Mar) ─────── */
@@ -216,6 +243,45 @@ textarea {
 
 .motion-hero-image {
   animation: hero-scale 7s ease both;
+}
+
+/* ── Stitch editorial: subtle pulse on primary CTA ─── */
+@keyframes subtle-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(244, 165, 42, 0.45); }
+  50%  { box-shadow: 0 0 24px 6px rgba(244, 165, 42, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(244, 165, 42, 0); }
+}
+.btn-pulse {
+  animation: subtle-pulse 3s infinite ease-in-out;
+}
+
+/* ── Italic editorial display variant (Stitch headlines) ─ */
+.display-italic {
+  font-style: italic;
+}
+
+/* ── Floating editorial badge (Stitch About section) ─── */
+.editorial-badge {
+  background: var(--surface-warm);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-card);
+  transition:
+    transform 0.4s var(--ease-premium),
+    box-shadow 0.4s var(--ease-premium);
+}
+.editorial-badge:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+}
+.editorial-badge--accent {
+  background: var(--forest);
+  border-color: var(--forest);
+  color: white;
+}
+.editorial-badge--accent:hover {
+  transform: translateY(4px);
 }
 
 @keyframes rise-in {

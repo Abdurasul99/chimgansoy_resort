@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Manrope } from "next/font/google";
+import { Playfair_Display, Manrope } from "next/font/google";
 import { notFound } from "next/navigation";
 import Script from "next/script";
 import "../globals.css";
@@ -18,10 +18,10 @@ const sans = Manrope({
   display: "swap",
 });
 
-const serif = Cormorant_Garamond({
+const serif = Playfair_Display({
   variable: "--font-serif",
   subsets: ["latin", "cyrillic"],
-  weight: ["500", "600", "700"],
+  weight: ["500", "600", "700", "800"],
   display: "swap",
 });
 
