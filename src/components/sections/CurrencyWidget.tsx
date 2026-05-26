@@ -100,9 +100,9 @@ export function CurrencyWidget({ locale }: { locale: string }) {
   ];
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] shadow-[var(--shadow-card)]">
+    <div className="relative rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] shadow-[var(--shadow-card)]">
       {/* Header — editorial, soft cream */}
-      <div className="border-b border-[color:var(--line)] bg-[var(--surface-warm)] px-6 py-5">
+      <div className="rounded-t-2xl border-b border-[color:var(--line)] bg-[var(--surface-warm)] px-6 py-5">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--muted)]">{l.sub}</p>
