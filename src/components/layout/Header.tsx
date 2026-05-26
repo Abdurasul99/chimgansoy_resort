@@ -54,12 +54,12 @@ export function Header({ locale }: HeaderProps) {
             prefetch={false}
           >
             <div className="px-2 py-1 transition-all duration-500">
-              <div className="relative" style={{ width: "118px", height: "54px" }}>
+              <div className="relative" style={{ width: "100px", height: "62px" }}>
                 <img
-                  src="/images/resort/chimgan-darbaza.svg"
+                  src="/images/resort/chimgan_darbaza.svg"
                   alt="CHIMGAN DARBAZA Resort"
                   className="logo-img"
-                  style={{ display: "block", width: "118px", height: "auto" }}
+                  style={{ display: "block", width: "100px", height: "auto" }}
                 />
               </div>
             </div>
