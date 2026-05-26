@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { defaultLocale, locales } from "@/i18n/config";
+import { locales } from "@/i18n/config";
+import { defaultLocaleForHost } from "@/i18n/domains";
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -11,12 +12,14 @@ export function proxy(request: NextRequest) {
     return;
   }
 
-  request.nextUrl.pathname = `/${defaultLocale}${pathname === "/" ? "" : pathname}`;
+  const hostDefaultLocale = defaultLocaleForHost(request.headers.get("host"));
+
+  request.nextUrl.pathname = `/${hostDefaultLocale}${pathname === "/" ? "" : pathname}`;
   return NextResponse.redirect(request.nextUrl);
 }
 
 export const config = {
   matcher: [
-    "/((?!_next|api|favicon.ico|opengraph-image|robots.txt|sitemap.xml|images|file.svg|globe.svg|next.svg|vercel.svg|window.svg).*)",
+    "/((?!_next|api|favicon.ico|icon.svg|apple-icon.png|-/opengraph-image|opengraph-image|robots.txt|sitemap.xml|images|file.svg|globe.svg|next.svg|vercel.svg|window.svg).*)",
   ],
 };
