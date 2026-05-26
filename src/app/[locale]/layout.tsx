@@ -45,15 +45,15 @@ export async function generateMetadata({ params }: LayoutProps): Promise<Metadat
 
   return {
     title: {
-      default: "CHIMGANSOY",
-      template: "%s | CHIMGANSOY",
+      default: "CHIMGAN DARBAZA",
+      template: "%s | CHIMGAN DARBAZA",
     },
     description: dictionaries[locale].brandLine,
-    applicationName: "CHIMGANSOY",
+    applicationName: "CHIMGAN DARBAZA",
     metadataBase: new URL(siteUrl),
     robots: { index: true, follow: true },
     openGraph: {
-      siteName: "CHIMGANSOY",
+      siteName: "CHIMGAN DARBAZA",
       type: "website",
       locale: locale === "uz" ? "uz_UZ" : locale === "en" ? "en_US" : "ru_RU",
     },
@@ -70,7 +70,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   const schemaJson = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "LodgingBusiness",
-    name: "CHIMGANSOY Resort",
+    name: "CHIMGAN DARBAZA Resort",
     url: localizedUrl(locale, "/"),
     telephone: "+998712000000",
     image: `${originForLocale(locale)}/images/resort/hero.jpg`,

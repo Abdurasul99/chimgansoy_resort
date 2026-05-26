@@ -2,7 +2,7 @@ import type { LocalizedString } from "./types";
 
 export const contacts = {
   phone: "+998 90 000 00 00",
-  email: "info@chimgansoy.uz",
+  email: "info@chimgandarbaza.uz",
   whatsapp: "https://wa.me/998900000000",
   telegram: "https://t.me/BayanShirinCMO",
   googleMapsUrl: "https://maps.app.goo.gl/AE7scBBU9DykP3st5",

@@ -23,8 +23,8 @@ export default function Image() {
           fontFamily: "Arial",
         }}
       >
-        <div style={{ fontSize: 24, opacity: 0.72 }}>CHIMGANSOY.UZ / CHIMGANSOY.COM</div>
-        <div style={{ marginTop: 20, fontSize: 92, fontWeight: 700 }}>CHIMGANSOY</div>
+        <div style={{ fontSize: 24, opacity: 0.72 }}>CHIMGANDARBAZA.UZ / CHIMGANDARBAZA.COM</div>
+        <div style={{ marginTop: 20, fontSize: 92, fontWeight: 700 }}>CHIMGAN DARBAZA</div>
         <div style={{ marginTop: 24, maxWidth: 760, fontSize: 34, lineHeight: 1.25 }}>
           Mountain resort in Tashkent region
         </div>

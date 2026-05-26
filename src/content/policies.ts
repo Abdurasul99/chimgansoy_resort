@@ -15,9 +15,9 @@ export const policies: PolicyPage[] = [
     slug: "how-to-get-there",
     title: { ru: "Как добраться", uz: "Qanday borish", en: "How to get there" },
     description: {
-      ru: "Ориентиры и контакты для планирования поездки в CHIMGANSOY.",
-      uz: "CHIMGANSOYga safarni rejalash uchun mo'ljallar va kontaktlar.",
-      en: "Directions and contacts for planning a trip to CHIMGANSOY.",
+      ru: "Ориентиры и контакты для планирования поездки в CHIMGAN DARBAZA.",
+      uz: "CHIMGAN DARBAZAga safarni rejalash uchun mo'ljallar va kontaktlar.",
+      en: "Directions and contacts for planning a trip to CHIMGAN DARBAZA.",
     },
     sections: [
       {

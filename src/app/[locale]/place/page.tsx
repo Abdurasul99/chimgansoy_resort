@@ -33,7 +33,7 @@ export default async function AttractionsPage({ params }: PageProps) {
         title={dict.pages.place.title}
         lead={dict.pages.place.lead}
         image={resortImages.territoryAerial}
-        eyebrow="CHIMGANSOY"
+        eyebrow="CHIMGAN DARBAZA"
       />
       <BookingWidget locale={locale} />
 

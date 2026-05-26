@@ -41,7 +41,7 @@ export default async function LegalPage({ params }: PageProps) {
         title={text(policy.title, locale)}
         lead={text(policy.description, locale)}
         image={resortImages.nature}
-        eyebrow="CHIMGANSOY"
+        eyebrow="CHIMGAN DARBAZA"
       />
 
       <section className="px-4 py-14 sm:px-6 lg:px-8">

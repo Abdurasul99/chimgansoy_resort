@@ -30,7 +30,7 @@ export default async function RoomsPage({ params }: PageProps) {
         title={dict.pages.rooms.title}
         lead={dict.pages.rooms.lead}
         image={resortImages.cottageDay}
-        eyebrow="CHIMGANSOY"
+        eyebrow="CHIMGAN DARBAZA"
       />
       <BookingWidget locale={locale} />
 

@@ -79,10 +79,10 @@ const T:{[l:string]:{[k:string]:string}} = {
     kmh:"км/ч",hpa:"гПа",masl:"м н.у.м.",
     openedYear:"Год открытия",formats:"Форматов",territory:"Территория",
     title:"Горный курорт рядом с Ташкентом",
-    desc:"CHIMGANSOY — 6 гектаров в горах Чимгана. Глэмпинг, коттеджи, ресторан и бассейн в 45 минутах от Ташкента.",
+    desc:"CHIMGAN DARBAZA — 6 гектаров в горах Чимгана. Глэмпинг, коттеджи, ресторан и бассейн в 45 минутах от Ташкента.",
   },
   uz:{
-    badge:"KURORT ATMOSFERASI",location:"Chimgansoy, O'zbekiston",
+    badge:"KURORT ATMOSFERASI",location:"Chimgan Darbaza, O'zbekiston",
     sunrise:"Quyosh chiqishi",sunset:"Quyosh botishi",aqi:"AQI",
     feelsLike:"His qilinadi",todayFor:"Bugun uchun yaxshi",
     humidity:"Namlik",wind:"Shamol",pressure:"Bosim",uv:"UV Indeksi",
@@ -93,10 +93,10 @@ const T:{[l:string]:{[k:string]:string}} = {
     kmh:"km/soat",hpa:"gPa",masl:"m d.o.",
     openedYear:"Ochilgan yil",formats:"Formatlar",territory:"Hudud",
     title:"Toshkent yaqinidagi tog' kurorti",
-    desc:"CHIMGANSOY — Chimgon tog'larida 6 gektar. Glemping, kottejlar, restoran va basseyn Toshkentdan 45 daqiqada.",
+    desc:"CHIMGAN DARBAZA — Chimgon tog'larida 6 gektar. Glemping, kottejlar, restoran va basseyn Toshkentdan 45 daqiqada.",
   },
   en:{
-    badge:"RESORT ATMOSPHERE",location:"Chimgansoy, Uzbekistan",
+    badge:"RESORT ATMOSPHERE",location:"Chimgan Darbaza, Uzbekistan",
     sunrise:"Sunrise",sunset:"Sunset",aqi:"AQI",
     feelsLike:"Feels like",todayFor:"Today is perfect for",
     humidity:"Humidity",wind:"Wind",pressure:"Pressure",uv:"UV Index",
@@ -107,7 +107,7 @@ const T:{[l:string]:{[k:string]:string}} = {
     kmh:"km/h",hpa:"hPa",masl:"m a.s.l.",
     openedYear:"Opened",formats:"Stay types",territory:"Territory",
     title:"Mountain resort near Tashkent",
-    desc:"CHIMGANSOY — 6 hectares in the Chimgan mountains. Glamping, cottages, restaurant and pool, 45 min from Tashkent.",
+    desc:"CHIMGAN DARBAZA — 6 hectares in the Chimgan mountains. Glamping, cottages, restaurant and pool, 45 min from Tashkent.",
   },
 };
 
@@ -192,7 +192,7 @@ export function WeatherPanel({ locale }: { locale: string }) {
           <div className="hidden lg:flex flex-col justify-between gap-8 bg-[var(--paper)] p-8 lg:p-10">
             <div>
               <span className="inline-block rounded-full border border-[color:var(--line)] px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">
-                CHIMGANSOY
+                CHIMGAN DARBAZA
               </span>
               <h2 className="mt-4 font-serif text-3xl font-bold leading-tight text-[var(--ink)] lg:text-4xl">
                 {l.title}

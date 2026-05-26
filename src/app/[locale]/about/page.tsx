@@ -69,7 +69,7 @@ export default async function AboutPage({ params }: PageProps) {
 
         <div className="mx-auto w-full max-w-7xl px-4 pb-10 pt-28 sm:pb-16 sm:pt-44 sm:px-6 lg:pb-24 lg:px-8">
           <div className="motion-rise">
-            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">CHIMGANSOY</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">CHIMGAN DARBAZA</p>
             <h1 className="display-lg mt-3 font-serif font-bold text-white">{dict.pages.about.title}</h1>
             <p className="mt-5 max-w-xl text-base leading-7 text-white/60">{dict.pages.about.lead}</p>
           </div>
@@ -81,7 +81,7 @@ export default async function AboutPage({ params }: PageProps) {
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-10 sm:gap-16 lg:grid-cols-[1.1fr_1fr] lg:items-center">
             <div className="motion-reveal">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGANSOY</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGAN DARBAZA</p>
               <h2 className="display-md mt-3 font-serif font-semibold text-[var(--ink)]">{dict.home.aboutTitle}</h2>
               <p className="mt-6 text-base leading-8 text-[var(--muted)]">{dict.home.aboutText}</p>
               <div className="mt-10 flex flex-wrap gap-3">
@@ -109,7 +109,7 @@ export default async function AboutPage({ params }: PageProps) {
       <section className="bg-[var(--surface)] px-4 py-14 sm:py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-16 motion-reveal">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGANSOY</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGAN DARBAZA</p>
             <h2 className="display-md mt-3 font-serif font-semibold text-[var(--ink)]">{dict.home.yearRoundTitle}</h2>
           </div>
           <div className="space-y-0 divide-y divide-[color:var(--line)]">

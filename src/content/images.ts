@@ -6,9 +6,9 @@ export const resortImages = {
     localSrc: "/images/resort/01-aerial-masterplan-day.jpg",
     position: "center",
     alt: {
-      ru: "Вид сверху на территорию CHIMGANSOY",
-      uz: "CHIMGANSOY hududining yuqoridan ko'rinishi",
-      en: "Aerial view of CHIMGANSOY territory",
+      ru: "Вид сверху на территорию CHIMGAN DARBAZA",
+      uz: "CHIMGAN DARBAZA hududining yuqoridan ko'rinishi",
+      en: "Aerial view of CHIMGAN DARBAZA territory",
     },
   },
   territoryAerial: {

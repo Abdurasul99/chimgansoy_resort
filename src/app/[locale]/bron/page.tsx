@@ -84,7 +84,7 @@ export default async function BookingPage({ params, searchParams }: PageProps) {
         title={dict.pages.booking.title}
         lead={dict.pages.booking.lead}
         image={resortImages.cottage}
-        eyebrow="CHIMGANSOY"
+        eyebrow="CHIMGAN DARBAZA"
       />
 
       {/* ── Contact + Request form ─────────────────────── */}
@@ -94,7 +94,7 @@ export default async function BookingPage({ params, searchParams }: PageProps) {
 
             {/* Left — contacts */}
             <div>
-              <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGANSOY</p>
+              <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGAN DARBAZA</p>
               <h2 className="font-serif text-3xl sm:text-4xl font-semibold leading-tight text-[var(--ink)]">
                 {bronDict.contactTitle}
               </h2>

@@ -42,7 +42,7 @@ export default async function ContactPage({ params }: PageProps) {
 
         <div className="mx-auto w-full max-w-7xl px-4 pb-10 pt-28 sm:pb-14 sm:pt-40 sm:px-6 lg:pb-20 lg:px-8">
           <div className="motion-rise">
-            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">CHIMGANSOY</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">CHIMGAN DARBAZA</p>
             <h1 className="display-md mt-3 font-serif font-bold text-white">{dict.pages.contact.title}</h1>
             <p className="mt-4 max-w-md text-base leading-7 text-white/60">{dict.pages.contact.lead}</p>
           </div>
@@ -56,7 +56,7 @@ export default async function ContactPage({ params }: PageProps) {
 
             {/* Left — contact channels */}
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGANSOY</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGAN DARBAZA</p>
               <h2 className="mt-3 font-serif text-3xl sm:text-4xl font-semibold text-[var(--ink)]">
                 {bronDict.contactTitle}
               </h2>

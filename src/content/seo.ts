@@ -3,9 +3,9 @@ import type { PageSeo } from "./types";
 export const pageSeo = {
   home: {
     title: {
-      ru: "CHIMGANSOY - горный resort в Ташкентской области",
-      uz: "CHIMGANSOY - Toshkent viloyatidagi tog' resorti",
-      en: "CHIMGANSOY - mountain resort in Tashkent region",
+      ru: "CHIMGAN DARBAZA - горный resort в Ташкентской области",
+      uz: "CHIMGAN DARBAZA - Toshkent viloyatidagi tog' resorti",
+      en: "CHIMGAN DARBAZA - mountain resort in Tashkent region",
     },
     description: {
       ru: "Глэмпинг, коттеджи, ресторан, бассейн, активности и зоны отдыха в премиальном курортном формате.",
@@ -14,7 +14,7 @@ export const pageSeo = {
     },
   },
   rooms: {
-    title: { ru: "Номера и размещение CHIMGANSOY", uz: "CHIMGANSOY xonalari va joylashuvi", en: "CHIMGANSOY rooms and stays" },
+    title: { ru: "Номера и размещение CHIMGAN DARBAZA", uz: "CHIMGAN DARBAZA xonalari va joylashuvi", en: "CHIMGAN DARBAZA rooms and stays" },
     description: {
       ru: "Выберите глэмпинг или коттедж для отдыха в Ташкентской области.",
       uz: "Toshkent viloyatida dam olish uchun glemping yoki kottejni tanlang.",
@@ -22,7 +22,7 @@ export const pageSeo = {
     },
   },
   services: {
-    title: { ru: "Сервисы и инфраструктура CHIMGANSOY", uz: "CHIMGANSOY xizmatlari va infratuzilmasi", en: "CHIMGANSOY services and infrastructure" },
+    title: { ru: "Сервисы и инфраструктура CHIMGAN DARBAZA", uz: "CHIMGAN DARBAZA xizmatlari va infratuzilmasi", en: "CHIMGAN DARBAZA services and infrastructure" },
     description: {
       ru: "Ресторан, бассейн, топчаны, пикник, спорт, детские зоны и активности.",
       uz: "Restoran, basseyn, topchanlar, piknik, sport, bolalar zonalari va faoliyatlar.",
@@ -30,7 +30,7 @@ export const pageSeo = {
     },
   },
   about: {
-    title: { ru: "О курорте CHIMGANSOY", uz: "CHIMGANSOY kurorti haqida", en: "About CHIMGANSOY resort" },
+    title: { ru: "О курорте CHIMGAN DARBAZA", uz: "CHIMGAN DARBAZA kurorti haqida", en: "About CHIMGAN DARBAZA resort" },
     description: {
       ru: "Концепция премиального отдыха на природе в Ташкентской области.",
       uz: "Toshkent viloyatida tabiat qo'ynidagi premium dam olish konsepsiyasi.",
@@ -38,7 +38,7 @@ export const pageSeo = {
     },
   },
   place: {
-    title: { ru: "Места рядом с CHIMGANSOY", uz: "CHIMGANSOY yaqinidagi joylar", en: "Attractions near CHIMGANSOY" },
+    title: { ru: "Места рядом с CHIMGAN DARBAZA", uz: "CHIMGAN DARBAZA yaqinidagi joylar", en: "Attractions near CHIMGAN DARBAZA" },
     description: {
       ru: "Горы, маршруты, канатные дороги и впечатления рядом с курортом.",
       uz: "Kurort yaqinidagi tog'lar, marshrutlar, kanat yo'llari va taassurotlar.",
@@ -46,15 +46,15 @@ export const pageSeo = {
     },
   },
   contact: {
-    title: { ru: "Контакты CHIMGANSOY", uz: "CHIMGANSOY aloqalari", en: "CHIMGANSOY contacts" },
+    title: { ru: "Контакты CHIMGAN DARBAZA", uz: "CHIMGAN DARBAZA aloqalari", en: "CHIMGAN DARBAZA contacts" },
     description: {
-      ru: "Телефон, мессенджеры, адрес и форма связи курорта CHIMGANSOY.",
-      uz: "CHIMGANSOY kurorti telefoni, messenjerlari, manzili va aloqa formasi.",
-      en: "Phone, messengers, address, and contact form for CHIMGANSOY resort.",
+      ru: "Телефон, мессенджеры, адрес и форма связи курорта CHIMGAN DARBAZA.",
+      uz: "CHIMGAN DARBAZA kurorti telefoni, messenjerlari, manzili va aloqa formasi.",
+      en: "Phone, messengers, address, and contact form for CHIMGAN DARBAZA resort.",
     },
   },
   booking: {
-    title: { ru: "Бронирование CHIMGANSOY", uz: "CHIMGANSOY bron qilish", en: "CHIMGANSOY booking" },
+    title: { ru: "Бронирование CHIMGAN DARBAZA", uz: "CHIMGAN DARBAZA bron qilish", en: "CHIMGAN DARBAZA booking" },
     description: {
       ru: "Страница бронирования с готовым местом для интеграции Bnovo.",
       uz: "Bnovo integratsiyasi uchun tayyor joyga ega bron sahifasi.",

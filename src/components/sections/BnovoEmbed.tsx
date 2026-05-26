@@ -47,7 +47,7 @@ export function BnovoEmbed({ locale, searchParams }: BnovoEmbedProps) {
       <div className="flex items-center justify-between border-b border-[color:var(--line)] bg-[var(--surface)] px-6 py-4">
         <div className="flex items-center gap-3">
           <span className="h-2 w-2 rounded-full bg-[var(--accent)]" aria-hidden="true" />
-          <p className="text-xs font-bold uppercase tracking-widest text-[var(--ink)]">CHIMGANSOY</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-[var(--ink)]">CHIMGAN DARBAZA</p>
           <span className="hidden text-xs text-[var(--muted)] sm:block">·</span>
           <p className="hidden text-xs text-[var(--muted)] sm:block">{dict.title}</p>
         </div>
@@ -74,7 +74,7 @@ export function BnovoEmbed({ locale, searchParams }: BnovoEmbedProps) {
       </div>
 
       <iframe
-        title="Онлайн-бронирование CHIMGANSOY"
+        title="Онлайн-бронирование CHIMGAN DARBAZA"
         src={src}
         className={`w-full border-0 transition-opacity duration-700 ${loaded ? "opacity-100" : "opacity-0 absolute"}`}
         style={{ height: "820px" }}

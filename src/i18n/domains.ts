@@ -1,8 +1,8 @@
 import { defaultLocale, locales, type Locale } from "./config";
 import { localizePath } from "./routing";
 
-export const internationalDomain = "chimgansoy.com";
-export const domesticDomain = "chimgansoy.uz";
+export const internationalDomain = "chimgandarbaza.com";
+export const domesticDomain = "chimgandarbaza.uz";
 
 export const internationalOrigin = `https://${internationalDomain}`;
 export const domesticOrigin = `https://${domesticDomain}`;

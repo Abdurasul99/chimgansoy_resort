@@ -57,7 +57,7 @@ export function PaymentForm({ dict, defaultCheckin = "", defaultCheckout = "" }:
           clientEmail: email,
           checkin,
           checkout,
-          orderDescription: `CHIMGANSOY — ${checkin} / ${checkout}`,
+          orderDescription: `CHIMGAN DARBAZA — ${checkin} / ${checkout}`,
         }),
       });
 

@@ -97,7 +97,7 @@ export default async function HomePage({ params }: PageProps) {
               )}
 
               <div className={`relative mx-auto w-full max-w-7xl px-4 pb-14 sm:px-6 lg:pb-20 lg:px-8 ${!isEven && index > 0 ? "text-right" : ""}`}>
-                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">CHIMGANSOY</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">CHIMGAN DARBAZA</p>
                 <h2
                   className={`mt-3 font-serif font-bold text-white motion-reveal ${
                     index === 0 ? "display-lg max-w-4xl" : "text-2xl max-w-2xl sm:text-4xl lg:text-5xl"
@@ -130,7 +130,7 @@ export default async function HomePage({ params }: PageProps) {
 
             <div className="motion-reveal">
               <p className="mb-4 font-serif text-[clamp(5rem,12vw,9rem)] font-bold leading-none text-[var(--surface)]" aria-hidden="true">01</p>
-              <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGANSOY</p>
+              <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGAN DARBAZA</p>
               <h2 className="display-md font-serif font-semibold text-[var(--ink)]">
                 {dict.home.aboutTitle}
               </h2>
@@ -200,7 +200,7 @@ export default async function HomePage({ params }: PageProps) {
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgba(12,18,14,0.95)_0%,rgba(12,18,14,0.52)_50%,rgba(12,18,14,0.08)_100%)]" />
 
         <div className="mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 lg:pb-24 lg:px-8">
-          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40 motion-reveal">CHIMGANSOY</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40 motion-reveal">CHIMGAN DARBAZA</p>
           <h2 className="display-lg mt-4 font-serif font-bold text-white motion-reveal" data-delay="80">
             {dict.home.territoryTitle}
           </h2>
@@ -249,7 +249,7 @@ export default async function HomePage({ params }: PageProps) {
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-10 sm:gap-16 lg:grid-cols-[1fr_1fr] lg:items-center">
             <div className="motion-reveal">
-              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--muted)]">CHIMGANSOY</p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--muted)]">CHIMGAN DARBAZA</p>
               <h2 className="display-md mt-4 font-serif font-semibold leading-tight text-[var(--ink)]">{dict.home.yearRoundTitle}</h2>
               <p className="mt-6 text-base leading-8 text-[var(--muted)]">{dict.home.yearRoundText}</p>
             </div>
@@ -291,11 +291,11 @@ export default async function HomePage({ params }: PageProps) {
       <section className="overflow-hidden bg-[var(--surface)] py-2">
         <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-none lg:grid lg:grid-cols-5 lg:overflow-visible">
           {([
-            { image: "tapchanAerial", caption: locale === "uz" ? "Eshitsa bo'ladigan jimjitlik" : locale === "en" ? "Silence you can hear" : "Тишина,\nкоторую слышно" },
-            { image: "cottage", caption: locale === "uz" ? "Archa isi" : locale === "en" ? "The scent of pine" : "Воздух\nпахнет хвоей" },
-            { image: "poolEvening", caption: locale === "uz" ? "Bolalar balandroq kuladi" : locale === "en" ? "Kids laugh louder here" : "Дети смеются\nгромче" },
-            { image: "glamping", caption: locale === "uz" ? "Ikkalamiz uchun sunset" : locale === "en" ? "A sunset for two" : "Закат\nна двоих" },
-            { image: "territoryAerial", caption: locale === "uz" ? "Tog'lar shoshilmaydi" : locale === "en" ? "Mountains don't rush" : "Горы никуда\nне торопятся" },
+            { image: "poolLifestyle", caption: locale === "uz" ? "Bolalar balandroq kuladi" : locale === "en" ? "Kids laugh louder here" : "Дети смеются\nгромче" },
+            { image: "poolEvening", caption: locale === "uz" ? "Kechki basseyn" : locale === "en" ? "Evening by the pool" : "Вечер\nу бассейна" },
+            { image: "glampingDay", caption: locale === "uz" ? "Uycha oldidagi ilk foto" : locale === "en" ? "First photo by the cabin" : "Первое фото\nу домика" },
+            { image: "cottage", caption: locale === "uz" ? "Ikkalamiz uchun sunset" : locale === "en" ? "A sunset for two" : "Закат\nна двоих" },
+            { image: "entranceNight", caption: locale === "uz" ? "Kompaniya bilan keldik" : locale === "en" ? "Arrived with friends" : "Приехали\nкомпанией" },
           ] as const).map(({ image, caption }) => {
             const img = resortImages[image];
             return (

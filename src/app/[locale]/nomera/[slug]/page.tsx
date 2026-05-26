@@ -29,9 +29,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     locale,
     {
       title: {
-        ru: `${text(room.title, "ru")} CHIMGANSOY`,
-        uz: `${text(room.title, "uz")} CHIMGANSOY`,
-        en: `${text(room.title, "en")} at CHIMGANSOY`,
+        ru: `${text(room.title, "ru")} CHIMGAN DARBAZA`,
+        uz: `${text(room.title, "uz")} CHIMGAN DARBAZA`,
+        en: `${text(room.title, "en")} at CHIMGAN DARBAZA`,
       },
       description: room.shortDescription,
     },
@@ -63,7 +63,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
 
         <div className="mx-auto w-full max-w-7xl px-4 pb-10 pt-24 sm:pb-14 sm:pt-32 sm:px-6 lg:pb-20 lg:pt-40 lg:px-8">
           <div className="motion-rise">
-            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">CHIMGANSOY</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">CHIMGAN DARBAZA</p>
             <p className="mt-2 text-sm font-semibold text-[var(--accent)]">{text(room.eyebrow, locale)}</p>
             <h1 className="display-lg mt-2 font-serif font-bold text-white">
               {text(room.title, locale)}
@@ -174,7 +174,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
       <section className="bg-[var(--surface)] px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-10 motion-reveal">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGANSOY</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGAN DARBAZA</p>
             <h2 className="mt-2 font-serif text-4xl font-semibold text-[var(--ink)]">{dict.detailLabels.relatedServices}</h2>
           </div>
           <ServicesGrid

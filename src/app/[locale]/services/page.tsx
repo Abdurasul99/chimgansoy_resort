@@ -29,7 +29,7 @@ export default async function ServicesPage({ params }: PageProps) {
         title={dict.pages.services.title}
         lead={dict.pages.services.lead}
         image={resortImages.poolLifestyle}
-        eyebrow="CHIMGANSOY"
+        eyebrow="CHIMGAN DARBAZA"
       />
       <BookingWidget locale={locale} />
 

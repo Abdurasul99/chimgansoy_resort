@@ -46,7 +46,7 @@ export function Footer({ locale }: FooterProps) {
                 {locale === "ru" ? "Узбекистан" : locale === "uz" ? "O'zbekiston" : "Uzbekistan"}
               </p>
               <p className="text-glow-brand mt-3 font-serif text-[clamp(2.5rem,7vw,5rem)] font-bold leading-none tracking-tight text-[var(--ink)]">
-                CHIMGANSOY
+                CHIMGAN DARBAZA
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
@@ -130,9 +130,9 @@ export function Footer({ locale }: FooterProps) {
       <div className="border-t border-[var(--line)] px-4 py-5 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-[var(--muted)]">
-            © 2026 CHIMGANSOY. {dict.footer.legalNote}
+            © 2026 CHIMGAN DARBAZA. {dict.footer.legalNote}
           </p>
-          <p className="text-xs text-[var(--muted)]/60">chimgansoy.com / chimgansoy.uz</p>
+          <p className="text-xs text-[var(--muted)]/60">chimgandarbaza.com / chimgandarbaza.uz</p>
         </div>
       </div>
     </footer>

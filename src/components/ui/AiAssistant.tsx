@@ -5,9 +5,9 @@ import { useEffect, useRef, useState } from "react";
 type Message = { role: "user" | "assistant"; content: string };
 
 const GREETINGS: Record<string, string> = {
-  ru: "Привет! Я помощник курорта CHIMGANSOY 🏔️ Помогу выбрать номер, расскажу об активностях или отвечу на любые вопросы.",
-  uz: "Salom! Men CHIMGANSOY kurortining yordamchisiman 🏔️ Xona tanlashda, faoliyatlar haqida yoki boshqa savollarda yordam beraman.",
-  en: "Hello! I'm the CHIMGANSOY resort assistant 🏔️ I can help you choose a room, tell you about activities, or answer any questions.",
+  ru: "Привет! Я помощник курорта CHIMGAN DARBAZA 🏔️ Помогу выбрать номер, расскажу об активностях или отвечу на любые вопросы.",
+  uz: "Salom! Men CHIMGAN DARBAZA kurortining yordamchisiman 🏔️ Xona tanlashda, faoliyatlar haqida yoki boshqa savollarda yordam beraman.",
+  en: "Hello! I'm the CHIMGAN DARBAZA resort assistant 🏔️ I can help you choose a room, tell you about activities, or answer any questions.",
 };
 
 const PLACEHOLDERS: Record<string, string> = {
@@ -178,7 +178,7 @@ export function AiAssistant({ locale }: { locale: string }) {
               </div>
               <div>
                 <p className="text-xs font-bold text-white">{TITLES[locale] ?? TITLES.ru}</p>
-                <p className="text-[10px] text-white/50">CHIMGANSOY · AI</p>
+                <p className="text-[10px] text-white/50">CHIMGAN DARBAZA · AI</p>
               </div>
             </div>
             <button onClick={() => setOpen(false)} className="flex h-7 w-7 items-center justify-center rounded-full text-white/60 hover:bg-white/10 hover:text-white transition-colors">
@@ -230,7 +230,7 @@ export function AiAssistant({ locale }: { locale: string }) {
                 </svg>
               </button>
             </div>
-            <p className="mt-1.5 text-center text-[9px] text-[var(--muted)]">DeepSeek AI · CHIMGANSOY</p>
+            <p className="mt-1.5 text-center text-[9px] text-[var(--muted)]">DeepSeek AI · CHIMGAN DARBAZA</p>
           </div>
         </div>
       )}

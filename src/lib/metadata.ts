@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 import type { Locale } from "@/i18n/config";
-import { locales } from "@/i18n/config";
-import { localizePath } from "@/i18n/routing";
+import { languageAlternates, localizedUrl, originForLocale } from "@/i18n/domains";
 import type { PageSeo } from "@/content/types";
 import { text } from "./localize";
 
-const siteUrl = "https://chimgansoy.com";
-
 export function buildMetadata(locale: Locale, seo: PageSeo, path = "/"): Metadata {
+  const siteUrl = originForLocale(locale);
   const title = text(seo.title, locale);
   const description = text(seo.description, locale);
   const ogImage = `${siteUrl}/-/opengraph-image`;
@@ -17,16 +15,14 @@ export function buildMetadata(locale: Locale, seo: PageSeo, path = "/"): Metadat
     title,
     description,
     alternates: {
-      canonical: localizePath(locale, path),
-      languages: Object.fromEntries(
-        locales.map((item) => [item, localizePath(item, path)]),
-      ),
+      canonical: localizedUrl(locale, path),
+      languages: languageAlternates(path),
     },
     openGraph: {
       title,
       description,
-      url: localizePath(locale, path),
-      siteName: "CHIMGANSOY",
+      url: localizedUrl(locale, path),
+      siteName: "CHIMGAN DARBAZA",
       locale,
       type: "website",
       images: [
@@ -34,7 +30,7 @@ export function buildMetadata(locale: Locale, seo: PageSeo, path = "/"): Metadat
           url: ogImage,
           width: 1200,
           height: 630,
-          alt: "CHIMGANSOY",
+          alt: "CHIMGAN DARBAZA",
         },
       ],
     },

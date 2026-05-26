@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <!-- Sun: orange body + triangular rays (partially behind mountains) -->
+  <g fill="#f5a623">
+    <!-- Rays radiating from sun -->
+    <polygon points="160,55 175,135 145,135"/>
+    <polygon points="60,90 120,150 100,170"/>
+    <polygon points="35,210 110,200 110,180"/>
+    <polygon points="55,330 115,250 100,230"/>
+    <polygon points="245,90 200,150 220,170"/>
+    <polygon points="275,210 210,200 210,180"/>
+    <polygon points="115,70 158,130 138,150"/>
+    <polygon points="205,70 158,130 178,150"/>
+    <!-- Sun body (centre disc) -->
+    <circle cx="160" cy="195" r="65"/>
+  </g>
+
+  <!-- Mountains: three peaks, dark slate -->
+  <path d="M 170 325 L 260 240 L 320 285 L 410 100 L 470 200 L 540 130 L 700 325 Z"
+        fill="#2f3640"/>
+  <!-- Subtle highlight ridge -->
+  <path d="M 410 100 L 470 200 L 540 130 L 540 160 L 470 230 L 410 130 Z"
+        fill="#3c4654" opacity="0.55"/>
+
+  <!-- Pine trees (two), green, bottom-right -->
+  <g fill="#2c8a3e">
+    <!-- Tree 1 (front, slightly larger) -->
+    <path d="M 692 325 L 678 282 L 690 282 L 670 240 L 686 240 L 668 195 L 690 195 L 700 162 L 710 195 L 732 195 L 714 240 L 730 240 L 710 282 L 722 282 L 692 325 Z"/>
+    <!-- Tree 2 (back, slightly right + shorter) -->
+    <path d="M 748 325 L 734 285 L 744 285 L 727 250 L 740 250 L 723 215 L 740 215 L 750 187 L 760 215 L 776 215 L 760 250 L 772 250 L 757 285 L 766 285 L 748 325 Z"/>
+  </g>
+
+  <!-- Wave (blue water) — two flowing layers -->
+  <path d="M 0 340 Q 200 320 400 345 T 800 340 L 800 372 Q 600 358 400 372 T 0 368 Z"
+        fill="#0ea5e9"/>
+  <path d="M 0 358 Q 220 348 420 360 T 800 354 L 800 380 Q 580 372 400 382 T 0 380 Z"
+        fill="#3eb8ed" opacity="0.75"/>
+
+  <!-- Brand wordmark "CHIMGAN" -->
+  <text x="400" y="448" text-anchor="middle"
+        font-family="Manrope, Arial, sans-serif" font-weight="800"
+        font-size="68" fill="#2f3640" letter-spacing="2">CHIMGAN</text>
+
+  <!-- Subtitle "DARBAZA" flanked by horizontal dashes -->
+  <line x1="240" y1="486" x2="320" y2="486" stroke="#2f3640" stroke-width="3" stroke-linecap="round"/>
+  <line x1="480" y1="486" x2="560" y2="486" stroke="#2f3640" stroke-width="3" stroke-linecap="round"/>
+  <text x="400" y="496" text-anchor="middle"
+        font-family="Manrope, Arial, sans-serif" font-weight="700"
+        font-size="28" fill="#2f3640" letter-spacing="6">DARBAZA</text>
+</svg>

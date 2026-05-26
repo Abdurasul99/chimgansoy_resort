@@ -27,7 +27,7 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   if (!phone) return { ok: false, error: "Укажите номер телефона" };
 
   const msg = [
-    `📩 <b>Новая заявка — CHIMGANSOY</b>`,
+    `📩 <b>Новая заявка — CHIMGAN DARBAZA</b>`,
     ``,
     `👤 <b>Имя:</b> ${name}`,
     `📞 <b>Телефон:</b> ${phone}`,

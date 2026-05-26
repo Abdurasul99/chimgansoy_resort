@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
       pay_amount: String(amount),
       clientid: guestName ?? "Guest",
       orderid: `CHIM-${Date.now()}`,
-      service_name: orderDescription ?? `CHIMGANSOY — ${checkin ?? ""} / ${checkout ?? ""}`,
+      service_name: orderDescription ?? `CHIMGAN DARBAZA — ${checkin ?? ""} / ${checkout ?? ""}`,
       client_email: clientEmail ?? "",
       token,
     });

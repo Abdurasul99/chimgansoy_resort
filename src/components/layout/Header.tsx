@@ -54,12 +54,12 @@ export function Header({ locale }: HeaderProps) {
             prefetch={false}
           >
             <div className="px-2 py-1 transition-all duration-500">
-              <div className="relative overflow-hidden" style={{ width: "108px", height: "46px" }}>
+              <div className="relative" style={{ width: "118px", height: "54px" }}>
                 <img
-                  src="/images/resort/chimgansoy.svg"
-                  alt="CHIMGANSOY Resort logo"
+                  src="/images/resort/chimgan-darbaza.svg"
+                  alt="CHIMGAN DARBAZA Resort"
                   className="logo-img"
-                  style={{ position: "absolute", top: "-7px", left: "0", width: "108px", height: "auto" }}
+                  style={{ display: "block", width: "118px", height: "auto" }}
                 />
               </div>
             </div>
@@ -165,12 +165,12 @@ export function Header({ locale }: HeaderProps) {
         aria-hidden={!isOpen}
       >
         <div className="flex h-[4.5rem] items-center justify-between px-4 sm:px-6 border-b border-[var(--line)]">
-          <div className="relative overflow-hidden" style={{ width: "108px", height: "46px" }}>
+          <div className="relative" style={{ width: "118px", height: "54px" }}>
             <img
-              src="/images/resort/chimgansoy.svg"
-              alt="CHIMGANSOY Resort"
+              src="/images/resort/chimgan-darbaza.svg"
+              alt="CHIMGAN DARBAZA Resort"
               className="logo-img"
-              style={{ position: "absolute", top: "-7px", left: "0", width: "108px", height: "auto" }}
+              style={{ display: "block", width: "118px", height: "auto" }}
             />
           </div>
           <button

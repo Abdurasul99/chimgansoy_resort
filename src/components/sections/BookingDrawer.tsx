@@ -22,7 +22,7 @@ export function BookingDrawer({ locale, roomTitle, priceFrom }: BookingDrawerPro
     <>
       {/* Sticky panel */}
       <div className="rounded-3xl border border-[color:var(--line)] bg-white p-6 shadow-[var(--shadow-card)]">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGANSOY</p>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGAN DARBAZA</p>
         <h3 className="mt-2 font-serif text-2xl font-semibold text-[var(--ink)]">{roomTitle}</h3>
         <p className="mt-1 text-sm text-[var(--muted)]">{priceFrom}</p>
 
@@ -69,7 +69,7 @@ export function BookingDrawer({ locale, roomTitle, priceFrom }: BookingDrawerPro
             <div className="flex items-center justify-between border-b border-[color:var(--line)] bg-[var(--surface)] px-6 py-4">
               <div className="flex items-center gap-3">
                 <span className="h-2 w-2 rounded-full bg-[var(--accent)]" />
-                <p className="text-xs font-bold uppercase tracking-widest text-[var(--ink)]">CHIMGANSOY</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-[var(--ink)]">CHIMGAN DARBAZA</p>
                 <span className="text-xs text-[var(--muted)]">·</span>
                 <p className="text-xs text-[var(--muted)]">{roomTitle}</p>
               </div>

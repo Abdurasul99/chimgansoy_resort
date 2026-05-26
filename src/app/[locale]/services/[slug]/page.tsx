@@ -30,9 +30,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     locale,
     {
       title: {
-        ru: `${text(service.title, "ru")} CHIMGANSOY`,
-        uz: `${text(service.title, "uz")} CHIMGANSOY`,
-        en: `${text(service.title, "en")} at CHIMGANSOY`,
+        ru: `${text(service.title, "ru")} CHIMGAN DARBAZA`,
+        uz: `${text(service.title, "uz")} CHIMGAN DARBAZA`,
+        en: `${text(service.title, "en")} at CHIMGAN DARBAZA`,
       },
       description: service.shortDescription,
     },
