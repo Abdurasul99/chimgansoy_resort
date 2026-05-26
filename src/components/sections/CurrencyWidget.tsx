@@ -1,40 +1,43 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Rates = { usd_to_uzs: number; eur_to_uzs: number; rub_to_uzs: number };
 
 const labels: Record<string, {
   title: string; sub: string; updated: string;
   usd: string; eur: string; rub: string;
-  inputLabel: string;
+  inputLabel: string; resultLabel: string;
 }> = {
   ru: {
     title: "Курс валют",
     sub: "Актуальный курс к узбекскому суму",
-    updated: "Данные обновляются ежедневно",
+    updated: "Обновляется ежедневно",
     usd: "Доллар США",
     eur: "Евро",
     rub: "Рос. рубль",
     inputLabel: "Введите сумму",
+    resultLabel: "Получите",
   },
   uz: {
     title: "Valyuta kursi",
     sub: "O'zbek so'miga nisbatan joriy kurs",
-    updated: "Ma'lumotlar har kuni yangilanadi",
+    updated: "Har kuni yangilanadi",
     usd: "AQSH dollari",
     eur: "Evro",
     rub: "Rossiya rubli",
     inputLabel: "Miqdorni kiriting",
+    resultLabel: "Olasiz",
   },
   en: {
     title: "Exchange rates",
     sub: "Current rates to Uzbek Som",
-    updated: "Rates updated daily",
+    updated: "Updated daily",
     usd: "US Dollar",
     eur: "Euro",
     rub: "Russian Ruble",
     inputLabel: "Enter amount",
+    resultLabel: "You get",
   },
 };
 
@@ -42,10 +45,18 @@ function fmt(n: number, dec = 0) {
   return n.toLocaleString("ru-RU", { maximumFractionDigits: dec });
 }
 
+const CURRENCY_META = {
+  USD: { flag: "🇺🇸", code: "USD" },
+  EUR: { flag: "🇪🇺", code: "EUR" },
+  RUB: { flag: "🇷🇺", code: "RUB" },
+} as const;
+
 export function CurrencyWidget({ locale }: { locale: string }) {
   const [rates, setRates] = useState<Rates | null>(null);
   const [input, setInput] = useState("");
   const [base, setBase] = useState<"USD" | "EUR" | "RUB">("USD");
+  const [dropOpen, setDropOpen] = useState(false);
+  const dropRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json")
@@ -60,6 +71,18 @@ export function CurrencyWidget({ locale }: { locale: string }) {
       })
       .catch(() => {});
   }, []);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    if (!dropOpen) return;
+    const onClick = (e: MouseEvent) => {
+      if (dropRef.current && !dropRef.current.contains(e.target as Node)) {
+        setDropOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, [dropOpen]);
 
   const l = labels[locale] ?? labels.ru;
   const amount = parseFloat(input) || 0;
@@ -77,64 +100,144 @@ export function CurrencyWidget({ locale }: { locale: string }) {
   ];
 
   return (
-    <div className="rounded-2xl border border-[color:var(--line)] bg-[var(--surface)] overflow-hidden">
-      {/* Header */}
-      <div className="border-b border-[color:var(--line)] bg-[var(--ink)] px-6 py-4">
-        <p className="text-xs font-bold uppercase tracking-widest text-white/50">{l.sub}</p>
-        <p className="mt-0.5 font-serif text-xl font-semibold text-white">{l.title}</p>
+    <div className="overflow-hidden rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] shadow-[var(--shadow-card)]">
+      {/* Header — editorial, soft cream */}
+      <div className="border-b border-[color:var(--line)] bg-[var(--surface-warm)] px-6 py-5">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--muted)]">{l.sub}</p>
+            <p className="mt-1 font-serif text-2xl font-semibold text-[var(--ink)]">{l.title}</p>
+          </div>
+          {/* Live dot */}
+          <div className="mt-1 flex shrink-0 items-center gap-1.5 rounded-full border border-[var(--forest)]/20 bg-[var(--forest)]/8 px-2.5 py-1">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--forest)] opacity-75" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--forest)]" />
+            </span>
+            <span className="text-[9px] font-bold uppercase tracking-widest text-[var(--forest-dark)]">Live</span>
+          </div>
+        </div>
       </div>
 
-      <div className="p-6">
+      <div className="space-y-5 p-6">
         {/* Rate cards */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2.5">
           {currencies.map((c) => (
-            <div key={c.key} className="rounded-xl bg-[var(--paper)] px-3 py-3 text-center">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">
-                {c.flag} 1 {c.key}
+            <div
+              key={c.key}
+              className="group rounded-xl border border-[color:var(--line)] bg-[var(--surface-warm)] px-3 py-3 text-center transition-all hover:border-[var(--forest)]/40 hover:shadow-sm"
+            >
+              <p className="flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">
+                <span className="text-sm leading-none">{c.flag}</span>
+                <span>1 {c.key}</span>
               </p>
               {rates ? (
-                <p className="mt-1 font-bold text-[var(--ink)]">{fmt(c.rate ?? 0)}</p>
+                <p className="mt-1.5 font-serif text-xl font-bold leading-none text-[var(--ink)]">
+                  {fmt(c.rate ?? 0)}
+                </p>
               ) : (
-                <div className="mt-1 mx-auto h-5 w-16 animate-pulse rounded bg-[var(--mist)]" />
+                <div className="mx-auto mt-1.5 h-5 w-16 animate-pulse rounded bg-[var(--mist)]" />
               )}
-              <p className="text-[9px] text-[var(--muted)] mt-0.5">UZS</p>
+              <p className="mt-1 text-[9px] font-semibold uppercase tracking-widest text-[var(--muted)]">UZS</p>
             </div>
           ))}
         </div>
 
         {/* Converter */}
-        <div className="mt-5">
-          <p className="mb-2 text-xs font-semibold text-[var(--muted)]">{l.inputLabel}</p>
-          <div className="flex gap-2">
-            <div className="flex flex-1 overflow-hidden rounded-xl border border-[color:var(--line)] bg-[var(--paper)]">
-              <input
-                type="number"
-                placeholder="0"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                className="flex-1 bg-transparent px-4 py-3 text-base font-bold text-[var(--ink)] focus:outline-none min-w-0"
-              />
-              <select
-                value={base}
-                onChange={(e) => setBase(e.target.value as "USD" | "EUR" | "RUB")}
-                className="border-l border-[color:var(--line)] bg-transparent px-3 text-sm font-bold text-[var(--ink)] focus:outline-none cursor-pointer"
+        <div>
+          <label className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">
+            {l.inputLabel}
+          </label>
+
+          <div className="flex overflow-hidden rounded-xl border border-[color:var(--line)] bg-[var(--surface-warm)] focus-within:border-[var(--forest)]/50 focus-within:bg-[var(--paper)] focus-within:shadow-sm transition-all">
+            <input
+              type="number"
+              inputMode="decimal"
+              placeholder="0"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              className="min-w-0 flex-1 bg-transparent px-4 py-3.5 text-base font-bold text-[var(--ink)] placeholder-[var(--muted)]/50 focus:outline-none"
+            />
+
+            {/* Custom dropdown — replaces native <select> */}
+            <div ref={dropRef} className="relative shrink-0 border-l border-[color:var(--line)]">
+              <button
+                type="button"
+                onClick={() => setDropOpen((v) => !v)}
+                aria-haspopup="listbox"
+                aria-expanded={dropOpen}
+                className="flex h-full items-center gap-2 px-4 py-3.5 text-sm font-bold text-[var(--ink)] transition-colors hover:bg-[var(--paper)]"
               >
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
-                <option value="RUB">RUB</option>
-              </select>
+                <span className="text-base leading-none">{CURRENCY_META[base].flag}</span>
+                <span>{CURRENCY_META[base].code}</span>
+                <svg
+                  className={`h-3 w-3 text-[var(--muted)] transition-transform duration-200 ${dropOpen ? "rotate-180" : ""}`}
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M3 4.5l3 3 3-3" />
+                </svg>
+              </button>
+
+              {dropOpen && (
+                <ul
+                  role="listbox"
+                  className="absolute right-0 top-[calc(100%+6px)] z-30 w-36 overflow-hidden rounded-xl border border-[color:var(--line)] bg-[var(--paper)] shadow-[var(--shadow-card-hover)]"
+                >
+                  {(Object.keys(CURRENCY_META) as Array<keyof typeof CURRENCY_META>).map((key) => {
+                    const isActive = key === base;
+                    return (
+                      <li key={key}>
+                        <button
+                          type="button"
+                          role="option"
+                          aria-selected={isActive}
+                          onClick={() => { setBase(key); setDropOpen(false); }}
+                          className={`flex w-full items-center gap-2.5 px-3.5 py-2.5 text-sm font-semibold transition-colors ${
+                            isActive
+                              ? "bg-[var(--forest)] text-white"
+                              : "text-[var(--ink)] hover:bg-[var(--surface-warm)]"
+                          }`}
+                        >
+                          <span className="text-base leading-none">{CURRENCY_META[key].flag}</span>
+                          <span>{CURRENCY_META[key].code}</span>
+                          {isActive && (
+                            <svg className="ml-auto h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
             </div>
           </div>
+
+          {/* Result */}
           {amount > 0 && rates && (
-            <div className="mt-3 rounded-xl border border-[var(--accent)]/20 bg-[var(--accent)]/5 px-4 py-3">
-              <p className="text-lg font-bold text-[var(--ink)]">
-                = {fmt(toUzs(base, amount))} <span className="text-sm font-normal text-[var(--muted)]">UZS</span>
+            <div className="mt-3 flex items-center justify-between gap-3 rounded-xl border border-[var(--forest)]/25 bg-[var(--forest)]/8 px-4 py-3">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--forest-dark)]">{l.resultLabel}</span>
+              <p className="text-right font-serif text-xl font-bold text-[var(--forest-dark)]">
+                {fmt(toUzs(base, amount))}
+                <span className="ml-1 text-xs font-semibold uppercase tracking-widest text-[var(--forest)]/70">UZS</span>
               </p>
             </div>
           )}
         </div>
 
-        <p className="mt-4 text-right text-[10px] text-[var(--muted)]">{l.updated}</p>
+        {/* Footer note */}
+        <div className="flex items-center justify-end gap-1.5 border-t border-[color:var(--line)] pt-3">
+          <svg className="h-3 w-3 text-[var(--muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--muted)]">{l.updated}</p>
+        </div>
       </div>
     </div>
   );
