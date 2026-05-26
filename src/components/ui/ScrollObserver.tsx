@@ -8,7 +8,8 @@ export function ScrollObserver() {
 
   useEffect(() => {
     // Re-run on every route change — reset already-visible state for new page
-    const selector = ".motion-reveal, .motion-reveal-left, .motion-reveal-scale";
+    const selector =
+      ".motion-reveal, .motion-reveal-left, .motion-reveal-scale, .img-reveal-wrapper";
 
     // Small delay so Next.js has finished rendering the new page DOM
     const timer = setTimeout(() => {

@@ -146,12 +146,14 @@ export default async function HomePage({ params }: PageProps) {
             </div>
 
             <div className="relative motion-reveal" data-delay="150">
-              <div
-                className="aspect-[4/5] overflow-hidden rounded-3xl bg-cover bg-center shadow-[var(--shadow-card-hover)]"
-                style={imageStyle(resortImages.glampingDay)}
-                role="img"
-                aria-label={text(resortImages.glampingDay.alt, locale)}
-              />
+              <div className="img-reveal-wrapper aspect-[4/5] overflow-hidden rounded-3xl shadow-[var(--shadow-card-hover)]">
+                <div
+                  className="h-full w-full bg-cover bg-center transition-transform duration-[1500ms] ease-out hover:scale-110"
+                  style={imageStyle(resortImages.glampingDay)}
+                  role="img"
+                  aria-label={text(resortImages.glampingDay.alt, locale)}
+                />
+              </div>
               {/* Top-right floating badge — cream surface, brand text (Stitch style) */}
               <div className="editorial-badge absolute -right-6 -top-6 hidden lg:block">
                 <p className="font-serif text-4xl font-bold leading-none text-[var(--forest-dark)]">45</p>

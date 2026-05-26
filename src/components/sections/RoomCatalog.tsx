@@ -53,11 +53,11 @@ export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
           return (
             <article
               key={room.slug}
-              className="group relative overflow-hidden rounded-3xl bg-[var(--ink)] shadow-[var(--shadow-card)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)]"
+              className="editorial-card group relative overflow-hidden rounded-3xl bg-[var(--ink)] shadow-[var(--shadow-card)]"
             >
-              {/* Full-bleed image */}
+              {/* Full-bleed image with paper-overlay reveal */}
               <div
-                className="relative h-[65vw] max-h-[500px] min-h-[260px] sm:min-h-[320px] bg-cover bg-center transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]"
+                className="img-reveal-wrapper relative h-[65vw] max-h-[500px] min-h-[260px] sm:min-h-[320px] bg-cover bg-center transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]"
                 style={imageStyle(image)}
                 role="img"
                 aria-label={text(image.alt, locale)}
