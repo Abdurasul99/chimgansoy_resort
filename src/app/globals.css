@@ -1218,11 +1218,14 @@ html { scroll-behavior: smooth; }
           drop-shadow(0 5px 14px rgba(15,23,42,0.34));
 }
 
-/* ── Winter logo glow ────────────────────────────────── */
+/* ── Winter logo: white outline halo so dark text is readable on dark bg ─── */
 [data-season="winter"] .logo-img {
-  filter: drop-shadow(0 0 6px rgba(0,212,170,0.50))
-          drop-shadow(0 0 16px rgba(0,184,217,0.25))
-          drop-shadow(0 5px 14px rgba(0,0,0,0.34));
+  filter:
+    drop-shadow(0 0 2px rgba(255, 255, 255, 1))
+    drop-shadow(0 0 4px rgba(255, 255, 255, 0.85))
+    drop-shadow(0 0 9px rgba(232, 244, 255, 0.55))
+    drop-shadow(0 0 20px rgba(0, 212, 170, 0.30))
+    drop-shadow(0 4px 12px rgba(0, 0, 0, 0.40));
 }
 
 /* ── Footer always dark bg — force light text tokens ─── */
