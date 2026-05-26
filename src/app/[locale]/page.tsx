@@ -261,7 +261,7 @@ export default async function HomePage({ params }: PageProps) {
               {promotions.slice(0, 4).map((promo, i) => (
                 <div
                   key={text(promo.badge, locale)}
-                  className="rounded-2xl border border-[var(--line)] bg-white p-6 shadow-[var(--shadow-card)] transition-all duration-500 hover:shadow-[var(--shadow-card-hover)] motion-reveal"
+                  className="rounded-2xl border border-[var(--line)] bg-[var(--paper)] p-6 shadow-[var(--shadow-card)] transition-all duration-500 hover:shadow-[var(--shadow-card-hover)] motion-reveal"
                   data-delay={String(i * 80)}
                 >
                   <span className="inline-block rounded-full bg-[var(--sun)]/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-[var(--sun-dark)]">
@@ -339,7 +339,7 @@ export default async function HomePage({ params }: PageProps) {
       </section>
 
       {/* ── Map ───────────────────────────────────────── */}
-      <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
+      <section className="bg-[var(--surface)] px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <MapBlock locale={locale} />
         </div>

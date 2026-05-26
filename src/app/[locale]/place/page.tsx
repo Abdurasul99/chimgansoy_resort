@@ -42,7 +42,7 @@ export default async function AttractionsPage({ params }: PageProps) {
           <SectionHeader title={dict.pages.place.title} text={dict.pages.place.lead} />
           <div className="mt-8 grid gap-5 md:grid-cols-2">
             {attractions.map((item) => (
-              <article key={text(item.title, locale)} className="grid overflow-hidden rounded-[8px] border border-[color:var(--line)] bg-white sm:grid-cols-[0.9fr_1.1fr]">
+              <article key={text(item.title, locale)} className="grid overflow-hidden rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] shadow-[var(--shadow-card)] transition-shadow duration-500 hover:shadow-[var(--shadow-card-hover)] sm:grid-cols-[0.9fr_1.1fr]">
                 <ImageFrame image={resortImages[item.image]} locale={locale} className="min-h-64 rounded-none" />
                 <div className="p-6">
                   <p className="text-xs font-bold uppercase text-[var(--accent-strong)]">{text(item.distance, locale)}</p>

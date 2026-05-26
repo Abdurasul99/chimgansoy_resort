@@ -9,7 +9,7 @@ type FaqProps = {
 
 export function Faq({ locale }: FaqProps) {
   return (
-    <div className="divide-y divide-[color:var(--line)] rounded-[8px] border border-[color:var(--line)] bg-white">
+    <div className="divide-y divide-[color:var(--line)] rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] shadow-[var(--shadow-card)]">
       {faqItems.map((item) => (
         <details key={text(item.question, locale)} className="group p-5 sm:p-6">
           <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-[var(--ink)]">

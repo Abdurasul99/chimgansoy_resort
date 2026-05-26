@@ -81,7 +81,7 @@ export function PaymentForm({ dict, defaultCheckin = "", defaultCheckout = "" }:
   }
 
   return (
-    <div className="rounded-[12px] border border-[color:var(--line)] bg-white p-6 sm:p-8">
+    <div className="rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] p-6 shadow-[var(--shadow-card)] sm:p-8">
       <h2 className="font-serif text-3xl font-semibold text-[var(--ink)]">{dict.title}</h2>
       <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{dict.lead}</p>
 

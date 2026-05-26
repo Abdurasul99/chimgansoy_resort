@@ -43,7 +43,7 @@ export default async function RoomsPage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
+      <section className="bg-[var(--surface)] px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <SectionHeader title={dict.home.thingsTitle} text={dict.home.thingsText} />
           <div className="mt-8">

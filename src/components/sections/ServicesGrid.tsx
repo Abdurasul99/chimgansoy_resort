@@ -36,8 +36,8 @@ export function ServicesGrid({ locale, limit, showFilters = true, slugs }: Servi
               key={category.id}
               className={`btn-press rounded-full border px-4 py-1.5 sm:px-5 sm:py-2 text-xs sm:text-sm font-semibold transition-all duration-300 ${
                 filter === category.id
-                  ? "border-[var(--ink)] bg-[var(--ink)] text-white"
-                  : "border-[color:var(--line)] bg-white text-[var(--muted)] hover:border-[var(--ink)]/40 hover:text-[var(--ink)]"
+                  ? "border-[var(--mountain)] bg-[var(--mountain)] text-white"
+                  : "border-[color:var(--line)] bg-[var(--paper)] text-[var(--muted)] hover:border-[var(--mountain)]/40 hover:text-[var(--ink)]"
               }`}
               onClick={() => setFilter(category.id)}
             >
@@ -96,7 +96,7 @@ export function ServicesGrid({ locale, limit, showFilters = true, slugs }: Servi
               </div>
 
               {/* Info */}
-              <div className="bg-white px-5 py-4">
+              <div className="bg-[var(--paper)] px-5 py-4">
                 <p className="text-sm leading-6 text-[var(--muted)]">{text(service.shortDescription, locale)}</p>
                 <ButtonLink
                   href={localizePath(locale, `/services/${service.slug}`)}

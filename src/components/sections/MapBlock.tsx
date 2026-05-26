@@ -15,7 +15,7 @@ export function MapBlock({ locale }: MapBlockProps) {
   const mapSrc = getGoogleMapsEmbedUrl();
 
   return (
-    <div className="grid overflow-hidden rounded-[8px] border border-[color:var(--line)] bg-white lg:grid-cols-[0.85fr_1.15fr]">
+    <div className="grid overflow-hidden rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] shadow-[var(--shadow-card)] lg:grid-cols-[0.85fr_1.15fr]">
       <div className="p-6 sm:p-8">
         <p className="text-xs font-bold uppercase text-[var(--accent-strong)]">{contacts.mapCoordinates}</p>
         <h3 className="mt-3 font-serif text-4xl font-semibold text-[var(--ink)]">{dict.home.mapTitle}</h3>

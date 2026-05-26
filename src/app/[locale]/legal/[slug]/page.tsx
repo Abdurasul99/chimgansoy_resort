@@ -45,7 +45,7 @@ export default async function LegalPage({ params }: PageProps) {
       />
 
       <section className="px-4 py-14 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl rounded-[8px] border border-[color:var(--line)] bg-white p-6 sm:p-8">
+        <div className="mx-auto max-w-4xl rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] p-6 shadow-[var(--shadow-card)] sm:p-8">
           {policy.sections.map((section, index) => (
             <section key={text(section.title, locale)} className={index === policy.sections.length - 1 ? "" : "mb-10"}>
               <h2 className="font-serif text-3xl font-semibold text-[var(--ink)]">{text(section.title, locale)}</h2>

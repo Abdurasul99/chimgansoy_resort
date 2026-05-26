@@ -42,7 +42,7 @@ export function BnovoEmbed({ locale, searchParams }: BnovoEmbedProps) {
   const directUrl = uid ? buildBnovoBookingUrl(uid, searchParams) : src;
 
   return (
-    <div id="bnovo-widget" className="mt-8 overflow-hidden rounded-3xl border border-[color:var(--line)] bg-white shadow-[var(--shadow-card)]">
+    <div id="bnovo-widget" className="mt-8 overflow-hidden rounded-3xl border border-[color:var(--line)] bg-[var(--paper)] shadow-[var(--shadow-card)]">
       {/* Branded header bar */}
       <div className="flex items-center justify-between border-b border-[color:var(--line)] bg-[var(--surface)] px-6 py-4">
         <div className="flex items-center gap-3">

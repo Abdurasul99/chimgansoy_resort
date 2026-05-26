@@ -68,7 +68,7 @@ export function ContactForm({ dict }: Props) {
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex min-h-12 items-center justify-center gap-2 rounded-[6px] bg-white px-5 py-3 text-sm font-semibold text-[var(--ink)] transition hover:bg-[var(--mist)] disabled:opacity-60 sm:w-fit"
+        className="btn-press btn-glow-primary inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-7 py-3 text-sm font-bold text-white shadow-[var(--shadow-card)] transition disabled:opacity-60 sm:w-fit sm:col-span-2"
       >
         <span>{pending ? dict.sending : dict.send}</span>
         {!pending && <Icon name="send" className="h-4 w-4" />}

@@ -88,7 +88,7 @@ export function CurrencyWidget({ locale }: { locale: string }) {
         {/* Rate cards */}
         <div className="grid grid-cols-3 gap-3">
           {currencies.map((c) => (
-            <div key={c.key} className="rounded-xl bg-white px-3 py-3 text-center">
+            <div key={c.key} className="rounded-xl bg-[var(--paper)] px-3 py-3 text-center">
               <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">
                 {c.flag} 1 {c.key}
               </p>
@@ -106,7 +106,7 @@ export function CurrencyWidget({ locale }: { locale: string }) {
         <div className="mt-5">
           <p className="mb-2 text-xs font-semibold text-[var(--muted)]">{l.inputLabel}</p>
           <div className="flex gap-2">
-            <div className="flex flex-1 overflow-hidden rounded-xl border border-[color:var(--line)] bg-white">
+            <div className="flex flex-1 overflow-hidden rounded-xl border border-[color:var(--line)] bg-[var(--paper)]">
               <input
                 type="number"
                 placeholder="0"

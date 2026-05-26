@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Sun (orange) with 8 triangular rays — top-left, partially behind mountains -->
+  <g fill="#FFA211">
+    <polygon points="28,4 24,22 32,22"/>
+    <polygon points="6,15 19,25 16,29"/>
+    <polygon points="2,38 18,36 18,42"/>
+    <polygon points="6,60 19,49 16,46"/>
+    <polygon points="50,15 35,25 38,29"/>
+    <polygon points="54,38 38,36 38,42"/>
+    <polygon points="50,60 36,49 39,46"/>
+    <circle cx="28" cy="38" r="14"/>
+  </g>
+
+  <!-- Mountains (dark slate, zigzag peaks) -->
+  <path
+    d="M 24 70 L 38 38 L 48 52 L 60 28 L 70 44 L 82 58 L 90 70 Z"
+    fill="#323941"/>
+
+  <!-- Pine trees (dark green, right side) -->
+  <g fill="#377D19">
+    <polygon points="83,40 79,46 87,46"/>
+    <polygon points="83,46 76,55 90,55"/>
+    <polygon points="83,55 74,66 92,66"/>
+    <rect x="82" y="66" width="2.5" height="4" fill="#5a3018"/>
+
+    <polygon points="93,48 90,54 96,54"/>
+    <polygon points="93,53 88,62 98,62"/>
+    <polygon points="93,60 87,70 99,70"/>
+    <rect x="92" y="70" width="2" height="3" fill="#5a3018"/>
+  </g>
+
+  <!-- Wave (blue, two layers) -->
+  <path
+    d="M 0 76 Q 25 70 50 76 Q 75 82 100 76 L 100 84 Q 75 80 50 84 Q 25 88 0 84 Z"
+    fill="#009BEA"/>
+  <path
+    d="M 0 86 Q 25 82 50 88 Q 75 92 100 86 L 100 94 Q 75 92 50 94 Q 25 96 0 94 Z"
+    fill="#3eb8ed" opacity="0.85"/>
+</svg>

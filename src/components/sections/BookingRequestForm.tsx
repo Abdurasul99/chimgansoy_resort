@@ -55,7 +55,7 @@ export function BookingRequestForm({ dict }: { dict: Dict }) {
   }
 
   return (
-    <div className="rounded-2xl border border-[color:var(--line)] bg-white p-6 shadow-[0_8px_40px_rgba(21,29,24,0.07)] sm:p-8">
+    <div className="rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] p-6 shadow-[0_8px_40px_rgba(21,29,24,0.07)] sm:p-8">
       <h3 className="font-serif text-2xl font-semibold text-[var(--ink)]">{dict.formTitle}</h3>
 
       <form action={action} className="mt-6 space-y-4">

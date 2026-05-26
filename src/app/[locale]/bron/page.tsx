@@ -170,7 +170,7 @@ export default async function BookingPage({ params, searchParams }: PageProps) {
       </section>
 
       {/* ── FAQ ───────────────────────────────────────── */}
-      <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
+      <section className="bg-[var(--surface)] px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.7fr_1.3fr]">
           <SectionHeader title={dict.home.faqTitle} />
           <Faq locale={locale} />

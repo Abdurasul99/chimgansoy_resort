@@ -64,7 +64,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
             <SectionHeader title={text(service.title, locale)} text={text(service.description, locale)} />
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
               {list(service.highlights, locale).map((item) => (
-                <div key={item} className="rounded-[8px] border border-[color:var(--line)] bg-white p-4 text-sm font-semibold text-[var(--ink)]">
+                <div key={item} className="rounded-xl border border-[color:var(--line)] bg-[var(--paper)] p-4 text-sm font-semibold text-[var(--ink)] shadow-[var(--shadow-card)]">
                   {item}
                 </div>
               ))}
@@ -81,7 +81,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
+      <section className="bg-[var(--surface)] px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <SectionHeader title={dict.home.roomsTitle} text={dict.home.roomsText} />
           <div className="mt-8">
