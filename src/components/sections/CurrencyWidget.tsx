@@ -3,10 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 
 type Rates = { usd_to_uzs: number; eur_to_uzs: number; rub_to_uzs: number };
+type Currency = "USD" | "EUR" | "RUB" | "UZS";
 
 const labels: Record<string, {
   title: string; sub: string; updated: string;
-  usd: string; eur: string; rub: string;
+  usd: string; eur: string; rub: string; uzs: string;
   inputLabel: string; resultLabel: string;
 }> = {
   ru: {
@@ -16,6 +17,7 @@ const labels: Record<string, {
     usd: "Доллар США",
     eur: "Евро",
     rub: "Рос. рубль",
+    uzs: "Узб. сум",
     inputLabel: "Введите сумму",
     resultLabel: "Получите",
   },
@@ -26,6 +28,7 @@ const labels: Record<string, {
     usd: "AQSH dollari",
     eur: "Evro",
     rub: "Rossiya rubli",
+    uzs: "O'zbek so'mi",
     inputLabel: "Miqdorni kiriting",
     resultLabel: "Olasiz",
   },
@@ -36,6 +39,7 @@ const labels: Record<string, {
     usd: "US Dollar",
     eur: "Euro",
     rub: "Russian Ruble",
+    uzs: "Uzbek Som",
     inputLabel: "Enter amount",
     resultLabel: "You get",
   },
@@ -45,18 +49,22 @@ function fmt(n: number, dec = 0) {
   return n.toLocaleString("ru-RU", { maximumFractionDigits: dec });
 }
 
-const CURRENCY_META = {
+const CURRENCY_META: Record<Currency, { flag: string; code: string }> = {
   USD: { flag: "🇺🇸", code: "USD" },
   EUR: { flag: "🇪🇺", code: "EUR" },
   RUB: { flag: "🇷🇺", code: "RUB" },
-} as const;
+  UZS: { flag: "🇺🇿", code: "UZS" },
+};
+
+const CURRENCY_KEYS: Currency[] = ["USD", "EUR", "RUB", "UZS"];
 
 export function CurrencyWidget({ locale }: { locale: string }) {
   const [rates, setRates] = useState<Rates | null>(null);
   const [input, setInput] = useState("");
-  const [base, setBase] = useState<"USD" | "EUR" | "RUB">("USD");
-  const [dropOpen, setDropOpen] = useState(false);
-  const dropRef = useRef<HTMLDivElement>(null);
+  const [base, setBase] = useState<Currency>("USD");
+  const [target, setTarget] = useState<Currency>("UZS");
+  const [openDropdown, setOpenDropdown] = useState<"base" | "target" | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json")
@@ -72,31 +80,50 @@ export function CurrencyWidget({ locale }: { locale: string }) {
       .catch(() => {});
   }, []);
 
-  // Close dropdown on outside click
+  // Outside click closes any open dropdown
   useEffect(() => {
-    if (!dropOpen) return;
+    if (!openDropdown) return;
     const onClick = (e: MouseEvent) => {
-      if (dropRef.current && !dropRef.current.contains(e.target as Node)) {
-        setDropOpen(false);
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        setOpenDropdown(null);
       }
     };
     document.addEventListener("mousedown", onClick);
     return () => document.removeEventListener("mousedown", onClick);
-  }, [dropOpen]);
+  }, [openDropdown]);
 
   const l = labels[locale] ?? labels.ru;
-  const amount = parseFloat(input) || 0;
 
-  function toUzs(cur: "USD" | "EUR" | "RUB", val: number) {
-    if (!rates) return 0;
-    const r = cur === "USD" ? rates.usd_to_uzs : cur === "EUR" ? rates.eur_to_uzs : rates.rub_to_uzs;
-    return val * r;
+  // Rate of 1 unit of currency to UZS
+  function rateToUzs(cur: Currency): number {
+    if (!rates) return 1;
+    if (cur === "UZS") return 1;
+    if (cur === "USD") return rates.usd_to_uzs;
+    if (cur === "EUR") return rates.eur_to_uzs;
+    return rates.rub_to_uzs;
   }
 
-  const currencies = [
-    { key: "USD" as const, label: l.usd, rate: rates?.usd_to_uzs, flag: "🇺🇸" },
-    { key: "EUR" as const, label: l.eur, rate: rates?.eur_to_uzs, flag: "🇪🇺" },
-    { key: "RUB" as const, label: l.rub, rate: rates?.rub_to_uzs, flag: "🇷🇺" },
+  function convert(value: number, from: Currency, to: Currency): number {
+    if (!rates || from === to) return value;
+    // Convert via UZS
+    return (value * rateToUzs(from)) / rateToUzs(to);
+  }
+
+  const amount = parseFloat(input) || 0;
+  const converted = convert(amount, base, target);
+  // For result formatting: more decimals if target is non-UZS (small numbers)
+  const resultDecimals = target === "UZS" ? 0 : 2;
+
+  function swap() {
+    setBase(target);
+    setTarget(base);
+  }
+
+  // Rate cards still show USD/EUR/RUB → UZS (informational header strip)
+  const rateCards = [
+    { key: "USD" as const, rate: rates?.usd_to_uzs, flag: "🇺🇸" },
+    { key: "EUR" as const, rate: rates?.eur_to_uzs, flag: "🇪🇺" },
+    { key: "RUB" as const, rate: rates?.rub_to_uzs, flag: "🇷🇺" },
   ];
 
   return (
@@ -108,7 +135,6 @@ export function CurrencyWidget({ locale }: { locale: string }) {
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--muted)]">{l.sub}</p>
             <p className="mt-1 font-serif text-2xl font-semibold text-[var(--ink)]">{l.title}</p>
           </div>
-          {/* Live dot */}
           <div className="mt-1 flex shrink-0 items-center gap-1.5 rounded-full border border-[var(--forest)]/20 bg-[var(--forest)]/8 px-2.5 py-1">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--forest)] opacity-75" />
@@ -119,10 +145,10 @@ export function CurrencyWidget({ locale }: { locale: string }) {
         </div>
       </div>
 
-      <div className="space-y-5 p-6">
+      <div ref={wrapperRef} className="space-y-4 p-6">
         {/* Rate cards */}
         <div className="grid grid-cols-3 gap-2.5">
-          {currencies.map((c) => (
+          {rateCards.map((c) => (
             <div
               key={c.key}
               className="group rounded-xl border border-[color:var(--line)] bg-[var(--surface-warm)] px-3 py-3 text-center transition-all hover:border-[var(--forest)]/40 hover:shadow-sm"
@@ -143,95 +169,85 @@ export function CurrencyWidget({ locale }: { locale: string }) {
           ))}
         </div>
 
-        {/* Converter */}
-        <div>
-          <label className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">
-            {l.inputLabel}
-          </label>
-
-          {/* Wrapper: relative for dropdown anchor + ref for outside-click — NO overflow-hidden */}
-          <div ref={dropRef} className="relative">
-            {/* Input row: overflow-hidden lives on this inner container only */}
-            <div className="flex overflow-hidden rounded-xl border border-[color:var(--line)] bg-[var(--surface-warm)] focus-within:border-[var(--forest)]/50 focus-within:bg-[var(--paper)] focus-within:shadow-sm transition-all">
-              <input
-                type="number"
-                inputMode="decimal"
-                placeholder="0"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                className="min-w-0 flex-1 bg-transparent px-4 py-3.5 text-base font-bold text-[var(--ink)] placeholder-[var(--muted)]/50 focus:outline-none"
-              />
-
-              {/* Currency dropdown trigger */}
-              <button
-                type="button"
-                onClick={() => setDropOpen((v) => !v)}
-                aria-haspopup="listbox"
-                aria-expanded={dropOpen}
-                className="flex shrink-0 items-center gap-2 border-l border-[color:var(--line)] px-4 py-3.5 text-sm font-bold text-[var(--ink)] transition-colors hover:bg-[var(--paper)]"
-              >
-                <span className="text-base leading-none">{CURRENCY_META[base].flag}</span>
-                <span>{CURRENCY_META[base].code}</span>
-                <svg
-                  className={`h-3 w-3 text-[var(--muted)] transition-transform duration-200 ${dropOpen ? "rotate-180" : ""}`}
-                  viewBox="0 0 12 12"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M3 4.5l3 3 3-3" />
-                </svg>
-              </button>
+        {/* Bi-directional converter */}
+        <div className="space-y-2">
+          {/* FROM row */}
+          <div>
+            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">
+              {l.inputLabel}
+            </label>
+            <div className="relative">
+              <div className="flex overflow-hidden rounded-xl border border-[color:var(--line)] bg-[var(--surface-warm)] focus-within:border-[var(--forest)]/50 focus-within:bg-[var(--paper)] focus-within:shadow-sm transition-all">
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  placeholder="0"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  className="min-w-0 flex-1 bg-transparent px-4 py-3.5 text-base font-bold text-[var(--ink)] placeholder-[var(--muted)]/50 focus:outline-none"
+                />
+                <CurrencyDropdownTrigger
+                  value={base}
+                  isOpen={openDropdown === "base"}
+                  onClick={() => setOpenDropdown((o) => (o === "base" ? null : "base"))}
+                />
+              </div>
+              {openDropdown === "base" && (
+                <CurrencyDropdownList
+                  active={base}
+                  disabled={target}
+                  onSelect={(c) => { setBase(c); setOpenDropdown(null); }}
+                />
+              )}
             </div>
-
-            {/* Dropdown list — rendered outside overflow-hidden so it isn't clipped */}
-            {dropOpen && (
-              <ul
-                role="listbox"
-                className="absolute right-0 top-[calc(100%+6px)] z-30 w-40 overflow-hidden rounded-xl border border-[color:var(--line)] bg-[var(--paper)] shadow-[var(--shadow-card-hover)]"
-              >
-                {(Object.keys(CURRENCY_META) as Array<keyof typeof CURRENCY_META>).map((key) => {
-                  const isActive = key === base;
-                  return (
-                    <li key={key}>
-                      <button
-                        type="button"
-                        role="option"
-                        aria-selected={isActive}
-                        onClick={() => { setBase(key); setDropOpen(false); }}
-                        className={`flex w-full items-center gap-2.5 px-3.5 py-2.5 text-sm font-semibold transition-colors ${
-                          isActive
-                            ? "bg-[var(--forest)] text-white"
-                            : "text-[var(--ink)] hover:bg-[var(--surface-warm)]"
-                        }`}
-                      >
-                        <span className="text-base leading-none">{CURRENCY_META[key].flag}</span>
-                        <span>{CURRENCY_META[key].code}</span>
-                        {isActive && (
-                          <svg className="ml-auto h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
-                        )}
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
           </div>
 
-          {/* Result */}
-          {amount > 0 && rates && (
-            <div className="mt-3 flex items-center justify-between gap-3 rounded-xl border border-[var(--forest)]/25 bg-[var(--forest)]/8 px-4 py-3">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--forest-dark)]">{l.resultLabel}</span>
-              <p className="text-right font-serif text-xl font-bold text-[var(--forest-dark)]">
-                {fmt(toUzs(base, amount))}
-                <span className="ml-1 text-xs font-semibold uppercase tracking-widest text-[var(--forest)]/70">UZS</span>
-              </p>
+          {/* Swap button */}
+          <div className="flex justify-center">
+            <button
+              type="button"
+              onClick={swap}
+              aria-label="Swap currencies"
+              className="group flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--line)] bg-[var(--paper)] shadow-sm transition-all hover:rotate-180 hover:border-[var(--forest)]/50 hover:bg-[var(--forest)]/8"
+            >
+              <svg className="h-4 w-4 text-[var(--muted)] group-hover:text-[var(--forest-dark)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M7 4v16m0 0l-4-4m4 4l4-4M17 20V4m0 0l-4 4m4-4l4 4" />
+              </svg>
+            </button>
+          </div>
+
+          {/* TO row — forest accent (result) */}
+          <div>
+            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-[var(--forest-dark)]">
+              {l.resultLabel}
+            </label>
+            <div className="relative">
+              <div className="flex overflow-hidden rounded-xl border border-[var(--forest)]/30 bg-[var(--forest)]/8 transition-all">
+                <div className="min-w-0 flex-1 px-4 py-3.5">
+                  {rates ? (
+                    <p className="font-serif text-lg font-bold leading-tight text-[var(--forest-dark)] truncate">
+                      {amount > 0 ? fmt(converted, resultDecimals) : "0"}
+                    </p>
+                  ) : (
+                    <div className="h-5 w-24 animate-pulse rounded bg-[var(--forest)]/15" />
+                  )}
+                </div>
+                <CurrencyDropdownTrigger
+                  value={target}
+                  isOpen={openDropdown === "target"}
+                  onClick={() => setOpenDropdown((o) => (o === "target" ? null : "target"))}
+                  variant="forest"
+                />
+              </div>
+              {openDropdown === "target" && (
+                <CurrencyDropdownList
+                  active={target}
+                  disabled={base}
+                  onSelect={(c) => { setTarget(c); setOpenDropdown(null); }}
+                />
+              )}
             </div>
-          )}
+          </div>
         </div>
 
         {/* Footer note */}
@@ -243,5 +259,98 @@ export function CurrencyWidget({ locale }: { locale: string }) {
         </div>
       </div>
     </div>
+  );
+}
+
+// ─── Sub-components ────────────────────────────────────────
+
+function CurrencyDropdownTrigger({
+  value,
+  isOpen,
+  onClick,
+  variant = "default",
+}: {
+  value: Currency;
+  isOpen: boolean;
+  onClick: () => void;
+  variant?: "default" | "forest";
+}) {
+  const isForest = variant === "forest";
+  const baseClasses = isForest
+    ? "border-[var(--forest)]/30 text-[var(--forest-dark)] hover:bg-[var(--forest)]/15"
+    : "border-[color:var(--line)] text-[var(--ink)] hover:bg-[var(--paper)]";
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-haspopup="listbox"
+      aria-expanded={isOpen}
+      className={`flex shrink-0 items-center gap-2 border-l px-4 py-3.5 text-sm font-bold transition-colors ${baseClasses}`}
+    >
+      <span className="text-base leading-none">{CURRENCY_META[value].flag}</span>
+      <span>{CURRENCY_META[value].code}</span>
+      <svg
+        className={`h-3 w-3 opacity-60 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+        viewBox="0 0 12 12"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M3 4.5l3 3 3-3" />
+      </svg>
+    </button>
+  );
+}
+
+function CurrencyDropdownList({
+  active,
+  disabled,
+  onSelect,
+}: {
+  active: Currency;
+  disabled: Currency;
+  onSelect: (c: Currency) => void;
+}) {
+  return (
+    <ul
+      role="listbox"
+      className="absolute right-0 top-[calc(100%+6px)] z-30 w-44 overflow-hidden rounded-xl border border-[color:var(--line)] bg-[var(--paper)] shadow-[var(--shadow-card-hover)]"
+    >
+      {CURRENCY_KEYS.map((key) => {
+        const isActive = key === active;
+        const isDisabled = key === disabled;
+        return (
+          <li key={key}>
+            <button
+              type="button"
+              role="option"
+              aria-selected={isActive}
+              disabled={isDisabled}
+              onClick={() => onSelect(key)}
+              className={`flex w-full items-center gap-2.5 px-3.5 py-2.5 text-sm font-semibold transition-colors ${
+                isActive
+                  ? "bg-[var(--forest)] text-white"
+                  : isDisabled
+                    ? "text-[var(--muted)]/40 cursor-not-allowed"
+                    : "text-[var(--ink)] hover:bg-[var(--surface-warm)]"
+              }`}
+            >
+              <span className="text-base leading-none">{CURRENCY_META[key].flag}</span>
+              <span>{CURRENCY_META[key].code}</span>
+              {isActive && (
+                <svg className="ml-auto h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+              {isDisabled && (
+                <span className="ml-auto text-[9px] font-normal opacity-60">↑</span>
+              )}
+            </button>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
