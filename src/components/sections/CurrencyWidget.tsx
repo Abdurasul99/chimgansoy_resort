@@ -3,17 +3,18 @@
 import { useEffect, useRef, useState } from "react";
 
 type Rates = { usd_to_uzs: number; eur_to_uzs: number; rub_to_uzs: number };
+type Diffs = { USD: number; EUR: number; RUB: number };
 type Currency = "USD" | "EUR" | "RUB" | "UZS";
 
 const labels: Record<string, {
-  title: string; sub: string; updated: string;
+  title: string; sub: string; source: string;
   usd: string; eur: string; rub: string; uzs: string;
   inputLabel: string; resultLabel: string;
 }> = {
   ru: {
     title: "Курс валют",
-    sub: "Актуальный курс к узбекскому суму",
-    updated: "Обновляется ежедневно",
+    sub: "Официальный курс ЦБ Узбекистана",
+    source: "Источник: ЦБ РУз",
     usd: "Доллар США",
     eur: "Евро",
     rub: "Рос. рубль",
@@ -23,8 +24,8 @@ const labels: Record<string, {
   },
   uz: {
     title: "Valyuta kursi",
-    sub: "O'zbek so'miga nisbatan joriy kurs",
-    updated: "Har kuni yangilanadi",
+    sub: "O'zbekiston Markaziy banki rasmiy kursi",
+    source: "Manba: O'zR MB",
     usd: "AQSH dollari",
     eur: "Evro",
     rub: "Rossiya rubli",
@@ -34,8 +35,8 @@ const labels: Record<string, {
   },
   en: {
     title: "Exchange rates",
-    sub: "Current rates to Uzbek Som",
-    updated: "Updated daily",
+    sub: "Official Central Bank of Uzbekistan rate",
+    source: "Source: CBU",
     usd: "US Dollar",
     eur: "Euro",
     rub: "Russian Ruble",
@@ -60,6 +61,8 @@ const CURRENCY_KEYS: Currency[] = ["USD", "EUR", "RUB", "UZS"];
 
 export function CurrencyWidget({ locale }: { locale: string }) {
   const [rates, setRates] = useState<Rates | null>(null);
+  const [diffs, setDiffs] = useState<Diffs | null>(null);
+  const [rateDate, setRateDate] = useState<string | null>(null);
   const [input, setInput] = useState("");
   const [base, setBase] = useState<Currency>("USD");
   const [target, setTarget] = useState<Currency>("UZS");
@@ -67,15 +70,22 @@ export function CurrencyWidget({ locale }: { locale: string }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json")
+    // Fetch from our server-side proxy → Central Bank of Uzbekistan
+    fetch("/api/rates")
       .then((r) => r.json())
       .then((d) => {
-        const usdUzs = d.usd.uzs as number;
+        if (d.error || !d.usd_to_uzs) return;
         setRates({
-          usd_to_uzs: usdUzs,
-          eur_to_uzs: usdUzs / (d.usd.eur as number),
-          rub_to_uzs: usdUzs / (d.usd.rub as number),
+          usd_to_uzs: d.usd_to_uzs,
+          eur_to_uzs: d.eur_to_uzs,
+          rub_to_uzs: d.rub_to_uzs,
         });
+        setDiffs({
+          USD: d.usd_diff ?? 0,
+          EUR: d.eur_diff ?? 0,
+          RUB: d.rub_diff ?? 0,
+        });
+        setRateDate(d.date ?? null);
       })
       .catch(() => {});
   }, []);
@@ -146,27 +156,45 @@ export function CurrencyWidget({ locale }: { locale: string }) {
       </div>
 
       <div ref={wrapperRef} className="space-y-4 p-6">
-        {/* Rate cards */}
+        {/* Rate cards with daily change indicator */}
         <div className="grid grid-cols-3 gap-2.5">
-          {rateCards.map((c) => (
-            <div
-              key={c.key}
-              className="group rounded-xl border border-[color:var(--line)] bg-[var(--surface-warm)] px-3 py-3 text-center transition-all hover:border-[var(--forest)]/40 hover:shadow-sm"
-            >
-              <p className="flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">
-                <span className="text-sm leading-none">{c.flag}</span>
-                <span>1 {c.key}</span>
-              </p>
-              {rates ? (
-                <p className="mt-1.5 font-serif text-xl font-bold leading-none text-[var(--ink)]">
-                  {fmt(c.rate ?? 0)}
+          {rateCards.map((c) => {
+            const diff = diffs?.[c.key] ?? 0;
+            const diffUp = diff > 0;
+            const diffDown = diff < 0;
+            const diffColor = diffUp
+              ? "text-[var(--forest-dark)]"
+              : diffDown
+                ? "text-[#b94545]"
+                : "text-[var(--muted)]";
+            return (
+              <div
+                key={c.key}
+                className="group rounded-xl border border-[color:var(--line)] bg-[var(--surface-warm)] px-3 py-3 text-center transition-all hover:border-[var(--forest)]/40 hover:shadow-sm"
+              >
+                <p className="flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">
+                  <span className="text-sm leading-none">{c.flag}</span>
+                  <span>1 {c.key}</span>
                 </p>
-              ) : (
-                <div className="mx-auto mt-1.5 h-5 w-16 animate-pulse rounded bg-[var(--mist)]" />
-              )}
-              <p className="mt-1 text-[9px] font-semibold uppercase tracking-widest text-[var(--muted)]">UZS</p>
-            </div>
-          ))}
+                {rates ? (
+                  <p className="mt-1.5 font-serif text-xl font-bold leading-none text-[var(--ink)]">
+                    {fmt(c.rate ?? 0)}
+                  </p>
+                ) : (
+                  <div className="mx-auto mt-1.5 h-5 w-16 animate-pulse rounded bg-[var(--mist)]" />
+                )}
+                <div className="mt-1 flex items-center justify-center gap-1">
+                  <span className="text-[9px] font-semibold uppercase tracking-widest text-[var(--muted)]">UZS</span>
+                  {rates && diff !== 0 && (
+                    <span className={`flex items-center gap-0.5 text-[9px] font-bold tabular-nums ${diffColor}`}>
+                      <span className="text-[8px] leading-none">{diffUp ? "▲" : "▼"}</span>
+                      {fmt(Math.abs(diff), 2)}
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         {/* Bi-directional converter */}
@@ -250,12 +278,24 @@ export function CurrencyWidget({ locale }: { locale: string }) {
           </div>
         </div>
 
-        {/* Footer note */}
-        <div className="flex items-center justify-end gap-1.5 border-t border-[color:var(--line)] pt-3">
-          <svg className="h-3 w-3 text-[var(--muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--muted)]">{l.updated}</p>
+        {/* Footer: official source + date */}
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[color:var(--line)] pt-3">
+          <a
+            href="https://cbu.uz/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-[var(--muted)] transition-colors hover:text-[var(--forest-dark)]"
+          >
+            <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 21V9l9-6 9 6v12M9 21V12h6v9" />
+            </svg>
+            {l.source}
+          </a>
+          {rateDate && (
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--muted)] tabular-nums">
+              {rateDate}
+            </p>
+          )}
         </div>
       </div>
     </div>
