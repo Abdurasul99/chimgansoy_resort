@@ -100,6 +100,20 @@ export default async function ContactPage({ params }: PageProps) {
                   </svg>
                   Telegram
                 </a>
+                <a
+                  href={contacts.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-press flex items-center justify-center gap-2.5 rounded-full border px-6 py-3.5 text-sm font-bold text-white transition-all duration-300 hover:opacity-90"
+                  style={{ background: "linear-gradient(45deg, #F58529 0%, #DD2A7B 50%, #8134AF 75%, #515BD4 100%)", borderColor: "rgba(221,42,123,0.25)" }}
+                >
+                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+                    <rect x="3" y="3" width="18" height="18" rx="5" />
+                    <circle cx="12" cy="12" r="4" />
+                    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
+                  </svg>
+                  Instagram
+                </a>
               </div>
 
               {/* Address + schedule */}

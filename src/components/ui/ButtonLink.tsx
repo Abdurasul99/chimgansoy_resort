@@ -7,7 +7,7 @@ type ButtonLinkProps = {
   children: ReactNode;
   variant?: "primary" | "secondary" | "ghost" | "light";
   className?: string;
-  icon?: "arrow" | "phone" | "whatsapp" | "telegram";
+  icon?: "arrow" | "phone" | "whatsapp" | "telegram" | "instagram";
   external?: boolean;
 };
 

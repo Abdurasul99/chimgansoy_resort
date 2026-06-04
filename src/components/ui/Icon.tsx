@@ -12,7 +12,8 @@ type IconProps = {
     | "star"
     | "telegram"
     | "user"
-    | "whatsapp";
+    | "whatsapp"
+    | "instagram";
   className?: string;
 };
 
@@ -105,6 +106,14 @@ export function Icon({ name, className = "h-5 w-5" }: IconProps) {
         <svg {...common}>
           <path d="M5.2 19 6 16.2A7.6 7.6 0 1 1 8.9 19L5.2 19Z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M9.2 8.8c.2-.5.5-.5.8-.5h.5c.2 0 .4.1.5.4l.7 1.6c.1.3.1.5-.1.7l-.4.5c-.2.2-.2.4 0 .6.5.9 1.2 1.6 2.2 2.1.2.1.4.1.6-.1l.6-.7c.2-.2.4-.3.7-.2l1.6.7c.3.1.4.3.4.6 0 .7-.4 1.4-1 1.7-.8.4-2.5.1-4.4-1.1-2-1.3-3.2-3.1-3.5-4.3-.2-.7 0-1.5.3-2Z" fill="currentColor" />
+        </svg>
+      );
+    case "instagram":
+      return (
+        <svg {...common}>
+          <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.7" />
+          <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.7" />
+          <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" />
         </svg>
       );
   }

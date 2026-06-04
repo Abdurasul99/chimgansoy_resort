@@ -22,6 +22,9 @@ export function ContactActions({ locale, compact = false }: ContactActionsProps)
       <ButtonLink href={contacts.telegram} variant="ghost" icon="telegram" external>
         {dict.writeTelegram}
       </ButtonLink>
+      <ButtonLink href={contacts.instagram} variant="ghost" icon="instagram" external>
+        {dict.writeInstagram}
+      </ButtonLink>
     </div>
   );
 }

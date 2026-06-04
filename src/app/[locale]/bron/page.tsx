@@ -42,6 +42,13 @@ const channelIcons = {
       <path d="M12 0C5.372 0 0 5.373 0 12s5.372 12 12 12 12-5.373 12-12S18.628 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z" />
     </svg>
   ),
+  instagram: (
+    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
+    </svg>
+  ),
 };
 
 export default async function BookingPage({ params, searchParams }: PageProps) {
@@ -74,6 +81,14 @@ export default async function BookingPage({ params, searchParams }: PageProps) {
       value: "Telegram",
       icon: channelIcons.telegram,
       accent: "bg-[#229ED9]/8 border-[#229ED9]/20 text-[#0088CC] hover:border-[#229ED9]/50",
+    },
+    {
+      key: "instagram",
+      label: "Instagram",
+      href: contacts.instagram,
+      value: "@chimgandarbaza",
+      icon: channelIcons.instagram,
+      accent: "bg-[#DD2A7B]/8 border-[#DD2A7B]/25 text-[#C13584] hover:border-[#DD2A7B]/55",
     },
   ];
 

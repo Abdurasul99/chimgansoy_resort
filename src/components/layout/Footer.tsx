@@ -72,6 +72,14 @@ export function Footer({ locale }: FooterProps) {
               >
                 Telegram
               </a>
+              <a
+                href={contacts.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-press glass-btn inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition-all duration-300"
+              >
+                Instagram
+              </a>
             </div>
           </div>
         </div>

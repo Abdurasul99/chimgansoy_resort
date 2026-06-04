@@ -1,10 +1,11 @@
 import type { LocalizedString } from "./types";
 
 export const contacts = {
-  phone: "+998 90 000 00 00",
+  phone: "+998 70 176 00 11",
   email: "info@chimgandarbaza.uz",
-  whatsapp: "https://wa.me/998900000000",
-  telegram: "https://t.me/BayanShirinCMO",
+  whatsapp: "https://wa.me/998701760011",
+  telegram: "https://t.me/+998701760011",
+  instagram: "https://www.instagram.com/chimgandarbaza/",
   googleMapsUrl: "https://maps.app.goo.gl/AE7scBBU9DykP3st5",
   address: {
     ru: "База отдыха Сурпа, Бостанлыкский район, Ташкентская область",

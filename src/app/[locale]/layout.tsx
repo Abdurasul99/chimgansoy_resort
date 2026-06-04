@@ -72,7 +72,12 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
     "@type": "LodgingBusiness",
     name: "CHIMGAN DARBAZA Resort",
     url: localizedUrl(locale, "/"),
-    telephone: "+998712000000",
+    telephone: "+998701760011",
+    sameAs: [
+      "https://www.instagram.com/chimgandarbaza/",
+      "https://t.me/+998701760011",
+      "https://wa.me/998701760011",
+    ],
     image: `${originForLocale(locale)}/images/resort/hero.jpg`,
     address: {
       "@type": "PostalAddress",
