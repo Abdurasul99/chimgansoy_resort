@@ -18,9 +18,9 @@ export const contacts = {
     en: "Tashkent region",
   } satisfies LocalizedString,
   schedule: {
-    ru: "Ежедневно, 09:00-22:00",
-    uz: "Har kuni, 09:00-22:00",
-    en: "Daily, 09:00-22:00",
+    ru: "Ежедневно, 08:00–18:00",
+    uz: "Har kuni, 08:00–18:00",
+    en: "Daily, 08:00–18:00",
   } satisfies LocalizedString,
   mapCoordinates: "41.5193897, 69.9904599",
 };

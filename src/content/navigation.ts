@@ -6,16 +6,12 @@ export const mainNavigation: NavigationItem[] = [
     label: { ru: "Главная", uz: "Bosh sahifa", en: "Home" },
   },
   {
-    href: "/nomera",
-    label: { ru: "Номера", uz: "Joylashuv", en: "Rooms" },
-  },
-  {
     href: "/services",
-    label: { ru: "Сервисы", uz: "Xizmatlar", en: "Services" },
+    label: { ru: "Услуги", uz: "Xizmatlar", en: "Services" },
   },
   {
     href: "/about",
-    label: { ru: "О курорте", uz: "Kurort haqida", en: "About" },
+    label: { ru: "О месте", uz: "Joy haqida", en: "About" },
   },
   {
     href: "/place",
@@ -29,28 +25,27 @@ export const mainNavigation: NavigationItem[] = [
 
 export const footerNavigation = [
   {
-    title: { ru: "Размещение", uz: "Joylashuv", en: "Stay" },
+    title: { ru: "Дневной отдых", uz: "Kunlik dam", en: "Day visit" },
     links: [
-      { href: "/nomera/glamping", label: { ru: "Глэмпинг", uz: "Glemping", en: "Glamping" } },
-      { href: "/nomera/cottage", label: { ru: "Коттеджи", uz: "Kottejlar", en: "Cottages" } },
-      { href: "/bron", label: { ru: "Бронирование", uz: "Bron qilish", en: "Booking" } },
+      { href: "/bron", label: { ru: "Забронировать", uz: "Bron qilish", en: "Book a day" } },
+      { href: "/services/tapchan-zone", label: { ru: "Топчаны и курпача", uz: "Topchan va kurpacha", en: "Topchan & kurpacha" } },
+      { href: "/services/outdoor-cooking", label: { ru: "Мангал и казан", uz: "Mangal va qozon", en: "BBQ & kazan" } },
     ],
   },
   {
-    title: { ru: "Территория", uz: "Hudud", en: "Resort" },
+    title: { ru: "Территория", uz: "Hudud", en: "Territory" },
     links: [
       { href: "/services/restaurant", label: { ru: "Ресторан", uz: "Restoran", en: "Restaurant" } },
-      { href: "/services/tapchan-zone", label: { ru: "Топчаны", uz: "Topchanlar", en: "Tapchan zone" } },
-      { href: "/services/pool", label: { ru: "Бассейн", uz: "Basseyn", en: "Pool" } },
+      { href: "/services/picnic-zone", label: { ru: "Зона пикника", uz: "Piknik zonasi", en: "Picnic zone" } },
       { href: "/services/experience", label: { ru: "Активности", uz: "Faoliyatlar", en: "Activities" } },
+      { href: "/place", label: { ru: "Места рядом", uz: "Atrofdagi joylar", en: "Nearby attractions" } },
     ],
   },
   {
     title: { ru: "Информация", uz: "Ma'lumot", en: "Information" },
     links: [
       { href: "/legal/how-to-get-there", label: { ru: "Как добраться", uz: "Qanday borish", en: "How to get there" } },
-      { href: "/legal/accommodation-rules", label: { ru: "Правила проживания", uz: "Yashash qoidalari", en: "Accommodation rules" } },
-      { href: "/legal/payment-refund", label: { ru: "Оплата и возврат", uz: "To'lov va qaytarish", en: "Payment and refund" } },
+      { href: "/legal/accommodation-rules", label: { ru: "Правила посещения", uz: "Tashrif qoidalari", en: "Visit rules" } },
       { href: "/legal/privacy-policy", label: { ru: "Конфиденциальность", uz: "Maxfiylik", en: "Privacy policy" } },
     ],
   },

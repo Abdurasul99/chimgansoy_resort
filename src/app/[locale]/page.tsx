@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { WeatherPanel } from "@/components/sections/WeatherPanel";
 import { Hero } from "@/components/sections/Hero";
 import { BookingWidget } from "@/components/sections/BookingWidget";
-import { RoomCatalog } from "@/components/sections/RoomCatalog";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
 import { Faq } from "@/components/sections/Faq";
 import { Gallery } from "@/components/sections/Gallery";
@@ -13,6 +12,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { AnimatedStat } from "@/components/ui/AnimatedStat";
 import { ScrollExpandMedia } from "@/components/ui/ScrollExpandMedia";
+import { PriceList } from "@/components/sections/PriceList";
 import { resortImages } from "@/content/images";
 import { homeShowcase } from "@/content/home-showcase";
 import { promotions } from "@/content/promotions";
@@ -34,9 +34,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 const stats = [
-  { value: "18", label: { ru: "зон активностей", uz: "faoliyat zonasi", en: "activity zones" } },
+  { value: "1700", label: { ru: "м над уровнем моря", uz: "m balandlikda", en: "m above sea level" } },
+  { value: "8", label: { ru: "гостей на топчан", uz: "kishi topchan uchun", en: "guests per topchan" } },
   { value: "6", label: { ru: "га территории", uz: "ga hududida", en: "hectares" } },
-  { value: "2", label: { ru: "типа размещения", uz: "turar-joy turi", en: "stay types" } },
   { value: "45", label: { ru: "мин от Ташкента", uz: "min Toshkentdan", en: "min from Tashkent" } },
 ] as const;
 
@@ -179,20 +179,8 @@ export default async function HomePage({ params }: PageProps) {
         <WeatherPanel locale={locale} />
       </section>
 
-      {/* ── Rooms ─────────────────────────────────────── */}
-      <section className="bg-[var(--surface)] px-4 py-14 sm:py-24 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-12 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div className="motion-reveal">
-              <SectionHeader title={dict.home.roomsTitle} text={dict.home.roomsText} align="center" italic />
-            </div>
-            <ButtonLink href={localizePath(locale, "/nomera")} variant="ghost" className="lg:mb-1 btn-press motion-reveal" data-delay="100">
-              {dict.viewAll}
-            </ButtonLink>
-          </div>
-          <RoomCatalog locale={locale} />
-        </div>
-      </section>
+      {/* ── Price list (day-use) ──────────────────────── */}
+      <PriceList locale={locale} />
 
       {/* ── Territory — scroll-driven expansion ───────── */}
       <ScrollExpandMedia

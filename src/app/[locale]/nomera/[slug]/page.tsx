@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const locale = await getLocaleParam(params);
   const room = getRoom(slug);
 
-  return buildMetadata(
+  const meta = buildMetadata(
     locale,
     {
       title: {
@@ -37,6 +37,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     `/nomera/${room.slug}`,
   );
+  return { ...meta, robots: { index: false, follow: true } };
 }
 
 export default async function RoomDetailPage({ params }: PageProps) {
