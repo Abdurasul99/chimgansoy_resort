@@ -11,7 +11,6 @@ import { TestimonialsCarousel } from "@/components/sections/TestimonialsCarousel
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { AnimatedStat } from "@/components/ui/AnimatedStat";
-import { ScrollExpandMedia } from "@/components/ui/ScrollExpandMedia";
 import { PriceList } from "@/components/sections/PriceList";
 import { resortImages } from "@/content/images";
 import { homeShowcase } from "@/content/home-showcase";
@@ -48,6 +47,9 @@ export default async function HomePage({ params }: PageProps) {
     <>
       {/* ── Hero ──────────────────────────────────────── */}
       <Hero locale={locale} />
+
+      {/* ── Price list (day-use) — primary value prop ─── */}
+      <PriceList locale={locale} />
 
       {/* ── Booking widget ────────────────────────────── */}
       <BookingWidget locale={locale} />
@@ -179,39 +181,6 @@ export default async function HomePage({ params }: PageProps) {
         <WeatherPanel locale={locale} />
       </section>
 
-      {/* ── Price list (day-use) ──────────────────────── */}
-      <PriceList locale={locale} />
-
-      {/* ── Territory — scroll-driven expansion ───────── */}
-      <ScrollExpandMedia
-        mediaType="image"
-        mediaSrc={resortImages.territoryAerial.localSrc ?? resortImages.territoryAerial.src}
-        bgImageSrc={resortImages.hero.localSrc ?? resortImages.hero.src}
-        title={dict.home.territoryTitle}
-        date="CHIMGAN DARBAZA"
-        scrollToExpand={
-          locale === "ru" ? "Прокрутите, чтобы открыть" :
-          locale === "uz" ? "Ochish uchun aylantiring" :
-          "Scroll to expand"
-        }
-        textBlend
-      >
-        <div className="flex flex-col items-center gap-6 text-center">
-          <div className="flex flex-wrap justify-center gap-2">
-            {dict.home.territoryPills.map((item) => (
-              <span
-                key={item}
-                className="rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md"
-              >
-                {item}
-              </span>
-            ))}
-          </div>
-          <ButtonLink href={localizePath(locale, "/place")} variant="light" className="btn-press">
-            {locale === "ru" ? "Исследовать" : locale === "uz" ? "O'rganish" : "Explore"}
-          </ButtonLink>
-        </div>
-      </ScrollExpandMedia>
 
       {/* ── Services ──────────────────────────────────── */}
       <section className="px-4 py-24 sm:px-6 lg:px-8">
