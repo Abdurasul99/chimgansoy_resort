@@ -6,7 +6,7 @@ import "../globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ScrollObserver } from "@/components/ui/ScrollObserver";
-import { AiAssistant } from "@/components/ui/AiAssistant";
+import { FaqPanel } from "@/components/ui/FaqPanel";
 import { SeasonDetector } from "@/components/ui/SeasonDetector";
 import { dictionaries } from "@/content/translations";
 import { isLocale, locales, type Locale } from "@/i18n/config";
@@ -112,7 +112,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         <main>{children}</main>
         <Footer locale={locale as Locale} />
         <ScrollObserver />
-        <AiAssistant key={locale} locale={locale} />
+        <FaqPanel key={locale} locale={locale} />
         <SeasonDetector />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-S7FS7C573H"
