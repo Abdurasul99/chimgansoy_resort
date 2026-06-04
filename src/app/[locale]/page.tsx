@@ -12,6 +12,7 @@ import { TestimonialsCarousel } from "@/components/sections/TestimonialsCarousel
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { AnimatedStat } from "@/components/ui/AnimatedStat";
+import { ScrollExpandMedia } from "@/components/ui/ScrollExpandMedia";
 import { resortImages } from "@/content/images";
 import { homeShowcase } from "@/content/home-showcase";
 import { promotions } from "@/content/promotions";
@@ -193,38 +194,36 @@ export default async function HomePage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* ── Territory — full cinematic scene ─────────── */}
-      <section className="relative isolate overflow-hidden min-h-[60vh] lg:min-h-[75vh] flex items-end">
-        <div
-          className="absolute inset-0 -z-10 bg-cover bg-center"
-          style={imageStyle(resortImages.hero)}
-          role="img"
-          aria-label={text(resortImages.hero.alt, locale)}
-        />
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgba(12,18,14,0.95)_0%,rgba(12,18,14,0.52)_50%,rgba(12,18,14,0.08)_100%)]" />
-
-        <div className="mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 lg:pb-24 lg:px-8">
-          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40 motion-reveal">CHIMGAN DARBAZA</p>
-          <h2 className="display-lg mt-4 font-serif font-bold text-white motion-reveal" data-delay="80">
-            {dict.home.territoryTitle}
-          </h2>
-          <div className="mt-8 flex flex-wrap gap-2 motion-reveal" data-delay="160">
+      {/* ── Territory — scroll-driven expansion ───────── */}
+      <ScrollExpandMedia
+        mediaType="image"
+        mediaSrc={resortImages.territoryAerial.localSrc ?? resortImages.territoryAerial.src}
+        bgImageSrc={resortImages.hero.localSrc ?? resortImages.hero.src}
+        title={dict.home.territoryTitle}
+        date="CHIMGAN DARBAZA"
+        scrollToExpand={
+          locale === "ru" ? "Прокрутите, чтобы открыть" :
+          locale === "uz" ? "Ochish uchun aylantiring" :
+          "Scroll to expand"
+        }
+        textBlend
+      >
+        <div className="flex flex-col items-center gap-6 text-center">
+          <div className="flex flex-wrap justify-center gap-2">
             {dict.home.territoryPills.map((item) => (
               <span
                 key={item}
-                className="rounded-full border border-white/16 bg-white/8 px-4 py-2 text-sm font-semibold text-white/70 backdrop-blur-sm transition-colors duration-300 hover:bg-white/14 hover:text-white"
+                className="rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md"
               >
                 {item}
               </span>
             ))}
           </div>
-          <div className="mt-10 motion-reveal" data-delay="240">
-            <ButtonLink href={localizePath(locale, "/place")} variant="light" className="btn-press">
-              {locale === "ru" ? "Исследовать" : locale === "uz" ? "O'rganish" : "Explore"}
-            </ButtonLink>
-          </div>
+          <ButtonLink href={localizePath(locale, "/place")} variant="light" className="btn-press">
+            {locale === "ru" ? "Исследовать" : locale === "uz" ? "O'rganish" : "Explore"}
+          </ButtonLink>
         </div>
-      </section>
+      </ScrollExpandMedia>
 
       {/* ── Services ──────────────────────────────────── */}
       <section className="px-4 py-24 sm:px-6 lg:px-8">
