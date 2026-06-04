@@ -22,15 +22,24 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   const name = (formData.get("name") as string | null)?.trim() ?? "";
   const phone = (formData.get("phone") as string | null)?.trim() ?? "";
   const message = (formData.get("message") as string | null)?.trim() ?? "";
+  const checkin = (formData.get("checkin") as string | null)?.trim() ?? "";
+  const checkout = (formData.get("checkout") as string | null)?.trim() ?? "";
+  const guests = (formData.get("guests") as string | null)?.trim() ?? "";
+  const room = (formData.get("room") as string | null)?.trim() ?? "";
 
   if (!name) return { ok: false, error: "Укажите имя" };
   if (!phone) return { ok: false, error: "Укажите номер телефона" };
+
+  const dates = checkin && checkout ? `${checkin} → ${checkout}` : checkin || checkout || "";
 
   const msg = [
     `📩 <b>Новая заявка — CHIMGAN DARBAZA</b>`,
     ``,
     `👤 <b>Имя:</b> ${name}`,
     `📞 <b>Телефон:</b> ${phone}`,
+    dates ? `📅 <b>Даты:</b> ${dates}` : null,
+    guests ? `👥 <b>Гостей:</b> ${guests}` : null,
+    room ? `🏡 <b>Номер:</b> ${room}` : null,
     message ? `💬 <b>Сообщение:</b> ${message}` : null,
   ]
     .filter(Boolean)
@@ -38,7 +47,9 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
 
   await sendTelegram(msg);
 
-  console.log(`[contact] New inquiry — name: ${name}, phone: ${phone}, message: ${message || "—"}`);
+  console.log(
+    `[contact] New inquiry — name: ${name}, phone: ${phone}, dates: ${dates || "—"}, guests: ${guests || "—"}, room: ${room || "—"}, message: ${message || "—"}`,
+  );
 
   return { ok: true };
 }

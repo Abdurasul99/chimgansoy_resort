@@ -1,9 +1,8 @@
 import { dictionaries } from "@/content/translations";
 import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
-import { getFirstSearchParam, type SearchParams } from "@/lib/bnovo";
+import { getFirstSearchParam, type SearchParams } from "@/lib/search-params";
 import { Icon } from "@/components/ui/Icon";
-import { BnovoEmbed } from "./BnovoEmbed";
 
 type BookingWidgetProps = {
   locale: Locale;
@@ -63,8 +62,6 @@ export function BookingWidget({ locale, variant = "compact", searchParams }: Boo
             </button>
           </form>
         </div>
-
-        {isFull ? <BnovoEmbed locale={locale} searchParams={searchParams} /> : null}
       </div>
     </section>
   );

@@ -56,9 +56,9 @@ export const pageSeo = {
   booking: {
     title: { ru: "Бронирование CHIMGAN DARBAZA", uz: "CHIMGAN DARBAZA bron qilish", en: "CHIMGAN DARBAZA booking" },
     description: {
-      ru: "Страница бронирования с готовым местом для интеграции Bnovo.",
-      uz: "Bnovo integratsiyasi uchun tayyor joyga ega bron sahifasi.",
-      en: "Booking page with a prepared Bnovo integration area.",
+      ru: "Оставьте заявку на даты, и администратор подтвердит бронь — быстро, без онлайн-оплаты.",
+      uz: "Sanalar uchun so'rov qoldiring — administrator bronni tasdiqlaydi, onlayn to'lovsiz.",
+      en: "Send a request with your dates and our team will confirm the booking — no online payment needed.",
     },
   },
 } satisfies Record<string, PageSeo>;

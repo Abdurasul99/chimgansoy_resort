@@ -163,7 +163,12 @@ export default async function RoomDetailPage({ params }: PageProps) {
             {/* Right — sticky booking panel (desktop) */}
             <div className="hidden lg:block">
               <div className="sticky top-24">
-                <BookingDrawer locale={locale} roomTitle={text(room.title, locale)} priceFrom={text(room.priceFrom, locale)} />
+                <BookingDrawer
+                  locale={locale}
+                  roomTitle={text(room.title, locale)}
+                  roomSlug={room.slug}
+                  priceFrom={text(room.priceFrom, locale)}
+                />
               </div>
             </div>
           </div>

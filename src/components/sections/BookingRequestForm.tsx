@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { submitContact } from "@/app/actions/contact";
 
-type Dict = {
+type BronDict = {
   formTitle: string;
   name: string;
   phone: string;
@@ -13,6 +13,21 @@ type Dict = {
   sending: string;
   success: string;
   errorRequired: string;
+};
+
+type FieldLabels = {
+  checkIn: string;
+  checkOut: string;
+  guests: string;
+};
+
+type Props = {
+  dict: BronDict;
+  labels: FieldLabels;
+  defaultCheckin?: string;
+  defaultCheckout?: string;
+  defaultGuests?: string;
+  defaultRoom?: string;
 };
 
 type State = { status: "idle" } | { status: "ok" } | { status: "error"; message: string };
@@ -38,7 +53,14 @@ function SubmitButton({ label, sending }: { label: string; sending: string }) {
   );
 }
 
-export function BookingRequestForm({ dict }: { dict: Dict }) {
+export function BookingRequestForm({
+  dict,
+  labels,
+  defaultCheckin = "",
+  defaultCheckout = "",
+  defaultGuests = "",
+  defaultRoom = "",
+}: Props) {
   const [state, action] = useActionState(formAction, initialState);
 
   if (state.status === "ok") {
@@ -59,6 +81,49 @@ export function BookingRequestForm({ dict }: { dict: Dict }) {
       <h3 className="font-serif text-2xl font-semibold text-[var(--ink)]">{dict.formTitle}</h3>
 
       <form action={action} className="mt-6 space-y-4">
+        {defaultRoom && <input type="hidden" name="room" value={defaultRoom} />}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
+              {labels.checkIn}
+            </label>
+            <input
+              type="date"
+              name="checkin"
+              defaultValue={defaultCheckin}
+              className="w-full rounded-xl border border-[color:var(--line)] bg-[var(--surface)] px-4 py-3.5 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15"
+            />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
+              {labels.checkOut}
+            </label>
+            <input
+              type="date"
+              name="checkout"
+              defaultValue={defaultCheckout}
+              className="w-full rounded-xl border border-[color:var(--line)] bg-[var(--surface)] px-4 py-3.5 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
+            {labels.guests}
+          </label>
+          <select
+            name="guests"
+            defaultValue={defaultGuests || "2"}
+            className="w-full rounded-xl border border-[color:var(--line)] bg-[var(--surface)] px-4 py-3.5 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15"
+          >
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5+</option>
+          </select>
+        </div>
+
         <div>
           <label className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
             {dict.name}
@@ -69,7 +134,6 @@ export function BookingRequestForm({ dict }: { dict: Dict }) {
             required
             autoComplete="name"
             className="w-full rounded-xl border border-[color:var(--line)] bg-[var(--surface)] px-4 py-3.5 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15"
-            placeholder="Иван"
           />
         </div>
 
@@ -82,8 +146,8 @@ export function BookingRequestForm({ dict }: { dict: Dict }) {
             name="phone"
             required
             autoComplete="tel"
-            className="w-full rounded-xl border border-[color:var(--line)] bg-[var(--surface)] px-4 py-3.5 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15"
             placeholder="+998 90 000 00 00"
+            className="w-full rounded-xl border border-[color:var(--line)] bg-[var(--surface)] px-4 py-3.5 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15"
           />
         </div>
 
@@ -95,7 +159,6 @@ export function BookingRequestForm({ dict }: { dict: Dict }) {
             name="message"
             rows={3}
             className="w-full resize-none rounded-xl border border-[color:var(--line)] bg-[var(--surface)] px-4 py-3.5 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15"
-            placeholder="Даты заезда, количество гостей, пожелания..."
           />
         </div>
 

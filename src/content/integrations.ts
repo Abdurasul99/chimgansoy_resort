@@ -13,11 +13,3 @@ export const googleMapsIntegration = {
   } satisfies LocalizedString,
 };
 
-export const bnovoIntegration = {
-  helpUrl: "https://help.bnovo.ru/knowledgebase/bookingengine-widget/",
-  productUrl: "https://bnovo.ru/bnovo-mb/",
-  env: {
-    iframeUrl: "NEXT_PUBLIC_BNOVO_IFRAME_URL",
-    uid: "NEXT_PUBLIC_BNOVO_UID",
-  },
-};

@@ -135,7 +135,10 @@ export default async function ContactPage({ params }: PageProps) {
 
             {/* Right — request form */}
             <div>
-              <BookingRequestForm dict={bronDict} />
+              <BookingRequestForm
+                dict={bronDict}
+                labels={{ checkIn: dict.checkIn, checkOut: dict.checkOut, guests: dict.guests }}
+              />
             </div>
           </div>
         </div>

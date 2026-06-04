@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BookingWidget } from "@/components/sections/BookingWidget";
 import { PageHero } from "@/components/sections/PageHero";
 import { RoomCatalog } from "@/components/sections/RoomCatalog";
 import { Faq } from "@/components/sections/Faq";
@@ -13,6 +12,7 @@ import { dictionaries } from "@/content/translations";
 import { pageSeo } from "@/content/seo";
 import { getLocaleParam } from "@/lib/content";
 import { buildMetadata } from "@/lib/metadata";
+import { getFirstSearchParam } from "@/lib/search-params";
 import { text } from "@/lib/localize";
 
 type PageProps = {
@@ -149,28 +149,17 @@ export default async function BookingPage({ params, searchParams }: PageProps) {
 
             {/* Right — request form + currency */}
             <div className="space-y-6">
-              <BookingRequestForm dict={bronDict} />
+              <BookingRequestForm
+                dict={bronDict}
+                labels={{ checkIn: dict.checkIn, checkOut: dict.checkOut, guests: dict.guests }}
+                defaultCheckin={getFirstSearchParam(bookingSearchParams, "checkin")}
+                defaultCheckout={getFirstSearchParam(bookingSearchParams, "checkout")}
+                defaultGuests={getFirstSearchParam(bookingSearchParams, "guests")}
+                defaultRoom={getFirstSearchParam(bookingSearchParams, "room")}
+              />
               <CurrencyWidget locale={locale} />
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* ── Divider ───────────────────────────────────── */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <hr className="border-[color:var(--line)]" />
-      </div>
-
-      {/* ── Online booking (Bnovo) ─────────────────────── */}
-      <section className="px-4 pb-10 pt-12 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-6">
-            <p className="text-xs font-bold uppercase tracking-widest text-[var(--accent-strong)]">
-              {bronDict.onlineTitle}
-            </p>
-            <p className="mt-1 text-sm text-[var(--muted)]">{bronDict.onlineLead}</p>
-          </div>
-          <BookingWidget locale={locale} variant="full" searchParams={bookingSearchParams} />
         </div>
       </section>
 
