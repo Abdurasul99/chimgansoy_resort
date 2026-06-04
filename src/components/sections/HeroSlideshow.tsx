@@ -9,7 +9,7 @@ const SUMMER_SLIDES = [
   "/images/resort/photo_2026-03-31_22-24-14.jpg",
 ];
 
-const WINTER_PHOTO = "/images/resort/winter-mountains.png";
+const WINTER_PHOTO = "/images/resort/winter-google-aframe.jpg";
 
 const INTERVAL_MS = 5500;
 
@@ -56,7 +56,7 @@ export function HeroSlideshow() {
         className="absolute inset-0 -z-20 bg-cover bg-center"
         style={{ backgroundImage: `url(${WINTER_PHOTO})` }}
         role="img"
-        aria-label="Зимний Чимган"
+        aria-label="Winter A-frame cottages in the Chimgan mountains"
       />
     );
   }

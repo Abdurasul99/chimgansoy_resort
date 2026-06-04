@@ -22,5 +22,6 @@ Place the supplied resort renders/photos here with the exact names below. The cu
 | `16-pool-day-lifestyle.jpg` | Summer rest, promo, home services |
 | `17-workout-padel-zone.jpg` | Workout, padel, sport |
 | `18-cottage-day-mountains.jpg` | Cottage gallery/card |
+| `winter-google-aframe.jpg` | Winter hero background from Google Maps shared photo |
 
 The same placement plan is mirrored in `src/content/photo-plan.ts` for future CMS/data loading.

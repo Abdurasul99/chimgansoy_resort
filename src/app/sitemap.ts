@@ -1,11 +1,9 @@
 import type { MetadataRoute } from "next";
 import { locales } from "@/i18n/config";
-import { localizePath } from "@/i18n/routing";
+import { languageAlternates, localizedUrl } from "@/i18n/domains";
 import { rooms } from "@/content/rooms";
 import { services } from "@/content/services";
 import { policies } from "@/content/policies";
-
-const baseUrl = "https://chimgansoy.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPaths = ["/", "/nomera", "/services", "/about", "/place", "/contact", "/bron"];
@@ -15,10 +13,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [...staticPaths, ...roomPaths, ...servicePaths, ...policyPaths].flatMap((path) =>
     locales.map((locale) => ({
-      url: `${baseUrl}${localizePath(locale, path)}`,
+      url: localizedUrl(locale, path),
       lastModified: new Date(),
       changeFrequency: path === "/" ? "weekly" : "monthly",
       priority: path === "/" ? 1 : 0.7,
+      alternates: {
+        languages: languageAlternates(path),
+      },
     })),
   );
 }
