@@ -12,7 +12,7 @@ export const attractions: Attraction[] = [
   {
     title: { ru: "Горы Чимган", uz: "Chimyon tog'lari", en: "Chimgan mountains" },
     distance: { ru: "рядом с курортом", uz: "kurort yaqinida", en: "near the resort" },
-    image: "mountains",
+    image: "chimganMountains",
     description: {
       ru: "Маршруты, виды и сезонные активности для гостей, которые хотят добавить к отдыху горный сценарий.",
       uz: "Dam olishga tog' ssenariysini qo'shishni istagan mehmonlar uchun marshrutlar, manzaralar va mavsumiy faoliyatlar.",
@@ -22,7 +22,7 @@ export const attractions: Attraction[] = [
   {
     title: { ru: "Канатные дороги", uz: "Kanat yo'llari", en: "Cable cars" },
     distance: { ru: "короткая поездка", uz: "qisqa yo'l", en: "short drive" },
-    image: "activity",
+    image: "cableCars",
     description: {
       ru: "Подходят для семейных прогулок и панорамных кадров в течение дня.",
       uz: "Oilaviy sayrlar va kun davomida panorama suratlar uchun mos.",
@@ -32,7 +32,7 @@ export const attractions: Attraction[] = [
   {
     title: { ru: "Горные прогулки", uz: "Tog' sayrlari", en: "Mountain walks" },
     distance: { ru: "от территории", uz: "hududdan", en: "from the territory" },
-    image: "nature",
+    image: "mountainWalks",
     description: {
       ru: "Легкие маршруты можно совместить с завтраком, топчаном или ужином в ресторане.",
       uz: "Yengil marshrutlarni nonushta, topchan yoki restorandagi kechki ovqat bilan birlashtirish mumkin.",
@@ -42,7 +42,7 @@ export const attractions: Attraction[] = [
   {
     title: { ru: "Конные прогулки", uz: "Ot minish", en: "Horse riding" },
     distance: { ru: "по запросу", uz: "so'rov bo'yicha", en: "on request" },
-    image: "activity",
+    image: "horseRiding",
     description: {
       ru: "Сезонный формат для гостей, которым нужен более живой контакт с природой.",
       uz: "Tabiat bilan yanada jonli aloqa istagan mehmonlar uchun mavsumiy format.",

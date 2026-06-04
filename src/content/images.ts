@@ -301,6 +301,46 @@ export const resortImages = {
       en: "Mountain landscape of Tashkent region",
     },
   },
+  chimganMountains: {
+    src: "/images/resort/chimgan.jpg",
+    localSrc: "/images/resort/chimgan.jpg",
+    position: "center",
+    alt: {
+      ru: "Горы Чимган рядом с курортом",
+      uz: "Kurort yaqinidagi Chimyon tog'lari",
+      en: "Chimgan mountains near the resort",
+    },
+  },
+  cableCars: {
+    src: "/images/resort/kanatnaya_doroga.jpg",
+    localSrc: "/images/resort/kanatnaya_doroga.jpg",
+    position: "center",
+    alt: {
+      ru: "Канатные дороги Чимгана",
+      uz: "Chimyon kanat yo'llari",
+      en: "Chimgan cable cars",
+    },
+  },
+  mountainWalks: {
+    src: "/images/resort/gorniy_progulki.jpg",
+    localSrc: "/images/resort/gorniy_progulki.jpg",
+    position: "center",
+    alt: {
+      ru: "Горные прогулки от территории курорта",
+      uz: "Kurort hududidan tog' sayrlari",
+      en: "Mountain walks from the resort",
+    },
+  },
+  horseRiding: {
+    src: "/images/resort/konniy_progulka.webp",
+    localSrc: "/images/resort/konniy_progulka.webp",
+    position: "center",
+    alt: {
+      ru: "Конные прогулки в горах",
+      uz: "Tog'larda ot minish",
+      en: "Horse riding in the mountains",
+    },
+  },
 } satisfies Record<string, ImageAsset>;
 
 export const galleryImages = [
