@@ -1,44 +1,63 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import {
+  matchKnowledge,
+  findById,
+  quickReplies,
+  fallback,
+} from "@/content/assistant-knowledge";
 
+type Locale = "ru" | "uz" | "en";
 type Message = { role: "user" | "assistant"; content: string };
 
-const GREETINGS: Record<string, string> = {
-  ru: "Привет! Я помощник курорта CHIMGAN DARBAZA 🏔️ Помогу выбрать номер, расскажу об активностях или отвечу на любые вопросы.",
-  uz: "Salom! Men CHIMGAN DARBAZA kurortining yordamchisiman 🏔️ Xona tanlashda, faoliyatlar haqida yoki boshqa savollarda yordam beraman.",
-  en: "Hello! I'm the CHIMGAN DARBAZA resort assistant 🏔️ I can help you choose a room, tell you about activities, or answer any questions.",
+const GREETINGS: Record<Locale, string> = {
+  ru: "Привет! 👋 Я помощник курорта CHIMGAN DARBAZA 🏔️\nОтвечу на частые вопросы про номера, бронирование, активности и контакты. Выберите тему ниже или напишите свой вопрос.",
+  uz: "Salom! 👋 Men CHIMGAN DARBAZA kurortining yordamchisiman 🏔️\nXonalar, bron qilish, faoliyatlar va aloqalar bo'yicha tez-tez beriladigan savollarga javob beraman. Quyidan mavzu tanlang yoki savol yozing.",
+  en: "Hi! 👋 I'm the CHIMGAN DARBAZA resort assistant 🏔️\nI answer common questions about rooms, bookings, activities, and contacts. Pick a topic below or ask your own question.",
 };
 
-const PLACEHOLDERS: Record<string, string> = {
+const PLACEHOLDERS: Record<Locale, string> = {
   ru: "Напишите вопрос...",
   uz: "Savol yozing...",
   en: "Ask a question...",
 };
 
-const TITLES: Record<string, string> = {
+const TITLES: Record<Locale, string> = {
   ru: "Помощник курорта",
   uz: "Kurort yordamchisi",
   en: "Resort Assistant",
 };
 
-const LABELS: Record<string, string> = {
+const LABELS: Record<Locale, string> = {
   ru: "Помощник",
   uz: "Yordamchi",
   en: "Assistant",
 };
 
-export function AiAssistant({ locale }: { locale: string }) {
+const SUGGEST_LABELS: Record<Locale, string> = {
+  ru: "Популярные вопросы",
+  uz: "Mashhur savollar",
+  en: "Popular questions",
+};
+
+function toLocale(raw: string): Locale {
+  if (raw === "uz" || raw === "en") return raw;
+  return "ru";
+}
+
+export function AiAssistant({ locale: rawLocale }: { locale: string }) {
+  const locale = toLocale(rawLocale);
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: GREETINGS[locale] ?? GREETINGS.ru },
+    { role: "assistant", content: GREETINGS[locale] },
   ]);
   const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
   const [showIntro, setShowIntro] = useState(false);
   const [ready, setReady] = useState(false);
   const [isNight, setIsNight] = useState(false);
   const [starEnd, setStarEnd] = useState({ x: "800px", y: "500px" });
+  const [showQuickReplies, setShowQuickReplies] = useState(true);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -53,8 +72,9 @@ export function AiAssistant({ locale }: { locale: string }) {
 
     if (!localStorage.getItem("cgs_v")) {
       localStorage.setItem("cgs_v", "1");
-      setTimeout(() => setShowIntro(true), 700);
-      setTimeout(() => { setShowIntro(false); setReady(true); }, 2400);
+      const t1 = setTimeout(() => setShowIntro(true), 700);
+      const t2 = setTimeout(() => { setShowIntro(false); setReady(true); }, 2400);
+      return () => { clearTimeout(t1); clearTimeout(t2); };
     } else {
       setReady(true);
     }
@@ -65,69 +85,37 @@ export function AiAssistant({ locale }: { locale: string }) {
   }, [messages]);
 
   useEffect(() => {
-    if (open) setTimeout(() => inputRef.current?.focus(), 100);
+    if (open) {
+      const t = setTimeout(() => inputRef.current?.focus(), 100);
+      return () => clearTimeout(t);
+    }
   }, [open]);
 
-  async function send() {
-    const txt = input.trim();
-    if (!txt || loading) return;
-    const userMsg: Message = { role: "user", content: txt };
-    const history = [...messages, userMsg];
-    setMessages(history);
-    setInput("");
-    setLoading(true);
-    setMessages([...history, { role: "assistant", content: "" }]);
-
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history.map(m => ({ role: m.role, content: m.content })) }),
-      });
-      if (!res.ok || !res.body) throw new Error();
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buf = "", full = "";
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buf += decoder.decode(value, { stream: true });
-        const lines = buf.split("\n");
-        buf = lines.pop() ?? "";
-        for (const line of lines) {
-          if (!line.startsWith("data: ")) continue;
-          const data = line.slice(6).trim();
-          if (data === "[DONE]") break;
-          try {
-            const delta = JSON.parse(data).choices?.[0]?.delta?.content ?? "";
-            if (delta) {
-              full += delta;
-              setMessages(prev => {
-                const next = [...prev];
-                next[next.length - 1] = { role: "assistant", content: full };
-                return next;
-              });
-            }
-          } catch { /* skip */ }
-        }
-      }
-    } catch {
-      setMessages(prev => {
-        const next = [...prev];
-        next[next.length - 1] = {
-          role: "assistant",
-          content: locale === "uz"
-            ? "Kechirasiz, xato yuz berdi. Qayta urinib ko'ring."
-            : locale === "en"
-            ? "Sorry, something went wrong. Please try again."
-            : "Извините, произошла ошибка. Попробуйте ещё раз.",
-        };
-        return next;
-      });
-    } finally {
-      setLoading(false);
-    }
+  function appendAndAnswer(userText: string, answerText: string) {
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", content: userText },
+      { role: "assistant", content: answerText },
+    ]);
+    setShowQuickReplies(false);
   }
+
+  function handleSend() {
+    const txt = input.trim();
+    if (!txt) return;
+    const match = matchKnowledge(txt);
+    const answer = match ? match.answer[locale] : fallback[locale];
+    appendAndAnswer(txt, answer);
+    setInput("");
+  }
+
+  function handleQuickReply(id: string, label: string) {
+    const entry = findById(id);
+    if (!entry) return;
+    appendAndAnswer(label, entry.answer[locale]);
+  }
+
+  const chips = quickReplies[locale];
 
   const mode = isNight ? "night" : "day";
   const headerBg = isNight
@@ -154,8 +142,8 @@ export function AiAssistant({ locale }: { locale: string }) {
       {/* Chat panel */}
       {open && (
         <div
-          className="fixed bottom-0 left-0 right-0 z-50 flex flex-col overflow-hidden rounded-t-2xl border-t border-[color:var(--line)] bg-[var(--paper)] shadow-[0_-8px_40px_rgba(21,29,24,0.20)] sm:bottom-24 sm:left-auto sm:right-4 sm:h-[480px] sm:w-[380px] sm:rounded-2xl sm:border sm:shadow-[0_24px_80px_rgba(21,29,24,0.25)]"
-          style={{ height: "min(70vh,480px)" }}
+          className="fixed bottom-0 left-0 right-0 z-50 flex flex-col overflow-hidden rounded-t-2xl border-t border-[color:var(--line)] bg-[var(--paper)] shadow-[0_-8px_40px_rgba(21,29,24,0.20)] sm:bottom-24 sm:left-auto sm:right-4 sm:h-[540px] sm:w-[400px] sm:rounded-2xl sm:border sm:shadow-[0_24px_80px_rgba(21,29,24,0.25)]"
+          style={{ height: "min(80vh,540px)" }}
         >
           <div className="flex items-center justify-between px-4 py-3" style={{ background: headerBg }}>
             <div className="flex items-center gap-2.5">
@@ -177,11 +165,11 @@ export function AiAssistant({ locale }: { locale: string }) {
                 )}
               </div>
               <div>
-                <p className="text-xs font-bold text-white">{TITLES[locale] ?? TITLES.ru}</p>
-                <p className="text-[10px] text-white/50">CHIMGAN DARBAZA · AI</p>
+                <p className="text-xs font-bold text-white">{TITLES[locale]}</p>
+                <p className="text-[10px] text-white/60">CHIMGAN DARBAZA</p>
               </div>
             </div>
-            <button onClick={() => setOpen(false)} className="flex h-7 w-7 items-center justify-center rounded-full text-white/60 hover:bg-white/10 hover:text-white transition-colors">
+            <button onClick={() => setOpen(false)} className="flex h-7 w-7 items-center justify-center rounded-full text-white/60 hover:bg-white/10 hover:text-white transition-colors" aria-label="Close">
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -192,24 +180,38 @@ export function AiAssistant({ locale }: { locale: string }) {
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                 {m.role === "assistant" && (
-                  <div className="mr-2 mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[9px] text-white font-bold" style={{ background: headerBg }}>
+                  <div className="mr-2 mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] text-white font-bold" style={{ background: headerBg }}>
                     {isNight ? "🌙" : "☀"}
                   </div>
                 )}
                 <div
-                  className={`max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${m.role === "user" ? "text-white rounded-br-sm" : "bg-[var(--surface)] text-[var(--ink)] rounded-bl-sm border border-[color:var(--line)]"}`}
+                  className={`max-w-[82%] whitespace-pre-line rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${m.role === "user" ? "text-white rounded-br-sm" : "bg-[var(--surface)] text-[var(--ink)] rounded-bl-sm border border-[color:var(--line)]"}`}
                   style={m.role === "user" ? { background: headerBg } : {}}
                 >
-                  {m.content || (
-                    <span className="flex gap-1 items-center h-4">
-                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--muted)] animate-bounce" style={{ animationDelay: "0ms" }} />
-                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--muted)] animate-bounce" style={{ animationDelay: "150ms" }} />
-                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--muted)] animate-bounce" style={{ animationDelay: "300ms" }} />
-                    </span>
-                  )}
+                  {m.content}
                 </div>
               </div>
             ))}
+
+            {showQuickReplies && (
+              <div className="pt-2">
+                <p className="mb-2 text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">
+                  {SUGGEST_LABELS[locale]}
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {chips.map((chip) => (
+                    <button
+                      key={chip.id}
+                      onClick={() => handleQuickReply(chip.id, chip.label)}
+                      className="rounded-full border border-[color:var(--line)] bg-[var(--paper)] px-3 py-1.5 text-xs font-medium text-[var(--ink)] transition-all hover:border-[var(--sun)] hover:bg-[var(--surface)] hover:text-[var(--sun-dark)]"
+                    >
+                      {chip.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div ref={bottomRef} />
           </div>
 
@@ -218,19 +220,29 @@ export function AiAssistant({ locale }: { locale: string }) {
               <input
                 ref={inputRef}
                 value={input}
-                onChange={e => setInput(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && !e.shiftKey && send()}
-                placeholder={PLACEHOLDERS[locale] ?? PLACEHOLDERS.ru}
-                disabled={loading}
-                className="flex-1 bg-transparent text-sm text-[var(--ink)] placeholder-[var(--muted)] focus:outline-none disabled:opacity-50"
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend();
+                  }
+                }}
+                placeholder={PLACEHOLDERS[locale]}
+                className="flex-1 bg-transparent text-sm text-[var(--ink)] placeholder-[var(--muted)] focus:outline-none"
               />
-              <button onClick={send} disabled={!input.trim() || loading} className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-white transition-all hover:opacity-80 disabled:opacity-30" style={{ background: headerBg }}>
+              <button
+                onClick={handleSend}
+                disabled={!input.trim()}
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-white transition-all hover:opacity-80 disabled:opacity-30"
+                style={{ background: headerBg }}
+                aria-label="Send"
+              >
                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
                 </svg>
               </button>
             </div>
-            <p className="mt-1.5 text-center text-[9px] text-[var(--muted)]">DeepSeek AI · CHIMGAN DARBAZA</p>
+            <p className="mt-1.5 text-center text-[9px] text-[var(--muted)]">CHIMGAN DARBAZA</p>
           </div>
         </div>
       )}
@@ -238,7 +250,7 @@ export function AiAssistant({ locale }: { locale: string }) {
       {/* Magic toggle — Moon or Sun */}
       <button
         type="button"
-        onClick={() => setOpen(v => !v)}
+        onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Close assistant" : "Open assistant"}
         className={[
           "assistant-toggle",
@@ -271,7 +283,7 @@ export function AiAssistant({ locale }: { locale: string }) {
           </div>
         </div>
         <span className="assistant-toggle__copy">
-          <span className="assistant-toggle__label">{LABELS[locale] ?? LABELS.ru}</span>
+          <span className="assistant-toggle__label">{LABELS[locale]}</span>
         </span>
         <span className="assistant-toggle__spark assistant-toggle__spark--three" />
       </button>
