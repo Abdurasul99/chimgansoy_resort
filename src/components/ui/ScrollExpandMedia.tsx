@@ -49,12 +49,10 @@ export function ScrollExpandMedia({
 
   const mediaWidth = 320 + progress * (isMobile ? 600 : 1200);
   const mediaHeight = 420 + progress * (isMobile ? 220 : 380);
-  const textTranslateX = progress * (isMobile ? 140 : 120);
   const showContent = progress >= 0.95;
   const hintOpacity = Math.max(0, 1 - progress * 1.8);
-
-  const firstWord = title ? title.split(" ")[0] : "";
-  const restOfTitle = title ? title.split(" ").slice(1).join(" ") : "";
+  // Title fades out cleanly before the media covers it
+  const titleOpacity = Math.max(0, 1 - progress * 2.4);
 
   return (
     <div
@@ -81,27 +79,19 @@ export function ScrollExpandMedia({
 
         {/* Centered stage */}
         <div className="relative z-10 flex h-full w-full items-center justify-center">
-          {/* Split title — sits behind the media, slides out as it expands */}
-          <div
-            className={`pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 px-4 text-center ${
-              textBlend ? "mix-blend-difference" : ""
-            }`}
-          >
-            <h2
-              className="font-serif text-4xl font-bold text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.55)] md:text-5xl lg:text-6xl"
-              style={{ transform: `translateX(-${textTranslateX}vw)` }}
+          {/* Title — single centered block, fades out as media takes over */}
+          {title && (
+            <div
+              className={`pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-6 text-center ${
+                textBlend ? "mix-blend-difference" : ""
+              }`}
+              style={{ opacity: titleOpacity }}
             >
-              {firstWord}
-            </h2>
-            {restOfTitle && (
-              <h2
-                className="font-serif text-4xl font-bold text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.55)] md:text-5xl lg:text-6xl"
-                style={{ transform: `translateX(${textTranslateX}vw)` }}
-              >
-                {restOfTitle}
+              <h2 className="max-w-3xl font-serif text-4xl font-bold leading-tight text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.55)] md:text-5xl lg:text-6xl">
+                {title}
               </h2>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* Expanding media frame */}
           <div
