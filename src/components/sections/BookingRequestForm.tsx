@@ -81,6 +81,7 @@ export function BookingRequestForm({
       <h3 className="font-serif text-2xl font-semibold text-[var(--ink)]">{dict.formTitle}</h3>
 
       <form action={action} className="mt-6 space-y-4">
+        <input type="hidden" name="formType" value="booking" />
         {defaultRoom && <input type="hidden" name="room" value={defaultRoom} />}
         <div className="grid gap-4 sm:grid-cols-2">
           <div>

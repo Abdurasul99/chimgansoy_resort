@@ -18,10 +18,14 @@ async function sendTelegram(text: string): Promise<void> {
   }
 }
 
-async function sendEmail(subject: string, html: string, replyTo?: string): Promise<void> {
+async function sendEmail(
+  subject: string,
+  html: string,
+  toRaw: string | undefined,
+  replyTo?: string,
+): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.BOOKING_EMAIL_FROM;
-  const toRaw = process.env.BOOKING_EMAIL_TO;
   if (!apiKey || !from || !toRaw) return;
 
   const to = toRaw.split(",").map((s) => s.trim()).filter(Boolean);
@@ -65,14 +69,27 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   const guests = (formData.get("guests") as string | null)?.trim() ?? "";
   const room = (formData.get("room") as string | null)?.trim() ?? "";
   const email = (formData.get("email") as string | null)?.trim() ?? "";
+  const formTypeRaw = (formData.get("formType") as string | null)?.trim() ?? "";
+  const formType: "booking" | "inquiry" = formTypeRaw === "inquiry" ? "inquiry" : "booking";
 
   if (!name) return { ok: false, error: "Укажите имя" };
   if (!phone) return { ok: false, error: "Укажите номер телефона" };
 
   const dates = checkin && checkout ? `${checkin} → ${checkout}` : checkin || checkout || "";
 
+  // Route to the right inbox: bookings -> reservations@, general questions -> info@.
+  // Fall back to the legacy BOOKING_EMAIL_TO for backwards compatibility.
+  const emailTo =
+    formType === "booking"
+      ? process.env.RESERVATIONS_EMAIL_TO ?? process.env.BOOKING_EMAIL_TO
+      : process.env.INFO_EMAIL_TO ?? process.env.BOOKING_EMAIL_TO;
+
+  const tgHeader = formType === "booking"
+    ? "🏡 <b>Новая бронь — CHIMGAN DARBAZA</b>"
+    : "💬 <b>Новый вопрос — CHIMGAN DARBAZA</b>";
+
   const tgText = [
-    `📩 <b>Новая заявка — CHIMGAN DARBAZA</b>`,
+    tgHeader,
     ``,
     `👤 <b>Имя:</b> ${name}`,
     `📞 <b>Телефон:</b> ${phone}`,
@@ -120,8 +137,9 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   </div>
 </div>`.trim();
 
+  const subjectPrefix = formType === "booking" ? "Бронь" : "Вопрос";
   const subjectParts = [
-    `Новая заявка`,
+    subjectPrefix,
     name,
     dates ? `(${dates})` : null,
     room ? `· ${room}` : null,
@@ -131,11 +149,11 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
 
   await Promise.all([
     sendTelegram(tgText),
-    sendEmail(subjectParts, emailHtml, email || undefined),
+    sendEmail(subjectParts, emailHtml, emailTo, email || undefined),
   ]);
 
   console.log(
-    `[contact] New inquiry — name: ${name}, phone: ${phone}, email: ${email || "—"}, dates: ${dates || "—"}, guests: ${guests || "—"}, room: ${room || "—"}, message: ${message || "—"}`,
+    `[contact:${formType}] name: ${name}, phone: ${phone}, email: ${email || "—"}, dates: ${dates || "—"}, guests: ${guests || "—"}, room: ${room || "—"}, message: ${message || "—"}, → ${emailTo || "no-email"}`,
   );
 
   return { ok: true };

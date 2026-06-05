@@ -45,6 +45,8 @@ export function ContactForm({ dict }: Props) {
 
   return (
     <form ref={formRef} action={action} className="space-y-3">
+      <input type="hidden" name="formType" value="inquiry" />
+
       {/* Name + Phone row */}
       <div className="grid gap-3 sm:grid-cols-2">
         {/* Name */}
