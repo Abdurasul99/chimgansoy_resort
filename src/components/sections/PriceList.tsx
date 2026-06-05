@@ -167,10 +167,10 @@ export function PriceList({ locale }: PriceListProps) {
           </ButtonLink>
           <p className="text-sm text-[var(--muted)]">
             {locale === "ru"
-              ? "Перезвоним и подтвердим бронь топчана за 15 минут"
+              ? "Перезвоним и подтвердим бронь топчана в ближайшее время"
               : locale === "uz"
-                ? "15 daqiqada qayta qo'ng'iroq qilamiz va topchan bronini tasdiqlaymiz"
-                : "We'll call back and confirm your topchan reservation within 15 minutes"}
+                ? "Tez orada qayta qo'ng'iroq qilamiz va topchan bronini tasdiqlaymiz"
+                : "We'll call back and confirm your topchan reservation shortly"}
           </p>
           <span className="ml-auto text-xs text-[var(--muted)]">
             {dict.from} 30 000 {currency}

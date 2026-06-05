@@ -14,7 +14,7 @@ export function BookingDrawer({ locale, roomTitle, roomSlug, priceFrom }: Bookin
   const dict = dictionaries[locale];
 
   const perks = [
-    locale === "ru" ? "Ответим в течение 15 минут" : locale === "uz" ? "15 daqiqada javob beramiz" : "We reply within 15 minutes",
+    locale === "ru" ? "Ответим в ближайшее время" : locale === "uz" ? "Tez orada javob beramiz" : "We'll reply shortly",
     locale === "ru" ? "Завтрак по запросу" : locale === "uz" ? "So'rov bo'yicha nonushta" : "Breakfast on request",
     locale === "ru" ? "Подбор подходящих дат" : locale === "uz" ? "Mos sanalarni tanlaymiz" : "We help pick the dates",
   ];
