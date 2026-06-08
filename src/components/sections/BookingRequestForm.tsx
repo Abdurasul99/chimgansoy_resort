@@ -3,6 +3,10 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { submitContact } from "@/app/actions/contact";
+import { DatePicker } from "@/components/ui/DatePicker";
+import { GuestSelect } from "@/components/ui/GuestSelect";
+
+type Locale = "ru" | "uz" | "en";
 
 type BronDict = {
   formTitle: string;
@@ -24,6 +28,7 @@ type FieldLabels = {
 type Props = {
   dict: BronDict;
   labels: FieldLabels;
+  locale: Locale;
   defaultCheckin?: string;
   defaultCheckout?: string;
   defaultGuests?: string;
@@ -56,6 +61,7 @@ function SubmitButton({ label, sending }: { label: string; sending: string }) {
 export function BookingRequestForm({
   dict,
   labels,
+  locale,
   defaultCheckin = "",
   defaultCheckout = "",
   defaultGuests = "",
@@ -83,47 +89,30 @@ export function BookingRequestForm({
       <form action={action} className="mt-6 space-y-4">
         <input type="hidden" name="formType" value="booking" />
         {defaultRoom && <input type="hidden" name="room" value={defaultRoom} />}
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
-              {labels.checkIn}
-            </label>
-            <input
-              type="date"
-              name="checkin"
-              defaultValue={defaultCheckin}
-              className="w-full rounded-xl border border-[color:var(--line)] bg-[var(--surface)] px-4 py-3.5 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15"
-            />
-          </div>
-          <div>
-            <label className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
-              {labels.checkOut}
-            </label>
-            <input
-              type="date"
-              name="checkout"
-              defaultValue={defaultCheckout}
-              className="w-full rounded-xl border border-[color:var(--line)] bg-[var(--surface)] px-4 py-3.5 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15"
-            />
-          </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <DatePicker
+            name="checkin"
+            label={labels.checkIn}
+            defaultValue={defaultCheckin}
+            locale={locale}
+            minToday
+          />
+          <DatePicker
+            name="checkout"
+            label={labels.checkOut}
+            defaultValue={defaultCheckout}
+            locale={locale}
+            minToday
+          />
         </div>
 
-        <div>
-          <label className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
-            {labels.guests}
-          </label>
-          <select
-            name="guests"
-            defaultValue={defaultGuests || "2"}
-            className="w-full rounded-xl border border-[color:var(--line)] bg-[var(--surface)] px-4 py-3.5 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15"
-          >
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5+</option>
-          </select>
-        </div>
+        <GuestSelect
+          name="guests"
+          label={labels.guests}
+          defaultValue={defaultGuests}
+          locale={locale}
+        />
 
         <div>
           <label className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">

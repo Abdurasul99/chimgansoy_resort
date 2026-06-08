@@ -152,6 +152,7 @@ export default async function BookingPage({ params, searchParams }: PageProps) {
               <BookingRequestForm
                 dict={bronDict}
                 labels={{ checkIn: dict.checkIn, checkOut: dict.checkOut, guests: dict.guests }}
+                locale={locale}
                 defaultCheckin={getFirstSearchParam(bookingSearchParams, "checkin")}
                 defaultCheckout={getFirstSearchParam(bookingSearchParams, "checkout")}
                 defaultGuests={getFirstSearchParam(bookingSearchParams, "guests")}

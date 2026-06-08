@@ -138,6 +138,7 @@ export default async function ContactPage({ params }: PageProps) {
               <BookingRequestForm
                 dict={bronDict}
                 labels={{ checkIn: dict.checkIn, checkOut: dict.checkOut, guests: dict.guests }}
+                locale={locale}
               />
             </div>
           </div>
