@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 
 export function ScrollObserver() {
   const pathname = usePathname();
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
     // Re-run on every route change — reset already-visible state for new page
@@ -16,15 +17,16 @@ export function ScrollObserver() {
       const els = document.querySelectorAll<HTMLElement>(selector);
       if (!els.length) return;
 
-      const observer = new IntersectionObserver(
+      observerRef.current?.disconnect();
+      observerRef.current = new IntersectionObserver(
         (entries) =>
           entries.forEach((e) => {
             if (e.isIntersecting) {
               (e.target as HTMLElement).classList.add("is-visible");
-              observer.unobserve(e.target);
+              observerRef.current?.unobserve(e.target);
             }
           }),
-        { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
+        { threshold: 0.08, rootMargin: "0px 0px -40px 0px" },
       );
 
       els.forEach((el) => {
@@ -33,14 +35,16 @@ export function ScrollObserver() {
         if (rect.top < window.innerHeight * 0.92) {
           el.classList.add("is-visible");
         } else {
-          observer.observe(el);
+          observerRef.current?.observe(el);
         }
       });
-
-      return () => observer.disconnect();
     }, 80);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      observerRef.current?.disconnect();
+      observerRef.current = null;
+    };
   }, [pathname]);
 
   return null;

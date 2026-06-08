@@ -88,10 +88,6 @@ export function LogoIntro({ locale }: { locale: Locale }) {
         e.preventDefault();
         skipNow();
       }
-      if (e.key === "Tab") {
-        e.preventDefault();
-        skipBtnRef.current?.focus({ preventScroll: true });
-      }
     };
     const onVisibility = () => {
       if (document.visibilityState === "hidden") {
@@ -132,7 +128,8 @@ export function LogoIntro({ locale }: { locale: Locale }) {
 
   return (
     <motion.div
-      role="presentation"
+      role="dialog"
+      aria-modal="true"
       aria-labelledby={labelId}
       initial={{ opacity: 0 }}
       animate={{ opacity: handoff ? 0 : 1 }}

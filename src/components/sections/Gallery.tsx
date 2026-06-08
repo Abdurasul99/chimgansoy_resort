@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { galleryImages } from "@/content/images";
+import { dictionaries } from "@/content/translations";
 import type { ImageAsset } from "@/content/types";
 import type { Locale } from "@/i18n/config";
 import { imageStyle } from "@/lib/images";
@@ -152,7 +153,7 @@ export function Gallery({ locale }: GalleryProps) {
             <div className="absolute inset-0 bg-black/0 transition duration-300 group-hover:bg-black/20" />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 transition duration-300 group-hover:opacity-100">
               <span className="rounded-full border border-white/60 bg-black/30 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white backdrop-blur-sm">
-                Открыть
+                {dictionaries[locale].open}
               </span>
             </div>
           </button>

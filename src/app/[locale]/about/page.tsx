@@ -25,20 +25,20 @@ const values = [
   },
   {
     num: "02",
-    title: { ru: "Приватность и пространство", uz: "Maxfiylik va kengshulik", en: "Privacy and space" },
+    title: { ru: "Приватный топчан для компании", uz: "Do'stlar uchun xususiy topchan", en: "A private topchan for your group" },
     copy: {
-      ru: "Каждый тип размещения — будь то глэмпинг или коттедж — обеспечивает собственное приватное пространство и террасу.",
-      uz: "Har bir turar-joy turi — glemping yoki kottej — o'z xususiy joyi va terrasasiga ega.",
-      en: "Each accommodation type — glamping or cottage — offers its own private space and terrace.",
+      ru: "Каждый топчан — отдельное приватное пространство до 8 человек: курпача, тень, место под мангал и казан рядом. Удобно для семьи или компании.",
+      uz: "Har bir topchan — 8 kishigacha alohida xususiy joy: kurpacha, soya, yonida mangal va qozon joyi. Oila yoki do'stlar uchun qulay.",
+      en: "Each topchan is a private space for up to 8 guests — kurpacha cushions, shade, and a BBQ / kazan spot at hand. Built for families and groups.",
     },
   },
   {
     num: "03",
-    title: { ru: "Всесезонный курорт", uz: "Barcha mavsumlar uchun", en: "Year-round destination" },
+    title: { ru: "Круглый год, каждый день", uz: "Yil davomida, har kuni", en: "Year-round, every day" },
     copy: {
-      ru: "Зима или лето — курорт работает круглый год. Активности, ресторан, spa и детские зоны доступны в любой сезон.",
-      uz: "Qish yoki yoz — kurort butun yil ishlaydi. Faoliyatlar, restoran, spa va bolalar zonalari har qanday mavsumda mavjud.",
-      en: "Winter or summer — the resort operates year-round. Activities, restaurant, spa, and kids zones are available every season.",
+      ru: "Работаем ежедневно с 08:00 до 18:00 в любой сезон. Летом — топчаны в тени и мангал на свежем воздухе. Осенью и зимой — горный воздух, костёр и горячий чай.",
+      uz: "Har kuni 08:00 dan 18:00 gacha, har qanday mavsumda ishlaymiz. Yozda — soyadagi topchanlar va ochiq havodagi mangal. Kuz va qishda — tog' havosi, gulxan va issiq choy.",
+      en: "Open daily 08:00–18:00, every season. In summer — shaded topchans and open-air BBQ. In autumn and winter — mountain air, a fire, and hot tea.",
     },
   },
 ];

@@ -253,22 +253,34 @@ export function WeatherPanel({ locale }: { locale: string }) {
                 </div>
               </div>
 
-              {/* Sunrise / Sunset / AQI */}
+              {/* Sunrise / Sunset / AQI — show empty pulse skeletons until data arrives */}
               <div className="flex items-center gap-3">
                 <div className="rounded-xl bg-white/10 px-3 py-2 text-center">
                   <p className="text-[10px] text-white/60">{l.sunrise}</p>
-                  <p className="font-bold">{todayForecast ? todayForecast.sunrise : "--:--"}</p>
+                  {todayForecast ? (
+                    <p className="font-bold tabular-nums">{todayForecast.sunrise}</p>
+                  ) : (
+                    <p className="font-bold animate-pulse text-white/30">·:·</p>
+                  )}
                 </div>
                 <div className="rounded-xl bg-white/10 px-3 py-2 text-center">
                   <p className="text-[10px] text-white/60">{l.sunset}</p>
-                  <p className="font-bold">{todayForecast ? todayForecast.sunset : "--:--"}</p>
+                  {todayForecast ? (
+                    <p className="font-bold tabular-nums">{todayForecast.sunset}</p>
+                  ) : (
+                    <p className="font-bold animate-pulse text-white/30">·:·</p>
+                  )}
                 </div>
                 <div className="rounded-xl bg-white/10 px-3 py-2 text-center min-w-[60px]">
                   <div className="flex items-center gap-1 justify-center">
                     <span className="h-2 w-2 rounded-full" style={{background:aqi.color}} />
                     <p className="text-[10px] text-white/60">{l.aqi}</p>
                   </div>
-                  <p className="font-bold">{data ? data.aqi : "--"}</p>
+                  {data ? (
+                    <p className="font-bold tabular-nums">{data.aqi}</p>
+                  ) : (
+                    <p className="font-bold animate-pulse text-white/30">·</p>
+                  )}
                   <p className="text-[9px] text-white/60">{aqi.text}</p>
                 </div>
               </div>

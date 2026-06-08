@@ -2,8 +2,11 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { toggleSeason } from "./SeasonDetector";
+import { dictionaries } from "@/content/translations";
+import type { Locale } from "@/i18n/config";
 
-export function SeasonToggle({ onDark }: { onDark: boolean }) {
+export function SeasonToggle({ onDark, locale }: { onDark: boolean; locale: Locale }) {
+  const dict = dictionaries[locale];
   const [season, setSeason] = useState<"summer" | "winter">("summer");
   const [flashing, setFlashing] = useState(false);
 
@@ -28,7 +31,7 @@ export function SeasonToggle({ onDark }: { onDark: boolean }) {
   }, []);
 
   const isWinter = season === "winter";
-  const nextLabel = isWinter ? "Лето" : "Зима";
+  const nextLabel = isWinter ? dict.summer : dict.winter;
   const nextIcon = isWinter ? "☀️" : "❄️";
 
   return (
@@ -64,7 +67,7 @@ export function SeasonToggle({ onDark }: { onDark: boolean }) {
         <span className="text-sm leading-none transition-transform duration-300 group-hover:scale-110">
           {isWinter ? "❄️" : "☀️"}
         </span>
-        <span className="hidden sm:inline">{isWinter ? "Зима" : "Лето"}</span>
+        <span className="hidden sm:inline">{isWinter ? dict.winter : dict.summer}</span>
         <span
           className="hidden opacity-0 transition-opacity group-hover:opacity-100 lg:inline"
           aria-hidden="true"

@@ -4,7 +4,7 @@ export const dictionaries = {
   ru: {
     brandLine: "Горный курорт в Ташкентской области",
     book: "Забронировать",
-    bookNow: "Забронировать отдых",
+    bookNow: "Забронировать день",
     details: "Подробнее",
     viewAll: "Смотреть все",
     from: "от",
@@ -27,6 +27,9 @@ export const dictionaries = {
     writeInstagram: "Instagram",
     menu: "Меню",
     close: "Закрыть",
+    open: "Открыть",
+    summer: "Лето",
+    winter: "Зима",
     pageIntro: "Все данные в структуре сайта подготовлены для быстрой замены на реальные материалы курорта.",
     bookingWidget: {
       title: "Проверьте доступность отдыха",
@@ -101,7 +104,7 @@ export const dictionaries = {
   uz: {
     brandLine: "Toshkent viloyatidagi tog' kurorti",
     book: "Bron qilish",
-    bookNow: "Dam olishni bron qilish",
+    bookNow: "Kunni bron qilish",
     details: "Batafsil",
     viewAll: "Hammasini ko'rish",
     from: "dan",
@@ -124,6 +127,9 @@ export const dictionaries = {
     writeInstagram: "Instagram",
     menu: "Menyu",
     close: "Yopish",
+    open: "Ochish",
+    summer: "Yoz",
+    winter: "Qish",
     pageIntro: "Sayt tuzilmasidagi barcha ma'lumotlar kurortning real materiallariga tez almashtirish uchun tayyorlangan.",
     bookingWidget: {
       title: "Dam olish mavjudligini tekshiring",
@@ -198,7 +204,7 @@ export const dictionaries = {
   en: {
     brandLine: "Mountain resort in Tashkent region",
     book: "Book",
-    bookNow: "Book your stay",
+    bookNow: "Book your day",
     details: "Details",
     viewAll: "View all",
     from: "from",
@@ -221,6 +227,9 @@ export const dictionaries = {
     writeInstagram: "Instagram",
     menu: "Menu",
     close: "Close",
+    open: "Open",
+    summer: "Summer",
+    winter: "Winter",
     pageIntro: "All content is structured so real resort materials can be replaced quickly.",
     bookingWidget: {
       title: "Check resort availability",

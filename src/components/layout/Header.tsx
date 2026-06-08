@@ -95,7 +95,7 @@ export function Header({ locale }: HeaderProps) {
           {/* Desktop controls */}
           <div className="hidden items-center gap-3 lg:flex">
             {/* Season toggle */}
-            <SeasonToggle onDark={isHeaderOnHero} />
+            <SeasonToggle onDark={isHeaderOnHero} locale={locale} />
 
             {/* Currency selector */}
             <CurrencySelector onDark={isHeaderOnHero} />

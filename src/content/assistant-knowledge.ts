@@ -70,9 +70,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "booking",
     keywords: ["бронир", "забронировать", "заказ", "бронь", "bron", "buyurtma", "book", "reserve", "reservation", "booking"],
     answer: {
-      ru: "📅 Забронировать просто:\n• Оставьте заявку через форму на странице «Бронирование»\n• Или напишите в WhatsApp / Telegram\n\nАдминистратор подтвердит даты и детали в течение 15 минут.",
-      uz: "📅 Bron qilish oson:\n• «Bron qilish» sahifasidagi forma orqali so'rov qoldiring\n• Yoki WhatsApp / Telegramga yozing\n\nAdministrator 15 daqiqa ichida sanalar va tafsilotlarni tasdiqlaydi.",
-      en: "📅 Booking is easy:\n• Submit a request via the form on the «Booking» page\n• Or message us on WhatsApp / Telegram\n\nThe administrator confirms dates and details within 15 minutes.",
+      ru: "📅 Забронировать просто:\n• Оставьте заявку через форму на странице «Бронирование»\n• Или напишите в WhatsApp / Telegram\n\nАдминистратор подтвердит даты и детали в ближайшее время.",
+      uz: "📅 Bron qilish oson:\n• «Bron qilish» sahifasidagi forma orqali so'rov qoldiring\n• Yoki WhatsApp / Telegramga yozing\n\nAdministrator sanalar va tafsilotlarni tez orada tasdiqlaydi.",
+      en: "📅 Booking is easy:\n• Submit a request via the form on the «Booking» page\n• Or message us on WhatsApp / Telegram\n\nThe administrator will confirm the dates and details shortly.",
     },
   },
 
@@ -136,9 +136,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "kids",
     keywords: ["дети", "ребен", "детск", "семей", "семья", "bola", "bolalar", "oila", "kids", "child", "children", "family", "playground"],
     answer: {
-      ru: "👨‍👩‍👧 Курорт идеально подходит для семей с детьми: есть детская площадка, безопасные прогулочные зоны, пикник-зоны и спокойные домики. В коттеджах удобно размещаться семьёй до 6 человек.",
-      uz: "👨‍👩‍👧 Kurort bolali oilalar uchun ideal: bolalar maydonchasi, xavfsiz sayr zonalari, piknik joylar va sokin uychalar bor. Kottejlarda 6 kishilik oila qulay joylashishi mumkin.",
-      en: "👨‍👩‍👧 The resort is ideal for families: there's a playground, safe walking zones, picnic areas, and calm cabins. Cottages comfortably fit families of up to 6.",
+      ru: "👨‍👩‍👧 Дневной формат отлично подходит для семей с детьми: безопасные прогулочные зоны, пикник-зоны под соснами, мягкие курпача на топчане, готовое меню от кухни. Можно приехать на день и спокойно разместиться компанией до 8 человек на топчан.",
+      uz: "👨‍👩‍👧 Kunlik format bolali oilalar uchun ajoyib: xavfsiz sayr zonalari, qarag'aylar ostidagi piknik joylari, topchandagi yumshoq kurpacha, oshxonadan tayyor menyu. Bir kunga kelib, 8 kishigacha do'stlar davrasi bilan bemalol joylashishingiz mumkin.",
+      en: "👨‍👩‍👧 The day-visit format is great for families: safe walking zones, picnic spots under the pines, soft kurpacha on the topchan, and a ready-made kitchen menu. Come for a day and settle in as a group of up to 8 per topchan.",
     },
   },
 
@@ -147,9 +147,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "pets",
     keywords: ["собака", "кот", "кошка", "питомец", "животн", "it", "mushuk", "hayvon", "dog", "cat", "pet", "animal"],
     answer: {
-      ru: "🐾 По размещению с питомцами условия согласуются индивидуально — напишите администратору в WhatsApp или Telegram, расскажет какие домики подходят и есть ли свободные даты.",
-      uz: "🐾 Uy hayvonlari bilan yashash shartlari individual kelishiladi — WhatsApp yoki Telegramga yozing, qaysi uychalar mos kelishi va bo'sh sanalar borligini aytib beradi.",
-      en: "🐾 Pet-friendly stays are arranged individually — please message the administrator on WhatsApp or Telegram, they'll let you know which cabins are suitable and whether dates are available.",
+      ru: "🐾 Питомцы на дневной визит — добро пожаловать, на поводке. Пожалуйста, напишите администратору в WhatsApp или Telegram заранее, чтобы согласовать дату и место.",
+      uz: "🐾 Kunlik tashrifda uy hayvonlari — bog'ichli holatda xush kelibsiz. Sanani va joyni kelishish uchun administrator bilan WhatsApp yoki Telegram orqali oldindan bog'laning.",
+      en: "🐾 Pets are welcome for a day visit, kept on a leash. Please message the administrator on WhatsApp or Telegram in advance to coordinate the date and spot.",
     },
   },
 
@@ -158,9 +158,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "activities",
     keywords: ["активности", "развлечения", "что делать", "чем заняться", "досуг", "faoliyat", "ko'ngilochar", "nima qilish", "activities", "what to do", "entertainment", "things"],
     answer: {
-      ru: "🎯 На территории 18 зон: бассейн, ресторан, гриль и пикник-зоны, топчаны, падел-корт, детская площадка, тренировочная зона, прогулочные маршруты по горам. Зимой — тюбинг и тёплые зоны.",
-      uz: "🎯 Hududda 18 ta zona: basseyn, restoran, gril va piknik joylar, topchanlar, padel-kort, bolalar maydonchasi, mashq zonasi, tog'lar bo'ylab sayr marshrutlari. Qishda — tubing va iliq zonalar.",
-      en: "🎯 18 activity zones on site: pool, restaurant, grill and picnic areas, tapchan zones, padel court, kids' playground, workout area, mountain walking routes. In winter — tubing and warm zones.",
+      ru: "🎯 На территории — топчаны с курпача, мангал и казан в аренду, готовое меню от кухни, пикник-зоны под соснами и панорама Чимгана. Можно гулять по горным маршрутам рядом или попробовать конную прогулку и канатные дороги.",
+      uz: "🎯 Hududda — kurpachali topchanlar, ijaraga mangal va qozon, oshxonadan tayyor menyu, qarag'aylar ostidagi piknik joylari va Chimgon panoramasi. Yaqindagi tog' marshrutlarida sayr qilish, ot minib ko'rish yoki kanat yo'liga borish mumkin.",
+      en: "🎯 On the territory — topchans with kurpacha, BBQ grill and kazan to rent, a ready-made kitchen menu, picnic spots under the pines, and views of Chimgan. Nearby you can hike mountain routes, ride horses, or try the cable cars.",
     },
   },
 
@@ -169,9 +169,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "winter",
     keywords: ["зим", "снег", "тюбинг", "лыж", "санки", "qish", "qor", "winter", "snow", "ski", "tubing", "sledding"],
     answer: {
-      ru: "❄️ Зимой работает тюбинг (катание на ватрушках), тёплые зоны, ресторан и проживание. Снежный сезон обычно с декабря по март. Точные условия зависят от погоды — лучше уточнить перед поездкой.",
-      uz: "❄️ Qishda tubing, iliq zonalar, restoran va yashash ishlaydi. Qor mavsumi odatda dekabrdan martgacha. Aniq sharoitlar ob-havoga bog'liq — safardan oldin aniqlashtirish yaxshiroq.",
-      en: "❄️ In winter we run tubing, warm zones, the restaurant, and stays. Snow season is usually December through March. Exact conditions depend on the weather — best to confirm before the trip.",
+      ru: "❄️ Зимой работаем как и летом — ежедневно с 08:00 до 18:00. Тёплые зоны на топчане, мангал и казан, готовое меню и горячий чай. Снежный сезон обычно с декабря по март — точные условия зависят от погоды, лучше уточнить заранее.",
+      uz: "❄️ Qishda ham yozdek ishlaymiz — har kuni 08:00 dan 18:00 gacha. Topchandagi iliq zonalar, mangal va qozon, tayyor menyu va issiq choy. Qor mavsumi odatda dekabrdan martgacha — aniq sharoitlar ob-havoga bog'liq, oldindan aniqlashtirish yaxshiroq.",
+      en: "❄️ Winter hours are the same as summer — daily 08:00–18:00. Warm topchan setups, BBQ grill and kazan, the kitchen menu, and hot tea. Snow season runs roughly December through March — exact conditions depend on the weather, best to check ahead.",
     },
   },
 
@@ -191,9 +191,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "dayvisit",
     keywords: ["днем", "дневной", "на день", "без ночевки", "без проживания", "kunduzi", "kunlik", "yashamasdan", "day visit", "without stay", "without overnight", "just visit"],
     answer: {
-      ru: "☀️ Да, часть зон рассчитана на дневные визиты. Доступны топчаны, бассейн, ресторан и часть активностей. Расписание и наличие свободных мест лучше уточнить заранее.",
-      uz: "☀️ Ha, ayrim hududlar kunlik tashriflar uchun mo'ljallangan. Topchanlar, basseyn, restoran va ba'zi faoliyatlar mavjud. Jadval va bo'sh joylarni oldindan aniqlashtirish kerak.",
-      en: "☀️ Yes, some areas are designed for day visits. Tapchan zones, the pool, restaurant, and some activities are available. Schedule and availability are best confirmed in advance.",
+      ru: "☀️ Да, сейчас мы работаем только в формате дневного отдыха — без ночёвок. Топчан с курпача до 8 человек, мангал и казан в аренду, дрова и уголь на месте, меню от кухни. Ежедневно с 08:00 до 18:00.",
+      uz: "☀️ Ha, hozir biz faqat kunlik dam olish formatida ishlayapmiz — tunamasdan. 8 kishigacha kurpachali topchan, mangal va qozon ijarasi, joyda o'tin va ko'mir, oshxonadan menyu. Har kuni 08:00 dan 18:00 gacha.",
+      en: "☀️ Yes, we currently run as a day-only venue — no overnight stays. A topchan with kurpacha for up to 8 guests, BBQ grill and kazan to rent, firewood and charcoal on site, and a kitchen menu. Open daily 08:00–18:00.",
     },
   },
 
@@ -213,9 +213,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "wifi",
     keywords: ["wifi", "wi-fi", "вайфай", "интернет", "internet"],
     answer: {
-      ru: "📶 Wi-Fi работает на территории и во всех номерах. Подключение бесплатное для гостей.",
-      uz: "📶 Wi-Fi hudud bo'ylab va barcha xonalarda ishlaydi. Mehmonlar uchun ulanish bepul.",
-      en: "📶 Wi-Fi is available across the territory and in all rooms. Free for guests.",
+      ru: "📶 Wi-Fi работает на территории. Подключение бесплатное для всех гостей.",
+      uz: "📶 Wi-Fi hudud bo'ylab ishlaydi. Barcha mehmonlar uchun ulanish bepul.",
+      en: "📶 Wi-Fi is available across the territory. Free for all guests.",
     },
   },
 
@@ -224,9 +224,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "contact",
     keywords: ["контакт", "телефон", "номер", "позвонить", "связаться", "telefon", "raqam", "aloqa", "contact", "phone", "call", "number"],
     answer: {
-      ru: `📞 Свяжитесь с нами:\n• Телефон: ${contacts.phone}\n• WhatsApp: ${contacts.whatsapp}\n• Telegram: ${contacts.telegram}\n• Instagram: ${contacts.instagram}\n• Email: ${contacts.email}\n\nАдминистратор отвечает в течение 15 минут.`,
-      uz: `📞 Biz bilan bog'laning:\n• Telefon: ${contacts.phone}\n• WhatsApp: ${contacts.whatsapp}\n• Telegram: ${contacts.telegram}\n• Instagram: ${contacts.instagram}\n• Email: ${contacts.email}\n\nAdministrator 15 daqiqa ichida javob beradi.`,
-      en: `📞 Get in touch:\n• Phone: ${contacts.phone}\n• WhatsApp: ${contacts.whatsapp}\n• Telegram: ${contacts.telegram}\n• Instagram: ${contacts.instagram}\n• Email: ${contacts.email}\n\nThe administrator replies within 15 minutes.`,
+      ru: `📞 Свяжитесь с нами:\n• Телефон: ${contacts.phone}\n• WhatsApp: ${contacts.whatsapp}\n• Telegram: ${contacts.telegram}\n• Instagram: ${contacts.instagram}\n• Email: ${contacts.email}\n\nРаботаем ежедневно ${contacts.schedule.ru}.`,
+      uz: `📞 Biz bilan bog'laning:\n• Telefon: ${contacts.phone}\n• WhatsApp: ${contacts.whatsapp}\n• Telegram: ${contacts.telegram}\n• Instagram: ${contacts.instagram}\n• Email: ${contacts.email}\n\nHar kuni ishlaymiz, ${contacts.schedule.uz}.`,
+      en: `📞 Get in touch:\n• Phone: ${contacts.phone}\n• WhatsApp: ${contacts.whatsapp}\n• Telegram: ${contacts.telegram}\n• Instagram: ${contacts.instagram}\n• Email: ${contacts.email}\n\nOpen daily, ${contacts.schedule.en}.`,
     },
   },
 
@@ -235,9 +235,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "schedule",
     keywords: ["график", "режим", "работа", "часы", "когда работает", "ish vaqti", "soat", "schedule", "hours", "open", "working hours"],
     answer: {
-      ru: `🕒 Курорт работает круглый год.\nАдминистрация: ${contacts.schedule.ru}.\nЗаезд после 14:00, выезд до 12:00.`,
-      uz: `🕒 Kurort yil davomida ishlaydi.\nAdministratsiya: ${contacts.schedule.uz}.\nKirish 14:00 dan keyin, chiqish 12:00 gacha.`,
-      en: `🕒 The resort is open year-round.\nFront desk: ${contacts.schedule.en}.\nCheck-in after 2:00 PM, check-out by 12:00 PM.`,
+      ru: `🕒 Работаем круглый год, ${contacts.schedule.ru.toLowerCase()}. Высота 1700 м, в 45 минутах от Ташкента.`,
+      uz: `🕒 Yil davomida ishlaymiz, ${contacts.schedule.uz.toLowerCase()}. Balandlik 1700 m, Toshkentdan 45 daqiqada.`,
+      en: `🕒 Open year-round, ${contacts.schedule.en.toLowerCase()}. 1,700 m altitude, 45 minutes from Tashkent.`,
     },
   },
 
@@ -289,9 +289,9 @@ export const quickReplies: Record<"ru" | "uz" | "en", { label: string; id: strin
 
 // Fallback when nothing matched
 export const fallback: AssistantAnswer = {
-  ru: `🤔 Не уверен, что понял точно. Уточните вопрос или напишите администратору напрямую:\n\n• WhatsApp: ${contacts.whatsapp}\n• Telegram: ${contacts.telegram}\n• Телефон: ${contacts.phone}\n\nАдминистратор ответит в течение 15 минут.`,
-  uz: `🤔 Aniq tushunganimga ishonchim yo'q. Savolingizni aniqlashtiring yoki administratorga to'g'ridan-to'g'ri yozing:\n\n• WhatsApp: ${contacts.whatsapp}\n• Telegram: ${contacts.telegram}\n• Telefon: ${contacts.phone}\n\nAdministrator 15 daqiqa ichida javob beradi.`,
-  en: `🤔 I'm not sure I caught that. Try rephrasing or message the administrator directly:\n\n• WhatsApp: ${contacts.whatsapp}\n• Telegram: ${contacts.telegram}\n• Phone: ${contacts.phone}\n\nThe administrator replies within 15 minutes.`,
+  ru: `🤔 Не уверен, что понял точно. Уточните вопрос или напишите администратору напрямую:\n\n• WhatsApp: ${contacts.whatsapp}\n• Telegram: ${contacts.telegram}\n• Телефон: ${contacts.phone}\n\nАдминистратор ответит в ближайшее время.`,
+  uz: `🤔 Aniq tushunganimga ishonchim yo'q. Savolingizni aniqlashtiring yoki administratorga to'g'ridan-to'g'ri yozing:\n\n• WhatsApp: ${contacts.whatsapp}\n• Telegram: ${contacts.telegram}\n• Telefon: ${contacts.phone}\n\nAdministrator tez orada javob beradi.`,
+  en: `🤔 I'm not sure I caught that. Try rephrasing or message the administrator directly:\n\n• WhatsApp: ${contacts.whatsapp}\n• Telegram: ${contacts.telegram}\n• Phone: ${contacts.phone}\n\nThe administrator will reply shortly.`,
 };
 
 /**
