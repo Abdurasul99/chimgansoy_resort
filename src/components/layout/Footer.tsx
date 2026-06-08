@@ -49,10 +49,10 @@ export function Footer({ locale }: FooterProps) {
                 CHIMGAN DARBAZA
               </p>
             </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="flex flex-wrap gap-3">
               <a
                 href={`tel:${contacts.phone.replaceAll(" ", "")}`}
-                className="btn-press glass-btn inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition-all duration-300"
+                className="btn-press glass-btn inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full px-6 py-3 text-sm font-semibold transition-all duration-300"
               >
                 {contacts.phone}
               </a>
@@ -60,7 +60,7 @@ export function Footer({ locale }: FooterProps) {
                 href={contacts.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-press glass-btn inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition-all duration-300"
+                className="btn-press glass-btn inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full px-6 py-3 text-sm font-semibold transition-all duration-300"
               >
                 WhatsApp
               </a>
@@ -68,7 +68,7 @@ export function Footer({ locale }: FooterProps) {
                 href={contacts.telegram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-press glass-btn inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition-all duration-300"
+                className="btn-press glass-btn inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full px-6 py-3 text-sm font-semibold transition-all duration-300"
               >
                 Telegram
               </a>
@@ -76,7 +76,7 @@ export function Footer({ locale }: FooterProps) {
                 href={contacts.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-press glass-btn inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition-all duration-300"
+                className="btn-press glass-btn inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full px-6 py-3 text-sm font-semibold transition-all duration-300"
               >
                 Instagram
               </a>
