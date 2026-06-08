@@ -8,7 +8,6 @@ import { localizePath } from "@/i18n/routing";
 import type { Locale } from "@/i18n/config";
 import { lock, unlock } from "@/lib/scroll-lock";
 
-const STORAGE_KEY = "cgs_logo_intro_seen";
 const EASE_PREMIUM = [0.16, 1, 0.3, 1] as const;
 const EASE_INOUT = [0.65, 0, 0.35, 1] as const;
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
@@ -27,7 +26,7 @@ export function LogoIntro({ locale }: { locale: Locale }) {
   const dict = dictionaries[locale];
   const homePath = localizePath(locale);
 
-  // ── GATE ── first home visit only, no reduced-motion
+  // ── GATE ── only on the initial home pathname (no SPA-nav re-trigger), no reduced-motion
   useEffect(() => {
     let rm = true;
     try {
@@ -35,32 +34,12 @@ export function LogoIntro({ locale }: { locale: Locale }) {
     } catch {}
     const p = initialPath.current;
     const onHome = p === homePath || p === homePath + "/";
-    let seen = "0";
-    try {
-      seen =
-        window.sessionStorage.getItem(STORAGE_KEY) ??
-        window.localStorage.getItem(STORAGE_KEY) ??
-        "0";
-    } catch {}
-    if (!onHome || rm || seen === "1") {
+    if (!onHome || rm) {
       setDecision("skip");
       return;
     }
     setDecision("play");
   }, [homePath]);
-
-  // ── DEV reset helper ── window.__resetLogoIntro()
-  useEffect(() => {
-    if (process.env.NODE_ENV === "production") return;
-    (window as unknown as { __resetLogoIntro?: () => void }).__resetLogoIntro = () => {
-      try {
-        window.localStorage.removeItem(STORAGE_KEY);
-        window.sessionStorage.removeItem(STORAGE_KEY);
-        // eslint-disable-next-line no-console
-        console.log("[LogoIntro] storage cleared — refresh to replay");
-      } catch {}
-    };
-  }, []);
 
   // ── LIFECYCLE ── lock scroll, schedule handoff + done, key/visibility handlers
   useEffect(() => {
@@ -70,10 +49,6 @@ export function LogoIntro({ locale }: { locale: Locale }) {
     lock();
     document.documentElement.setAttribute("data-intro", "active");
     skipBtnRef.current?.focus({ preventScroll: true });
-    try {
-      window.localStorage.setItem(STORAGE_KEY, "1");
-      window.sessionStorage.setItem(STORAGE_KEY, "1");
-    } catch {}
 
     let cancelled = false;
     let handoffTimer = 0;
