@@ -145,7 +145,55 @@
 html {
   min-width: 320px;
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
   /* NO transition — season change triggers full-page repaint every frame for 600ms */
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Logo intro coordination — when the cream overlay covers the
+   viewport, hide the header brand mark and freeze the Hero's
+   stagger reveals so they don't burn while you can't see them.
+   ────────────────────────────────────────────────────────────── */
+html[data-intro="active"] .logo-img,
+html[data-intro="exiting"] .logo-img {
+  opacity: 0;
+  transition: none;
+}
+html[data-intro="active"] .motion-reveal,
+html[data-intro="active"] .motion-reveal-left,
+html[data-intro="active"] .motion-reveal-scale,
+html[data-intro="active"] .motion-rise {
+  animation-play-state: paused !important;
+  opacity: 0 !important;
+}
+
+/* Skip button shown over the intro overlay */
+.intro-skip-btn {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 0.6rem 1.1rem;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  opacity: 0;
+  transition: opacity 250ms ease-out, background 200ms ease-out;
+  pointer-events: auto;
+  cursor: pointer;
+  font-family: inherit;
+}
+.intro-skip-btn:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.92);
+}
+.intro-skip-btn:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 2px;
+  opacity: 1;
+}
+html[data-intro="active"] .intro-skip-btn {
+  opacity: 0.85;
 }
 
 body {

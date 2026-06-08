@@ -11,6 +11,7 @@ import { localizePath, switchLocalePath } from "@/i18n/routing";
 import { text } from "@/lib/localize";
 import { CurrencySelector } from "@/components/ui/CurrencySelector";
 import { SeasonToggle } from "@/components/ui/SeasonToggle";
+import { lock, unlock } from "@/lib/scroll-lock";
 
 type HeaderProps = {
   locale: Locale;
@@ -29,9 +30,9 @@ export function Header({ locale }: HeaderProps) {
   }, []);
 
   useEffect(() => {
-    if (isOpen) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
-    return () => { document.body.style.overflow = ""; };
+    if (!isOpen) return;
+    lock();
+    return () => unlock();
   }, [isOpen]);
 
   const isHeroPage = pathname.split("/").length <= 2;

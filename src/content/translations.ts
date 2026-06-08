@@ -93,6 +93,10 @@ export const dictionaries = {
       onlineTitle: "Онлайн-бронирование",
       onlineLead: "Выберите даты и забронируйте номер онлайн.",
     },
+    intro: {
+      skip: "Пропустить",
+      skipAria: "Пропустить заставку",
+    },
   },
   uz: {
     brandLine: "Toshkent viloyatidagi tog' kurorti",
@@ -186,6 +190,10 @@ export const dictionaries = {
       onlineTitle: "Onlayn bron qilish",
       onlineLead: "Sanalarni tanlang va xonangizni onlayn bron qiling.",
     },
+    intro: {
+      skip: "O'tkazib yuborish",
+      skipAria: "Taqdimotni o'tkazib yuborish",
+    },
   },
   en: {
     brandLine: "Mountain resort in Tashkent region",
@@ -278,6 +286,10 @@ export const dictionaries = {
       errorRequired: "Please enter your name and phone number",
       onlineTitle: "Online booking",
       onlineLead: "Choose your dates and book a room online.",
+    },
+    intro: {
+      skip: "Skip",
+      skipAria: "Skip intro animation",
     },
   },
 } satisfies Record<Locale, object>;

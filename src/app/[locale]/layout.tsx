@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/Footer";
 import { ScrollObserver } from "@/components/ui/ScrollObserver";
 import { FaqPanel } from "@/components/ui/FaqPanel";
 import { SeasonDetector } from "@/components/ui/SeasonDetector";
+import { LogoIntro } from "@/components/ui/LogoIntro";
 import { dictionaries } from "@/content/translations";
 import { isLocale, locales, type Locale } from "@/i18n/config";
 import { localizedUrl, originForLocale } from "@/i18n/domains";
@@ -114,6 +115,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         <ScrollObserver />
         <FaqPanel key={locale} locale={locale} />
         <SeasonDetector />
+        <LogoIntro locale={locale as Locale} />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-S7FS7C573H"
           strategy="afterInteractive"
