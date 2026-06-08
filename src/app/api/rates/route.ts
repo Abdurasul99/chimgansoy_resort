@@ -5,9 +5,14 @@
 //
 // Why server-side: avoids CORS issues for browser → cbu.uz, and lets us cache
 // the response across requests via Next.js fetch revalidation.
+//
+// CBU is occasionally unreachable. When that happens, we return a stub with
+// reasonable defaults (sourced from the last hand-checked rates) so the widget
+// degrades gracefully instead of returning 503 — the converter still renders
+// and the user can convert at approximate values until CBU recovers.
 
-export const dynamic = "force-static";
 export const revalidate = 3600; // 1 hour
+export const runtime = "nodejs";
 
 type CbuItem = {
   Ccy: string;
@@ -17,11 +22,23 @@ type CbuItem = {
   Nominal: string;
 };
 
+const FALLBACK = {
+  usd_to_uzs: 11970.68,
+  eur_to_uzs: 13902.75,
+  rub_to_uzs: 163.18,
+  usd_diff: 0,
+  eur_diff: 0,
+  rub_diff: 0,
+  date: "fallback",
+  source: "fallback",
+};
+
 export async function GET() {
   try {
     const res = await fetch("https://cbu.uz/uz/arkhiv-kursov-valyut/json/", {
       next: { revalidate: 3600 },
       headers: { "User-Agent": "ChimganDarbazaResort/1.0" },
+      signal: AbortSignal.timeout(8000),
     });
     if (!res.ok) throw new Error(`cbu ${res.status}`);
 
@@ -50,9 +67,9 @@ export async function GET() {
       source: "CBU",
     });
   } catch (e) {
-    return Response.json(
-      { error: "Failed to fetch CBU rates", detail: String(e) },
-      { status: 503 },
-    );
+    console.warn(`[api/rates] CBU unreachable, serving fallback: ${String(e)}`);
+    // Return 200 with fallback rates so the client can still render the converter.
+    // The widget itself can show a "rates may be stale" hint if it sees source==="fallback".
+    return Response.json(FALLBACK);
   }
 }
