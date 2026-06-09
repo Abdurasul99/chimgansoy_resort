@@ -56,16 +56,25 @@ export async function GET() {
     const parseRate = (item: CbuItem) =>
       parseFloat(item.Rate) / parseFloat(item.Nominal || "1");
 
-    return Response.json({
-      usd_to_uzs: parseRate(usd),
-      eur_to_uzs: parseRate(eur),
-      rub_to_uzs: parseRate(rub),
-      usd_diff: parseFloat(usd.Diff) || 0,
-      eur_diff: parseFloat(eur.Diff) || 0,
-      rub_diff: parseFloat(rub.Diff) || 0,
-      date: usd.Date, // "26.05.2026"
-      source: "CBU",
-    });
+    return Response.json(
+      {
+        usd_to_uzs: parseRate(usd),
+        eur_to_uzs: parseRate(eur),
+        rub_to_uzs: parseRate(rub),
+        usd_diff: parseFloat(usd.Diff) || 0,
+        eur_diff: parseFloat(eur.Diff) || 0,
+        rub_diff: parseFloat(rub.Diff) || 0,
+        date: usd.Date, // "26.05.2026"
+        source: "CBU",
+      },
+      {
+        headers: {
+          // 1h fresh + 23h stale-while-revalidate — CDN/nginx can serve cached
+          // bytes immediately while a single background fetch refreshes upstream.
+          "Cache-Control": "public, max-age=3600, stale-while-revalidate=82800",
+        },
+      },
+    );
   } catch (e) {
     console.warn(`[api/rates] CBU unreachable, serving fallback: ${String(e)}`);
     // Return 200 with fallback rates so the client can still render the converter.

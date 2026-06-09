@@ -22,8 +22,9 @@ const sans = Manrope({
 const serif = Playfair_Display({
   variable: "--font-serif",
   subsets: ["latin", "cyrillic"],
-  weight: ["500", "600", "700", "800"],
+  weight: ["600", "700"], // dropped 500 and 800 — unused; trims ~80kb font payload
   display: "swap",
+  preload: true,
 });
 
 export function generateStaticParams() {
@@ -102,6 +103,10 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   return (
     <html lang={locale} className={`${sans.variable} ${serif.variable}`}>
       <head>
+        {/* Resource hints — establish connections to external domains early */}
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://cbu.uz" />
+        <link rel="dns-prefetch" href="https://maps.googleapis.com" />
         <Script
           id="schema-org"
           type="application/ld+json"
@@ -116,11 +121,12 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         <FaqPanel key={locale} locale={locale} />
         <SeasonDetector />
         <LogoIntro locale={locale as Locale} />
+        {/* GA4 — lazyOnload so analytics doesn't block first paint/LCP */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-S7FS7C573H"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
-        <Script id="ga4-init" strategy="afterInteractive">{`
+        <Script id="ga4-init" strategy="lazyOnload">{`
           window.dataLayer=window.dataLayer||[];
           function gtag(){dataLayer.push(arguments);}
           gtag('js',new Date());
