@@ -1,4 +1,4 @@
-# CHIMGANSOY / Surpa Photo Drop Folder
+# CHIMGAN DARBAZA Photo Drop Folder
 
 Place the supplied resort renders/photos here with the exact names below. The current website still uses safe remote fallback imagery until the real files are present, so the build will not break.
 

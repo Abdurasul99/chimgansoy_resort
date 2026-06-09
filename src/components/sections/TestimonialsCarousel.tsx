@@ -97,10 +97,10 @@ export function TestimonialsCarousel({ locale }: Props) {
               href={t.sourceUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="testimonial-maps-link inline-flex items-center gap-2 rounded-full border border-amber-300/50 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700 transition-all hover:border-amber-400/70 hover:bg-amber-100"
+              className="testimonial-maps-link inline-flex items-center gap-2 rounded-full border border-[var(--sun)]/35 bg-[var(--sun)]/10 px-4 py-2 text-sm font-semibold text-[var(--sun-dark)] transition-all hover:border-[var(--sun)]/60 hover:bg-[var(--sun)]/18"
             >
               {mapsCopy}
-              <svg className="h-3 w-3 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="h-3 w-3 text-[var(--sun)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
             </Link>
@@ -151,12 +151,12 @@ export function TestimonialsCarousel({ locale }: Props) {
             href="https://maps.app.goo.gl/AE7scBBU9DykP3st5"
             target="_blank"
             rel="noopener noreferrer"
-            className="testimonial-maps-link flex items-center gap-2 rounded-full border border-amber-300/50 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700 transition-all hover:border-amber-400/70 hover:bg-amber-100"
+            className="testimonial-maps-link flex items-center gap-2 rounded-full border border-[var(--sun)]/35 bg-[var(--sun)]/10 px-4 py-2 text-sm font-semibold text-[var(--sun-dark)] transition-all hover:border-[var(--sun)]/60 hover:bg-[var(--sun)]/18"
           >
             <span>4.8</span>
-            <span className="text-amber-400">·</span>
-            <span className="text-amber-600">{allReviewsCopy}</span>
-            <svg className="h-3 w-3 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <span className="text-[var(--sun)]/70">·</span>
+            <span>{allReviewsCopy}</span>
+            <svg className="h-3 w-3 text-[var(--sun)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
           </Link>

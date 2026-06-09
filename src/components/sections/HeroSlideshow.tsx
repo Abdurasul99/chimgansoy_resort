@@ -35,6 +35,9 @@ export function HeroSlideshow() {
   useEffect(() => {
     if (isWinter) return;
 
+    // NOTE: `active` is mutated by this effect itself via setActive((prev)=>...).
+    // It must NOT be in the deps array — otherwise the effect re-runs every
+    // slide, recreating both intervals and leaking the previous pair.
     setProgress(0);
     const progressTimer = setInterval(() => {
       setProgress((p) => Math.min(p + 100 / (INTERVAL_MS / 50), 100));
@@ -48,7 +51,7 @@ export function HeroSlideshow() {
       clearInterval(progressTimer);
       clearInterval(slideTimer);
     };
-  }, [active, isWinter]);
+  }, [isWinter]);
 
   if (isWinter) {
     return (

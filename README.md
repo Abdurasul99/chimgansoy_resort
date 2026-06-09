@@ -1,6 +1,6 @@
-# CHIMGANSOY Resort Website
+# CHIMGAN DARBAZA Resort Website
 
-Production-ready multilingual resort website for **CHIMGANSOY.UZ** and **CHIMGANSOY.COM**.
+Production-ready multilingual resort website for **CHIMGANDARBAZA.UZ** and **CHIMGANDARBAZA.COM**.
 
 The project is a marketing website plus booking funnel for a resort property in the Tashkent region. It is built with route-based localization from the first version and is ready for Bnovo booking integration.
 
@@ -163,7 +163,7 @@ This app is ready for deployment on Vercel or any platform that supports Next.js
 
 Recommended environment setup before launch:
 
-- Point `chimgansoy.uz` and `chimgansoy.com` to the deployment.
+- Point `chimgandarbaza.uz` and `chimgandarbaza.com` to the deployment.
 - Update canonical domain in `src/lib/metadata.ts` and `src/app/sitemap.ts` if the primary domain changes.
 - Replace placeholder contact details in `src/content/contacts.ts`.
 - Replace placeholder legal text in `src/content/policies.ts`.
@@ -249,7 +249,7 @@ src/content/images.ts
 
 Each image entry now has two layers:
 
-- `localSrc`: the expected CHIMGANSOY resort file in `public/images/resort/`
+- `localSrc`: the expected CHIMGAN DARBAZA resort file in `public/images/resort/`
 - `src`: a temporary remote fallback so the interface still renders before the real files are copied
 
 The fallback route is implemented in `src/app/images/resort/[file]/route.ts`. It serves a real local file when present and redirects to the temporary fallback when the file is still missing.
@@ -261,7 +261,7 @@ src/content/photo-plan.ts
 public/images/resort/README.md
 ```
 
-When real CHIMGANSOY photography files are available in the filesystem:
+When real CHIMGAN DARBAZA photography files are available in the filesystem:
 
 1. Add optimized images to `public/images/resort/` using the names from `public/images/resort/README.md`.
 2. Keep the exact filenames already referenced by `localSrc`; no component changes are needed.

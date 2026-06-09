@@ -104,19 +104,21 @@ export function CurrencyWidget({ locale }: { locale: string }) {
 
   const l = labels[locale] ?? labels.ru;
 
-  // Rate of 1 unit of currency to UZS
+  // Rate of 1 unit of currency to UZS. Defensive: if API ever returns 0/undefined
+  // for a rate, fall back to 1 so the converter doesn't divide by zero (NaN/Infinity).
   function rateToUzs(cur: Currency): number {
     if (!rates) return 1;
     if (cur === "UZS") return 1;
-    if (cur === "USD") return rates.usd_to_uzs;
-    if (cur === "EUR") return rates.eur_to_uzs;
-    return rates.rub_to_uzs;
+    if (cur === "USD") return rates.usd_to_uzs || 1;
+    if (cur === "EUR") return rates.eur_to_uzs || 1;
+    return rates.rub_to_uzs || 1;
   }
 
   function convert(value: number, from: Currency, to: Currency): number {
     if (!rates || from === to) return value;
-    // Convert via UZS
-    return (value * rateToUzs(from)) / rateToUzs(to);
+    const denom = rateToUzs(to);
+    if (denom === 0) return value; // belt-and-braces — rateToUzs already returns 1 minimum
+    return (value * rateToUzs(from)) / denom;
   }
 
   const amount = parseFloat(input) || 0;

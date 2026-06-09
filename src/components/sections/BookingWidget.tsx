@@ -26,7 +26,7 @@ export function BookingWidget({ locale, variant = "compact", searchParams }: Boo
       aria-labelledby="booking-widget-title"
     >
       <div
-        className={`mx-auto max-w-6xl rounded-[8px] border border-white/70 bg-white/96 p-4 shadow-[0_24px_80px_rgba(20,61,45,0.14)] backdrop-blur ${
+        className={`mx-auto max-w-6xl rounded-2xl border border-[color:var(--line)] bg-[var(--paper)]/95 p-4 shadow-[0_24px_80px_rgba(20,61,45,0.14)] backdrop-blur ${
           isFull ? "p-5 sm:p-8" : "sm:p-5"
         }`}
       >
