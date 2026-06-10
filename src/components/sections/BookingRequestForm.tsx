@@ -51,7 +51,7 @@ function SubmitButton({ label, sending }: { label: string; sending: string }) {
     <button
       type="submit"
       disabled={pending}
-      className="w-full rounded-xl bg-[var(--accent)] px-6 py-4 text-base font-bold text-white transition duration-300 hover:bg-[var(--accent-strong)] disabled:opacity-60"
+      className="w-full rounded-xl bg-[var(--accent)] px-6 py-4 text-base font-bold text-[var(--on-accent)] transition duration-300 hover:bg-[var(--accent-strong)] disabled:opacity-60"
     >
       {pending ? sending : label}
     </button>

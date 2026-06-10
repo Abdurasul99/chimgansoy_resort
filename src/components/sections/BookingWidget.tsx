@@ -67,7 +67,7 @@ export function BookingWidget({ locale, variant = "compact", searchParams }: Boo
 
             <button
               type="submit"
-              className="group inline-flex min-h-14 items-center justify-center gap-2 rounded-[6px] bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-white transition duration-300 hover:bg-[var(--accent-strong)]"
+              className="group inline-flex min-h-14 items-center justify-center gap-2 rounded-[6px] bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-[var(--on-accent)] transition duration-300 hover:bg-[var(--accent-strong)]"
             >
               <span>{dict.bookingWidget.submit}</span>
               <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />

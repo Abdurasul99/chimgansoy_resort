@@ -116,7 +116,7 @@ export function ContactForm({ dict }: Props) {
         <button
           type="submit"
           disabled={pending}
-          className="btn-press group inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[var(--sun)] px-7 py-3 text-sm font-bold text-white shadow-[0_12px_32px_rgba(220,140,0,0.32)] transition-all duration-300 hover:bg-[var(--sun-dark)] hover:shadow-[0_16px_40px_rgba(220,140,0,0.42)] disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
+          className="btn-press group inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[var(--sun)] px-7 py-3 text-sm font-bold text-[var(--on-accent)] shadow-[0_12px_32px_rgba(220,140,0,0.32)] transition-all duration-300 hover:bg-[var(--sun-dark)] hover:shadow-[0_16px_40px_rgba(220,140,0,0.42)] disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
         >
           <span>{pending ? dict.sending : dict.send}</span>
           {pending ? (

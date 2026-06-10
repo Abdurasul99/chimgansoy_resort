@@ -41,7 +41,7 @@ export function BookingDrawer({ locale, roomTitle, roomSlug, priceFrom }: Bookin
       <div className="mt-6">
         <Link
           href={requestHref}
-          className="btn-press flex w-full items-center justify-center rounded-full bg-[var(--accent)] py-4 text-sm font-bold text-white transition-all duration-300 hover:bg-[var(--accent-strong)] hover:shadow-[var(--shadow-glow)]"
+          className="btn-press flex w-full items-center justify-center rounded-full bg-[var(--accent)] py-4 text-sm font-bold text-[var(--on-accent)] transition-all duration-300 hover:bg-[var(--accent-strong)] hover:shadow-[var(--shadow-glow)]"
         >
           {dict.bookNow}
         </Link>

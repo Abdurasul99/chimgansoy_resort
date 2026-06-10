@@ -124,7 +124,7 @@ export function Header({ locale }: HeaderProps) {
             {/* Book CTA */}
             <Link
               href={localizePath(locale, "/bron")}
-              className="btn-press btn-glow-primary inline-flex h-10 items-center justify-center rounded-full px-5 text-[13px] font-bold text-white"
+              className="btn-press btn-glow-primary inline-flex h-10 items-center justify-center rounded-full px-5 text-[13px] font-bold"
             >
               {dict.bookNow}
             </Link>
@@ -215,7 +215,7 @@ export function Header({ locale }: HeaderProps) {
         <div className="px-6 pb-10 space-y-4">
           <Link
             href={localizePath(locale, "/bron")}
-            className="btn-press flex items-center justify-center rounded-full bg-[var(--sun)] py-4 text-base font-bold text-white transition-all duration-300 hover:bg-[var(--sun-dark)]"
+            className="btn-press flex items-center justify-center rounded-full bg-[var(--sun)] py-4 text-base font-bold text-[var(--on-accent)] transition-all duration-300 hover:bg-[var(--sun-dark)]"
             onClick={() => setIsOpen(false)}
           >
             {dict.bookNow}

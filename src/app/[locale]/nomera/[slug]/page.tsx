@@ -154,7 +154,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
               <div className="mt-10 lg:hidden">
                 <Link
                   href={localizePath(locale, "/bron")}
-                  className="btn-press flex items-center justify-center rounded-full bg-[var(--accent)] py-4 text-base font-bold text-white transition-all duration-300 hover:bg-[var(--accent-strong)]"
+                  className="btn-press flex items-center justify-center rounded-full bg-[var(--accent)] py-4 text-base font-bold text-[var(--on-accent)] transition-all duration-300 hover:bg-[var(--accent-strong)]"
                 >
                   {dict.bookNow}
                 </Link>

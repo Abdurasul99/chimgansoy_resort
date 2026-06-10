@@ -21,6 +21,10 @@
   --green: #2f7a3e;
   --accent: #f4a52a;
   --accent-strong: #d98a14;
+  /* Text color ON accent/sun surfaces. White on #f4a52a is only 2.04:1 —
+     dark brown gives 6.8:1 (WCAG AA) and matches the Stitch reference
+     (on-secondary-container #6c4400). */
+  --on-accent: #3b2a0a;
   /* --muted darkened from #5b6770 → #495560 for WCAG AA on --paper (5.5:1) */
   --muted: #495560;
   --line: rgba(31, 42, 51, 0.10);
@@ -59,6 +63,7 @@
 
   --accent: #f4a52a;         /* sun gold — primary CTA */
   --accent-strong: #d98a14;
+  --on-accent: #3b2a0a;      /* dark text on gold CTAs — WCAG AA 6.8:1 */
   --sun: #f4a52a;
   --sun-dark: #d98a14;
   --sky: #3fb0e5;            /* water accent, sparingly */
@@ -97,6 +102,7 @@
 
   --accent: #00d4aa;
   --accent-strong: #00b8d9;
+  --on-accent: #04261e;      /* dark text on aurora-teal CTAs — 8.9:1 */
   --sun: #f0c26a;
   --sun-dark: #e8a32d;
   --sky: #00b8d9;
@@ -1231,7 +1237,8 @@ html { scroll-behavior: smooth; }
 /* ── Primary glow CTA button ─────────────────────────── */
 .btn-glow-primary {
   background: var(--accent, #f59e0b);
-  color: white;
+  /* Dark-on-gold: white on #f4a52a is 2.04:1 (WCAG fail); --on-accent is 6.8:1 */
+  color: var(--on-accent, #3b2a0a);
   transition: background 0.3s var(--ease-premium), box-shadow 0.3s var(--ease-premium), transform 0.15s var(--ease-smooth);
 }
 
