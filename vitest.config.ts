@@ -19,7 +19,7 @@ export default defineConfig({
       "src/**/*.{test,spec}.{ts,tsx}",
       "tests/**/*.{test,spec}.{ts,tsx}",
     ],
-    exclude: ["node_modules", "tests/load/**", ".next"],
+    exclude: ["node_modules", "tests/load/**", "tests/e2e/**", ".next"],
     css: false, // skip css processing in tests
     coverage: {
       reporter: ["text", "html"],
