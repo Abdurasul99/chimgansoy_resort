@@ -90,7 +90,7 @@ export function CurrencyWidget({ locale }: { locale: string }) {
       .catch(() => {});
   }, []);
 
-  // Outside click closes any open dropdown
+  // Outside click or Escape closes any open dropdown
   useEffect(() => {
     if (!openDropdown) return;
     const onClick = (e: MouseEvent) => {
@@ -98,8 +98,15 @@ export function CurrencyWidget({ locale }: { locale: string }) {
         setOpenDropdown(null);
       }
     };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpenDropdown(null);
+    };
+    document.addEventListener("keydown", onKey);
     document.addEventListener("mousedown", onClick);
-    return () => document.removeEventListener("mousedown", onClick);
+    return () => {
+      document.removeEventListener("mousedown", onClick);
+      document.removeEventListener("keydown", onKey);
+    };
   }, [openDropdown]);
 
   const l = labels[locale] ?? labels.ru;

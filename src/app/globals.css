@@ -21,7 +21,8 @@
   --green: #2f7a3e;
   --accent: #f4a52a;
   --accent-strong: #d98a14;
-  --muted: #5b6770;
+  /* --muted darkened from #5b6770 → #495560 for WCAG AA on --paper (5.5:1) */
+  --muted: #495560;
   --line: rgba(31, 42, 51, 0.10);
   --line-strong: rgba(31, 42, 51, 0.18);
 
@@ -52,7 +53,7 @@
   --mist: #e4ddca;           /* dividers, very soft separators */
 
   --ink: #1f2a33;            /* deep blue-black, core legibility */
-  --muted: #5b6770;          /* secondary text */
+  --muted: #495560;          /* secondary text — WCAG AA 5.5:1 on cream */
   --line: rgba(31, 42, 51, 0.10);
   --line-strong: rgba(31, 42, 51, 0.18);
 

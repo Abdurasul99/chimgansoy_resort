@@ -205,14 +205,45 @@ export function FaqPanel({ locale: rawLocale }: { locale: string }) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // Close on Escape
+  // Close on Escape + trap Tab focus inside the panel while open (WCAG 2.4.3).
+  // On close, focus returns to the element that was focused before opening.
   useEffect(() => {
     if (!open) return;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+
+    const focusables = () =>
+      panelRef.current?.querySelectorAll<HTMLElement>(
+        'button, [href], input, textarea, [tabindex]:not([tabindex="-1"])',
+      ) ?? [];
+
+    // Move initial focus into the panel (search input is the natural target)
+    const first = focusables()[0];
+    first?.focus({ preventScroll: true });
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") {
+        setOpen(false);
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const els = Array.from(focusables());
+      if (els.length === 0) return;
+      const firstEl = els[0];
+      const lastEl = els[els.length - 1];
+      // Wrap focus at the edges
+      if (e.shiftKey && document.activeElement === firstEl) {
+        e.preventDefault();
+        lastEl.focus();
+      } else if (!e.shiftKey && document.activeElement === lastEl) {
+        e.preventDefault();
+        firstEl.focus();
+      }
     };
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      previouslyFocused?.focus?.({ preventScroll: true });
+    };
   }, [open]);
 
   // List of FAQ entries with their localized question labels
