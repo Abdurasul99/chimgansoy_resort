@@ -175,13 +175,31 @@ export function Hero({ locale }: HeroProps) {
 
       <div className="relative mx-auto w-full max-w-7xl px-4 pb-16 pt-36 sm:px-6 lg:pb-24 lg:px-8">
 
-        {/* Heading */}
+        {/* Heading — split display: last word in italic gold, oversized */}
         <h1
-          className="display-hero motion-rise font-serif font-bold text-white"
+          className="display-xl motion-rise font-serif font-bold text-white"
           style={{ animationDelay: "80ms" }}
         >
-          {dict.home.title}
+          {dict.home.title.split(" ").slice(0, -1).join(" ")}
+          <br />
+          <em className="text-[var(--sun)]">{dict.home.title.split(" ").at(-1)}</em>
         </h1>
+
+        {/* Altitude stamp — art-direction mark, desktop only */}
+        <div
+          className="motion-rise pointer-events-none absolute right-6 top-40 hidden rotate-12 lg:block"
+          style={{ animationDelay: "500ms" }}
+          aria-hidden="true"
+        >
+          <div className="flex h-28 w-28 items-center justify-center rounded-full border-2 border-dashed border-white/35 text-center">
+            <div>
+              <p className="font-serif text-2xl font-bold leading-none text-white/90">1700</p>
+              <p className="mt-1 text-[9px] font-bold uppercase tracking-[0.2em] text-white/55">
+                {locale === "ru" ? "метров" : locale === "uz" ? "metr" : "meters"}
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* Cycling emotion phrase */}
         <div className="motion-rise mt-5" style={{ animationDelay: "140ms" }}>

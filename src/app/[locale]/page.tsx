@@ -9,6 +9,7 @@ import { MapBlock } from "@/components/sections/MapBlock";
 import { PromoBand } from "@/components/sections/PromoBand";
 import { TestimonialsCarousel } from "@/components/sections/TestimonialsCarousel";
 import { PhotoMarquee } from "@/components/sections/PhotoMarquee";
+import { TextTicker } from "@/components/sections/TextTicker";
 import { BentoGallery } from "@/components/sections/BentoGallery";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
@@ -50,6 +51,9 @@ export default async function HomePage({ params }: PageProps) {
       {/* ── Hero ──────────────────────────────────────── */}
       <Hero locale={locale} />
 
+      {/* ── Brand word ticker ─────────────────────────── */}
+      <TextTicker locale={locale} />
+
       {/* ── Living photo strip — real June 2026 shots ─── */}
       <PhotoMarquee locale={locale} />
 
@@ -59,20 +63,23 @@ export default async function HomePage({ params }: PageProps) {
       {/* ── Booking widget ────────────────────────────── */}
       <BookingWidget locale={locale} />
 
-      {/* ── Stats bar ─────────────────────────────────── */}
-      <section className="bg-[var(--surface-warm)] py-10 px-4 sm:px-6 lg:px-8 border-y border-[var(--line)]">
+      {/* ── Numbers band — editorial oversized numerals ── */}
+      <section className="bg-[var(--surface-warm)] border-y border-[var(--line)] px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="grid grid-cols-2 gap-4 sm:gap-8 lg:grid-cols-4">
+          <div className="grid divide-y divide-[color:var(--line)] sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
             {stats.map((stat, i) => (
               <div
                 key={stat.value}
-                className="motion-reveal text-center lg:text-left"
+                className="motion-reveal flex flex-col gap-2 py-6 sm:py-2 lg:px-8 lg:first:pl-0 lg:last:pr-0"
                 data-delay={String(i * 80)}
               >
-                <p className="font-serif text-5xl font-bold text-[var(--sun)] lg:text-6xl">
+                <span className="font-serif text-sm italic text-[var(--muted)]/70">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <p className="font-serif text-[clamp(3.5rem,7vw,5.5rem)] font-bold leading-none tracking-tight text-[var(--ink)]">
                   <AnimatedStat value={parseInt(stat.value)} />
                 </p>
-                <p className="mt-1 text-[11px] font-bold uppercase tracking-widest text-[var(--muted)]">
+                <p className="max-w-[12rem] text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]">
                   {stat.label[locale as keyof typeof stat.label] ?? stat.label.ru}
                 </p>
               </div>
@@ -309,6 +316,9 @@ export default async function HomePage({ params }: PageProps) {
           <MapBlock locale={locale} />
         </div>
       </section>
+
+      {/* ── Dark closing ticker before the footer ─────── */}
+      <TextTicker locale={locale} dark />
     </>
   );
 }
