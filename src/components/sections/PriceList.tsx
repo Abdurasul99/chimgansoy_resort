@@ -25,7 +25,7 @@ const copy = {
     altNote: "Будни: Пн–Чт · Выходные: Пт–Вс · Цены в сумах",
     includedTitle: "Что входит",
     bringTitle: "Что взять с собой",
-    cta: "Оставить заявку на дату",
+    cta: "Забронировать дату",
     photoNote: "Топчан № 12 — июнь 2026",
   },
   uz: {
@@ -37,7 +37,7 @@ const copy = {
     altNote: "Hafta kunlari: Du–Pay · Dam olish: Ju–Yak · Narxlar so'mda",
     includedTitle: "Nima kiradi",
     bringTitle: "O'zingiz bilan oling",
-    cta: "Sanaga so'rov qoldirish",
+    cta: "Sanani bron qilish",
     photoNote: "12-topchan — iyun 2026",
   },
   en: {
@@ -49,7 +49,7 @@ const copy = {
     altNote: "Weekdays: Mon–Thu · Weekends: Fri–Sun · Prices in UZS",
     includedTitle: "What's included",
     bringTitle: "What to bring",
-    cta: "Request your date",
+    cta: "Book your date",
     photoNote: "Topchan no. 12 — June 2026",
   },
 } as const;

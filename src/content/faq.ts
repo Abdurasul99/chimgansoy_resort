@@ -25,9 +25,9 @@ export const faqItems: FaqItem[] = [
       en: "How does booking work?",
     },
     answer: {
-      ru: "Оставьте заявку через форму, или напишите нам в WhatsApp или Telegram — администратор подтвердит даты и детали поездки в ближайшее время.",
-      uz: "Forma orqali so'rov qoldiring yoki WhatsApp/Telegram orqali yozing — administrator sanalar va safar tafsilotlarini tez orada tasdiqlaydi.",
-      en: "Submit a request via the form, or message us on WhatsApp or Telegram — the administrator will confirm dates and details shortly.",
+      ru: "Забронируйте даты на странице «Бронирование» или напишите нам в WhatsApp / Telegram — администратор подтвердит бронь в ближайшее время.",
+      uz: "«Bron qilish» sahifasida sanalarni bron qiling yoki WhatsApp / Telegram orqali yozing — administrator bronni tez orada tasdiqlaydi.",
+      en: "Book your dates on the Booking page, or message us on WhatsApp / Telegram — the administrator will confirm your reservation shortly.",
     },
   },
   {

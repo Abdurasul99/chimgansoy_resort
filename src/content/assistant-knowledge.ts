@@ -59,9 +59,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "price",
     keywords: ["цена", "цены", "стоимость", "сколько стоит", "прайс", "narx", "narxi", "qancha", "price", "cost", "how much", "rate"],
     answer: {
-      ru: "💰 Цены зависят от типа размещения, дат и количества гостей. Точную стоимость подтвердит администратор за пару минут — напишите в WhatsApp или Telegram, или оставьте заявку на сайте.",
-      uz: "💰 Narxlar turar joy turi, sanalar va mehmonlar soniga bog'liq. Aniq narxni administrator bir necha daqiqada tasdiqlaydi — WhatsApp yoki Telegramga yozing yoki saytda so'rov qoldiring.",
-      en: "💰 Prices depend on accommodation type, dates and number of guests. The administrator will confirm the exact rate in a couple of minutes — message us on WhatsApp or Telegram, or submit a request on the site.",
+      ru: "💰 Цены зависят от типа размещения, дат и количества гостей. Точную стоимость подтвердит администратор за пару минут — напишите в WhatsApp или Telegram, или забронируйте на сайте.",
+      uz: "💰 Narxlar turar joy turi, sanalar va mehmonlar soniga bog'liq. Aniq narxni administrator bir necha daqiqada tasdiqlaydi — WhatsApp yoki Telegramga yozing yoki saytda bron qiling.",
+      en: "💰 Prices depend on accommodation type, dates and number of guests. The administrator will confirm the exact rate in a couple of minutes — message us on WhatsApp or Telegram, or book on the site.",
     },
   },
 
@@ -70,9 +70,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "booking",
     keywords: ["бронир", "забронировать", "заказ", "бронь", "bron", "buyurtma", "book", "reserve", "reservation", "booking"],
     answer: {
-      ru: "📅 Забронировать просто:\n• Оставьте заявку через форму на странице «Бронирование»\n• Или напишите в WhatsApp / Telegram\n\nАдминистратор подтвердит даты и детали в ближайшее время.",
-      uz: "📅 Bron qilish oson:\n• «Bron qilish» sahifasidagi forma orqali so'rov qoldiring\n• Yoki WhatsApp / Telegramga yozing\n\nAdministrator sanalar va tafsilotlarni tez orada tasdiqlaydi.",
-      en: "📅 Booking is easy:\n• Submit a request via the form on the «Booking» page\n• Or message us on WhatsApp / Telegram\n\nThe administrator will confirm the dates and details shortly.",
+      ru: "📅 Забронировать просто:\n• Выберите даты на странице «Бронирование»\n• Или напишите в WhatsApp / Telegram\n\nАдминистратор подтвердит бронь в ближайшее время.",
+      uz: "📅 Bron qilish oson:\n• «Bron qilish» sahifasida sanalarni tanlang\n• Yoki WhatsApp / Telegramga yozing\n\nAdministrator bronni tez orada tasdiqlaydi.",
+      en: "📅 Booking is easy:\n• Pick your dates on the «Booking» page\n• Or message us on WhatsApp / Telegram\n\nThe administrator will confirm your reservation shortly.",
     },
   },
 

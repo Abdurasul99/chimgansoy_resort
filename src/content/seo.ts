@@ -56,9 +56,9 @@ export const pageSeo = {
   booking: {
     title: { ru: "Бронирование CHIMGAN DARBAZA", uz: "CHIMGAN DARBAZA bron qilish", en: "CHIMGAN DARBAZA booking" },
     description: {
-      ru: "Оставьте заявку на даты, и администратор подтвердит бронь — быстро, без онлайн-оплаты.",
-      uz: "Sanalar uchun so'rov qoldiring — administrator bronni tasdiqlaydi, onlayn to'lovsiz.",
-      en: "Send a request with your dates and our team will confirm the booking — no online payment needed.",
+      ru: "Бронирование топчанов и дневного отдыха: выберите даты — администратор подтвердит бронь в ближайшее время.",
+      uz: "Topchan va kunlik dam olishni bron qilish: sanalarni tanlang — administrator bronni tez orada tasdiqlaydi.",
+      en: "Book a topchan and your day in the mountains: pick the dates and our team will confirm shortly.",
     },
   },
 } satisfies Record<string, PageSeo>;
