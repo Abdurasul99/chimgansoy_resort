@@ -17,8 +17,9 @@ const ROW_A = [
   "galMountainView",
 ] as const;
 
+// NOTE: no A-frame shots here — cabins are still under construction
 const ROW_B = [
-  "galAframeTrio",
+  "galTopchanRidge",
   "galTopchanInside",
   "galMangalFire",
   "galTerritoryPanorama",

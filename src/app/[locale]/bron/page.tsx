@@ -4,6 +4,7 @@ import { PageHero } from "@/components/sections/PageHero";
 import { RoomCatalog } from "@/components/sections/RoomCatalog";
 import { Faq } from "@/components/sections/Faq";
 import { BookingRequestForm } from "@/components/sections/BookingRequestForm";
+import { ExelyWidget } from "@/components/sections/ExelyWidget";
 import { CurrencyWidget } from "@/components/sections/CurrencyWidget";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { resortImages } from "@/content/images";
@@ -101,6 +102,11 @@ export default async function BookingPage({ params, searchParams }: PageProps) {
         image={resortImages.cottage}
         eyebrow="CHIMGAN DARBAZA"
       />
+
+      {/* ── Exely online booking (renders once the PMS onboarding is done
+            and NEXT_PUBLIC_EXELY_WIDGET_URL is set; until then — nothing,
+            and the request form below stays the primary path) ─────────── */}
+      <ExelyWidget locale={locale} />
 
       {/* ── Contact + Request form ─────────────────────── */}
       <section className="px-4 py-12 sm:py-16 sm:px-6 lg:px-8">

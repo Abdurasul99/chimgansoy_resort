@@ -77,9 +77,9 @@ src/
 
 ## Business logic & flows
 
-### Booking flow (no online payment, no iframe)
+### Booking flow (request form now; Exely online booking incoming)
 
-The site **does not have online booking or online payment** any more. The old Bnovo iframe widget and PayKeeper integration were removed (commit `d3fc6f9`). The flow is now:
+The old Bnovo iframe widget and PayKeeper integration were removed (commit `d3fc6f9`). The current flow:
 
 1. Guest picks dates / guests on the **homepage BookingWidget** (custom `DatePicker` + `GuestSelect`).
 2. Submit redirects to **`/bron?checkin=…&checkout=…&guests=…&room=…`** — that page's `BookingRequestForm` pre-fills from URL.
@@ -88,6 +88,13 @@ The site **does not have online booking or online payment** any more. The old Bn
 5. Admin replies manually.
 
 The footer "Запросить отдых" form is a separate path — see **email routing** below.
+
+**Exely PMS (June 2026): contract signed.** The operator signed with **Exely (exely.com)** — a PMS / channel manager that will provide an embeddable online-booking widget script. Status: waiting for the operator to finish Exely onboarding and hand over the embed code.
+
+- `src/components/sections/ExelyWidget.tsx` is the prepared slot, already mounted on `/bron` above the request form.
+- It renders **nothing** until `NEXT_PUBLIC_EXELY_WIDGET_URL` is set in Vercel env (optionally `NEXT_PUBLIC_EXELY_HOTEL_ID`).
+- When the embed code arrives: check whether their snippet needs extra data-attributes or a container with a specific id (current container id: `exely-booking-widget`), adjust the script wiring in ExelyWidget, set env, redeploy.
+- The request form stays as a fallback path even after Exely goes live.
 
 ### Email routing (Resend + Google Workspace)
 
