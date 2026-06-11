@@ -160,7 +160,32 @@ html {
    Logo intro coordination — when the cream overlay covers the
    viewport, hide the header brand mark and freeze the Hero's
    stagger reveals so they don't burn while you can't see them.
+
+   "pending" is set by an inline pre-hydration script in <head> on
+   home paths — it hides ALL body content before React loads, so the
+   intro is ALWAYS the first thing seen (no flash of the homepage).
+   LogoIntro then upgrades it to "active" (overlay visible, shell
+   hidden) or removes it entirely when skipping.
    ────────────────────────────────────────────────────────────── */
+html[data-intro="pending"] body > * {
+  visibility: hidden;
+}
+html[data-intro="active"] body > header,
+html[data-intro="active"] body > main,
+html[data-intro="active"] body > footer {
+  visibility: hidden;
+}
+html[data-intro="pending"],
+html[data-intro="active"] {
+  overflow: hidden;
+}
+/* The intro paints over a solid paper backdrop even while the shell
+   is hidden, so there's no white flash between pending → active. */
+html[data-intro="pending"] body,
+html[data-intro="active"] body {
+  background: var(--paper);
+}
+
 html[data-intro="active"] .logo-img,
 html[data-intro="exiting"] .logo-img {
   opacity: 0;

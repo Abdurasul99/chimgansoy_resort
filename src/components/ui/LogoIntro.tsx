@@ -35,6 +35,11 @@ export function LogoIntro({ locale }: { locale: Locale }) {
     const p = initialPath.current;
     const onHome = p === homePath || p === homePath + "/";
     if (!onHome || rm) {
+      // The pre-hydration gate in <head> may have set "pending" (it hides the
+      // whole shell). If we're skipping, release it or the page stays blank.
+      if (document.documentElement.getAttribute("data-intro") === "pending") {
+        document.documentElement.removeAttribute("data-intro");
+      }
       setDecision("skip");
       return;
     }
