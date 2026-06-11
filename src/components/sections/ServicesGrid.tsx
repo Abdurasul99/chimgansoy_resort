@@ -8,7 +8,6 @@ import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
 import { imageStyle } from "@/lib/images";
 import { text } from "@/lib/localize";
-import { ButtonLink } from "@/components/ui/ButtonLink";
 
 type ServicesGridProps = {
   locale: Locale;
@@ -47,66 +46,66 @@ export function ServicesGrid({ locale, limit, showFilters = true, slugs }: Servi
         </div>
       ) : null}
 
-      {/* Editorial grid: every 3rd card is wide */}
+      {/* Editorial photo cards — full-bleed real photography, the whole card
+          is the link. First card spans 2 columns for an asymmetric rhythm. */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {visibleServices.map((service, index) => {
           const image = resortImages[service.image];
-          const isWide = (index + 1) % 3 === 0;
+          const isFeature = index === 0;
 
           return (
-            <article
+            <a
               key={service.slug}
-              className={`group relative overflow-hidden rounded-3xl bg-[var(--ink)] motion-reveal ${
-                isWide ? "sm:col-span-2 lg:col-span-1" : ""
-              }`}
+              href={localizePath(locale, `/services/${service.slug}`)}
+              className={`service-card group motion-reveal ${
+                isFeature ? "sm:col-span-2 lg:row-span-2" : ""
+              } ${isFeature ? "aspect-[3/2] sm:aspect-auto sm:min-h-[480px]" : "aspect-[4/5] sm:aspect-[3/4]"}`}
               data-delay={String((index % 3) * 80)}
+              aria-label={text(service.title, locale)}
             >
-              {/* Image */}
+              {/* Photo */}
               <div
-                className={`relative overflow-hidden bg-cover bg-center transition-transform duration-[1.2s] ease-out group-hover:scale-[1.05] ${
-                  isWide ? "aspect-[3/2]" : "aspect-[4/3]"
-                }`}
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-[1.4s] ease-out group-hover:scale-[1.06]"
                 style={imageStyle(image)}
                 role="img"
                 aria-label={text(image.alt, locale)}
+              />
+              {/* Cinematic gradient */}
+              <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,18,14,0.88)_0%,rgba(12,18,14,0.32)_45%,rgba(12,18,14,0.04)_75%)] transition-opacity duration-500 group-hover:opacity-90" />
+
+              {/* Big editorial index number */}
+              <span
+                aria-hidden="true"
+                className="absolute right-5 top-3 font-serif text-[clamp(2.6rem,5vw,4rem)] font-bold leading-none text-white/14 transition-colors duration-500 group-hover:text-white/30"
               >
-                {/* Gradient */}
-                <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,18,14,0.92)_0%,rgba(12,18,14,0.30)_55%,rgba(12,18,14,0)_100%)]" />
+                {String(index + 1).padStart(2, "0")}
+              </span>
 
-                {/* Category badge */}
-                <div className="absolute left-4 top-4">
-                  <span className="rounded-full border border-white/16 bg-white/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-white/70 backdrop-blur-sm">
-                    {text(service.bestFor, locale)}
-                  </span>
-                </div>
+              {/* Category badge */}
+              <span className="absolute left-4 top-4 rounded-full border border-white/16 bg-white/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-white/75 backdrop-blur-sm">
+                {text(service.bestFor, locale)}
+              </span>
 
-                {/* Hover overlay CTA */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <span className="rounded-full border border-white/30 bg-white/14 px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-white backdrop-blur-sm">
-                    {dict.details}
-                  </span>
-                </div>
-
-                {/* Title at bottom */}
-                <div className="absolute inset-x-0 bottom-0 p-5">
-                  <h3 className="font-serif text-2xl font-bold leading-tight text-white">
-                    {text(service.title, locale)}
-                  </h3>
-                </div>
-              </div>
-
-              {/* Info */}
-              <div className="bg-[var(--paper)] px-5 py-4">
-                <p className="text-sm leading-6 text-[var(--muted)]">{text(service.shortDescription, locale)}</p>
-                <ButtonLink
-                  href={localizePath(locale, `/services/${service.slug}`)}
-                  variant="ghost"
-                  className="btn-press mt-4"
-                >
+              {/* Bottom copy block */}
+              <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+                <h3 className={`font-serif font-bold leading-tight text-white ${isFeature ? "text-3xl sm:text-4xl" : "text-2xl"}`}>
+                  {text(service.title, locale)}
+                </h3>
+                {/* Description slides up on hover; always visible on touch */}
+                <p className="service-card__desc mt-2 max-w-md text-sm leading-6 text-white/75">
+                  {text(service.shortDescription, locale)}
+                </p>
+                <span className="mt-4 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--sun)]">
                   {dict.details}
-                </ButtonLink>
+                  <svg
+                    className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </span>
               </div>
-            </article>
+            </a>
           );
         })}
       </div>

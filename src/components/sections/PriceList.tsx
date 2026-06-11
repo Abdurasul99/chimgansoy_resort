@@ -141,8 +141,9 @@ export function PriceList({ locale }: PriceListProps) {
             </ul>
           </div>
 
-          {/* What to bring */}
-          <div className="rounded-3xl border border-[color:var(--line)] bg-[var(--ink)] p-7 text-white shadow-[var(--shadow-card)] motion-reveal" data-delay="160">
+          {/* What to bring — bg uses --mountain (dark in BOTH seasons; --ink
+              flips light in winter and made white text invisible) */}
+          <div className="rounded-3xl border border-[color:var(--line)] bg-[var(--mountain)] p-7 text-white shadow-[var(--shadow-card)] motion-reveal" data-delay="160">
             <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--sun)]">
               {t.bringTitle}
             </p>

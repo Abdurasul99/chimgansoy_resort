@@ -371,6 +371,41 @@ textarea {
   .marquee-track { animation: none; }
 }
 
+/* ── Service cards — full-bleed photo links ─────────── */
+.service-card {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 22px;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.5s var(--ease-premium), transform 0.5s var(--ease-premium);
+}
+.service-card:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-4px);
+}
+.service-card__desc {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.5s var(--ease-premium), opacity 0.4s var(--ease-premium), margin 0.4s var(--ease-premium);
+  margin-top: 0;
+}
+.service-card:hover .service-card__desc,
+.service-card:focus-visible .service-card__desc {
+  max-height: 8rem;
+  opacity: 1;
+  margin-top: 0.5rem;
+}
+/* Touch devices: no hover — descriptions always visible */
+@media (hover: none) {
+  .service-card__desc {
+    max-height: none;
+    opacity: 1;
+    margin-top: 0.5rem;
+  }
+}
+
 /* ── Bento gallery — asymmetric mosaic cells ───────── */
 .bento-cell {
   position: relative;

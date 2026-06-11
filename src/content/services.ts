@@ -17,7 +17,7 @@ export const services: Service[] = [
   {
     slug: "tapchan-zone",
     category: "relax",
-    image: "tapchan",
+    image: "galTopchanSwing",
     title: { ru: "Топчан и курпача", uz: "Topchan va kurpacha", en: "Topchan & kurpacha" },
     shortDescription: {
       ru: "Приватный топчан с курпача — до 8 гостей на один топчан.",
@@ -39,7 +39,7 @@ export const services: Service[] = [
   {
     slug: "outdoor-cooking",
     category: "food",
-    image: "grill",
+    image: "galMangalFire",
     title: { ru: "Мангал и казан", uz: "Mangal va qozon", en: "BBQ grill & kazan" },
     shortDescription: {
       ru: "Аренда мангала, казана и место под костёр — готовите сами своё.",
@@ -61,7 +61,7 @@ export const services: Service[] = [
   {
     slug: "picnic-zone",
     category: "relax",
-    image: "picnic",
+    image: "galTopchanRow",
     title: { ru: "Зона пикника", uz: "Piknik zonasi", en: "Picnic zone" },
     shortDescription: {
       ru: "Открытые площадки среди сосен для семейного дня и встреч на природе.",
@@ -83,7 +83,7 @@ export const services: Service[] = [
   {
     slug: "restaurant",
     category: "food",
-    image: "restaurant",
+    image: "galFoodServing",
     title: { ru: "Меню кухни", uz: "Oshxona menyusi", en: "Kitchen menu" },
     shortDescription: {
       ru: "Готовое меню от кухни — закажите блюда прямо на свой топчан.",
@@ -105,7 +105,7 @@ export const services: Service[] = [
   {
     slug: "experience",
     category: "activity",
-    image: "activity",
+    image: "galMountainView",
     title: { ru: "Горные прогулки рядом", uz: "Atrofdagi tog' sayrlari", en: "Mountain walks nearby" },
     shortDescription: {
       ru: "Лёгкие пешие маршруты, конные прогулки и канатные дороги в районе Чимгана.",
