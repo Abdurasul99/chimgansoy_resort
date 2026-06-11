@@ -24,8 +24,8 @@ export const rooms: Room[] = [
   {
     slug: "glamping",
     category: "glamping",
-    image: "glamping",
-    gallery: ["glamping", "glampingDay", "poolLifestyle", "territoryAerial"],
+    image: "galAframeCloseup",
+    gallery: ["galAframeCloseup", "galAframeTrio", "galTopchanPeaks", "galTerritoryPanorama"],
     title: { ru: "Глэмпинг", uz: "Glemping", en: "Glamping" },
     eyebrow: {
       ru: "Проживание на природе",
@@ -42,7 +42,7 @@ export const rooms: Room[] = [
       uz: "Glemping sokinlik, toza havo va qulaylikdan voz kechmasdan tabiatni his qilishni istagan mehmonlar uchun. U romantik dam olish, qisqa hordiq va kichik oilaviy safarlar uchun mos.",
       en: "Glamping is designed for guests who want quiet air and a close-to-nature stay without giving up comfort. It fits romantic escapes, short resets, and intimate family trips.",
     },
-    priceFrom: { ru: "Цена по запросу", uz: "Narx so'rov bo'yicha", en: "Price on request" },
+    priceFrom: { ru: "Цена при бронировании", uz: "Bron qilishda narx", en: "Price at booking" },
     capacity: { ru: "2-4 гостя", uz: "2-4 mehmon", en: "2-4 guests" },
     size: { ru: "до 32 м2", uz: "32 m2 gacha", en: "up to 32 m2" },
     amenities: {
@@ -60,8 +60,8 @@ export const rooms: Room[] = [
   {
     slug: "cottage",
     category: "cottage",
-    image: "cottage",
-    gallery: ["cottage", "cottageDay", "grill", "kids"],
+    image: "galReceptionWood",
+    gallery: ["galReceptionWood", "galTopchanInside", "galMangalFire", "galKidsSwing"],
     title: { ru: "Коттедж", uz: "Kottej", en: "Cottage" },
     eyebrow: {
       ru: "Для семьи и компании",
@@ -78,7 +78,7 @@ export const rooms: Room[] = [
       uz: "Kottej to'liq xususiy formatni istagan mehmonlar uchun: alohida dam olish zonalari, bolalar uchun kengroq joy va shaxsiy terrasada kechki vaqt.",
       en: "The cottage is for guests who need a fully private format: separate lounge zones, extra room for kids, and relaxed evenings on a private terrace.",
     },
-    priceFrom: { ru: "Цена по запросу", uz: "Narx so'rov bo'yicha", en: "Price on request" },
+    priceFrom: { ru: "Цена при бронировании", uz: "Bron qilishda narx", en: "Price at booking" },
     capacity: { ru: "4-6 гостей", uz: "4-6 mehmon", en: "4-6 guests" },
     size: { ru: "до 58 м2", uz: "58 m2 gacha", en: "up to 58 m2" },
     amenities: {

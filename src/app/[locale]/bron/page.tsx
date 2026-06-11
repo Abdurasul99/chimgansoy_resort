@@ -8,6 +8,7 @@ import { ExelyWidget } from "@/components/sections/ExelyWidget";
 import { CurrencyWidget } from "@/components/sections/CurrencyWidget";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { resortImages } from "@/content/images";
+import { rooms } from "@/content/rooms";
 import { contacts } from "@/content/contacts";
 import { dictionaries } from "@/content/translations";
 import { pageSeo } from "@/content/seo";
@@ -57,6 +58,11 @@ export default async function BookingPage({ params, searchParams }: PageProps) {
   const bookingSearchParams = await searchParams;
   const dict = dictionaries[locale];
   const bronDict = (dict as Record<string, unknown>).bron as typeof dictionaries.ru.bron;
+
+  // If the guest arrived from a room card (?room=glamping|cottage), show which
+  // room they're booking right above the form.
+  const roomSlug = getFirstSearchParam(bookingSearchParams, "room");
+  const selectedRoom = rooms.find((r) => r.slug === roomSlug);
 
   const channels = [
     {
@@ -155,6 +161,27 @@ export default async function BookingPage({ params, searchParams }: PageProps) {
 
             {/* Right — request form + currency */}
             <div className="space-y-6">
+              {selectedRoom && (
+                <div className="flex items-center gap-4 rounded-2xl border border-[color:var(--line)] bg-[var(--surface)] p-4">
+                  <div
+                    className="h-16 w-16 shrink-0 rounded-xl bg-cover bg-center"
+                    style={{
+                      backgroundImage: `url(${resortImages[selectedRoom.image].localSrc ?? resortImages[selectedRoom.image].src})`,
+                    }}
+                    role="img"
+                    aria-label={text(selectedRoom.title, locale)}
+                  />
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">
+                      {locale === "ru" ? "Вы бронируете" : locale === "uz" ? "Siz bron qilyapsiz" : "You're booking"}
+                    </p>
+                    <p className="mt-0.5 font-serif text-xl font-semibold text-[var(--ink)]">
+                      {text(selectedRoom.title, locale)}
+                    </p>
+                    <p className="text-xs text-[var(--muted)]">{text(selectedRoom.capacity, locale)}</p>
+                  </div>
+                </div>
+              )}
               <BookingRequestForm
                 dict={bronDict}
                 labels={{ checkIn: dict.checkIn, checkOut: dict.checkOut, guests: dict.guests }}

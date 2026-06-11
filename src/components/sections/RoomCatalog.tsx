@@ -106,7 +106,7 @@ export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
                   <ButtonLink href={localizePath(locale, `/nomera/${room.slug}`)} variant="secondary" className="btn-press">
                     {dict.details}
                   </ButtonLink>
-                  <ButtonLink href={localizePath(locale, "/bron")} variant="ghost" className="btn-press">
+                  <ButtonLink href={localizePath(locale, `/bron?room=${room.slug}`)} variant="ghost" className="btn-press">
                     {dict.book}
                   </ButtonLink>
                 </div>

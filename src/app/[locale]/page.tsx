@@ -3,6 +3,7 @@ import { WeatherPanel } from "@/components/sections/WeatherPanel";
 import { Hero } from "@/components/sections/Hero";
 import { BookingWidget } from "@/components/sections/BookingWidget";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
+import { RoomCatalog } from "@/components/sections/RoomCatalog";
 import { Faq } from "@/components/sections/Faq";
 import { Gallery } from "@/components/sections/Gallery";
 import { MapBlock } from "@/components/sections/MapBlock";
@@ -189,6 +190,21 @@ export default async function HomePage({ params }: PageProps) {
         <WeatherPanel locale={locale} />
       </section>
 
+
+      {/* ── Rooms — glamping + cottage, bookable ──────── */}
+      <section className="bg-[var(--surface)] px-4 py-24 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div className="motion-reveal">
+              <SectionHeader title={dict.home.roomsTitle} text={dict.home.roomsText} />
+            </div>
+            <ButtonLink href={localizePath(locale, "/nomera")} variant="ghost" className="lg:mb-1 btn-press motion-reveal" data-delay="100">
+              {dict.viewAll}
+            </ButtonLink>
+          </div>
+          <RoomCatalog locale={locale} limit={2} />
+        </div>
+      </section>
 
       {/* ── Services ──────────────────────────────────── */}
       <section className="px-4 py-24 sm:px-6 lg:px-8">

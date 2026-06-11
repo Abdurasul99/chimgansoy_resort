@@ -52,10 +52,14 @@ const CLOSE_LABEL: Record<Locale, string> = {
 // Excludes content that doesn't fit the current day-use positioning (cottage, glamping,
 // checkin, cancellation, pool) — those topics can re-enter when overnight stays open.
 const FAQ_ORDER = [
-  "dayvisit",
+  "glamping",
+  "cottage",
   "price",
-  "schedule",
   "booking",
+  "checkin",
+  "cancellation",
+  "dayvisit",
+  "schedule",
   "location",
   "parking",
   "activities",
@@ -70,6 +74,26 @@ const FAQ_ORDER = [
 
 // Human-readable question for each entry (richer than the chip label).
 const QUESTIONS: Record<string, Record<Locale, string>> = {
+  glamping: {
+    ru: "Что такое глэмпинг и какой он у вас?",
+    uz: "Glemping nima va sizda qanday?",
+    en: "What is the glamping like?",
+  },
+  cottage: {
+    ru: "Расскажите про коттедж — для кого он?",
+    uz: "Kottej haqida — u kimlar uchun?",
+    en: "Tell me about the cottage — who is it for?",
+  },
+  checkin: {
+    ru: "Во сколько заезд и выезд?",
+    uz: "Kirish va chiqish soat nechada?",
+    en: "What are the check-in and check-out times?",
+  },
+  cancellation: {
+    ru: "Можно ли отменить или перенести бронь?",
+    uz: "Bronni bekor qilish yoki ko'chirish mumkinmi?",
+    en: "Can I cancel or reschedule a booking?",
+  },
   dayvisit: {
     ru: "Можно приехать на день, без ночёвки?",
     uz: "Bir kunga, tunamasdan kelish mumkinmi?",

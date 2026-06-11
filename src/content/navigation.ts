@@ -6,6 +6,10 @@ export const mainNavigation: NavigationItem[] = [
     label: { ru: "Главная", uz: "Bosh sahifa", en: "Home" },
   },
   {
+    href: "/nomera",
+    label: { ru: "Номера", uz: "Xonalar", en: "Rooms" },
+  },
+  {
     href: "/services",
     label: { ru: "Услуги", uz: "Xizmatlar", en: "Services" },
   },
@@ -25,9 +29,17 @@ export const mainNavigation: NavigationItem[] = [
 
 export const footerNavigation = [
   {
+    title: { ru: "Размещение", uz: "Yashash", en: "Stay" },
+    links: [
+      { href: "/nomera", label: { ru: "Номера", uz: "Xonalar", en: "Rooms" } },
+      { href: "/nomera/glamping", label: { ru: "Глэмпинг", uz: "Glemping", en: "Glamping" } },
+      { href: "/nomera/cottage", label: { ru: "Коттедж", uz: "Kottej", en: "Cottage" } },
+      { href: "/bron", label: { ru: "Забронировать", uz: "Bron qilish", en: "Book now" } },
+    ],
+  },
+  {
     title: { ru: "Дневной отдых", uz: "Kunlik dam", en: "Day visit" },
     links: [
-      { href: "/bron", label: { ru: "Забронировать", uz: "Bron qilish", en: "Book a day" } },
       { href: "/services/tapchan-zone", label: { ru: "Топчаны и курпача", uz: "Topchan va kurpacha", en: "Topchan & kurpacha" } },
       { href: "/services/outdoor-cooking", label: { ru: "Мангал и казан", uz: "Mangal va qozon", en: "BBQ & kazan" } },
     ],

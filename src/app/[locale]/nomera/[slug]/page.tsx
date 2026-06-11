@@ -37,7 +37,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     `/nomera/${room.slug}`,
   );
-  return { ...meta, robots: { index: false, follow: true } };
+  // Rooms are live and bookable — indexable.
+  return meta;
 }
 
 export default async function RoomDetailPage({ params }: PageProps) {
