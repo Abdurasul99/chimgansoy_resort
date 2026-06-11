@@ -9,7 +9,6 @@ import { MapBlock } from "@/components/sections/MapBlock";
 import { PromoBand } from "@/components/sections/PromoBand";
 import { TestimonialsCarousel } from "@/components/sections/TestimonialsCarousel";
 import { PhotoMarquee } from "@/components/sections/PhotoMarquee";
-import { TextTicker } from "@/components/sections/TextTicker";
 import { BentoGallery } from "@/components/sections/BentoGallery";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
@@ -50,9 +49,6 @@ export default async function HomePage({ params }: PageProps) {
     <>
       {/* ── Hero ──────────────────────────────────────── */}
       <Hero locale={locale} />
-
-      {/* ── Brand word ticker ─────────────────────────── */}
-      <TextTicker locale={locale} />
 
       {/* ── Living photo strip — real June 2026 shots ─── */}
       <PhotoMarquee locale={locale} />
@@ -316,9 +312,6 @@ export default async function HomePage({ params }: PageProps) {
           <MapBlock locale={locale} />
         </div>
       </section>
-
-      {/* ── Dark closing ticker before the footer ─────── */}
-      <TextTicker locale={locale} dark />
     </>
   );
 }

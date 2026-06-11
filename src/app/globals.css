@@ -325,51 +325,6 @@ textarea {
   animation: hero-scale 7s ease both;
 }
 
-/* ── Text ticker — oversized brand words drifting across ── */
-.ticker-band {
-  overflow: hidden;
-  border-block: 1px solid var(--line);
-  padding-block: 0.9rem;
-  background: var(--paper);
-}
-.ticker-band--dark {
-  background: var(--mountain);
-  border-block: 1px solid rgba(255, 255, 255, 0.08);
-}
-.ticker-track {
-  display: flex;
-  align-items: baseline;
-  gap: 2.5rem;
-  width: max-content;
-  animation: marquee-left 36s linear infinite;
-  will-change: transform;
-}
-.ticker-word {
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: clamp(1.4rem, 2.6vw, 2.2rem);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--ink);
-  white-space: nowrap;
-}
-.ticker-band--dark .ticker-word { color: rgba(255, 255, 255, 0.92); }
-.ticker-word--ghost {
-  -webkit-text-stroke: 1px var(--muted);
-  color: transparent;
-}
-.ticker-band--dark .ticker-word--ghost {
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
-  color: transparent;
-}
-.ticker-sep {
-  color: var(--accent-strong);
-  font-size: 1.2rem;
-}
-@media (prefers-reduced-motion: reduce) {
-  .ticker-track { animation: none; }
-}
-
 /* ── Editorial display scale (the "expensive" type system) ── */
 .display-xl {
   font-size: clamp(4rem, 13vw, 11rem);
