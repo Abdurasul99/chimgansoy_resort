@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 
+// Real June-2026 photography — topchans against the Chimgan ridge
 const SUMMER_SLIDES = [
-  "/images/resort/17-workout-padel-zone.jpg",
-  "/images/resort/15-pool-aerial.jpg",
-  "/images/resort/16-pool-day-lifestyle.jpg",
-  "/images/resort/photo_2026-03-31_22-24-14.jpg",
+  "/images/resort/gallery/gal-territory-panorama.jpg",
+  "/images/resort/gallery/gal-topchan-row.jpg",
+  "/images/resort/gallery/gal-pathway.jpg",
+  "/images/resort/gallery/gal-aframe-trio.jpg",
 ];
 
 const WINTER_PHOTO = "/images/resort/winter-google-aframe.jpg";

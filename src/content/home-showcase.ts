@@ -9,7 +9,7 @@ export type HomeShowcaseItem = {
 
 export const homeShowcase: HomeShowcaseItem[] = [
   {
-    image: "territoryAerial",
+    image: "galTerritoryPanorama",
     title: {
       ru: "Дневной отдых, где весь день складывается в одном месте",
       uz: "Butun kun bitta hududda jamlanadigan kunlik dam",
@@ -22,7 +22,7 @@ export const homeShowcase: HomeShowcaseItem[] = [
     },
   },
   {
-    image: "tapchanAerial",
+    image: "galTopchanPeaks",
     title: {
       ru: "Топчан с курпача — для всей компании",
       uz: "Kurpachali topchan — butun do'stlar uchun",
@@ -35,7 +35,7 @@ export const homeShowcase: HomeShowcaseItem[] = [
     },
   },
   {
-    image: "mountainWalks",
+    image: "galMountainView",
     title: {
       ru: "Горы Чимгана за порогом топчана",
       uz: "Topchan ostonangizdayoq Chimgon tog'lari",

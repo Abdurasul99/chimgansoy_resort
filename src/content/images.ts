@@ -1,6 +1,177 @@
 import type { ImageAsset } from "./types";
 
 export const resortImages = {
+  /* ── Real photography (June 2026 shoot, curated from 98-photo gallery) ── */
+  galTopchanPeaks: {
+    src: "/images/resort/gallery/gal-topchan-peaks.jpg",
+    localSrc: "/images/resort/gallery/gal-topchan-peaks.jpg",
+    position: "center",
+    alt: {
+      ru: "Топчан с занавесями на фоне снежных вершин Чимгана",
+      uz: "Chimg'onning qorli cho'qqilari fonida pardali topchan",
+      en: "Curtained topchan against the snowy peaks of Chimgan",
+    },
+  },
+  galTopchanRidge: {
+    src: "/images/resort/gallery/gal-topchan-ridge.jpg",
+    localSrc: "/images/resort/gallery/gal-topchan-ridge.jpg",
+    position: "center",
+    alt: {
+      ru: "Топчаны на фоне горного хребта",
+      uz: "Tog' tizmasi fonidagi topchanlar",
+      en: "Topchans against the mountain ridge",
+    },
+  },
+  galTopchanRow: {
+    src: "/images/resort/gallery/gal-topchan-row.jpg",
+    localSrc: "/images/resort/gallery/gal-topchan-row.jpg",
+    position: "center",
+    alt: {
+      ru: "Ряд топчанов среди молодых сосен",
+      uz: "Yosh qarag'aylar orasidagi topchanlar qatori",
+      en: "Row of topchans among young pines",
+    },
+  },
+  galTerritoryPanorama: {
+    src: "/images/resort/gallery/gal-territory-panorama.jpg",
+    localSrc: "/images/resort/gallery/gal-territory-panorama.jpg",
+    position: "center",
+    alt: {
+      ru: "Панорама территории CHIMGAN DARBAZA с горами",
+      uz: "CHIMGAN DARBAZA hududining tog'lar bilan panoramasi",
+      en: "Panorama of CHIMGAN DARBAZA grounds with mountains",
+    },
+  },
+  galPathway: {
+    src: "/images/resort/gallery/gal-pathway.jpg",
+    localSrc: "/images/resort/gallery/gal-pathway.jpg",
+    position: "center",
+    alt: {
+      ru: "Прогулочная дорожка между топчанами",
+      uz: "Topchanlar orasidagi sayr yo'lakchasi",
+      en: "Walking path between the topchans",
+    },
+  },
+  galTopchanSwing: {
+    src: "/images/resort/gallery/gal-topchan-swing.jpg",
+    localSrc: "/images/resort/gallery/gal-topchan-swing.jpg",
+    position: "center",
+    alt: {
+      ru: "Топчан с подвесной кроватью-качелями",
+      uz: "Osma karavotli topchan",
+      en: "Topchan with a hanging swing bed",
+    },
+  },
+  galTopchanInside: {
+    src: "/images/resort/gallery/gal-topchan-inside.jpg",
+    localSrc: "/images/resort/gallery/gal-topchan-inside.jpg",
+    position: "center",
+    alt: {
+      ru: "Топчан с курпачами изнутри",
+      uz: "Kurpachali topchan ichkaridan",
+      en: "Inside a topchan with kurpacha cushions",
+    },
+  },
+  galAframeTrio: {
+    src: "/images/resort/gallery/gal-aframe-trio.jpg",
+    localSrc: "/images/resort/gallery/gal-aframe-trio.jpg",
+    position: "center",
+    alt: {
+      ru: "A-frame домики на фоне снежного хребта",
+      uz: "Qorli tizma fonidagi A-frame uychalar",
+      en: "A-frame cabins against the snowy ridge",
+    },
+  },
+  galAframeCloseup: {
+    src: "/images/resort/gallery/gal-aframe-closeup.jpg",
+    localSrc: "/images/resort/gallery/gal-aframe-closeup.jpg",
+    position: "center",
+    alt: {
+      ru: "Деревянный A-frame домик крупным планом",
+      uz: "Yog'och A-frame uychasi yaqindan",
+      en: "Wooden A-frame cabin up close",
+    },
+  },
+  galFoodServing: {
+    src: "/images/resort/gallery/gal-food-serving.jpg",
+    localSrc: "/images/resort/gallery/gal-food-serving.jpg",
+    position: "center",
+    alt: {
+      ru: "Подача шашлыка на территории",
+      uz: "Hududda shashlik tortilishi",
+      en: "Shashlik being served on the grounds",
+    },
+  },
+  galWaiterPlov: {
+    src: "/images/resort/gallery/gal-waiter-plov.jpg",
+    localSrc: "/images/resort/gallery/gal-waiter-plov.jpg",
+    position: "center",
+    alt: {
+      ru: "Официант несёт блюда гостям",
+      uz: "Ofitsiant mehmonlarga taom olib bormoqda",
+      en: "Waiter carrying dishes to guests",
+    },
+  },
+  galMangalFire: {
+    src: "/images/resort/gallery/gal-mangal-fire.jpg",
+    localSrc: "/images/resort/gallery/gal-mangal-fire.jpg",
+    position: "center",
+    alt: {
+      ru: "Огонь в мангале",
+      uz: "Mangaldagi olov",
+      en: "Fire in the mangal grill",
+    },
+  },
+  galKazanStone: {
+    src: "/images/resort/gallery/gal-kazan-stone.jpg",
+    localSrc: "/images/resort/gallery/gal-kazan-stone.jpg",
+    position: "center",
+    alt: {
+      ru: "Казаны, встроенные в каменную печь",
+      uz: "Tosh o'choqqa o'rnatilgan qozonlar",
+      en: "Kazan pots built into a stone hearth",
+    },
+  },
+  galMountainView: {
+    src: "/images/resort/gallery/gal-mountain-view.jpg",
+    localSrc: "/images/resort/gallery/gal-mountain-view.jpg",
+    position: "center",
+    alt: {
+      ru: "Вид на зелёные горы с территории",
+      uz: "Hududdan yashil tog'larga qarash",
+      en: "View of green mountains from the grounds",
+    },
+  },
+  galGreenHills: {
+    src: "/images/resort/gallery/gal-green-hills.jpg",
+    localSrc: "/images/resort/gallery/gal-green-hills.jpg",
+    position: "center",
+    alt: {
+      ru: "Зелёные холмы Чимгана",
+      uz: "Chimg'onning yashil tepaliklari",
+      en: "Green hills of Chimgan",
+    },
+  },
+  galReceptionWood: {
+    src: "/images/resort/gallery/gal-reception-wood.jpg",
+    localSrc: "/images/resort/gallery/gal-reception-wood.jpg",
+    position: "center",
+    alt: {
+      ru: "Деревянное здание ресепшена",
+      uz: "Yog'och reception binosi",
+      en: "Wooden reception building",
+    },
+  },
+  galKidsSwing: {
+    src: "/images/resort/gallery/gal-kids-swing.jpg",
+    localSrc: "/images/resort/gallery/gal-kids-swing.jpg",
+    position: "center",
+    alt: {
+      ru: "Качели на детской площадке",
+      uz: "Bolalar maydonchasidagi arg'imchoq",
+      en: "Swing at the kids playground",
+    },
+  },
   hero: {
     src: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=2400&q=85",
     localSrc: "/images/resort/01-aerial-masterplan-day.jpg",

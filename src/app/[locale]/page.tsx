@@ -8,6 +8,8 @@ import { Gallery } from "@/components/sections/Gallery";
 import { MapBlock } from "@/components/sections/MapBlock";
 import { PromoBand } from "@/components/sections/PromoBand";
 import { TestimonialsCarousel } from "@/components/sections/TestimonialsCarousel";
+import { PhotoMarquee } from "@/components/sections/PhotoMarquee";
+import { BentoGallery } from "@/components/sections/BentoGallery";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { AnimatedStat } from "@/components/ui/AnimatedStat";
@@ -47,6 +49,9 @@ export default async function HomePage({ params }: PageProps) {
     <>
       {/* ── Hero ──────────────────────────────────────── */}
       <Hero locale={locale} />
+
+      {/* ── Living photo strip — real June 2026 shots ─── */}
+      <PhotoMarquee locale={locale} />
 
       {/* ── Price list (day-use) — primary value prop ─── */}
       <PriceList locale={locale} />
@@ -240,6 +245,10 @@ export default async function HomePage({ params }: PageProps) {
         <div className="mx-auto max-w-7xl">
           <div className="motion-reveal">
             <SectionHeader title={dict.home.galleryTitle} align="center" italic />
+          </div>
+          {/* Bento mosaic — curated real photos with hover captions */}
+          <div className="mt-10 motion-reveal" data-delay="100">
+            <BentoGallery locale={locale} />
           </div>
           <div className="mt-10">
             <Gallery locale={locale} />
