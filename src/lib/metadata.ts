@@ -10,9 +10,16 @@ export function buildMetadata(locale: Locale, seo: PageSeo, path = "/"): Metadat
   const description = text(seo.description, locale);
   const ogImage = `${siteUrl}/-/opengraph-image`;
 
+  // The root layout applies "%s | CHIMGAN DARBAZA". If a page's title already
+  // contains the brand (e.g. the homepage), use an absolute title so we don't
+  // end up with "… CHIMGAN DARBAZA | CHIMGAN DARBAZA". Otherwise pass the plain
+  // string and let the template append the brand once.
+  const hasBrand = /CHIMGAN DARBAZA/i.test(title);
+  const titleField: Metadata["title"] = hasBrand ? { absolute: title } : title;
+
   return {
     metadataBase: new URL(siteUrl),
-    title,
+    title: titleField,
     description,
     alternates: {
       canonical: localizedUrl(locale, path),

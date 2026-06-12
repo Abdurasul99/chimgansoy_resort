@@ -1,64 +1,97 @@
 import type { PageSeo } from "./types";
 
+/**
+ * Page titles here must NOT include the brand — the root layout applies the
+ * template "%s | CHIMGAN DARBAZA", so putting the brand in the title too
+ * produces a duplicate ("… CHIMGAN DARBAZA | CHIMGAN DARBAZA"). Keep titles
+ * keyword-rich; the brand is appended automatically.
+ *
+ * Exception: `home` is rendered with an absolute title (no template) in
+ * buildMetadata, so it carries the brand itself.
+ */
 export const pageSeo = {
   home: {
     title: {
-      ru: "CHIMGAN DARBAZA - горный resort в Ташкентской области",
-      uz: "CHIMGAN DARBAZA - Toshkent viloyatidagi tog' resorti",
-      en: "CHIMGAN DARBAZA - mountain resort in Tashkent region",
+      ru: "CHIMGAN DARBAZA — горный курорт и база отдыха в Чимгане",
+      uz: "CHIMGAN DARBAZA — Chimg'ondagi tog' kurorti va dam olish maskani",
+      en: "CHIMGAN DARBAZA — mountain resort near Tashkent",
     },
     description: {
-      ru: "Глэмпинг, коттеджи, ресторан, бассейн, активности и зоны отдыха в премиальном курортном формате.",
-      uz: "Premium kurort formatida glemping, kottejlar, restoran, basseyn, faoliyatlar va dam olish zonalari.",
-      en: "Glamping, cottages, restaurant, pool, activities, and lounge zones in a premium resort format.",
+      ru: "Глэмпинг, коттеджи и дневной отдых в 45 минутах от Ташкента: топчаны, мангал, казан, ресторан и панорама Чимгана на высоте 1700 м.",
+      uz: "Toshkentdan 45 daqiqada glemping, kottejlar va kunlik dam: topchanlar, mangal, qozon, restoran va 1700 m balandlikdagi Chimg'on manzarasi.",
+      en: "Glamping, cottages, and day visits 45 minutes from Tashkent: topchans, BBQ, kazan, restaurant, and Chimgan views at 1,700 m.",
     },
   },
   rooms: {
-    title: { ru: "Номера и размещение CHIMGAN DARBAZA", uz: "CHIMGAN DARBAZA xonalari va joylashuvi", en: "CHIMGAN DARBAZA rooms and stays" },
+    title: {
+      ru: "Номера: глэмпинг и коттеджи в горах",
+      uz: "Xonalar: tog'lardagi glemping va kottejlar",
+      en: "Rooms: glamping and cottages in the mountains",
+    },
     description: {
-      ru: "Выберите глэмпинг или коттедж для отдыха в Ташкентской области.",
-      uz: "Toshkent viloyatida dam olish uchun glemping yoki kottejni tanlang.",
-      en: "Choose glamping or a cottage for a resort stay in Tashkent region.",
+      ru: "Глэмпинг на природе или просторный коттедж для компании — выберите формат и забронируйте ночь в горах Чимгана.",
+      uz: "Tabiat qo'ynidagi glemping yoki keng kottej — formatni tanlang va Chimg'on tog'larida tunni bron qiling.",
+      en: "Glamping in nature or a spacious cottage for your group — pick a format and book a night in the Chimgan mountains.",
     },
   },
   services: {
-    title: { ru: "Сервисы и инфраструктура CHIMGAN DARBAZA", uz: "CHIMGAN DARBAZA xizmatlari va infratuzilmasi", en: "CHIMGAN DARBAZA services and infrastructure" },
+    title: {
+      ru: "Сервисы и инфраструктура курорта",
+      uz: "Kurort xizmatlari va infratuzilmasi",
+      en: "Resort services and infrastructure",
+    },
     description: {
-      ru: "Ресторан, бассейн, топчаны, пикник, спорт, детские зоны и активности.",
-      uz: "Restoran, basseyn, topchanlar, piknik, sport, bolalar zonalari va faoliyatlar.",
-      en: "Restaurant, pool, tapchan zones, picnic, sport, kids areas, and activities.",
+      ru: "Ресторан, топчаны с курпача, мангал и казан, зоны пикника, детская площадка и активности на территории.",
+      uz: "Restoran, kurpachali topchanlar, mangal va qozon, piknik zonalari, bolalar maydoni va faoliyatlar.",
+      en: "Restaurant, kurpacha topchans, BBQ and kazan, picnic zones, kids playground, and on-site activities.",
     },
   },
   about: {
-    title: { ru: "О курорте CHIMGAN DARBAZA", uz: "CHIMGAN DARBAZA kurorti haqida", en: "About CHIMGAN DARBAZA resort" },
+    title: {
+      ru: "О курорте в горах Чимгана",
+      uz: "Chimg'on tog'laridagi kurort haqida",
+      en: "About the resort in the Chimgan mountains",
+    },
     description: {
-      ru: "Концепция премиального отдыха на природе в Ташкентской области.",
-      uz: "Toshkent viloyatida tabiat qo'ynidagi premium dam olish konsepsiyasi.",
-      en: "The concept of premium nature rest in Tashkent region.",
+      ru: "Дневной отдых и проживание на высоте 1700 м в 45 минутах от Ташкента — природа, тишина и полная инфраструктура.",
+      uz: "Toshkentdan 45 daqiqada 1700 m balandlikda kunlik dam va yashash — tabiat, osoyishtalik va to'liq infratuzilma.",
+      en: "Day visits and stays at 1,700 m, 45 minutes from Tashkent — nature, quiet, and full infrastructure.",
     },
   },
   place: {
-    title: { ru: "Места рядом с CHIMGAN DARBAZA", uz: "CHIMGAN DARBAZA yaqinidagi joylar", en: "Attractions near CHIMGAN DARBAZA" },
+    title: {
+      ru: "Места рядом: горы, маршруты, канатные дороги",
+      uz: "Yaqindagi joylar: tog'lar, marshrutlar, kanat yo'llari",
+      en: "Nearby: mountains, trails, cable cars",
+    },
     description: {
-      ru: "Горы, маршруты, канатные дороги и впечатления рядом с курортом.",
-      uz: "Kurort yaqinidagi tog'lar, marshrutlar, kanat yo'llari va taassurotlar.",
-      en: "Mountains, routes, cable cars, and experiences near the resort.",
+      ru: "Горные маршруты, прогулки, канатные дороги и впечатления рядом с курортом в Чимгане.",
+      uz: "Chimg'ondagi kurort yaqinidagi tog' marshrutlari, sayrlar, kanat yo'llari va taassurotlar.",
+      en: "Mountain trails, walks, cable cars, and experiences near the resort in Chimgan.",
     },
   },
   contact: {
-    title: { ru: "Контакты CHIMGAN DARBAZA", uz: "CHIMGAN DARBAZA aloqalari", en: "CHIMGAN DARBAZA contacts" },
+    title: {
+      ru: "Контакты и как добраться",
+      uz: "Aloqa va qanday borish",
+      en: "Contacts and directions",
+    },
     description: {
-      ru: "Телефон, мессенджеры, адрес и форма связи курорта CHIMGAN DARBAZA.",
-      uz: "CHIMGAN DARBAZA kurorti telefoni, messenjerlari, manzili va aloqa formasi.",
-      en: "Phone, messengers, address, and contact form for CHIMGAN DARBAZA resort.",
+      ru: "Телефон, WhatsApp, Telegram, адрес и карта курорта CHIMGAN DARBAZA в Бостанлыкском районе.",
+      uz: "CHIMGAN DARBAZA kurortining telefoni, WhatsApp, Telegram, manzili va xaritasi (Bo'stonliq tumani).",
+      en: "Phone, WhatsApp, Telegram, address, and map of CHIMGAN DARBAZA resort in the Bostanlyk district.",
     },
   },
   booking: {
-    title: { ru: "Бронирование CHIMGAN DARBAZA", uz: "CHIMGAN DARBAZA bron qilish", en: "CHIMGAN DARBAZA booking" },
+    title: {
+      ru: "Бронирование топчанов и номеров",
+      uz: "Topchan va xonalarni bron qilish",
+      en: "Book topchans and rooms",
+    },
     description: {
-      ru: "Бронирование топчанов и дневного отдыха: выберите даты — администратор подтвердит бронь в ближайшее время.",
-      uz: "Topchan va kunlik dam olishni bron qilish: sanalarni tanlang — administrator bronni tez orada tasdiqlaydi.",
-      en: "Book a topchan and your day in the mountains: pick the dates and our team will confirm shortly.",
+      ru: "Бронирование дневного отдыха и проживания: выберите даты — администратор подтвердит бронь в ближайшее время.",
+      uz: "Kunlik dam va yashashni bron qilish: sanalarni tanlang — administrator bronni tez orada tasdiqlaydi.",
+      en: "Book a day visit or a stay: pick the dates and our team will confirm shortly.",
     },
   },
 } satisfies Record<string, PageSeo>;
