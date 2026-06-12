@@ -7,18 +7,18 @@ import {
   originForLocale,
 } from "../domains";
 
-describe("domain i18n routing", () => {
+/**
+ * Single-domain setup: chimgandarbaza.uz serves all locales.
+ * The .com variant was never purchased — these tests guard against
+ * anyone reintroducing dead-domain URLs into canonical/hreflang/sitemap.
+ */
+describe("domain i18n routing (single-domain)", () => {
   it("normalizes host names with ports and casing", () => {
-    expect(normalizeHost("CHIMGANDARBAZA.COM:443")).toBe("chimgandarbaza.com");
+    expect(normalizeHost("CHIMGANDARBAZA.UZ:443")).toBe("chimgandarbaza.uz");
     expect(normalizeHost("www.chimgandarbaza.uz.")).toBe("www.chimgandarbaza.uz");
   });
 
-  it("uses English as the default language on .com", () => {
-    expect(defaultLocaleForHost("chimgandarbaza.com")).toBe("en");
-    expect(defaultLocaleForHost("www.chimgandarbaza.com")).toBe("en");
-  });
-
-  it("uses Uzbek as the default language on .uz", () => {
+  it("uses Uzbek as the default language on the primary domain", () => {
     expect(defaultLocaleForHost("chimgandarbaza.uz")).toBe("uz");
     expect(defaultLocaleForHost("www.chimgandarbaza.uz")).toBe("uz");
   });
@@ -28,20 +28,27 @@ describe("domain i18n routing", () => {
     expect(defaultLocaleForHost(undefined)).toBe("ru");
   });
 
-  it("builds canonical URLs by primary locale domain", () => {
-    expect(originForLocale("en")).toBe("https://chimgandarbaza.com");
+  it("ALL locales resolve to the .uz origin — no dead .com URLs", () => {
+    expect(originForLocale("en")).toBe("https://chimgandarbaza.uz");
     expect(originForLocale("uz")).toBe("https://chimgandarbaza.uz");
     expect(originForLocale("ru")).toBe("https://chimgandarbaza.uz");
-    expect(localizedUrl("en", "/bron")).toBe("https://chimgandarbaza.com/en/bron");
+    expect(localizedUrl("en", "/bron")).toBe("https://chimgandarbaza.uz/en/bron");
     expect(localizedUrl("uz", "/bron")).toBe("https://chimgandarbaza.uz/uz/bron");
   });
 
-  it("builds language alternates across both domains", () => {
+  it("language alternates all live on .uz (incl. x-default)", () => {
     expect(languageAlternates("/nomera")).toEqual({
-      en: "https://chimgandarbaza.com/en/nomera",
+      en: "https://chimgandarbaza.uz/en/nomera",
       ru: "https://chimgandarbaza.uz/ru/nomera",
       uz: "https://chimgandarbaza.uz/uz/nomera",
-      "x-default": "https://chimgandarbaza.com/en/nomera",
+      "x-default": "https://chimgandarbaza.uz/en/nomera",
     });
+  });
+
+  it("no alternate ever references the unregistered .com domain", () => {
+    const alternates = Object.values(languageAlternates("/"));
+    for (const url of alternates) {
+      expect(url).not.toContain("chimgandarbaza.com");
+    }
   });
 });

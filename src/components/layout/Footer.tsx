@@ -140,7 +140,7 @@ export function Footer({ locale }: FooterProps) {
           <p className="text-xs text-[var(--muted)]">
             © 2026 CHIMGAN DARBAZA. {dict.footer.legalNote}
           </p>
-          <p className="text-xs text-[var(--muted)]/60">chimgandarbaza.com / chimgandarbaza.uz</p>
+          <p className="text-xs text-[var(--muted)]/60">chimgandarbaza.uz</p>
         </div>
       </div>
     </footer>
