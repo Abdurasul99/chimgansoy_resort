@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState, useRef } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { submitContact } from "@/app/actions/contact";
+import { trackEvent } from "@/lib/analytics";
 import { Icon } from "@/components/ui/Icon";
 
 type Dict = {
@@ -29,6 +30,10 @@ async function formAction(_prev: State, formData: FormData): Promise<State> {
 export function ContactForm({ dict }: Props) {
   const [state, action, pending] = useActionState(formAction, initialState);
   const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (state.status === "ok") trackEvent("inquiry_submitted", { form: "footer" });
+  }, [state.status]);
 
   if (state.status === "ok") {
     return (

@@ -3,11 +3,14 @@ import { PageHero } from "@/components/sections/PageHero";
 import { BookingWidget } from "@/components/sections/BookingWidget";
 import { RoomCatalog } from "@/components/sections/RoomCatalog";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { resortImages } from "@/content/images";
 import { dictionaries } from "@/content/translations";
+import { mainNavigation } from "@/content/navigation";
 import { pageSeo } from "@/content/seo";
 import { getLocaleParam } from "@/lib/content";
 import { buildMetadata } from "@/lib/metadata";
+import { text } from "@/lib/localize";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
@@ -56,6 +59,13 @@ export default async function RoomsPage({ params }: PageProps) {
 
   return (
     <>
+      <BreadcrumbJsonLd
+        locale={locale}
+        items={[
+          { name: text(mainNavigation[0].label, locale), path: "/" },
+          { name: dict.pages.rooms.title, path: "/nomera" },
+        ]}
+      />
       <PageHero
         locale={locale}
         title={dict.pages.rooms.title}

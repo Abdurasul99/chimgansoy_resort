@@ -22,10 +22,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const locale = await getLocaleParam(params);
   const policy = getPolicy(slug);
 
-  return buildMetadata(locale, {
+  // Legal pages currently hold placeholder text pending lawyer approval.
+  // Keep them out of the index (thin/placeholder content hurts SEO) — flip
+  // to index once the final, lawyer-approved copy is in place.
+  const meta = buildMetadata(locale, {
     title: policy.title,
     description: policy.description,
   }, `/legal/${policy.slug}`);
+  return { ...meta, robots: { index: false, follow: true } };
 }
 
 export default async function LegalPage({ params }: PageProps) {

@@ -10,6 +10,7 @@ import { MapBlock } from "@/components/sections/MapBlock";
 import { PromoBand } from "@/components/sections/PromoBand";
 import { TestimonialsCarousel } from "@/components/sections/TestimonialsCarousel";
 import { PhotoMarquee } from "@/components/sections/PhotoMarquee";
+import { FaqJsonLd } from "@/components/seo/JsonLd";
 import { BentoGallery } from "@/components/sections/BentoGallery";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
@@ -48,6 +49,9 @@ export default async function HomePage({ params }: PageProps) {
 
   return (
     <>
+      {/* FAQ rich-result markup (the FAQ section renders lower on the page) */}
+      <FaqJsonLd locale={locale} />
+
       {/* ── Hero ──────────────────────────────────────── */}
       <Hero locale={locale} />
 

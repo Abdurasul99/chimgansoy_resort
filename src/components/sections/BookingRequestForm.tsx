@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import { submitContact } from "@/app/actions/contact";
+import { trackEvent } from "@/lib/analytics";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { GuestSelect } from "@/components/ui/GuestSelect";
 
@@ -68,6 +69,13 @@ export function BookingRequestForm({
   defaultRoom = "",
 }: Props) {
   const [state, action] = useActionState(formAction, initialState);
+
+  // Fire the booking conversion exactly once when the action succeeds.
+  useEffect(() => {
+    if (state.status === "ok") {
+      trackEvent("booking_request_submitted", { room: defaultRoom || "unspecified" });
+    }
+  }, [state.status, defaultRoom]);
 
   if (state.status === "ok") {
     return (

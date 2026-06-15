@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/Footer";
 import { ScrollObserver } from "@/components/ui/ScrollObserver";
 import { FaqPanel } from "@/components/ui/FaqPanel";
 import { SeasonDetector } from "@/components/ui/SeasonDetector";
+import { AnalyticsEvents } from "@/components/ui/AnalyticsEvents";
 import { LogoIntro } from "@/components/ui/LogoIntro";
 import { dictionaries } from "@/content/translations";
 import { isLocale, locales, type Locale } from "@/i18n/config";
@@ -130,6 +131,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         <ScrollObserver />
         <FaqPanel key={locale} locale={locale} />
         <SeasonDetector />
+        <AnalyticsEvents />
         <LogoIntro locale={locale as Locale} />
         {/* GA4 — lazyOnload so analytics doesn't block first paint/LCP */}
         <Script
