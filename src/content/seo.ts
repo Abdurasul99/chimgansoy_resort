@@ -13,7 +13,7 @@ export const pageSeo = {
   home: {
     title: {
       ru: "CHIMGAN DARBAZA — горный курорт и база отдыха в Чимгане",
-      uz: "CHIMGAN DARBAZA — Chimg'ondagi tog' kurorti va dam olish maskani",
+      uz: "CHIMGAN DARBAZA — Chimg'ondagi tog' kurorti",
       en: "CHIMGAN DARBAZA — mountain resort near Tashkent",
     },
     description: {
@@ -60,8 +60,8 @@ export const pageSeo = {
   },
   place: {
     title: {
-      ru: "Места рядом: горы, маршруты, канатные дороги",
-      uz: "Yaqindagi joylar: tog'lar, marshrutlar, kanat yo'llari",
+      ru: "Места рядом: горы и маршруты",
+      uz: "Yaqindagi joylar: tog'lar va marshrutlar",
       en: "Nearby: mountains, trails, cable cars",
     },
     description: {
