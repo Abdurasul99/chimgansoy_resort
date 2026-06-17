@@ -305,11 +305,12 @@ export function FaqPanel({ locale: rawLocale }: { locale: string }) {
           className="fixed bottom-0 left-0 right-0 z-50 flex flex-col overflow-hidden rounded-t-3xl border-t border-[color:var(--line)] bg-[var(--paper)] shadow-[0_-8px_40px_rgba(21,29,24,0.18)] sm:bottom-24 sm:left-auto sm:right-4 sm:h-[560px] sm:w-[420px] sm:rounded-3xl sm:border sm:shadow-[0_24px_80px_rgba(21,29,24,0.22)]"
           style={{ height: "min(82vh, 560px)" }}
         >
-          {/* Header */}
-          <div className="flex items-start justify-between gap-3 border-b border-[color:var(--line)] bg-[var(--ink)] px-5 py-4 text-white">
+          {/* Header — text uses --paper (the contrasting pair of --ink) so it
+              stays legible when the winter theme flips --ink to a light color. */}
+          <div className="flex items-start justify-between gap-3 border-b border-[color:var(--line)] bg-[var(--ink)] px-5 py-4 text-[var(--paper)]">
             <div>
               <p className="font-serif text-lg font-semibold leading-tight">{TITLES[locale]}</p>
-              <p className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white/55">
+              <p className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--paper)]/55">
                 {SUBTITLES[locale]}
               </p>
             </div>
@@ -317,7 +318,7 @@ export function FaqPanel({ locale: rawLocale }: { locale: string }) {
               type="button"
               onClick={() => setOpen(false)}
               aria-label={CLOSE_LABEL[locale]}
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[var(--paper)]/70 transition-colors hover:bg-[var(--paper)]/10 hover:text-[var(--paper)]"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -352,7 +353,7 @@ export function FaqPanel({ locale: rawLocale }: { locale: string }) {
           </div>
 
           {/* Questions list */}
-          <div className="flex-1 overflow-y-auto">
+          <div className="faq-scroll flex-1 overflow-y-auto">
             {filtered.length === 0 ? (
               <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
                 <p className="text-sm text-[var(--muted)]">{NO_RESULT[locale]}</p>
