@@ -103,8 +103,8 @@ export function Footer({ locale }: FooterProps) {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-2">
-              {footerNavigation.slice(0, 2).map((group) => (
+            <div className="grid grid-cols-2 gap-6 sm:grid-cols-2 lg:grid-cols-2">
+              {footerNavigation.map((group) => (
                 <div key={text(group.title, locale)}>
                   <h3 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">{text(group.title, locale)}</h3>
                   <ul className="mt-4 space-y-2.5">
@@ -129,7 +129,7 @@ export function Footer({ locale }: FooterProps) {
             <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">{dict.footer.formTitle}</p>
             <p className="mt-3 text-sm leading-6 text-[var(--muted)]">{dict.footer.formLead}</p>
             <div className="mt-6">
-              <ContactForm dict={dict.footer} />
+              <ContactForm dict={dict.footer} locale={locale} />
             </div>
           </div>
         </div>

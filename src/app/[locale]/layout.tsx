@@ -96,8 +96,8 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
     priceRange: "$$",
     amenityFeature: [
       { "@type": "LocationFeatureSpecification", name: "Glamping", value: true },
-      { "@type": "LocationFeatureSpecification", name: "Swimming Pool", value: true },
       { "@type": "LocationFeatureSpecification", name: "Restaurant", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Free parking", value: true },
     ],
   });
 
@@ -125,8 +125,11 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         />
       </head>
       <body suppressHydrationWarning>
+        <a href="#main" className="skip-link">
+          {locale === "uz" ? "Asosiy qismga o'tish" : locale === "en" ? "Skip to content" : "К содержимому"}
+        </a>
         <Header locale={locale as Locale} />
-        <main>{children}</main>
+        <main id="main">{children}</main>
         <Footer locale={locale as Locale} />
         <ScrollObserver />
         <FaqPanel key={locale} locale={locale} />

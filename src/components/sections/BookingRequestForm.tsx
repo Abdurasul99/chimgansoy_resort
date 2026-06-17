@@ -96,7 +96,16 @@ export function BookingRequestForm({
 
       <form action={action} className="mt-6 space-y-4">
         <input type="hidden" name="formType" value="booking" />
+        <input type="hidden" name="locale" value={locale} />
         {defaultRoom && <input type="hidden" name="room" value={defaultRoom} />}
+
+        {/* Honeypot — hidden from humans; bots that fill it are silently dropped */}
+        <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+          <label>
+            Company
+            <input type="text" name="company" tabIndex={-1} autoComplete="off" />
+          </label>
+        </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
           <DatePicker
@@ -123,11 +132,12 @@ export function BookingRequestForm({
         />
 
         <div>
-          <label className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
+          <label htmlFor="bron-name" className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
             {dict.name}
           </label>
           <input
             type="text"
+            id="bron-name"
             name="name"
             required
             autoComplete="name"
@@ -136,13 +146,15 @@ export function BookingRequestForm({
         </div>
 
         <div>
-          <label className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
+          <label htmlFor="bron-phone" className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
             {dict.phone}
           </label>
           <input
             type="tel"
+            id="bron-phone"
             name="phone"
             required
+            inputMode="tel"
             autoComplete="tel"
             placeholder="+998 90 000 00 00"
             className="w-full rounded-xl border border-[color:var(--line)] bg-[var(--surface)] px-4 py-3.5 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15"
@@ -150,10 +162,11 @@ export function BookingRequestForm({
         </div>
 
         <div>
-          <label className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
+          <label htmlFor="bron-message" className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
             {dict.message}
           </label>
           <textarea
+            id="bron-message"
             name="message"
             rows={3}
             className="w-full resize-none rounded-xl border border-[color:var(--line)] bg-[var(--surface)] px-4 py-3.5 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15"
@@ -161,7 +174,7 @@ export function BookingRequestForm({
         </div>
 
         {state.status === "error" && (
-          <p className="text-sm font-medium text-red-600">{state.message || dict.errorRequired}</p>
+          <p role="alert" aria-live="assertive" className="text-sm font-medium text-red-600">{state.message || dict.errorRequired}</p>
         )}
 
         <SubmitButton label={dict.send} sending={dict.sending} />

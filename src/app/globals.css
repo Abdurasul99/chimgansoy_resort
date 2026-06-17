@@ -1577,3 +1577,25 @@ footer {
   height: 0;
   width: 0;
 }
+
+/* ── Skip-to-content link (WCAG 2.4.1) ──────────────── */
+/* Off-screen until keyboard-focused, then slides into the top-left. */
+.skip-link {
+  position: fixed;
+  left: 0.5rem;
+  top: -4rem;
+  z-index: 200;
+  padding: 0.625rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--sun);
+  color: var(--on-accent);
+  font-size: 0.875rem;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  transition: top 0.18s ease;
+}
+.skip-link:focus {
+  top: 0.5rem;
+  outline: 2px solid var(--on-accent);
+  outline-offset: 2px;
+}

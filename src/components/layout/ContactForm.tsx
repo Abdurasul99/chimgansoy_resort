@@ -15,7 +15,7 @@ type Dict = {
   errorRequired: string;
 };
 
-type Props = { dict: Dict };
+type Props = { dict: Dict; locale: string };
 
 type State = { status: "idle" | "ok" | "error"; message?: string };
 
@@ -27,7 +27,7 @@ async function formAction(_prev: State, formData: FormData): Promise<State> {
   return { status: "error", message: result.error };
 }
 
-export function ContactForm({ dict }: Props) {
+export function ContactForm({ dict, locale }: Props) {
   const [state, action, pending] = useActionState(formAction, initialState);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -51,6 +51,15 @@ export function ContactForm({ dict }: Props) {
   return (
     <form ref={formRef} action={action} className="space-y-3">
       <input type="hidden" name="formType" value="inquiry" />
+      <input type="hidden" name="locale" value={locale} />
+
+      {/* Honeypot — hidden from humans; bots that fill it are silently dropped */}
+      <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+        <label>
+          Company
+          <input type="text" name="company" tabIndex={-1} autoComplete="off" />
+        </label>
+      </div>
 
       {/* Name + Phone row */}
       <div className="grid gap-3 sm:grid-cols-2">
@@ -108,7 +117,7 @@ export function ContactForm({ dict }: Props) {
 
       {/* Error */}
       {state.status === "error" && (
-        <div className="flex items-center gap-2 rounded-lg border border-red-400/30 bg-red-400/8 px-3 py-2 text-sm text-red-200">
+        <div role="alert" aria-live="assertive" className="flex items-center gap-2 rounded-lg border border-red-400/30 bg-red-400/8 px-3 py-2 text-sm text-red-200">
           <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M5.07 19h13.86a2 2 0 001.74-2.99l-6.93-12a2 2 0 00-3.48 0l-6.93 12A2 2 0 005.07 19z" />
           </svg>

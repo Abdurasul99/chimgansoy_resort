@@ -34,10 +34,12 @@ export function TestimonialsCarousel({ locale }: Props) {
     };
   }, [active, paused, go, total]);
 
+  // Render nothing until there are real reviews (see content/testimonials.ts).
+  if (total === 0) return null;
+
   const t = testimonials[active];
   const mapsCopy =
     locale === "uz" ? "Google Maps'da o'qish" : locale === "en" ? "Read on Google Maps" : "Читать в Google Maps";
-  const originalCopy = locale === "uz" ? "Asl matn" : locale === "en" ? "Original" : "Оригинал";
   const allReviewsCopy = locale === "uz" ? "Barcha fikrlar" : locale === "en" ? "All reviews" : "Все отзывы";
 
   return (
@@ -66,9 +68,6 @@ export function TestimonialsCarousel({ locale }: Props) {
               style={{ fontSize: "clamp(1.25rem,2.8vw,2.1rem)" }}
             >
               {text(t.quote, locale)}
-            </p>
-            <p className="mt-5 max-w-3xl text-sm leading-6 text-[var(--muted)]">
-              {originalCopy}: <span className="font-semibold text-[var(--ink)]">"{t.originalQuote}"</span>
             </p>
           </div>
 
@@ -153,8 +152,6 @@ export function TestimonialsCarousel({ locale }: Props) {
             rel="noopener noreferrer"
             className="testimonial-maps-link flex items-center gap-2 rounded-full border border-[var(--sun)]/35 bg-[var(--sun)]/10 px-4 py-2 text-sm font-semibold text-[var(--sun-dark)] transition-all hover:border-[var(--sun)]/60 hover:bg-[var(--sun)]/18"
           >
-            <span>4.8</span>
-            <span className="text-[var(--sun)]/70">·</span>
             <span>{allReviewsCopy}</span>
             <svg className="h-3 w-3 text-[var(--sun)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />

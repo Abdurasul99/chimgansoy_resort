@@ -1,6 +1,10 @@
 /**
  * TestimonialsCarousel: prev/next nav + dot pagination + auto-rotate.
  * Pauses auto-rotate on mouseEnter so the user can read.
+ *
+ * The reviews list is intentionally empty until real Google reviews are added
+ * (see content/testimonials.ts) — the component renders nothing in that state,
+ * so the data-driven cases below run only when testimonials exist.
  */
 import { describe, expect, it, beforeEach, afterEach, vi } from "vitest";
 import { render, screen, act, fireEvent } from "@testing-library/react";
@@ -11,15 +15,18 @@ describe("TestimonialsCarousel", () => {
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => vi.useRealTimers());
 
-  it("renders the first testimonial by default", () => {
-    render(<TestimonialsCarousel locale="ru" />);
-    const firstName = testimonials[0].name;
-    expect(screen.getByText(firstName)).toBeInTheDocument();
+  it("renders nothing when the reviews list is empty, else the first review", () => {
+    const { container } = render(<TestimonialsCarousel locale="ru" />);
+    if (testimonials.length === 0) {
+      expect(container.firstChild).toBeNull();
+      return;
+    }
+    expect(screen.getByText(testimonials[0].name)).toBeInTheDocument();
   });
 
   it("renders prev/next nav + N pagination dots when there are multiple testimonials", () => {
+    if (testimonials.length <= 1) return; // guard for empty/single dev state
     render(<TestimonialsCarousel locale="ru" />);
-    if (testimonials.length <= 1) return; // guard for single-testimonial dev state
     expect(screen.getByLabelText("Previous")).toBeInTheDocument();
     expect(screen.getByLabelText("Next")).toBeInTheDocument();
     // The dot buttons have aria-label "Go to review N"
@@ -77,9 +84,10 @@ describe("TestimonialsCarousel", () => {
     expect(screen.getByText(testimonials[0].name)).toBeInTheDocument();
   });
 
-  it("renders 5-star rating row", () => {
+  it("renders a star rating row matching the review's rating", () => {
+    if (testimonials.length === 0) return;
     render(<TestimonialsCarousel locale="ru" />);
     const stars = screen.getAllByText("★");
-    expect(stars.length).toBe(5);
+    expect(stars.length).toBe(testimonials[0].rating);
   });
 });
