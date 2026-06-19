@@ -30,19 +30,19 @@ describe("ContactForm", () => {
   });
 
   it("renders all 3 fields with aria-label", () => {
-    render(<ContactForm dict={dict} />);
+    render(<ContactForm dict={dict} locale="ru" />);
     expect(screen.getByLabelText("Имя")).toBeInTheDocument();
     expect(screen.getByLabelText("Телефон")).toBeInTheDocument();
     expect(screen.getByLabelText("Сообщение")).toBeInTheDocument();
   });
 
   it("renders submit button with the send label", () => {
-    render(<ContactForm dict={dict} />);
+    render(<ContactForm dict={dict} locale="ru" />);
     expect(screen.getByRole("button", { name: /Отправить/ })).toBeInTheDocument();
   });
 
   it("name and phone inputs are required (HTML validation)", () => {
-    render(<ContactForm dict={dict} />);
+    render(<ContactForm dict={dict} locale="ru" />);
     expect(screen.getByLabelText("Имя")).toHaveAttribute("required");
     expect(screen.getByLabelText("Телефон")).toHaveAttribute("required");
     // message is NOT required
@@ -50,18 +50,18 @@ describe("ContactForm", () => {
   });
 
   it("phone input uses type=tel for mobile keyboards", () => {
-    render(<ContactForm dict={dict} />);
+    render(<ContactForm dict={dict} locale="ru" />);
     expect(screen.getByLabelText("Телефон")).toHaveAttribute("type", "tel");
   });
 
   it("name input has autoComplete=name for browser fill", () => {
-    render(<ContactForm dict={dict} />);
+    render(<ContactForm dict={dict} locale="ru" />);
     expect(screen.getByLabelText("Имя")).toHaveAttribute("autocomplete", "name");
   });
 
   it("submits form data to submitContact action", async () => {
     const user = userEvent.setup();
-    render(<ContactForm dict={dict} />);
+    render(<ContactForm dict={dict} locale="ru" />);
 
     await user.type(screen.getByLabelText("Имя"), "Алексей");
     await user.type(screen.getByLabelText("Телефон"), "+998 90 123 45 67");
@@ -77,7 +77,7 @@ describe("ContactForm", () => {
 
   it("includes hidden formType=inquiry for routing on the server side", async () => {
     const user = userEvent.setup();
-    render(<ContactForm dict={dict} />);
+    render(<ContactForm dict={dict} locale="ru" />);
     await user.type(screen.getByLabelText("Имя"), "X");
     await user.type(screen.getByLabelText("Телефон"), "Y");
     await user.click(screen.getByRole("button", { name: /Отправить/ }));
@@ -89,7 +89,7 @@ describe("ContactForm", () => {
 
   it("shows success message after server action returns ok=true", async () => {
     const user = userEvent.setup();
-    render(<ContactForm dict={dict} />);
+    render(<ContactForm dict={dict} locale="ru" />);
     await user.type(screen.getByLabelText("Имя"), "X");
     await user.type(screen.getByLabelText("Телефон"), "Y");
     await user.click(screen.getByRole("button", { name: /Отправить/ }));
@@ -102,7 +102,7 @@ describe("ContactForm", () => {
   it("shows error message when server action returns ok=false", async () => {
     submitContactMock.mockResolvedValue({ ok: false, error: "Bad request" });
     const user = userEvent.setup();
-    render(<ContactForm dict={dict} />);
+    render(<ContactForm dict={dict} locale="ru" />);
     await user.type(screen.getByLabelText("Имя"), "X");
     await user.type(screen.getByLabelText("Телефон"), "Y");
     await user.click(screen.getByRole("button", { name: /Отправить/ }));

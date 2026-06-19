@@ -6,11 +6,11 @@ export const contacts = {
   whatsapp: "https://wa.me/998701760011",
   telegram: "https://t.me/+998701760011",
   instagram: "https://www.instagram.com/chimgandarbaza/",
-  googleMapsUrl: "https://maps.app.goo.gl/AE7scBBU9DykP3st5",
+  googleMapsUrl: "https://maps.app.goo.gl/x2WWhzho3Pob6oD46",
   address: {
-    ru: "База отдыха Сурпа, Бостанлыкский район, Ташкентская область",
-    uz: "Surpa dam olish oromgohi, Bo'stonliq tumani, Toshkent viloyati",
-    en: "Surpa dam olish oromgohi, Bostanlyk district, Tashkent region",
+    ru: "Chimgan Darbaza, Бостанлыкский район, Ташкентская область",
+    uz: "Chimgan Darbaza, Bo'stonliq tumani, Toshkent viloyati",
+    en: "Chimgan Darbaza, Bostanlyk district, Tashkent region",
   } satisfies LocalizedString,
   shortAddress: {
     ru: "Ташкентская область",

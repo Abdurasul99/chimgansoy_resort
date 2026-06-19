@@ -147,7 +147,7 @@ export function TestimonialsCarousel({ locale }: Props) {
           )}
 
           <Link
-            href="https://maps.app.goo.gl/AE7scBBU9DykP3st5"
+            href="https://maps.app.goo.gl/x2WWhzho3Pob6oD46"
             target="_blank"
             rel="noopener noreferrer"
             className="testimonial-maps-link flex items-center gap-2 rounded-full border border-[var(--sun)]/35 bg-[var(--sun)]/10 px-4 py-2 text-sm font-semibold text-[var(--sun-dark)] transition-all hover:border-[var(--sun)]/60 hover:bg-[var(--sun)]/18"

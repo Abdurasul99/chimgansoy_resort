@@ -90,8 +90,8 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
     },
     geo: {
       "@type": "GeoCoordinates",
-      latitude: 41.6117,
-      longitude: 70.0133,
+      latitude: 41.5193897,
+      longitude: 69.9904599,
     },
     priceRange: "$$",
     amenityFeature: [
