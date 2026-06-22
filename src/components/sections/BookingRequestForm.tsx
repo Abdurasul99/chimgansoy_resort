@@ -1,11 +1,23 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { submitContact } from "@/app/actions/contact";
 import { trackEvent } from "@/lib/analytics";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { GuestSelect } from "@/components/ui/GuestSelect";
+import { rooms } from "@/content/rooms";
+import { text } from "@/lib/localize";
+
+// What the guest can book: a day visit (topchan) + the two room types.
+const STAY_OPTIONS = [
+  {
+    slug: "day",
+    title: { ru: "Дневной отдых", uz: "Kunlik dam", en: "Day visit" },
+    meta: { ru: "Топчан · до 8 гостей", uz: "Topchan · 8 gacha", en: "Topchan · up to 8" },
+  },
+  ...rooms.map((r) => ({ slug: r.slug, title: r.title, meta: r.capacity })),
+];
 
 type Locale = "ru" | "uz" | "en";
 
@@ -70,12 +82,20 @@ export function BookingRequestForm({
 }: Props) {
   const [state, action] = useActionState(formAction, initialState);
 
+  // Room/stay selection — pre-fill from the card the guest came from (?room=…),
+  // otherwise default to a day visit. The selected room is what gets booked.
+  const initialSlug = STAY_OPTIONS.some((o) => o.slug === defaultRoom) ? defaultRoom : "day";
+  const [staySlug, setStaySlug] = useState(initialSlug);
+  const selectedStay = STAY_OPTIONS.find((o) => o.slug === staySlug) ?? STAY_OPTIONS[0];
+  const stayLabel =
+    locale === "ru" ? "Что бронируете" : locale === "uz" ? "Nima bron qilasiz" : "What are you booking";
+
   // Fire the booking conversion exactly once when the action succeeds.
   useEffect(() => {
     if (state.status === "ok") {
-      trackEvent("booking_request_submitted", { room: defaultRoom || "unspecified" });
+      trackEvent("booking_request_submitted", { room: staySlug });
     }
-  }, [state.status, defaultRoom]);
+  }, [state.status, staySlug]);
 
   if (state.status === "ok") {
     return (
@@ -97,7 +117,8 @@ export function BookingRequestForm({
       <form action={action} className="mt-6 space-y-4">
         <input type="hidden" name="formType" value="booking" />
         <input type="hidden" name="locale" value={locale} />
-        {defaultRoom && <input type="hidden" name="room" value={defaultRoom} />}
+        {/* The selected stay is always sent as a readable RU label for the admin */}
+        <input type="hidden" name="room" value={text(selectedStay.title, "ru")} />
 
         {/* Honeypot — hidden from humans; bots that fill it are silently dropped */}
         <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
@@ -105,6 +126,34 @@ export function BookingRequestForm({
             Company
             <input type="text" name="company" tabIndex={-1} autoComplete="off" />
           </label>
+        </div>
+
+        {/* Stay-type selector — pick a day visit, glamping, or the cottage */}
+        <div>
+          <span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
+            {stayLabel}
+          </span>
+          <div className="grid gap-2 sm:grid-cols-3">
+            {STAY_OPTIONS.map((o) => {
+              const active = o.slug === staySlug;
+              return (
+                <button
+                  type="button"
+                  key={o.slug}
+                  onClick={() => setStaySlug(o.slug)}
+                  aria-pressed={active}
+                  className={`rounded-xl border px-3.5 py-3 text-left transition ${
+                    active
+                      ? "border-[var(--accent)] bg-[var(--accent)]/8 ring-2 ring-[var(--accent)]/15"
+                      : "border-[color:var(--line)] bg-[var(--surface)] hover:border-[var(--accent)]/40"
+                  }`}
+                >
+                  <span className="block text-sm font-bold text-[var(--ink)]">{text(o.title, locale)}</span>
+                  <span className="mt-0.5 block text-xs text-[var(--muted)]">{text(o.meta, locale)}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
