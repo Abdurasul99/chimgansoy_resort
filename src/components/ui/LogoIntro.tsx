@@ -34,12 +34,13 @@ export function LogoIntro({ locale }: { locale: Locale }) {
     } catch {}
     const p = initialPath.current;
     const onHome = p === homePath || p === homePath + "/";
-    if (!onHome || rm) {
-      // The pre-hydration gate in <head> may have set "pending" (it hides the
-      // whole shell). If we're skipping, release it or the page stays blank.
-      if (document.documentElement.getAttribute("data-intro") === "pending") {
-        document.documentElement.removeAttribute("data-intro");
-      }
+    const gate = document.documentElement.getAttribute("data-intro");
+    // Play ONLY if the pre-hydration gate is still "pending". If it's missing or
+    // already cleared — e.g. the <head> failsafe fired on a slow load, so the
+    // page is ALREADY visible — do NOT re-hide it to play the intro. Re-hiding a
+    // revealed page was the cause of the rare random blank screen. Just reveal.
+    if (!onHome || rm || gate !== "pending") {
+      if (gate) document.documentElement.removeAttribute("data-intro");
       setDecision("skip");
       return;
     }

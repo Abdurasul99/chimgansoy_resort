@@ -111,7 +111,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
             the site if the JS bundle ever fails to load. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var p=location.pathname.replace(/\\/+$/,"")||"/";var h=/^\\/(ru|uz|en)$/.test(p);var rm=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;if(h&&!rm){document.documentElement.setAttribute("data-intro","pending");setTimeout(function(){if(document.documentElement.getAttribute("data-intro")==="pending"){document.documentElement.removeAttribute("data-intro")}},4000)}}catch(e){}})();`,
+            __html: `(function(){try{var d=document.documentElement;var p=location.pathname.replace(/\\/+$/,"")||"/";var h=/^\\/(ru|uz|en)$/.test(p);var rm=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;if(h&&!rm){d.setAttribute("data-intro","pending");setTimeout(function(){if(d.getAttribute("data-intro")==="pending"){d.removeAttribute("data-intro")}},4000);setTimeout(function(){if(d.getAttribute("data-intro")){d.removeAttribute("data-intro")}},6000)}}catch(e){}})();`,
           }}
         />
         {/* Resource hints — establish connections to external domains early */}
