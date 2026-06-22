@@ -13,12 +13,12 @@ type GuestSelectProps = {
 };
 
 const guestLabels: Record<Locale, string[]> = {
-  ru: ["1 гость", "2 гостя", "3 гостя", "4 гостя", "5+ гостей", "6+ гостей", "8 гостей (макс.)"],
-  uz: ["1 mehmon", "2 mehmon", "3 mehmon", "4 mehmon", "5+ mehmon", "6+ mehmon", "8 mehmon (maks.)"],
-  en: ["1 guest", "2 guests", "3 guests", "4 guests", "5+ guests", "6+ guests", "8 guests (max)"],
+  ru: ["1 гость", "2 гостя", "3 гостя", "4 гостя", "5 гостей", "6 гостей", "7 гостей", "8 гостей (макс.)"],
+  uz: ["1 mehmon", "2 mehmon", "3 mehmon", "4 mehmon", "5 mehmon", "6 mehmon", "7 mehmon", "8 mehmon (maks.)"],
+  en: ["1 guest", "2 guests", "3 guests", "4 guests", "5 guests", "6 guests", "7 guests", "8 guests (max)"],
 };
 
-const optionValues = ["1", "2", "3", "4", "5", "6", "8"];
+const optionValues = ["1", "2", "3", "4", "5", "6", "7", "8"];
 
 export function GuestSelect({ name, label, defaultValue = "2", locale }: GuestSelectProps) {
   const [value, setValue] = useState(defaultValue);

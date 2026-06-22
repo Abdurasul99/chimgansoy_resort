@@ -1,5 +1,5 @@
 /**
- * GuestSelect: custom dropdown for number of guests (1-6, 8). Hidden input
+ * GuestSelect: custom dropdown for number of guests (1-8). Hidden input
  * holds the selected value so the parent <form> can serialise it on submit.
  */
 import { describe, expect, it } from "vitest";
@@ -22,29 +22,30 @@ describe("GuestSelect", () => {
     expect(hidden).toHaveAttribute("value", "4");
   });
 
-  it("opens dropdown on trigger click and shows all 7 options", async () => {
+  it("opens dropdown on trigger click and shows all 8 options", async () => {
     const user = userEvent.setup();
     render(<GuestSelect name="guests" label="g" locale="ru" />);
     const trigger = screen.getByRole("button", { name: /2 гостя/ });
     await user.click(trigger);
 
     expect(screen.getByText("1 гость")).toBeInTheDocument();
+    expect(screen.getByText("7 гостей")).toBeInTheDocument();
     expect(screen.getByText("8 гостей (макс.)")).toBeInTheDocument();
     const optionButtons = screen.getAllByRole("button");
-    // 1 trigger + 7 options
-    expect(optionButtons.length).toBe(8);
+    // 1 trigger + 8 options
+    expect(optionButtons.length).toBe(9);
   });
 
   it("clicking an option updates value + closes dropdown + updates trigger text", async () => {
     const user = userEvent.setup();
     const { container } = render(<GuestSelect name="guests" label="g" locale="ru" />);
     await user.click(screen.getByRole("button", { name: /2 гостя/ }));
-    await user.click(screen.getByRole("button", { name: /5\+ гостей/ }));
+    await user.click(screen.getByRole("button", { name: /5 гостей/ }));
 
     // hidden input updated
     expect(container.querySelector('input[name="guests"]')).toHaveAttribute("value", "5");
     // trigger now displays the new label
-    expect(screen.getByText("5+ гостей")).toBeInTheDocument();
+    expect(screen.getByText("5 гостей")).toBeInTheDocument();
     // dropdown closed — only one button (the trigger) remains
     expect(screen.getAllByRole("button")).toHaveLength(1);
   });
