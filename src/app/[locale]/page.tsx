@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { WeatherPanel } from "@/components/sections/WeatherPanel";
 import { Hero } from "@/components/sections/Hero";
 import { BookingWidget } from "@/components/sections/BookingWidget";
-import { ServicesGrid } from "@/components/sections/ServicesGrid";
+import { LeisureShowcase } from "@/components/sections/LeisureShowcase";
 import { RoomCatalog } from "@/components/sections/RoomCatalog";
 import { Faq } from "@/components/sections/Faq";
 import { Gallery } from "@/components/sections/Gallery";
@@ -210,20 +210,8 @@ export default async function HomePage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* ── Services ──────────────────────────────────── */}
-      <section className="px-4 py-24 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-12 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div className="motion-reveal">
-              <SectionHeader title={dict.home.thingsTitle} text={dict.home.thingsText} />
-            </div>
-            <ButtonLink href={localizePath(locale, "/services")} variant="ghost" className="lg:mb-1 btn-press motion-reveal" data-delay="100">
-              {dict.viewAll}
-            </ButtonLink>
-          </div>
-          <ServicesGrid locale={locale} limit={6} showFilters={false} />
-        </div>
-      </section>
+      {/* ── Развлечения и отдых — brand-styled leisure showcase ── */}
+      <LeisureShowcase locale={locale} />
 
       {/* ── Year-round ────────────────────────────────── */}
       <section className="relative isolate overflow-hidden bg-[var(--surface)] px-4 py-24 sm:px-6 lg:px-8">
