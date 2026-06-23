@@ -94,4 +94,16 @@ export const pageSeo = {
       en: "Book a day visit or a stay: pick the dates and our team will confirm shortly.",
     },
   },
+  news: {
+    title: {
+      ru: "Новости и события курорта",
+      uz: "Kurort yangiliklari va tadbirlari",
+      en: "Resort news and events",
+    },
+    description: {
+      ru: "Новости, акции и события CHIMGAN DARBAZA: открытие сезона, новые услуги и предложения для гостей.",
+      uz: "CHIMGAN DARBAZA yangiliklari, aksiyalari va tadbirlari: mavsum ochilishi, yangi xizmatlar va takliflar.",
+      en: "News, offers, and events at CHIMGAN DARBAZA: season openings, new services, and guest offers.",
+    },
+  },
 } satisfies Record<string, PageSeo>;

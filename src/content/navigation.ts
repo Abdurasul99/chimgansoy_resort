@@ -22,6 +22,10 @@ export const mainNavigation: NavigationItem[] = [
     label: { ru: "Места рядом", uz: "Atrofdagi joylar", en: "Attractions" },
   },
   {
+    href: "/news",
+    label: { ru: "Новости", uz: "Yangiliklar", en: "News" },
+  },
+  {
     href: "/contact",
     label: { ru: "Контакты", uz: "Aloqa", en: "Contacts" },
   },
