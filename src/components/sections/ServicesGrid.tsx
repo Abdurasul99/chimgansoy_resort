@@ -46,61 +46,44 @@ export function ServicesGrid({ locale, limit, showFilters = true, slugs }: Servi
         </div>
       ) : null}
 
-      {/* Editorial photo cards — full-bleed real photography, the whole card
-          is the link. First card spans 2 columns for an asymmetric rhythm. */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Brand-styled cream cards — image on top, cream info block with a gold
+          category chip and a forest-green link. Matches LeisureShowcase / rooms. */}
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {visibleServices.map((service, index) => {
           const image = resortImages[service.image];
-          const isFeature = index === 0;
+          const catLabel = serviceCategories.find((c) => c.id === service.category)?.label;
 
           return (
             <a
               key={service.slug}
               href={localizePath(locale, `/services/${service.slug}`)}
-              className={`service-card group motion-reveal ${
-                isFeature ? "sm:col-span-2 lg:row-span-2" : ""
-              } ${isFeature ? "aspect-[3/2] sm:aspect-auto sm:min-h-[480px]" : "aspect-[4/5] sm:aspect-[3/4]"}`}
+              className="motion-reveal group flex flex-col overflow-hidden rounded-3xl border border-[color:var(--line)] bg-[var(--paper)] shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[var(--shadow-card-hover)]"
               data-delay={String((index % 3) * 80)}
               aria-label={text(service.title, locale)}
             >
-              {/* Photo */}
-              <div
-                className="absolute inset-0 bg-cover bg-center transition-transform duration-[1.4s] ease-out group-hover:scale-[1.06]"
-                style={imageStyle(image)}
-                role="img"
-                aria-label={text(image.alt, locale)}
-              />
-              {/* Cinematic gradient */}
-              <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,18,14,0.88)_0%,rgba(12,18,14,0.32)_45%,rgba(12,18,14,0.04)_75%)] transition-opacity duration-500 group-hover:opacity-90" />
+              {/* Photo + gold category chip */}
+              <div className="relative h-56 overflow-hidden">
+                <div
+                  className="absolute inset-0 bg-cover bg-center transition-transform duration-[1.3s] ease-out group-hover:scale-[1.05]"
+                  style={imageStyle(image)}
+                  role="img"
+                  aria-label={text(image.alt, locale)}
+                />
+                <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(31,42,51,0.30)_0%,transparent_55%)]" />
+                {catLabel ? (
+                  <span className="absolute left-4 top-4 rounded-full bg-[var(--sun)] px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[var(--on-accent)] shadow-[var(--shadow-float)]">
+                    {text(catLabel, locale)}
+                  </span>
+                ) : null}
+              </div>
 
-              {/* Big editorial index number */}
-              <span
-                aria-hidden="true"
-                className="absolute right-5 top-3 font-serif text-[clamp(2.6rem,5vw,4rem)] font-bold leading-none text-white/14 transition-colors duration-500 group-hover:text-white/30"
-              >
-                {String(index + 1).padStart(2, "0")}
-              </span>
-
-              {/* Category badge */}
-              <span className="absolute left-4 top-4 rounded-full border border-white/16 bg-white/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-white/75 backdrop-blur-sm">
-                {text(service.bestFor, locale)}
-              </span>
-
-              {/* Bottom copy block */}
-              <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
-                <h3 className={`font-serif font-bold leading-tight text-white ${isFeature ? "text-3xl sm:text-4xl" : "text-2xl"}`}>
-                  {text(service.title, locale)}
-                </h3>
-                {/* Description slides up on hover; always visible on touch */}
-                <p className="service-card__desc mt-2 max-w-md text-sm leading-6 text-white/75">
-                  {text(service.shortDescription, locale)}
-                </p>
-                <span className="mt-4 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--sun)]">
+              {/* Cream info block */}
+              <div className="flex flex-1 flex-col p-5 sm:p-6">
+                <h3 className="font-serif text-2xl font-bold leading-tight text-[var(--ink)]">{text(service.title, locale)}</h3>
+                <p className="mt-2 flex-1 text-sm leading-6 text-[var(--muted)]">{text(service.shortDescription, locale)}</p>
+                <span className="mt-5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--forest-dark)] transition-colors group-hover:text-[var(--accent-strong)]">
                   {dict.details}
-                  <svg
-                    className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1"
-                    fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
-                  >
+                  <svg className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
                 </span>

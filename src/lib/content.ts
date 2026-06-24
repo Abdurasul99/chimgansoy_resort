@@ -3,7 +3,6 @@ import { isLocale, type Locale } from "@/i18n/config";
 import { rooms } from "@/content/rooms";
 import { services } from "@/content/services";
 import { policies } from "@/content/policies";
-import { news } from "@/content/news";
 
 export async function getLocaleParam(params: Promise<{ locale: string }>) {
   const { locale } = await params;
@@ -43,21 +42,6 @@ export function getPolicy(slug: string) {
   }
 
   return policy;
-}
-
-export function getNewsItem(slug: string) {
-  const item = news.find((entry) => entry.slug === slug);
-
-  if (!item) {
-    notFound();
-  }
-
-  return item;
-}
-
-/** News sorted newest-first by ISO date (string compare is correct for YYYY-MM-DD). */
-export function getNewsSorted() {
-  return [...news].sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
 }
 
 export type LocaleParams = Promise<{ locale: Locale }>;
