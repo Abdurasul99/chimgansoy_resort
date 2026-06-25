@@ -157,7 +157,7 @@ export function DatePicker({ name, label, defaultValue = "", locale, minToday = 
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full z-50 mt-2 w-[19rem] origin-top-left rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] p-4 shadow-[0_30px_80px_rgba(0,0,0,0.18)]">
+        <div className="absolute left-0 top-full z-50 mt-2 w-[min(19rem,calc(100vw-2rem))] origin-top-left rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] p-4 shadow-[0_30px_80px_rgba(0,0,0,0.18)]">
           {/* Header — month / year + nav */}
           <div className="mb-3 flex items-center justify-between">
             <button
