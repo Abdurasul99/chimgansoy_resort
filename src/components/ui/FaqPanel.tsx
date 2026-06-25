@@ -428,7 +428,7 @@ export function FaqPanel({ locale: rawLocale }: { locale: string }) {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? CLOSE_LABEL[locale] : TITLES[locale]}
-        className="fixed bottom-5 right-4 z-40 flex h-14 items-center gap-2.5 rounded-full bg-[var(--sun)] pl-4 pr-5 text-[var(--on-accent)] shadow-[0_12px_32px_rgba(220,140,0,0.32)] transition-all duration-300 hover:bg-[var(--sun-dark)] hover:shadow-[0_16px_40px_rgba(220,140,0,0.40)] sm:bottom-6 sm:right-6"
+        className="fixed bottom-[4.5rem] right-4 z-40 flex h-14 items-center gap-2.5 rounded-full bg-[var(--sun)] pl-4 pr-5 text-[var(--on-accent)] shadow-[0_12px_32px_rgba(220,140,0,0.32)] transition-all duration-300 hover:bg-[var(--sun-dark)] hover:shadow-[0_16px_40px_rgba(220,140,0,0.40)] sm:bottom-6 sm:right-6"
       >
         <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--on-accent)]/10">
           {open ? (

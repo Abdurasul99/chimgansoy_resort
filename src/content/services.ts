@@ -74,9 +74,9 @@ export const services: Service[] = [
       en: "Open territory among the pines with views of the Chimgan range. Works for family gatherings, corporate outings, and a calm day away from the city — parking and the BBQ area are close by.",
     },
     highlights: {
-      ru: ["6 гектаров территории", "Сосны и панорама гор", "Парковка рядом", "Можно с детьми"],
-      uz: ["6 gektar hudud", "Qarag'aylar va tog' panoramasi", "Avtoturargoh yaqin", "Bolalar bilan mumkin"],
-      en: ["6 hectares of territory", "Pines and mountain views", "Parking nearby", "Family-friendly"],
+      ru: ["Просторная территория", "Сосны и панорама гор", "Парковка рядом", "Можно с детьми"],
+      uz: ["Keng hudud", "Qarag'aylar va tog' panoramasi", "Avtoturargoh yaqin", "Bolalar bilan mumkin"],
+      en: ["Spacious grounds", "Pines and mountain views", "Parking nearby", "Family-friendly"],
     },
     bestFor: { ru: "Семейный выезд на природу", uz: "Oilaviy tabiatga chiqish", en: "A family outing in nature" },
   },

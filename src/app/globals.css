@@ -1599,3 +1599,14 @@ footer {
   outline: 2px solid var(--on-accent);
   outline-offset: 2px;
 }
+
+/* ── Mobile form inputs ≥16px ─────────────────────────── */
+/* iOS Safari zooms the page when a focused input's font is <16px. Force the
+   form controls to 16px on small screens so focusing a field never zooms. */
+@media (max-width: 640px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}

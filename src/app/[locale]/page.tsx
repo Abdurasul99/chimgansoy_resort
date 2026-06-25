@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 const stats = [
   { value: "1700", label: { ru: "м над уровнем моря", uz: "m balandlikda", en: "m above sea level" } },
   { value: "8", label: { ru: "гостей на топчан", uz: "kishi topchan uchun", en: "guests per topchan" } },
-  { value: "6", label: { ru: "га территории", uz: "ga hududida", en: "hectares" } },
+  { value: "10", label: { ru: "часов открыты", uz: "soat ochiq", en: "hours open" } },
   { value: "45", label: { ru: "мин от Ташкента", uz: "min Toshkentdan", en: "min from Tashkent" } },
 ] as const;
 
@@ -179,9 +179,9 @@ export default async function HomePage({ params }: PageProps) {
               </div>
               {/* Bottom-left floating badge — forest green, white text (Stitch style) */}
               <div className="editorial-badge editorial-badge--accent absolute -bottom-6 -left-6 hidden lg:block">
-                <p className="font-serif text-4xl font-bold leading-none">18</p>
+                <p className="font-serif text-4xl font-bold leading-none">08–18</p>
                 <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-white/80">
-                  {locale === "ru" ? "зон активностей" : locale === "uz" ? "faoliyat zonasi" : "curated zones"}
+                  {locale === "ru" ? "часы работы" : locale === "uz" ? "ish vaqti" : "open hours"}
                 </p>
               </div>
             </div>

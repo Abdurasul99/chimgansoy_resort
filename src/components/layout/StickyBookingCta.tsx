@@ -34,8 +34,8 @@ export function StickyBookingCta({ locale }: StickyBookingCtaProps) {
   return (
     <Link
       href={localizePath(locale, "/bron")}
-      className={`fixed inset-x-4 bottom-4 z-40 flex min-h-12 items-center justify-center gap-2 rounded-[6px] bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-[var(--on-accent)] shadow-[0_16px_40px_rgba(181,99,64,0.35)] transition duration-300 hover:bg-[var(--accent-strong)] sm:left-auto sm:right-6 sm:w-auto lg:bottom-6 ${
-        isVisible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"
+      className={`fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 flex min-h-[3.25rem] items-center justify-center gap-2 rounded-xl bg-[var(--accent)] px-5 py-3.5 text-sm font-bold text-[var(--on-accent)] shadow-[0_16px_40px_rgba(181,99,64,0.35)] transition-all duration-300 hover:bg-[var(--accent-strong)] sm:inset-x-auto sm:left-6 sm:right-auto sm:bottom-6 sm:w-auto ${
+        isVisible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0"
       }`}
     >
       <span>{dict.bookNow}</span>

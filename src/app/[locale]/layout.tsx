@@ -10,6 +10,7 @@ import { FaqPanel } from "@/components/ui/FaqPanel";
 import { SeasonDetector } from "@/components/ui/SeasonDetector";
 import { AnalyticsEvents } from "@/components/ui/AnalyticsEvents";
 import { LogoIntro } from "@/components/ui/LogoIntro";
+import { StickyBookingCta } from "@/components/layout/StickyBookingCta";
 import { dictionaries } from "@/content/translations";
 import { isLocale, locales, type Locale } from "@/i18n/config";
 import { localizedUrl, originForLocale } from "@/i18n/domains";
@@ -133,6 +134,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         <Footer locale={locale as Locale} />
         <ScrollObserver />
         <FaqPanel key={locale} locale={locale} />
+        <StickyBookingCta locale={locale as Locale} />
         <SeasonDetector />
         <AnalyticsEvents />
         <LogoIntro locale={locale as Locale} />

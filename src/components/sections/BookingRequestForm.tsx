@@ -7,7 +7,14 @@ import { trackEvent } from "@/lib/analytics";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { GuestSelect } from "@/components/ui/GuestSelect";
 import { rooms } from "@/content/rooms";
+import { contacts } from "@/content/contacts";
 import { text } from "@/lib/localize";
+
+const SUCCESS_COPY = {
+  ru: { reply: "Свяжемся с вами в ближайшее время.", booking: "Бронируете", urgent: "Нужно срочно? Позвоните или напишите:" },
+  uz: { reply: "Tez orada siz bilan bog'lanamiz.", booking: "Bron qilyapsiz", urgent: "Shoshilinch kerakmi? Qo'ng'iroq qiling yoki yozing:" },
+  en: { reply: "We'll get in touch with you shortly.", booking: "Booking", urgent: "Need it urgently? Call or message us:" },
+} as const;
 
 // What the guest can book: a day visit (topchan) + the two room types.
 const STAY_OPTIONS = [
@@ -98,6 +105,7 @@ export function BookingRequestForm({
   }, [state.status, staySlug]);
 
   if (state.status === "ok") {
+    const t = SUCCESS_COPY[locale];
     return (
       <div className="rounded-2xl border border-[color:var(--line)] bg-[var(--surface)] p-8 text-center">
         <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--accent)]/10">
@@ -106,6 +114,32 @@ export function BookingRequestForm({
           </svg>
         </div>
         <p className="font-serif text-2xl font-semibold text-[var(--ink)]">{dict.success}</p>
+        <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-[var(--muted)]">{t.reply}</p>
+
+        <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--paper)] px-4 py-2 text-sm">
+          <span className="text-[var(--muted)]">{t.booking}:</span>
+          <span className="font-bold text-[var(--ink)]">{text(selectedStay.title, locale)}</span>
+        </div>
+
+        <div className="mt-6 border-t border-[color:var(--line)] pt-5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-[var(--muted)]">{t.urgent}</p>
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+            <a
+              href={`tel:${contacts.phone.replaceAll(" ", "")}`}
+              className="rounded-full border border-[color:var(--line)] px-4 py-2 text-sm font-bold text-[var(--ink)] transition-colors hover:border-[var(--accent)]"
+            >
+              {contacts.phone}
+            </a>
+            <a
+              href={contacts.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full bg-[#25D366]/12 px-4 py-2 text-sm font-bold text-[#128C4B] transition-colors hover:bg-[#25D366]/20"
+            >
+              WhatsApp
+            </a>
+          </div>
+        </div>
       </div>
     );
   }
