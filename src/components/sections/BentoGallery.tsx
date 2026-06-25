@@ -59,7 +59,7 @@ export function BentoGallery({ locale }: { locale: Locale }) {
       {CELLS.map((cell) => {
         const img = resortImages[cell.image];
         return (
-          <figure key={cell.image} className={`bento-cell group ${cell.span}`}>
+          <figure key={cell.image} className={`bento-cell group min-w-0 ${cell.span}`}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={img.localSrc ?? img.src}
