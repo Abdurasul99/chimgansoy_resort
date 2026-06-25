@@ -150,9 +150,9 @@ describe("bestDayIdx", () => {
 
 /* ── activity ─────────────────────────────────────────────── */
 describe("activity", () => {
-  it("code=0 + temp≥22 → pool", () => {
-    expect(activity(0, 25, "en")).toBe("pool & loungers");
-    expect(activity(0, 22, "ru")).toBe("отдыха у бассейна");
+  it("code=0 + temp≥22 → topchan", () => {
+    expect(activity(0, 25, "en")).toBe("topchan & kurpacha");
+    expect(activity(0, 22, "ru")).toBe("отдыха на топчане");
   });
   it("code=0 + temp<22 → glamping/stargazing", () => {
     expect(activity(0, 15, "en")).toBe("stargazing from glamping");
@@ -166,9 +166,9 @@ describe("activity", () => {
     expect(activity(1, 10, "en")).toBe("outdoor barbecue");
     expect(activity(2, 15, "ru")).toBe("барбекю на свежем воздухе");
   });
-  it("code=3 → sport", () => {
-    expect(activity(3, 20, "en")).toBe("padel & sports");
-    expect(activity(3, 5, "ru")).toBe("паделя и активного спорта");
+  it("code=3 → bbq", () => {
+    expect(activity(3, 20, "en")).toBe("outdoor barbecue");
+    expect(activity(3, 5, "ru")).toBe("барбекю на свежем воздухе");
   });
   it("rainy/stormy code → indoor restaurant", () => {
     expect(activity(61, 20, "en")).toBe("restaurant dinner");
@@ -176,7 +176,7 @@ describe("activity", () => {
     expect(activity(80, 10, "uz")).toBe("restoranda kechki ovqat");
   });
   it("falls back to ru for unknown locale", () => {
-    expect(activity(0, 25, "fr")).toBe("отдыха у бассейна");
+    expect(activity(0, 25, "fr")).toBe("отдыха на топчане");
   });
 });
 

@@ -49,19 +49,17 @@ export function bestDayIdx(daily: DayW[]): number {
 /* Activity suggestion */
 export function activity(code: number, temp: number, l: string): string {
   const a: { [k: string]: { ru: string; uz: string; en: string } } = {
-    pool:     { ru: "отдыха у бассейна",            uz: "basseyn bo'yida dam olish",  en: "pool & loungers" },
+    topchan:  { ru: "отдыха на топчане",            uz: "topchanda dam olish",        en: "topchan & kurpacha" },
     hike:     { ru: "прогулок по горным тропам",    uz: "tog' yo'llarida sayr",       en: "mountain hikes" },
     indoor:   { ru: "ужина в ресторане",             uz: "restoranda kechki ovqat",    en: "restaurant dinner" },
     glamping: { ru: "наблюдения звёзд с глэмпинга", uz: "glempingdan yulduzli osmon", en: "stargazing from glamping" },
     bbq:      { ru: "барбекю на свежем воздухе",    uz: "ochiq havoda barbekyu",      en: "outdoor barbecue" },
-    sport:    { ru: "паделя и активного спорта",    uz: "padel va faol sport",        en: "padel & sports" },
   };
   const pick =
-    code === 0 && temp >= 22 ? "pool" :
+    code === 0 && temp >= 22 ? "topchan" :
     code === 0 && temp < 22  ? "glamping" :
     code <= 2 && temp >= 16  ? "hike" :
-    code <= 2                ? "bbq" :
-    code <= 3                ? "sport" :
+    code <= 3                ? "bbq" :
                                "indoor";
   return (a[pick] as Record<string, string>)[l] ?? (a[pick] as Record<string, string>).ru;
 }

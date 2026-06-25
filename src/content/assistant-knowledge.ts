@@ -114,9 +114,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "pool",
     keywords: ["бассейн", "купаться", "плавать", "basseyn", "suzish", "pool", "swimming", "swim"],
     answer: {
-      ru: "🏊 На территории есть бассейн с видом на горы. Работает в тёплый сезон, доступен гостям проживания и (в определённые часы) дневным посетителям. Точное расписание лучше уточнить заранее.",
-      uz: "🏊 Hududda tog'larga qarashli basseyn bor. Iliq mavsumda ishlaydi, yashayotgan mehmonlar va (ma'lum soatlarda) kunduzgi tashrif buyuruvchilar uchun ochiq. Aniq jadval oldindan aniqlashtiriladi.",
-      en: "🏊 There's a pool with mountain views on the territory. Open during the warm season — available to overnight guests and (during set hours) day visitors. Exact schedule is best confirmed in advance.",
+      ru: "Бассейна у нас нет. Зато есть топчаны с курпача в тени, мангал и казан, кухня с готовым меню и чистый горный воздух — отлично для жаркого дня.",
+      uz: "Bizda basseyn yo'q. Lekin soyada kurpachali topchanlar, mangal va qozon, tayyor menyuli oshxona va toza tog' havosi bor — issiq kun uchun ajoyib.",
+      en: "We don't have a pool. Instead there are shaded topchans with kurpacha, a BBQ and kazan, a kitchen menu, and clean mountain air — great for a hot day.",
     },
   },
 

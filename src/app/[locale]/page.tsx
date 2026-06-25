@@ -271,8 +271,8 @@ export default async function HomePage({ params }: PageProps) {
       <section className="overflow-hidden bg-[var(--surface)] py-2">
         <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-none lg:grid lg:grid-cols-5 lg:overflow-visible">
           {([
-            { image: "poolLifestyle", caption: locale === "uz" ? "Bolalar balandroq kuladi" : locale === "en" ? "Kids laugh louder here" : "Дети смеются\nгромче" },
-            { image: "poolEvening", caption: locale === "uz" ? "Kechki basseyn" : locale === "en" ? "Evening by the pool" : "Вечер\nу бассейна" },
+            { image: "galKidsSwing", caption: locale === "uz" ? "Bolalar balandroq kuladi" : locale === "en" ? "Kids laugh louder here" : "Дети смеются\nгромче" },
+            { image: "galMangalFire", caption: locale === "uz" ? "Mangal oldida kecha" : locale === "en" ? "Evening by the grill" : "Вечер\nу мангала" },
             { image: "glampingDay", caption: locale === "uz" ? "Uycha oldidagi ilk foto" : locale === "en" ? "First photo by the cabin" : "Первое фото\nу домика" },
             { image: "cottage", caption: locale === "uz" ? "Ikkalamiz uchun sunset" : locale === "en" ? "A sunset for two" : "Закат\nна двоих" },
             { image: "entranceNight", caption: locale === "uz" ? "Kompaniya bilan keldik" : locale === "en" ? "Arrived with friends" : "Приехали\nкомпанией" },

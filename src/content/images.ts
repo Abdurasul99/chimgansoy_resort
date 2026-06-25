@@ -516,21 +516,16 @@ export const resortImages = {
 
 export const galleryImages = [
   resortImages.nightHero,
-  resortImages.poolEvening,
   resortImages.glampingDay,
-  resortImages.poolLifestyle,
   resortImages.glamping,
   resortImages.cottageDay,
   resortImages.cottage,
   resortImages.hero,
   resortImages.territoryAerial,
   resortImages.tapchanAerial,
-  resortImages.pool,
-  resortImages.glampingDay,
   resortImages.restaurantBuilding,
   resortImages.sportParking,
   resortImages.entranceNight,
   resortImages.entranceDay,
   resortImages.receptionDay,
-  resortImages.workoutPadel,
 ];

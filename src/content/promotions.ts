@@ -41,9 +41,9 @@ export const promotions: Promotion[] = [
       en: "A quiet day in nature",
     },
     description: {
-      ru: "Идеально для топчана, бассейна, ресторана и короткой перезагрузки без ночевки.",
-      uz: "Topchan, basseyn, restoran va tunamasdan qisqa hordiq uchun ideal.",
-      en: "Ideal for tapchan lounging, the pool, restaurant, and a short reset without an overnight stay.",
+      ru: "Идеально для топчана, ресторана и короткой перезагрузки без ночёвки.",
+      uz: "Topchan, restoran va tunamasdan qisqa hordiq uchun ideal.",
+      en: "Ideal for tapchan lounging, the restaurant, and a short reset without an overnight stay.",
     },
   },
 ];

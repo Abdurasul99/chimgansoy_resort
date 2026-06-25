@@ -132,9 +132,9 @@ export default async function AboutPage({ params }: PageProps) {
       <section className="relative isolate overflow-hidden min-h-[50vh] flex items-end">
         <div
           className="absolute inset-0 -z-10 bg-cover bg-center"
-          style={imageStyle(resortImages.poolLifestyle)}
+          style={imageStyle(resortImages.territoryAerial)}
           role="img"
-          aria-label={text(resortImages.poolLifestyle.alt, locale)}
+          aria-label={text(resortImages.territoryAerial.alt, locale)}
         />
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgba(12,18,14,0.90)_0%,rgba(12,18,14,0.30)_60%,rgba(12,18,14,0.05)_100%)]" />
         <div className="mx-auto w-full max-w-7xl px-4 pb-14 sm:px-6 lg:pb-20 lg:px-8">
