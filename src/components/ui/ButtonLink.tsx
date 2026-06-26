@@ -9,6 +9,9 @@ type ButtonLinkProps = {
   className?: string;
   icon?: "arrow" | "phone" | "whatsapp" | "telegram" | "instagram";
   external?: boolean;
+  /** Same-tab full page navigation (plain <a>) — e.g. so the Exely engine
+   *  embeds on the booking page, which only happens on a full load. */
+  reload?: boolean;
 };
 
 const variants = {
@@ -25,6 +28,7 @@ export function ButtonLink({
   className = "",
   icon = "arrow",
   external = false,
+  reload = false,
 }: ButtonLinkProps) {
   const content = (
     <>
@@ -38,6 +42,14 @@ export function ButtonLink({
   if (external) {
     return (
       <a href={href} target="_blank" rel="noopener noreferrer" className={classes}>
+        {content}
+      </a>
+    );
+  }
+
+  if (reload) {
+    return (
+      <a href={href} className={classes}>
         {content}
       </a>
     );

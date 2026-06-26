@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { BookingWidget } from "@/components/sections/BookingWidget";
 import { PageHero } from "@/components/sections/PageHero";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -31,7 +30,6 @@ export default async function ServicesPage({ params }: PageProps) {
         image={resortImages.galTopchanRow}
         eyebrow="CHIMGAN DARBAZA"
       />
-      <BookingWidget locale={locale} />
 
       <section className="px-4 py-14 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">

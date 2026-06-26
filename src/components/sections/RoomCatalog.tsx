@@ -16,6 +16,12 @@ type RoomCatalogProps = {
   limit?: number;
 };
 
+// Room-type IDs in Exely Suite → carried to the booking engine on /bron.
+const EXELY_ROOM_ID: Record<string, string> = {
+  glamping: "5075760",
+  cottage: "5075761",
+};
+
 type Filter = "all" | RoomCategory;
 
 export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
@@ -106,7 +112,12 @@ export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
                   <ButtonLink href={localizePath(locale, `/nomera/${room.slug}`)} variant="secondary" className="btn-press">
                     {dict.details}
                   </ButtonLink>
-                  <ButtonLink href={localizePath(locale, `/bron?room=${room.slug}`)} variant="ghost" className="btn-press">
+                  <ButtonLink
+                    href={localizePath(locale, `/bron?room-type=${EXELY_ROOM_ID[room.slug] ?? ""}`)}
+                    variant="ghost"
+                    reload
+                    className="btn-press"
+                  >
                     {dict.book}
                   </ButtonLink>
                 </div>

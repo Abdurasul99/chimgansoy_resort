@@ -103,7 +103,8 @@ export function Header({ locale }: HeaderProps) {
                   {i > 0 && (
                     <span className={`text-[10px] ${isHeaderOnHero ? "text-white/20" : "text-[var(--muted)]/40"}`}>{"\u00B7"}</span>
                   )}
-                  <Link
+                  {/* Full navigation — the Exely widget must reload in the new language */}
+                  <a
                     href={switchLocalePath(pathname, item)}
                     className={`text-[11px] font-bold uppercase tracking-widest transition-colors duration-300 ${
                       item === locale
@@ -112,18 +113,18 @@ export function Header({ locale }: HeaderProps) {
                     }`}
                   >
                     {item.toUpperCase()}
-                  </Link>
+                  </a>
                 </span>
               ))}
             </div>
 
-            {/* Book CTA */}
-            <Link
+            {/* Book CTA — full navigation so the Exely engine embeds on /bron */}
+            <a
               href={localizePath(locale, "/bron")}
               className="btn-press btn-glow-primary inline-flex h-10 items-center justify-center rounded-full px-5 text-[13px] font-bold"
             >
               {dict.bookNow}
-            </Link>
+            </a>
           </div>
 
           {/* Mobile burger */}
@@ -209,13 +210,13 @@ export function Header({ locale }: HeaderProps) {
         </nav>
 
         <div className="px-6 pb-10 space-y-4">
-          <Link
+          <a
             href={localizePath(locale, "/bron")}
             className="btn-press flex items-center justify-center rounded-full bg-[var(--sun)] py-4 text-base font-bold text-[var(--on-accent)] transition-all duration-300 hover:bg-[var(--sun-dark)]"
             onClick={() => setIsOpen(false)}
           >
             {dict.bookNow}
-          </Link>
+          </a>
           <div className="flex items-center justify-between">
             <a
               href={`tel:${contacts.phone.replaceAll(" ", "")}`}
@@ -225,7 +226,7 @@ export function Header({ locale }: HeaderProps) {
             </a>
             <div className="flex items-center gap-3">
               {languageOptions.map((item) => (
-                <Link
+                <a
                   key={item}
                   href={switchLocalePath(pathname, item)}
                   className={`text-sm font-bold uppercase transition-colors ${
@@ -234,7 +235,7 @@ export function Header({ locale }: HeaderProps) {
                   onClick={() => setIsOpen(false)}
                 >
                   {item.toUpperCase()}
-                </Link>
+                </a>
               ))}
             </div>
           </div>

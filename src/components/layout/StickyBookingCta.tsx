@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { dictionaries } from "@/content/translations";
@@ -31,8 +30,9 @@ export function StickyBookingCta({ locale }: StickyBookingCtaProps) {
     return null;
   }
 
+  // Full navigation (not next/link) so the Exely engine embeds on /bron.
   return (
-    <Link
+    <a
       href={localizePath(locale, "/bron")}
       className={`fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 flex min-h-[3.25rem] items-center justify-center gap-2 rounded-xl bg-[var(--accent)] px-5 py-3.5 text-sm font-bold text-[var(--on-accent)] shadow-[0_16px_40px_rgba(181,99,64,0.35)] transition-all duration-300 hover:bg-[var(--accent-strong)] sm:inset-x-auto sm:left-6 sm:right-auto sm:bottom-6 sm:w-auto ${
         isVisible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0"
@@ -40,6 +40,6 @@ export function StickyBookingCta({ locale }: StickyBookingCtaProps) {
     >
       <span>{dict.bookNow}</span>
       <Icon name="calendar" className="h-4 w-4" />
-    </Link>
+    </a>
   );
 }

@@ -119,6 +119,20 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="" />
         <link rel="dns-prefetch" href="https://cbu.uz" />
         <link rel="dns-prefetch" href="https://maps.googleapis.com" />
+
+        {/* ── Exely Booking Engine — head loader (hotel 514200). Loads the
+            Exely integration and auto-embeds the search form into
+            #be-search-form and the booking engine into #be-booking-form.
+            The context lang is set per locale (ru/uz/en match Exely's codes). */}
+        <meta name="google-site-verification" content="8dVDfmmZ_xQLLonKp7OAXJL5jV_SWm_pdwZciODsKRk" />
+        <link rel="dns-prefetch" href="https://ibe.hopenapi.com" />
+        <link rel="dns-prefetch" href="https://uz-ibe.hopenapi.com" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `!function(e,n){var t="bookingengine",o="integration",i=e[t]=e[t]||{},a=i[o]=i[o]||{},r="__cq",c="__loader",d="getElementsByTagName";if(n=n||[],a[r]=a[r]?a[r].concat(n):n,!a[c]){a[c]=!0;var l=e.document,g=l[d]("head")[0]||l[d]("body")[0];!function n(i){if(0!==i.length){var a=l.createElement("script");a.type="text/javascript",a.async=!0,a.src="https://"+i[0]+"/integration/loader.js",a.onerror=a.onload=function(n,i){return function(){e[t]&&e[t][o]&&e[t][o].loaded||(g.removeChild(n),i())}}(a,(function(){n(i.slice(1,i.length))})),g.appendChild(a)}}(["uz-ibe.hopenapi.com","ibe.hopenapi.com","ibe.behopenapi.com"])}}(window,[["setContext","BE-INT-chimgandarbaza-uz_2026-06-24","${locale}"],["embed","booking-form",{container:"be-booking-form"}],["embed","search-form",{container:"be-search-form"}]]);`,
+          }}
+        />
+
         <Script
           id="schema-org"
           type="application/ld+json"

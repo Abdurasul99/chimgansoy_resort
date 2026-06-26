@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { WeatherPanel } from "@/components/sections/WeatherPanel";
 import { Hero } from "@/components/sections/Hero";
-import { BookingWidget } from "@/components/sections/BookingWidget";
+import { ExelySearchForm } from "@/components/sections/ExelySearchForm";
 import { LeisureShowcase } from "@/components/sections/LeisureShowcase";
 import { RoomCatalog } from "@/components/sections/RoomCatalog";
 import { Faq } from "@/components/sections/Faq";
@@ -61,8 +61,10 @@ export default async function HomePage({ params }: PageProps) {
       {/* ── Price list (day-use) — primary value prop ─── */}
       <PriceList locale={locale} />
 
-      {/* ── Booking widget ────────────────────────────── */}
-      <BookingWidget locale={locale} />
+      {/* ── Exely search form (live availability → booking engine) ── */}
+      <section className="px-4 py-6 sm:px-6 lg:px-8">
+        <ExelySearchForm />
+      </section>
 
       {/* ── Numbers band — editorial oversized numerals ── */}
       <section className="bg-[var(--surface-warm)] border-y border-[var(--line)] px-4 py-16 sm:px-6 sm:py-20 lg:px-8">

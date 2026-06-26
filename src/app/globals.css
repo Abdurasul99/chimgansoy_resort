@@ -1610,3 +1610,47 @@ footer {
     font-size: 16px;
   }
 }
+
+/* ── Exely Booking Engine — search form + booking engine ─ */
+/* Provided by Exely (hotel 514200). The head loader fills #be-search-form
+   and #be-booking-form; these styles size/skin the host containers. */
+#block-search,
+#block-search * {
+  box-sizing: border-box;
+}
+#block-search {
+  max-width: 1280px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid #e3cba6;
+  border-radius: 10px;
+}
+#block-search.block-search--main {
+  max-width: 560px;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.85);
+  border: none;
+}
+.be-container {
+  padding: 0 30px;
+}
+@media screen and (max-width: 768px) {
+  #block-search.block-search--main {
+    background: #ffffff;
+    border: 1px solid #e3cba6;
+  }
+}
+/* Mobile: keep the Exely search form padding sane on small screens */
+@media screen and (max-width: 480px) {
+  .be-container {
+    padding: 0 14px;
+  }
+}
+#be-booking-form {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+#tl-booking-cart {
+  z-index: 1 !important;
+}
