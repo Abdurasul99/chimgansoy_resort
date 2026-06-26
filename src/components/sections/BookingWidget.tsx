@@ -8,7 +8,7 @@ import { GuestSelect } from "@/components/ui/GuestSelect";
 
 type BookingWidgetProps = {
   locale: Locale;
-  variant?: "compact" | "full";
+  variant?: "compact" | "full" | "hero";
   searchParams?: SearchParams;
 };
 
@@ -19,6 +19,32 @@ export function BookingWidget({ locale, variant = "compact", searchParams }: Boo
   const checkin = getFirstSearchParam(searchParams, "checkin");
   const checkout = getFirstSearchParam(searchParams, "checkout");
   const promo = getFirstSearchParam(searchParams, "promo");
+
+  // Hero variant — a compact search bar that sits ON the hero photo. No section
+  // wrapper, no title column (the hero already has the big title); translucent
+  // cream card so it reads over the photo. Submits a full GET nav to /bron.
+  if (variant === "hero") {
+    return (
+      <div className="w-full max-w-3xl rounded-2xl border border-white/25 bg-[var(--paper)]/92 p-3 shadow-[0_24px_70px_rgba(8,12,20,0.45)] backdrop-blur-md">
+        <form
+          action={localizePath(locale, "/bron")}
+          method="get"
+          className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_0.9fr_auto] lg:items-end"
+        >
+          <DatePicker name="checkin" label={dict.checkIn} defaultValue={checkin} locale={locale} minToday />
+          <DatePicker name="checkout" label={dict.checkOut} defaultValue={checkout} locale={locale} minToday />
+          <GuestSelect name="guests" label={dict.guests} defaultValue={selectedGuests} locale={locale} />
+          <button
+            type="submit"
+            className="group inline-flex min-h-14 items-center justify-center gap-2 rounded-[6px] bg-[var(--sun)] px-5 py-3 text-sm font-bold text-[var(--on-accent)] transition duration-300 hover:bg-[var(--sun-dark)]"
+          >
+            <span>{dict.bookingWidget.submit}</span>
+            <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </button>
+        </form>
+      </div>
+    );
+  }
 
   return (
     <section

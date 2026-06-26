@@ -4,6 +4,7 @@ import { localizePath } from "@/i18n/routing";
 import { WeatherWidget } from "@/components/sections/WeatherWidget";
 import { EmotionCycle } from "@/components/ui/EmotionCycle";
 import { HeroSlideshow } from "@/components/sections/HeroSlideshow";
+import { BookingWidget } from "@/components/sections/BookingWidget";
 import { SnowParticles } from "@/components/effects/SnowParticles";
 
 type HeroProps = {
@@ -217,23 +218,12 @@ export function Hero({ locale }: HeroProps) {
           {dict.home.lead}
         </p>
 
-        {/* CTAs */}
-        <div
-          className="motion-rise mt-10 flex flex-wrap items-center gap-3"
-          style={{ animationDelay: "240ms" }}
-        >
-          <a
-            href={localizePath(locale, "/bron")}
-            className="btn-press btn-glow-primary btn-pulse group inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-7 py-3 text-sm font-bold transition duration-300"
-          >
-            <span>{dict.bookNow}</span>
-            <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </a>
+        {/* Booking search bar — primary action, sitting on the hero photo */}
+        <div className="motion-rise mt-8" style={{ animationDelay: "240ms" }}>
+          <BookingWidget locale={locale} variant="hero" />
           <a
             href={localizePath(locale, "/nomera")}
-            className="btn-press glass-btn group inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-7 py-3 text-sm font-bold transition duration-300"
+            className="group mt-3 inline-flex items-center gap-1.5 text-sm font-bold text-white/85 transition-colors hover:text-white"
           >
             <span>{dict.details}</span>
             <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -242,9 +232,9 @@ export function Hero({ locale }: HeroProps) {
           </a>
         </div>
 
-        {/* Feature pills */}
+        {/* Feature pills — hidden on small screens so the hero search bar fits */}
         <div
-          className="motion-rise mt-12 flex flex-wrap gap-2"
+          className="motion-rise mt-12 hidden flex-wrap gap-2 lg:flex"
           style={{ animationDelay: "320ms" }}
         >
           {dict.home.territoryPills.slice(0, 4).map((item) => (
@@ -257,8 +247,8 @@ export function Hero({ locale }: HeroProps) {
           ))}
         </div>
 
-        {/* Live weather */}
-        <div className="motion-rise mt-6" style={{ animationDelay: "400ms" }}>
+        {/* Live weather — hidden on small screens (search bar takes priority) */}
+        <div className="motion-rise mt-6 hidden lg:block" style={{ animationDelay: "400ms" }}>
           <WeatherWidget locale={locale} />
         </div>
       </div>
