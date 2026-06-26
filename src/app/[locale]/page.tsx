@@ -49,6 +49,16 @@ export default async function HomePage({ params }: PageProps) {
 
   return (
     <>
+      {/* Preload the first hero photo at high priority so it paints fast (LCP)
+          and the dark hero base shows for as little time as possible.
+          (React 19 hoists this <link> into <head>.) */}
+      <link
+        rel="preload"
+        as="image"
+        href="/images/resort/gallery/gal-territory-panorama.jpg"
+        fetchPriority="high"
+      />
+
       {/* FAQ rich-result markup (the FAQ section renders lower on the page) */}
       <FaqJsonLd locale={locale} />
 

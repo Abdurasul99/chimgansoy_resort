@@ -14,7 +14,9 @@ type PageHeroProps = {
 export function PageHero({ locale, title, lead, image, eyebrow }: PageHeroProps) {
   return (
     <section
-      className="relative isolate flex min-h-[60vh] items-end overflow-hidden -mt-[4.5rem]"
+      // Solid dark base (season-proof) so the white heading stays legible while
+      // the background photo is still loading — avoids a cream/blank flash.
+      className="relative isolate flex min-h-[60vh] items-end overflow-hidden -mt-[4.5rem] bg-[#0f1928]"
       aria-label={title}
     >
       <div

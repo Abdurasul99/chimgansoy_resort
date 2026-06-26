@@ -15,7 +15,10 @@ export function Hero({ locale }: HeroProps) {
 
   return (
     <section
-      className="relative isolate flex min-h-[100svh] items-end overflow-hidden -mt-[4.5rem]"
+      // bg-[#0f1928]: solid dark base (matches the gradient navy, season-proof —
+      // not --ink, which flips to light in winter) so the white title is always
+      // legible while the hero photo is still downloading. No more blank/cream flash.
+      className="relative isolate flex min-h-[100svh] items-end overflow-hidden -mt-[4.5rem] bg-[#0f1928]"
       aria-label="Hero"
     >
       {/* Dynamic photo slideshow — rotates summer photos, switches to winter in Dec–Mar */}
