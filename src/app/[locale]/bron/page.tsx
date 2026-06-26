@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/sections/PageHero";
+import { ExelyBookingEngine } from "@/components/sections/ExelyBookingEngine";
 import { resortImages } from "@/content/images";
 import { dictionaries } from "@/content/translations";
 import { pageSeo } from "@/content/seo";
@@ -16,10 +17,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 /**
- * Booking page — hosts the Exely Booking Engine only. The head loader (see
- * [locale]/layout.tsx) embeds the engine into #be-booking-form. Per Exely's
- * checklist this page is kept clean: no search form, no contact blocks, no
- * room/promo lists — nothing that distracts from completing the booking.
+ * Booking page — hosts the Exely Booking Engine. The head loader (see
+ * [locale]/layout.tsx) embeds the engine into #be-booking-form. Kept clean per
+ * Exely's checklist: no search form, no room/promo lists. The only extra is a
+ * direct-contact fallback that appears ONLY if the engine fails to load (it
+ * can't reach its Uzbekistan data host from some countries) — see
+ * ExelyBookingEngine.
  */
 export default async function BookingPage({ params }: PageProps) {
   const locale = await getLocaleParam(params);
@@ -35,10 +38,7 @@ export default async function BookingPage({ params }: PageProps) {
         eyebrow="CHIMGAN DARBAZA"
       />
 
-      {/* Exely booking engine is injected here by the head loader. */}
-      <section className="px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-        <div id="be-booking-form" suppressHydrationWarning />
-      </section>
+      <ExelyBookingEngine locale={locale} />
     </>
   );
 }
