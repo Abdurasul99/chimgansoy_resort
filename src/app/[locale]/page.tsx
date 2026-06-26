@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { WeatherPanel } from "@/components/sections/WeatherPanel";
 import { Hero } from "@/components/sections/Hero";
-import { ExelySearchForm } from "@/components/sections/ExelySearchForm";
+import { BookingWidget } from "@/components/sections/BookingWidget";
 import { LeisureShowcase } from "@/components/sections/LeisureShowcase";
 import { RoomCatalog } from "@/components/sections/RoomCatalog";
 import { Faq } from "@/components/sections/Faq";
@@ -71,10 +71,13 @@ export default async function HomePage({ params }: PageProps) {
       {/* ── Price list (day-use) — primary value prop ─── */}
       <PriceList locale={locale} />
 
-      {/* ── Exely search form (live availability → booking engine) ── */}
-      <section className="px-4 py-6 sm:px-6 lg:px-8">
-        <ExelySearchForm />
-      </section>
+      {/* ── Booking widget — date/guest picker → Exely engine on /bron ──
+          Deliberately NOT the Exely search form here: that widget only embeds
+          on a full page load and goes blank when you return to the home page
+          via client-side navigation (Exely can't re-embed in an SPA). This
+          custom widget always renders and submits a FULL navigation to /bron,
+          where the Exely engine loads. */}
+      <BookingWidget locale={locale} />
 
       {/* ── Numbers band — editorial oversized numerals ── */}
       <section className="bg-[var(--surface-warm)] border-y border-[var(--line)] px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
