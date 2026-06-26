@@ -152,16 +152,6 @@ export const resortImages = {
       en: "Green hills of Chimgan",
     },
   },
-  galReceptionWood: {
-    src: "/images/resort/gallery/gal-reception-wood.jpg",
-    localSrc: "/images/resort/gallery/gal-reception-wood.jpg",
-    position: "center",
-    alt: {
-      ru: "Деревянное здание ресепшена",
-      uz: "Yog'och reception binosi",
-      en: "Wooden reception building",
-    },
-  },
   galKidsSwing: {
     src: "/images/resort/gallery/gal-kids-swing.jpg",
     localSrc: "/images/resort/gallery/gal-kids-swing.jpg",

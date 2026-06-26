@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 
-// Real June-2026 photography — finished objects only (the A-frame cabins are
-// still under construction, so they're intentionally NOT in the hero).
+// Real June-2026 photography — finished objects only. The wooden reception
+// building is still under construction (exposed framing), so it's intentionally
+// kept OUT of the hero.
 const SUMMER_SLIDES = [
   "/images/resort/gallery/gal-territory-panorama.jpg",
   "/images/resort/gallery/gal-topchan-row.jpg",
   "/images/resort/gallery/gal-pathway.jpg",
-  "/images/resort/gallery/gal-reception-wood.jpg",
 ];
 
 const WINTER_PHOTO = "/images/resort/winter-google-aframe.jpg";

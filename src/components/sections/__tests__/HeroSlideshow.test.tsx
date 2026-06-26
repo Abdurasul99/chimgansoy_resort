@@ -19,9 +19,9 @@ describe("HeroSlideshow", () => {
     vi.useRealTimers();
   });
 
-  it("summer mode renders 4 indicator dot buttons", () => {
+  it("summer mode renders 3 indicator dot buttons", () => {
     render(<HeroSlideshow />);
-    expect(getDotButtons()).toHaveLength(4);
+    expect(getDotButtons()).toHaveLength(3);
   });
 
   it("clicking a dot switches to that slide", () => {
