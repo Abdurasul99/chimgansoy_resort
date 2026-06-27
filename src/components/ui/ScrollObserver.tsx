@@ -1,49 +1,56 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
+/**
+ * Reveals `.motion-reveal*` / `.img-reveal-wrapper` elements as they scroll into
+ * view by adding `.is-visible`.
+ *
+ * It re-queries the LIVE DOM on every scroll (rAF-throttled) rather than caching
+ * observed nodes. This is deliberate: a single IntersectionObserver snapshot
+ * holds references to specific nodes, so if React replaces those nodes (e.g. a
+ * hydration re-render) or an element mounts after the snapshot, they never get
+ * revealed and the section stays blank. Re-scanning the live DOM can't go stale.
+ */
 export function ScrollObserver() {
   const pathname = usePathname();
-  const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
-    // Re-run on every route change — reset already-visible state for new page
-    const selector =
-      ".motion-reveal, .motion-reveal-left, .motion-reveal-scale, .img-reveal-wrapper";
+    const SELECTOR =
+      ".motion-reveal:not(.is-visible),.motion-reveal-left:not(.is-visible),.motion-reveal-scale:not(.is-visible),.img-reveal-wrapper:not(.is-visible)";
 
-    // Small delay so Next.js has finished rendering the new page DOM
-    const timer = setTimeout(() => {
-      const els = document.querySelectorAll<HTMLElement>(selector);
-      if (!els.length) return;
-
-      observerRef.current?.disconnect();
-      observerRef.current = new IntersectionObserver(
-        (entries) =>
-          entries.forEach((e) => {
-            if (e.isIntersecting) {
-              (e.target as HTMLElement).classList.add("is-visible");
-              observerRef.current?.unobserve(e.target);
-            }
-          }),
-        { threshold: 0.08, rootMargin: "0px 0px -40px 0px" },
-      );
-
-      els.forEach((el) => {
-        // If element is already above the fold or fully visible, reveal immediately
-        const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight * 0.92) {
-          el.classList.add("is-visible");
-        } else {
-          observerRef.current?.observe(el);
-        }
+    let raf = 0;
+    const reveal = () => {
+      raf = 0;
+      const vh = window.innerHeight;
+      document.querySelectorAll<HTMLElement>(SELECTOR).forEach((el) => {
+        const r = el.getBoundingClientRect();
+        // In or near the viewport (and not fully scrolled past above) -> reveal.
+        if (r.top < vh * 0.92 && r.bottom > -120) el.classList.add("is-visible");
       });
-    }, 80);
+    };
+    const schedule = () => {
+      if (!raf) raf = window.requestAnimationFrame(reveal);
+    };
+
+    // Initial passes — catch above-the-fold immediately, plus a couple of
+    // delayed passes so anything that renders/hydrates late is still revealed.
+    reveal();
+    const t1 = window.setTimeout(reveal, 150);
+    const t2 = window.setTimeout(reveal, 600);
+    const t3 = window.setTimeout(reveal, 1500);
+
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
 
     return () => {
-      clearTimeout(timer);
-      observerRef.current?.disconnect();
-      observerRef.current = null;
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.clearTimeout(t3);
+      if (raf) window.cancelAnimationFrame(raf);
     };
   }, [pathname]);
 

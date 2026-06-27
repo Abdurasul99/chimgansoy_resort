@@ -103,7 +103,16 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   });
 
   return (
-    <html lang={locale} className={`${sans.variable} ${serif.variable}`}>
+    <html
+      lang={locale}
+      className={`${sans.variable} ${serif.variable}`}
+      // The pre-hydration intro-gate script sets data-intro on <html> before
+      // React hydrates. Without this, React 19 sees an attribute mismatch on
+      // <html> and re-renders the whole tree on the client — which swaps out the
+      // DOM nodes the scroll-reveal observer is watching, leaving sections stuck
+      // at opacity:0 (blank). suppressHydrationWarning makes React accept it.
+      suppressHydrationWarning
+    >
       <head>
         {/* Pre-hydration intro gate: hides the page shell on home paths BEFORE
             React loads so the logo intro is always the first thing seen.
