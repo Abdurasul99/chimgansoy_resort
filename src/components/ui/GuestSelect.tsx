@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Icon } from "./Icon";
 
 type Locale = "ru" | "uz" | "en";
@@ -23,12 +24,55 @@ const optionValues = ["1", "2", "3", "4", "5", "6", "7", "8"];
 export function GuestSelect({ name, label, defaultValue = "2", locale }: GuestSelectProps) {
   const [value, setValue] = useState(defaultValue);
   const [open, setOpen] = useState(false);
+  // The dropdown renders in a portal (document.body) with fixed positioning, so an
+  // ancestor's `overflow-hidden` (the hero clips its slideshow/snow) can't crop it,
+  // and the rotating photo strip below the hero can't overlap it. `pos` holds the
+  // computed viewport coords (set on open + scroll/resize).
+  const [pos, setPos] = useState<{ left: number; top: number; width: number } | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  // Compute the dropdown's fixed-viewport coords. Flips above the field when there's
+  // no room below; clamps into the viewport. Matches the trigger's width.
+  const place = useCallback(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const LIST_H = 360; // approx dropdown height (px)
+    const margin = 8;
+    const width = Math.max(rect.width, 200);
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const openUp = spaceBelow < LIST_H + margin && rect.top > spaceBelow;
+    let left = Math.min(rect.left, window.innerWidth - width - margin);
+    left = Math.max(margin, left);
+    const top = openUp ? Math.max(margin, rect.top - margin - LIST_H) : rect.bottom + margin;
+    setPos({ left, top, width });
+  }, []);
+
+  // Measure synchronously on open so the portal appears placed in the same render.
+  const toggleOpen = () => {
+    if (!open) place();
+    setOpen((o) => !o);
+  };
+
+  // Keep the dropdown glued to the trigger while open.
+  useEffect(() => {
+    if (!open) return;
+    window.addEventListener("resize", place);
+    window.addEventListener("scroll", place, true); // capture: catch scroll in any ancestor
+    return () => {
+      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", place, true);
+    };
+  }, [open, place]);
 
   useEffect(() => {
     if (!open) return;
     const onClick = (e: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) setOpen(false);
+      const target = e.target as Node;
+      if (wrapperRef.current?.contains(target)) return;
+      if (popoverRef.current?.contains(target)) return; // clicks inside the portal stay open
+      setOpen(false);
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setOpen(false);
@@ -50,7 +94,7 @@ export function GuestSelect({ name, label, defaultValue = "2", locale }: GuestSe
 
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
+        onClick={toggleOpen}
         className={`flex w-full min-h-14 flex-col justify-center gap-1 rounded-[6px] border bg-[var(--surface)] px-3.5 py-2.5 text-left transition-colors hover:border-[var(--accent)]/40 ${
           open ? "border-[var(--accent)] ring-2 ring-[var(--accent)]/15" : "border-[color:var(--line)]"
         }`}
@@ -73,8 +117,18 @@ export function GuestSelect({ name, label, defaultValue = "2", locale }: GuestSe
         </span>
       </button>
 
-      {open && (
-        <div className="absolute left-0 top-full z-50 mt-2 w-full min-w-[12rem] origin-top-left rounded-xl border border-[color:var(--line)] bg-[var(--paper)] p-2 shadow-[0_30px_80px_rgba(0,0,0,0.18)]">
+      {open && typeof window !== "undefined" && createPortal(
+        <div
+          ref={popoverRef}
+          style={{
+            position: "fixed",
+            left: pos?.left ?? 0,
+            top: pos?.top ?? 0,
+            width: pos?.width ?? 220,
+            visibility: pos ? "visible" : "hidden",
+          }}
+          className="z-[100] max-h-[min(360px,70vh)] overflow-auto rounded-xl border border-[color:var(--line)] bg-[var(--paper)] p-2 shadow-[0_30px_80px_rgba(0,0,0,0.18)]"
+        >
           {optionValues.map((v, i) => {
             const isSelected = v === value;
             return (
@@ -100,7 +154,8 @@ export function GuestSelect({ name, label, defaultValue = "2", locale }: GuestSe
               </button>
             );
           })}
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );
