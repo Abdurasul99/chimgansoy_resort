@@ -210,46 +210,49 @@ export function Hero({ locale }: HeroProps) {
           <EmotionCycle locale={locale} />
         </div>
 
-        {/* Lead text */}
-        <p
-          className="motion-rise mt-4 max-w-lg text-[1.1rem] leading-[1.75] text-white/80"
-          style={{ animationDelay: "200ms" }}
-        >
-          {dict.home.lead}
-        </p>
-
-        {/* Booking search bar — primary action, sitting on the hero photo */}
-        <div className="motion-rise mt-8" style={{ animationDelay: "240ms" }}>
-          <BookingWidget locale={locale} variant="hero" />
-          <a
-            href={localizePath(locale, "/nomera")}
-            className="group mt-3 inline-flex items-center gap-1.5 text-sm font-bold text-white/85 transition-colors hover:text-white"
-          >
-            <span>{dict.details}</span>
-            <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </a>
-        </div>
-
-        {/* Feature pills — hidden on small screens so the hero search bar fits */}
-        <div
-          className="motion-rise mt-12 hidden flex-wrap gap-2 lg:flex"
-          style={{ animationDelay: "320ms" }}
-        >
-          {dict.home.territoryPills.slice(0, 4).map((item) => (
-            <span
-              key={item}
-              className="glass-badge rounded-full px-4 py-1.5 text-xs font-semibold"
+        {/* Lower hero: text on the LEFT, booking widget box on the RIGHT (desktop).
+            Collapses to a single stacked column on phones/tablets. */}
+        <div className="mt-6 grid items-end gap-8 lg:grid-cols-[1fr_minmax(0,26rem)] lg:gap-12">
+          {/* LEFT — lead + feature pills + live weather */}
+          <div>
+            <p
+              className="motion-rise max-w-lg text-[1.1rem] leading-[1.75] text-white/80"
+              style={{ animationDelay: "200ms" }}
             >
-              {item}
-            </span>
-          ))}
-        </div>
+              {dict.home.lead}
+            </p>
 
-        {/* Live weather — hidden on small screens (search bar takes priority) */}
-        <div className="motion-rise mt-6 hidden lg:block" style={{ animationDelay: "400ms" }}>
-          <WeatherWidget locale={locale} />
+            {/* Feature pills — hidden on small screens */}
+            <div
+              className="motion-rise mt-10 hidden flex-wrap gap-2 lg:flex"
+              style={{ animationDelay: "320ms" }}
+            >
+              {dict.home.territoryPills.slice(0, 4).map((item) => (
+                <span key={item} className="glass-badge rounded-full px-4 py-1.5 text-xs font-semibold">
+                  {item}
+                </span>
+              ))}
+            </div>
+
+            {/* Live weather — hidden on small screens */}
+            <div className="motion-rise mt-6 hidden lg:block" style={{ animationDelay: "400ms" }}>
+              <WeatherWidget locale={locale} />
+            </div>
+          </div>
+
+          {/* RIGHT — booking search box (2x2: dates left, guests + submit right) */}
+          <div className="motion-rise w-full max-w-xl lg:max-w-none" style={{ animationDelay: "240ms" }}>
+            <BookingWidget locale={locale} variant="hero" />
+            <a
+              href={localizePath(locale, "/nomera")}
+              className="group mt-3 inline-flex items-center gap-1.5 text-sm font-bold text-white/85 transition-colors hover:text-white"
+            >
+              <span>{dict.details}</span>
+              <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </a>
+          </div>
         </div>
       </div>
 
