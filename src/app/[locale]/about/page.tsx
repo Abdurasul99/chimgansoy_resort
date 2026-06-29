@@ -85,7 +85,7 @@ export default async function AboutPage({ params }: PageProps) {
               <h2 className="display-md mt-3 font-serif font-semibold text-[var(--ink)]">{dict.home.aboutTitle}</h2>
               <p className="mt-6 text-base leading-8 text-[var(--muted)]">{dict.home.aboutText}</p>
               <div className="mt-10 flex flex-wrap gap-3">
-                <ButtonLink href={localizePath(locale, "/bron")} variant="primary" className="btn-press">
+                <ButtonLink href={localizePath(locale, "/bron")} variant="primary" reload className="btn-press">
                   {dict.bookNow}
                 </ButtonLink>
                 <ButtonLink href={localizePath(locale, "/contact")} variant="ghost" className="btn-press">
@@ -142,7 +142,7 @@ export default async function AboutPage({ params }: PageProps) {
             <h2 className="display-md font-serif font-bold text-white">{dict.home.yearRoundTitle}</h2>
             <p className="mt-5 text-base text-white/60 max-w-md">{dict.home.yearRoundText}</p>
             <div className="mt-8">
-              <ButtonLink href={localizePath(locale, "/bron")} variant="light" className="btn-press">
+              <ButtonLink href={localizePath(locale, "/bron")} variant="light" reload className="btn-press">
                 {dict.bookNow}
               </ButtonLink>
             </div>

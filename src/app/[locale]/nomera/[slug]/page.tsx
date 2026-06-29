@@ -10,7 +10,6 @@ import { buildMetadata } from "@/lib/metadata";
 import { list, text } from "@/lib/localize";
 import { imageStyle } from "@/lib/images";
 import { localizePath } from "@/i18n/routing";
-import Link from "next/link";
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string }>;
@@ -151,14 +150,14 @@ export default async function RoomDetailPage({ params }: PageProps) {
                 </div>
               </div>
 
-              {/* Mobile CTA */}
+              {/* Mobile CTA — full navigation so the Exely engine embeds on /bron. */}
               <div className="mt-10 lg:hidden">
-                <Link
+                <a
                   href={localizePath(locale, "/bron")}
                   className="btn-press flex items-center justify-center rounded-full bg-[var(--accent)] py-4 text-base font-bold text-[var(--on-accent)] transition-all duration-300 hover:bg-[var(--accent-strong)]"
                 >
                   {dict.bookNow}
-                </Link>
+                </a>
               </div>
             </div>
 

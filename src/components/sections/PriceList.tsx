@@ -221,7 +221,7 @@ export function PriceList({ locale }: PriceListProps) {
 
             {/* CTA */}
             <div className="mt-8 flex flex-wrap items-center gap-4">
-              <ButtonLink href={localizePath(locale, "/bron")} variant="primary" className="btn-press">
+              <ButtonLink href={localizePath(locale, "/bron")} variant="primary" reload className="btn-press">
                 {t.cta}
               </ButtonLink>
               <p className="text-sm text-[var(--muted)]">

@@ -1,5 +1,6 @@
 import { contacts } from "@/content/contacts";
 import type { Locale } from "@/i18n/config";
+import { BookingEngineSlot } from "@/components/ui/BookingEngineSlot";
 
 /**
  * Hosts the Exely Booking Engine (#be-booking-form, filled by the head loader)
@@ -16,21 +17,40 @@ import type { Locale } from "@/i18n/config";
  * from a globally-reachable endpoint.)
  */
 
-const COPY: Record<Locale, { heading: string; sub: string; call: string }> = {
+const COPY: Record<
+  Locale,
+  {
+    heading: string;
+    sub: string;
+    call: string;
+    loading: string;
+    failedHeading: string;
+    failedSub: string;
+  }
+> = {
   ru: {
     heading: "Нужна помощь с бронированием?",
     sub: "Если модуль бронирования выше не открывается (такое бывает при заходе из-за пределов Узбекистана) или остались вопросы — забронируйте напрямую. Ответим быстро и подтвердим даты.",
     call: "Позвонить",
+    loading: "Загружаем модуль бронирования…",
+    failedHeading: "Модуль бронирования не загрузился",
+    failedSub: "Это бывает при заходе из-за пределов Узбекистана. Забронируйте напрямую — контакты ниже, ответим быстро.",
   },
   uz: {
     heading: "Bron qilishda yordam kerakmi?",
     sub: "Agar yuqoridagi bron moduli ochilmasa (O'zbekistondan tashqaridan kirishda shunday bo'lishi mumkin) yoki savollaringiz bo'lsa — to'g'ridan-to'g'ri bron qiling. Tez javob beramiz va sanalarni tasdiqlaymiz.",
     call: "Qo'ng'iroq qilish",
+    loading: "Bron moduli yuklanmoqda…",
+    failedHeading: "Bron moduli yuklanmadi",
+    failedSub: "Bu O'zbekistondan tashqaridan kirishda bo'lishi mumkin. To'g'ridan-to'g'ri bron qiling — quyida kontaktlar, tez javob beramiz.",
   },
   en: {
     heading: "Need help booking?",
     sub: "If the booking module above doesn't open (this can happen when visiting from outside Uzbekistan) or you have questions — book directly. We reply fast and confirm your dates.",
     call: "Call",
+    loading: "Loading the booking module…",
+    failedHeading: "The booking module didn't load",
+    failedSub: "This can happen when visiting from outside Uzbekistan. Book directly — contacts are below, we reply fast.",
   },
 };
 
@@ -43,9 +63,15 @@ export function ExelyBookingEngine({ locale }: { locale: Locale }) {
 
   return (
     <>
-      {/* Exely booking engine is injected here by the head loader. */}
+      {/* Exely booking engine is injected here by the head loader.
+          BookingEngineSlot adds loading + graceful-failure states so this area
+          is never just an empty void when the engine can't reach its host. */}
       <section className="px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-        <div id="be-booking-form" suppressHydrationWarning />
+        <div className="mx-auto max-w-5xl">
+          <BookingEngineSlot
+            copy={{ loading: c.loading, failedHeading: c.failedHeading, failedSub: c.failedSub }}
+          />
+        </div>
       </section>
 
       {/* Direct-contact fallback — always available (see file header). */}

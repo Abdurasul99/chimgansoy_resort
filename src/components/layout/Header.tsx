@@ -37,6 +37,9 @@ export function Header({ locale }: HeaderProps) {
   const isHeroPage = pathname.split("/").length <= 2;
   const isHeaderOnHero = isHeroPage && !scrolled;
   const languageOptions = [locale, ...locales.filter((item) => item !== locale)];
+  // Soft text shadow for header text sitting on the hero photo — extra legibility
+  // insurance on top of the scrim, on the brightest parts of the image.
+  const heroShadow = isHeaderOnHero ? " [text-shadow:0_1px_6px_rgba(0,0,0,0.55)]" : "";
 
   return (
     <>
@@ -45,7 +48,16 @@ export function Header({ locale }: HeaderProps) {
           isHeaderOnHero ? "bg-transparent" : "glass-nav"
         }`}
       >
-        <div className="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
+        {/* Legibility scrim — a soft top-down shade behind the header so the white
+            nav/lang text stays readable over bright hero photos (sky/snow).
+            Only over the hero; pointer-events-none so it never blocks clicks. */}
+        {isHeaderOnHero && (
+          <div
+            className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/60 via-black/30 to-transparent"
+            aria-hidden="true"
+          />
+        )}
+        <div className="relative z-10 mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
           {/* Logo */}
           <Link
             href={localizePath(locale)}
@@ -79,11 +91,11 @@ export function Header({ locale }: HeaderProps) {
                     isHeaderOnHero
                       ? isActive
                         ? "text-white active"
-                        : "text-white/70 hover:text-white"
+                        : "text-white/85 hover:text-white"
                       : isActive
                         ? "text-[var(--sun-dark)] active"
                         : "text-[var(--ink)] hover:text-[var(--sun)]"
-                  }`}
+                  }${heroShadow}`}
                 >
                   {text(item.label, locale)}
                 </Link>
@@ -101,7 +113,7 @@ export function Header({ locale }: HeaderProps) {
               {languageOptions.map((item, i) => (
                 <span key={item} className="flex items-center gap-1">
                   {i > 0 && (
-                    <span className={`text-[10px] ${isHeaderOnHero ? "text-white/20" : "text-[var(--muted)]/40"}`}>{"\u00B7"}</span>
+                    <span className={`text-[10px] ${isHeaderOnHero ? "text-white/50" : "text-[var(--muted)]/40"}`}>{"\u00B7"}</span>
                   )}
                   {/* Full navigation — the Exely widget must reload in the new language */}
                   <a
@@ -109,8 +121,8 @@ export function Header({ locale }: HeaderProps) {
                     className={`text-[11px] font-bold uppercase tracking-widest transition-colors duration-300 ${
                       item === locale
                         ? isHeaderOnHero ? "text-white" : "text-[var(--ink)]"
-                        : isHeaderOnHero ? "text-white/40 hover:text-white/80" : "text-[var(--muted)] hover:text-[var(--ink)]"
-                    }`}
+                        : isHeaderOnHero ? "text-white/75 hover:text-white" : "text-[var(--muted)] hover:text-[var(--ink)]"
+                    }${heroShadow}`}
                   >
                     {item.toUpperCase()}
                   </a>

@@ -32,7 +32,7 @@ export function PromoBand({ locale }: PromoBandProps) {
           <p className="mt-4 max-w-2xl text-base leading-7 text-white/76">{dict.home.finalOfferText}</p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
-          <ButtonLink href={localizePath(locale, "/bron")} variant="light">
+          <ButtonLink href={localizePath(locale, "/bron")} variant="light" reload>
             {dict.bookNow}
           </ButtonLink>
         </div>

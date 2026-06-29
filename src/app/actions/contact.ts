@@ -33,28 +33,8 @@ const MESSAGES = {
 
 type Lang = keyof typeof MESSAGES;
 
-async function sendTelegram(text: string): Promise<DeliveryStatus> {
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
-  if (!token || !chatId) return "skipped";
-
-  try {
-    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chat_id: chatId, text, parse_mode: "HTML" }),
-    });
-    if (!res.ok) {
-      const body = await res.text().catch(() => "");
-      console.error(`[contact] Telegram send failed: ${res.status} ${body}`);
-      return "failed";
-    }
-    return "sent";
-  } catch (err) {
-    console.error("[contact] Telegram send threw:", err);
-    return "failed";
-  }
-}
+// Note: the Telegram-bot notification was intentionally removed — bookings now go
+// through the Exely PMS, and admin leads from this form are delivered by email only.
 
 async function sendEmail(
   subject: string,
@@ -144,24 +124,6 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
       ? process.env.RESERVATIONS_EMAIL_TO ?? process.env.BOOKING_EMAIL_TO
       : process.env.INFO_EMAIL_TO ?? process.env.BOOKING_EMAIL_TO;
 
-  const tgHeader = formType === "booking"
-    ? "🏡 <b>Новая бронь — CHIMGAN DARBAZA</b>"
-    : "💬 <b>Новый вопрос — CHIMGAN DARBAZA</b>";
-
-  const tgText = [
-    tgHeader,
-    ``,
-    `👤 <b>Имя:</b> ${name}`,
-    `📞 <b>Телефон:</b> ${phone}`,
-    email ? `✉️ <b>Email:</b> ${email}` : null,
-    dates ? `📅 <b>Даты:</b> ${dates}` : null,
-    guests ? `👥 <b>Гостей:</b> ${guests}` : null,
-    room ? `🏡 <b>Номер:</b> ${room}` : null,
-    message ? `💬 <b>Сообщение:</b> ${message}` : null,
-  ]
-    .filter(Boolean)
-    .join("\n");
-
   const rows: Array<[string, string]> = [
     ["Имя", name],
     ["Телефон", phone],
@@ -207,21 +169,18 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
     .filter(Boolean)
     .join(" ");
 
-  const [tgStatus, emailStatus] = await Promise.all([
-    sendTelegram(tgText),
-    sendEmail(subjectParts, emailHtml, emailTo, email || undefined),
-  ]);
+  const emailStatus = await sendEmail(subjectParts, emailHtml, emailTo, email || undefined);
 
-  const delivered = tgStatus === "sent" || emailStatus === "sent";
+  const delivered = emailStatus === "sent";
 
   console.log(
-    `[contact:${formType}] tg=${tgStatus} email=${emailStatus} → ${emailTo || "no-email"} | name: ${name}, phone: ${phone}, dates: ${dates || "—"}, guests: ${guests || "—"}, room: ${room || "—"}`,
+    `[contact:${formType}] email=${emailStatus} → ${emailTo || "no-email"} | name: ${name}, phone: ${phone}, dates: ${dates || "—"}, guests: ${guests || "—"}, room: ${room || "—"}`,
   );
 
-  // If NOTHING reached us, do not show a fake success — tell the guest to call.
+  // If the lead didn't reach us, do not show a fake success — tell the guest to call.
   if (!delivered) {
     console.error(
-      `[contact:${formType}] DELIVERY FAILED — lead not received. tg=${tgStatus} email=${emailStatus}. Check TELEGRAM_*/RESEND_* env vars.`,
+      `[contact:${formType}] DELIVERY FAILED — lead not received. email=${emailStatus}. Check RESEND_* env vars.`,
     );
     return { ok: false, error: m.deliveryFailed };
   }

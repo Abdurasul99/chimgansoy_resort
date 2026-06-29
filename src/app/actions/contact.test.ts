@@ -1,8 +1,11 @@
 /**
  * Tests for the submitContact server action.
- * Covers: validation (name/phone/dates), honeypot spam drop, Telegram dispatch,
- * email routing (booking vs inquiry inbox), HTML escaping, and — critically —
- * that the action reports failure when NO channel could deliver the lead.
+ * Covers: validation (name/phone/dates), honeypot spam drop, email routing
+ * (booking vs inquiry inbox), HTML escaping, and — critically — that the action
+ * reports failure when the lead could not be delivered.
+ *
+ * Note: the Telegram-bot channel was intentionally removed — leads are now
+ * delivered by email only (bookings themselves go through the Exely PMS).
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { http, HttpResponse } from "msw";
@@ -18,26 +21,18 @@ function makeFormData(fields: Record<string, string>): FormData {
 }
 
 describe("submitContact server action", () => {
-  // Capture spies of the env-gated POSTs so we can assert routing/payload.
-  let telegramCalls: Array<{ url: string; body: unknown }> = [];
+  // Capture the email POSTs so we can assert routing/payload.
   let resendCalls: Array<{ url: string; body: unknown }> = [];
 
   beforeEach(() => {
-    telegramCalls = [];
     resendCalls = [];
-    // Set up env so both side-effects fire
-    vi.stubEnv("TELEGRAM_BOT_TOKEN", "test-bot-token");
-    vi.stubEnv("TELEGRAM_CHAT_ID", "test-chat");
+    // Configure email delivery so the side-effect fires.
     vi.stubEnv("RESEND_API_KEY", "re_test");
     vi.stubEnv("BOOKING_EMAIL_FROM", "test@chimgandarbaza.uz");
     vi.stubEnv("RESERVATIONS_EMAIL_TO", "reservations@chimgandarbaza.uz");
     vi.stubEnv("INFO_EMAIL_TO", "info@chimgandarbaza.uz");
 
     server.use(
-      http.post("https://api.telegram.org/*", async ({ request }) => {
-        telegramCalls.push({ url: request.url, body: await request.json() });
-        return HttpResponse.json({ ok: true });
-      }),
       http.post("https://api.resend.com/emails", async ({ request }) => {
         resendCalls.push({ url: request.url, body: await request.json() });
         return HttpResponse.json({ id: "ok" });
@@ -54,7 +49,6 @@ describe("submitContact server action", () => {
       const fd = makeFormData({ name: "", phone: VALID_PHONE });
       const result = await submitContact(fd);
       expect(result).toEqual({ ok: false, error: "Укажите имя" });
-      expect(telegramCalls).toHaveLength(0);
       expect(resendCalls).toHaveLength(0);
     });
 
@@ -68,7 +62,7 @@ describe("submitContact server action", () => {
       const fd = makeFormData({ name: "Алексей", phone: "+998" });
       const result = await submitContact(fd);
       expect(result).toEqual({ ok: false, error: "Проверьте номер телефона" });
-      expect(telegramCalls).toHaveLength(0);
+      expect(resendCalls).toHaveLength(0);
     });
 
     it("rejects check-out on or before check-in", async () => {
@@ -104,13 +98,12 @@ describe("submitContact server action", () => {
       });
       const result = await submitContact(fd);
       expect(result).toEqual({ ok: true }); // pretend success, don't tip off the bot
-      expect(telegramCalls).toHaveLength(0);
       expect(resendCalls).toHaveLength(0);
     });
   });
 
   describe("happy path — booking form", () => {
-    it("returns ok and dispatches both Telegram + email", async () => {
+    it("returns ok and dispatches the email", async () => {
       const fd = makeFormData({
         name: "Алина",
         phone: VALID_PHONE,
@@ -119,7 +112,6 @@ describe("submitContact server action", () => {
       });
       const result = await submitContact(fd);
       expect(result).toEqual({ ok: true });
-      expect(telegramCalls).toHaveLength(1);
       expect(resendCalls).toHaveLength(1);
     });
 
@@ -130,11 +122,11 @@ describe("submitContact server action", () => {
       expect(emailBody.to).toEqual(["reservations@chimgandarbaza.uz"]);
     });
 
-    it("uses bookings telegram header for booking form", async () => {
+    it("uses the booking subject for booking form", async () => {
       const fd = makeFormData({ name: "Алина", phone: VALID_PHONE, formType: "booking" });
       await submitContact(fd);
-      const tgBody = telegramCalls[0].body as { text: string };
-      expect(tgBody.text).toContain("Новая бронь");
+      const emailBody = resendCalls[0].body as { subject: string };
+      expect(emailBody.subject).toContain("Бронь");
     });
   });
 
@@ -146,11 +138,11 @@ describe("submitContact server action", () => {
       expect(emailBody.to).toEqual(["info@chimgandarbaza.uz"]);
     });
 
-    it("uses inquiry telegram header", async () => {
+    it("uses the inquiry subject", async () => {
       const fd = makeFormData({ name: "Бобур", phone: VALID_PHONE, formType: "inquiry" });
       await submitContact(fd);
-      const tgBody = telegramCalls[0].body as { text: string };
-      expect(tgBody.text).toContain("Новый вопрос");
+      const emailBody = resendCalls[0].body as { subject: string };
+      expect(emailBody.subject).toContain("Вопрос");
     });
 
     it("defaults to booking when formType is missing/invalid", async () => {
@@ -183,48 +175,22 @@ describe("submitContact server action", () => {
   });
 
   describe("delivery reliability", () => {
-    it("returns ok when only email is configured and it succeeds", async () => {
-      vi.unstubAllEnvs();
-      vi.stubEnv("RESEND_API_KEY", "re_test");
-      vi.stubEnv("BOOKING_EMAIL_FROM", "from@x.uz");
-      vi.stubEnv("RESERVATIONS_EMAIL_TO", "to@x.uz");
-
+    it("returns ok when email is configured and succeeds", async () => {
       const fd = makeFormData({ name: "X", phone: VALID_PHONE });
       const result = await submitContact(fd);
       expect(result).toEqual({ ok: true });
-      expect(telegramCalls).toHaveLength(0); // skipped — not configured
       expect(resendCalls).toHaveLength(1);
     });
 
-    it("returns ok when only telegram is configured and it succeeds", async () => {
-      vi.unstubAllEnvs();
-      vi.stubEnv("TELEGRAM_BOT_TOKEN", "t");
-      vi.stubEnv("TELEGRAM_CHAT_ID", "c");
-
-      const fd = makeFormData({ name: "X", phone: VALID_PHONE });
-      const result = await submitContact(fd);
-      expect(result).toEqual({ ok: true });
-      expect(telegramCalls).toHaveLength(1);
-      expect(resendCalls).toHaveLength(0); // skipped — not configured
-    });
-
-    it("still returns ok if one channel errors but the other delivers", async () => {
-      server.use(http.post("https://api.telegram.org/*", () => HttpResponse.error()));
-      const fd = makeFormData({ name: "X", phone: VALID_PHONE });
-      const result = await submitContact(fd); // email still configured + succeeds
-      expect(result).toEqual({ ok: true });
-    });
-
-    it("returns ok:false when NOTHING can be delivered (no env configured)", async () => {
+    it("returns ok:false when email is not configured", async () => {
       vi.unstubAllEnvs();
       const fd = makeFormData({ name: "X", phone: VALID_PHONE });
       const result = await submitContact(fd);
       expect(result.ok).toBe(false);
     });
 
-    it("returns ok:false when both channels are configured but both fail", async () => {
+    it("returns ok:false when the email provider fails", async () => {
       server.use(
-        http.post("https://api.telegram.org/*", () => HttpResponse.error()),
         http.post("https://api.resend.com/emails", () => new HttpResponse(null, { status: 500 })),
       );
       const fd = makeFormData({ name: "X", phone: VALID_PHONE });
@@ -249,7 +215,6 @@ describe("submitContact server action", () => {
 
       expect(results).toHaveLength(100);
       expect(results.every((r) => r.ok === true)).toBe(true);
-      expect(telegramCalls).toHaveLength(100);
       expect(resendCalls).toHaveLength(100);
 
       const reservationsCount = resendCalls.filter((c) =>

@@ -70,7 +70,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
               ))}
             </div>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href={localizePath(locale, "/bron")} variant="primary">
+              <ButtonLink href={localizePath(locale, "/bron")} variant="primary" reload>
                 {dict.bookNow}
               </ButtonLink>
               <ButtonLink href={localizePath(locale, "/nomera")} variant="ghost">

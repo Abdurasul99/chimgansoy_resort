@@ -27,14 +27,6 @@ export const priceList: PriceItem[] = [
     weekend: 300_000,
   },
   {
-    key: "kurpacha",
-    icon: "kurpacha",
-    title: { ru: "Набор курпача", uz: "Kurpacha to'plami", en: "Kurpacha set" },
-    subtitle: { ru: "до 8 чел.", uz: "8 kishigacha", en: "up to 8 people" },
-    weekday: 100_000,
-    weekend: 200_000,
-  },
-  {
     key: "kazan",
     icon: "kazan",
     title: { ru: "Аренда казана", uz: "Qozon ijarasi", en: "Kazan rental" },

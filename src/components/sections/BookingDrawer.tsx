@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { dictionaries } from "@/content/translations";
 import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
@@ -39,12 +38,14 @@ export function BookingDrawer({ locale, roomTitle, roomSlug, priceFrom }: Bookin
       </ul>
 
       <div className="mt-6">
-        <Link
+        {/* Full navigation (plain <a>) so the Exely engine embeds on /bron — it
+            only initialises on a fresh page load, not on client-side routing. */}
+        <a
           href={requestHref}
           className="btn-press flex w-full items-center justify-center rounded-full bg-[var(--accent)] py-4 text-sm font-bold text-[var(--on-accent)] transition-all duration-300 hover:bg-[var(--accent-strong)] hover:shadow-[var(--shadow-glow)]"
         >
           {dict.bookNow}
-        </Link>
+        </a>
       </div>
     </div>
   );
