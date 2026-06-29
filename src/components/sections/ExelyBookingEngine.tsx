@@ -66,8 +66,11 @@ export function ExelyBookingEngine({ locale }: { locale: Locale }) {
       {/* Exely booking engine is injected here by the head loader.
           BookingEngineSlot adds loading + graceful-failure states so this area
           is never just an empty void when the engine can't reach its host. */}
+      {/* Full-width, adaptive: fills the screen on phones/tablets and expands to a
+          comfortable max on large screens (a booking form spanning an ultra-wide
+          monitor reads badly), so Exely's 2-column layout has room to breathe. */}
       <section className="px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-        <div className="mx-auto max-w-5xl">
+        <div className="mx-auto w-full max-w-[1600px]">
           <BookingEngineSlot
             copy={{ loading: c.loading, failedHeading: c.failedHeading, failedSub: c.failedSub }}
           />

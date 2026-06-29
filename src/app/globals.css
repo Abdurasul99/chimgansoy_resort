@@ -1648,7 +1648,7 @@ footer {
 }
 #be-booking-form {
   width: 100%;
-  max-width: 1280px;
+  max-width: 100%; /* let the page container (ExelyBookingEngine) decide the width */
   margin: 0 auto;
 }
 #tl-booking-cart {
