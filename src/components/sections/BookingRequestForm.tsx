@@ -122,7 +122,7 @@ export function BookingRequestForm({
           <DatePicker name="checkout" label={labels.checkOut} defaultValue={defaultCheckout} locale={locale} minToday />
         </div>
 
-        <GuestSelect name="guests" label={labels.guests} defaultValue={defaultGuests} locale={locale} />
+        <GuestSelect name="guests" label={labels.guests} defaultValue={defaultGuests || "2"} locale={locale} />
 
         <button
           type="submit"
