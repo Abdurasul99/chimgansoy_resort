@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { WeatherPanel } from "@/components/sections/WeatherPanel";
 import { Hero } from "@/components/sections/Hero";
 import { LeisureShowcase } from "@/components/sections/LeisureShowcase";
+import { PoolBooking } from "@/components/sections/PoolBooking";
 import { RoomCatalog } from "@/components/sections/RoomCatalog";
 import { Faq } from "@/components/sections/Faq";
 import { Gallery } from "@/components/sections/Gallery";
@@ -215,6 +216,9 @@ export default async function HomePage({ params }: PageProps) {
           <RoomCatalog locale={locale} limit={2} />
         </div>
       </section>
+
+      {/* ── Pool — dedicated bookable amenity (Exely) ─── */}
+      <PoolBooking locale={locale} />
 
       {/* ── Развлечения и отдых — brand-styled leisure showcase ── */}
       <LeisureShowcase locale={locale} />

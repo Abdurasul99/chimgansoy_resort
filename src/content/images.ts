@@ -304,12 +304,22 @@ export const resortImages = {
   },
   pool: {
     src: "https://images.unsplash.com/photo-1572331165267-854da2b10ccc?auto=format&fit=crop&w=1800&q=85",
+    localSrc: "/images/resort/pool.jpg",
+    position: "center",
+    alt: {
+      ru: "Бассейн-лагуна с баром у воды и шезлонгами",
+      uz: "Suv ichidagi bar va shezlonglar bilan laguna-basseyn",
+      en: "Lagoon pool with a swim-up bar and loungers",
+    },
+  },
+  poolAerial: {
+    src: "https://images.unsplash.com/photo-1572331165267-854da2b10ccc?auto=format&fit=crop&w=1800&q=85",
     localSrc: "/images/resort/15-pool-aerial.jpg",
     position: "center",
     alt: {
-      ru: "Бассейн и шезлонги на территории курорта",
-      uz: "Kurort hududidagi basseyn va shezlonglar",
-      en: "Pool and loungers on the resort territory",
+      ru: "Бассейн с высоты — вид на территорию курорта",
+      uz: "Basseyn — yuqoridan, kurort hududi ko'rinishi",
+      en: "Pool from above — resort territory view",
     },
   },
   poolLifestyle: {

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/sections/PageHero";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
+import { PoolBooking } from "@/components/sections/PoolBooking";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { resortImages } from "@/content/images";
 import { dictionaries } from "@/content/translations";
@@ -39,6 +40,9 @@ export default async function ServicesPage({ params }: PageProps) {
           </div>
         </div>
       </section>
+
+      {/* Dedicated bookable pool amenity */}
+      <PoolBooking locale={locale} />
     </>
   );
 }
