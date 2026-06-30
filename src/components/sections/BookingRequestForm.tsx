@@ -1,20 +1,19 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
-import { useFormStatus } from "react-dom";
-import { submitContact } from "@/app/actions/contact";
-import { trackEvent } from "@/lib/analytics";
+import { useState } from "react";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { GuestSelect } from "@/components/ui/GuestSelect";
 import { rooms } from "@/content/rooms";
-import { contacts } from "@/content/contacts";
+import { localizePath } from "@/i18n/routing";
 import { text } from "@/lib/localize";
 
-const SUCCESS_COPY = {
-  ru: { reply: "Свяжемся с вами в ближайшее время.", booking: "Бронируете", urgent: "Нужно срочно? Позвоните или напишите:" },
-  uz: { reply: "Tez orada siz bilan bog'lanamiz.", booking: "Bron qilyapsiz", urgent: "Shoshilinch kerakmi? Qo'ng'iroq qiling yoki yozing:" },
-  en: { reply: "We'll get in touch with you shortly.", booking: "Booking", urgent: "Need it urgently? Call or message us:" },
-} as const;
+// Exely Suite room-type ids — carried to the booking engine on /bron so it opens
+// straight on the chosen item. (Topchan / day visit, glamping, cottage.)
+const EXELY_ROOM_ID: Record<string, string> = {
+  day: "5075762",
+  glamping: "5075760",
+  cottage: "5075761",
+};
 
 // What the guest can book: a day visit (topchan) + the two room types.
 const STAY_OPTIONS = [
@@ -55,28 +54,11 @@ type Props = {
   defaultRoom?: string;
 };
 
-type State = { status: "idle" } | { status: "ok" } | { status: "error"; message: string };
-
-const initialState: State = { status: "idle" };
-
-async function formAction(_prev: State, formData: FormData): Promise<State> {
-  const result = await submitContact(formData);
-  if (result.ok) return { status: "ok" };
-  return { status: "error", message: result.error };
-}
-
-function SubmitButton({ label, sending }: { label: string; sending: string }) {
-  const { pending } = useFormStatus();
-  return (
-    <button
-      type="submit"
-      disabled={pending}
-      className="w-full rounded-xl bg-[var(--accent)] px-6 py-4 text-base font-bold text-[var(--on-accent)] transition duration-300 hover:bg-[var(--accent-strong)] disabled:opacity-60"
-    >
-      {pending ? sending : label}
-    </button>
-  );
-}
+const SUBTITLE: Record<Locale, string> = {
+  ru: "Выберите что и когда — откроется онлайн-бронирование, там подтвердите даты и оформите бронь.",
+  uz: "Nimani va qachon — tanlang, onlayn bron oynasi ochiladi, u yerda sanalarni tasdiqlab bron qilasiz.",
+  en: "Pick what and when — the online booking opens where you confirm the dates and complete the reservation.",
+};
 
 export function BookingRequestForm({
   dict,
@@ -87,80 +69,25 @@ export function BookingRequestForm({
   defaultGuests = "",
   defaultRoom = "",
 }: Props) {
-  const [state, action] = useActionState(formAction, initialState);
-
   // Room/stay selection — pre-fill from the card the guest came from (?room=…),
-  // otherwise default to a day visit. The selected room is what gets booked.
+  // otherwise default to a day visit. The selected stay maps to an Exely room-type.
   const initialSlug = STAY_OPTIONS.some((o) => o.slug === defaultRoom) ? defaultRoom : "day";
   const [staySlug, setStaySlug] = useState(initialSlug);
-  const selectedStay = STAY_OPTIONS.find((o) => o.slug === staySlug) ?? STAY_OPTIONS[0];
+
   const stayLabel =
     locale === "ru" ? "Что бронируете" : locale === "uz" ? "Nima bron qilasiz" : "What are you booking";
-
-  // Fire the booking conversion exactly once when the action succeeds.
-  useEffect(() => {
-    if (state.status === "ok") {
-      trackEvent("booking_request_submitted", { room: staySlug });
-    }
-  }, [state.status, staySlug]);
-
-  if (state.status === "ok") {
-    const t = SUCCESS_COPY[locale];
-    return (
-      <div className="rounded-2xl border border-[color:var(--line)] bg-[var(--surface)] p-8 text-center">
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--accent)]/10">
-          <svg className="h-7 w-7 text-[var(--accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
-        <p className="font-serif text-2xl font-semibold text-[var(--ink)]">{dict.success}</p>
-        <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-[var(--muted)]">{t.reply}</p>
-
-        <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--paper)] px-4 py-2 text-sm">
-          <span className="text-[var(--muted)]">{t.booking}:</span>
-          <span className="font-bold text-[var(--ink)]">{text(selectedStay.title, locale)}</span>
-        </div>
-
-        <div className="mt-6 border-t border-[color:var(--line)] pt-5">
-          <p className="text-xs font-semibold uppercase tracking-wide text-[var(--muted)]">{t.urgent}</p>
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
-            <a
-              href={`tel:${contacts.phone.replaceAll(" ", "")}`}
-              className="rounded-full border border-[color:var(--line)] px-4 py-2 text-sm font-bold text-[var(--ink)] transition-colors hover:border-[var(--accent)]"
-            >
-              {contacts.phone}
-            </a>
-            <a
-              href={contacts.whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full bg-[#25D366]/12 px-4 py-2 text-sm font-bold text-[#128C4B] transition-colors hover:bg-[#25D366]/20"
-            >
-              WhatsApp
-            </a>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] p-6 shadow-[0_8px_40px_rgba(21,29,24,0.07)] sm:p-8">
       <h3 className="font-serif text-2xl font-semibold text-[var(--ink)]">{dict.formTitle}</h3>
+      <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{SUBTITLE[locale]}</p>
 
-      <form action={action} className="mt-6 space-y-4">
-        <input type="hidden" name="formType" value="booking" />
-        <input type="hidden" name="locale" value={locale} />
-        {/* The selected stay is always sent as a readable RU label for the admin */}
-        <input type="hidden" name="room" value={text(selectedStay.title, "ru")} />
-
-        {/* Honeypot — hidden from humans; bots that fill it are silently dropped */}
-        <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
-          <label>
-            Company
-            <input type="text" name="company" tabIndex={-1} autoComplete="off" />
-          </label>
-        </div>
+      {/* GET submit = full navigation to /bron, so the Exely engine embeds and
+          opens on the selected room-type. Exely collects the guest's details and
+          payment — no name/phone needed here. */}
+      <form action={localizePath(locale, "/bron")} method="get" className="mt-6 space-y-4">
+        {/* The selected stay -> Exely room-type id, read by the engine on /bron */}
+        <input type="hidden" name="room-type" value={EXELY_ROOM_ID[staySlug] ?? ""} />
 
         {/* Stay-type selector — pick a day visit, glamping, or the cottage */}
         <div>
@@ -191,76 +118,18 @@ export function BookingRequestForm({
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <DatePicker
-            name="checkin"
-            label={labels.checkIn}
-            defaultValue={defaultCheckin}
-            locale={locale}
-            minToday
-          />
-          <DatePicker
-            name="checkout"
-            label={labels.checkOut}
-            defaultValue={defaultCheckout}
-            locale={locale}
-            minToday
-          />
+          <DatePicker name="checkin" label={labels.checkIn} defaultValue={defaultCheckin} locale={locale} minToday />
+          <DatePicker name="checkout" label={labels.checkOut} defaultValue={defaultCheckout} locale={locale} minToday />
         </div>
 
-        <GuestSelect
-          name="guests"
-          label={labels.guests}
-          defaultValue={defaultGuests}
-          locale={locale}
-        />
+        <GuestSelect name="guests" label={labels.guests} defaultValue={defaultGuests} locale={locale} />
 
-        <div>
-          <label htmlFor="bron-name" className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
-            {dict.name}
-          </label>
-          <input
-            type="text"
-            id="bron-name"
-            name="name"
-            required
-            autoComplete="name"
-            className="w-full rounded-xl border border-[color:var(--line)] bg-[var(--surface)] px-4 py-3.5 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="bron-phone" className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
-            {dict.phone}
-          </label>
-          <input
-            type="tel"
-            id="bron-phone"
-            name="phone"
-            required
-            inputMode="tel"
-            autoComplete="tel"
-            placeholder="+998 90 000 00 00"
-            className="w-full rounded-xl border border-[color:var(--line)] bg-[var(--surface)] px-4 py-3.5 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="bron-message" className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
-            {dict.message}
-          </label>
-          <textarea
-            id="bron-message"
-            name="message"
-            rows={3}
-            className="w-full resize-none rounded-xl border border-[color:var(--line)] bg-[var(--surface)] px-4 py-3.5 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15"
-          />
-        </div>
-
-        {state.status === "error" && (
-          <p role="alert" aria-live="assertive" className="text-sm font-medium text-red-600">{state.message || dict.errorRequired}</p>
-        )}
-
-        <SubmitButton label={dict.send} sending={dict.sending} />
+        <button
+          type="submit"
+          className="w-full rounded-xl bg-[var(--accent)] px-6 py-4 text-base font-bold text-[var(--on-accent)] transition duration-300 hover:bg-[var(--accent-strong)]"
+        >
+          {dict.send}
+        </button>
       </form>
     </div>
   );
