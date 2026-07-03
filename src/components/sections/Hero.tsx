@@ -243,15 +243,32 @@ export function Hero({ locale }: HeroProps) {
           {/* RIGHT — booking search box (2x2: dates left, guests + submit right) */}
           <div className="motion-rise w-full max-w-xl lg:max-w-none" style={{ animationDelay: "240ms" }}>
             <BookingWidget locale={locale} variant="hero" />
-            <a
-              href={localizePath(locale, "/nomera")}
-              className="group mt-3 inline-flex items-center gap-1.5 text-sm font-bold text-white/85 transition-colors hover:text-white"
-            >
-              <span>{dict.details}</span>
-              <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </a>
+
+            <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2.5">
+              <a
+                href={localizePath(locale, "/nomera")}
+                className="group inline-flex items-center gap-1.5 text-sm font-bold text-white/85 transition-colors hover:text-white"
+              >
+                <span>{dict.details}</span>
+                <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </a>
+
+              {/* Pool booking CTA — full navigation so the Exely engine embeds on /bron */}
+              <a
+                href={localizePath(locale, "/bron")}
+                className="btn-press group inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-bold text-white backdrop-blur-sm transition hover:border-[var(--sun)] hover:bg-white/15"
+              >
+                <svg className="h-4 w-4 text-[var(--sun)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 7c1.6 0 2.4-1 4-1s2.4 1 4 1 2.4-1 4-1 2.4 1 4 1M3 12c1.6 0 2.4-1 4-1s2.4 1 4 1 2.4-1 4-1 2.4 1 4 1M3 17c1.6 0 2.4-1 4-1s2.4 1 4 1 2.4-1 4-1 2.4 1 4 1" />
+                </svg>
+                <span>{locale === "ru" ? "Забронировать бассейн" : locale === "uz" ? "Basseynni bron qilish" : "Book the pool"}</span>
+                <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </a>
+            </div>
           </div>
         </div>
       </div>
