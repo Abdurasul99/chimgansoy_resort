@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { BookingWidget } from "@/components/sections/BookingWidget";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { resortImages } from "@/content/images";
 import { dictionaries } from "@/content/translations";
@@ -75,6 +76,9 @@ export default async function AboutPage({ params }: PageProps) {
           </div>
         </div>
       </section>
+
+      {/* Search widget — dates/guests -> Exely engine on /bron (Exely SEO tip) */}
+      <BookingWidget locale={locale} />
 
       {/* ── About editorial split ─────────────────────── */}
       <section className="px-4 py-14 sm:py-24 sm:px-6 lg:px-8">

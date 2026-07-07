@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { resortImages } from "@/content/images";
-import { roomCategories, rooms, type RoomCategory } from "@/content/rooms";
+import { roomCategories, rooms, EXELY_ROOM_TYPE, type RoomCategory } from "@/content/rooms";
 import { dictionaries } from "@/content/translations";
 import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
@@ -14,12 +14,6 @@ import { Icon } from "@/components/ui/Icon";
 type RoomCatalogProps = {
   locale: Locale;
   limit?: number;
-};
-
-// Room-type IDs in Exely Suite → carried to the booking engine on /bron.
-const EXELY_ROOM_ID: Record<string, string> = {
-  glamping: "5075760",
-  cottage: "5075761",
 };
 
 type Filter = "all" | RoomCategory;
@@ -113,7 +107,7 @@ export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
                     {dict.details}
                   </ButtonLink>
                   <ButtonLink
-                    href={localizePath(locale, `/bron?room-type=${EXELY_ROOM_ID[room.slug] ?? ""}`)}
+                    href={localizePath(locale, `/bron?room-type=${EXELY_ROOM_TYPE[room.slug] ?? ""}`)}
                     variant="ghost"
                     reload
                     className="btn-press"

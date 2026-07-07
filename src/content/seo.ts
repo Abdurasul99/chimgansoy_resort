@@ -11,10 +11,11 @@ import type { PageSeo } from "./types";
  */
 export const pageSeo = {
   home: {
+    // Exely SEO recommendation: brand + city + "official website".
     title: {
-      ru: "CHIMGAN DARBAZA — горный курорт и база отдыха в Чимгане",
-      uz: "CHIMGAN DARBAZA — Chimg'ondagi tog' kurorti",
-      en: "CHIMGAN DARBAZA — mountain resort near Tashkent",
+      ru: "CHIMGAN DARBAZA, Ташкент — официальный сайт",
+      uz: "CHIMGAN DARBAZA, Toshkent — rasmiy sayt",
+      en: "CHIMGAN DARBAZA, Tashkent — Official website",
     },
     description: {
       ru: "Глэмпинг, коттеджи и дневной отдых в 45 минутах от Ташкента: топчаны, мангал, казан, ресторан и панорама Чимгана на высоте 1700 м.",
@@ -83,10 +84,11 @@ export const pageSeo = {
     },
   },
   booking: {
+    // Exely SEO recommendation: "Booking - <brand>, <city> - Official website".
     title: {
-      ru: "Бронирование топчанов и номеров",
-      uz: "Topchan va xonalarni bron qilish",
-      en: "Book topchans and rooms",
+      ru: "Бронирование — CHIMGAN DARBAZA, Ташкент — официальный сайт",
+      uz: "Bron qilish — CHIMGAN DARBAZA, Toshkent — rasmiy sayt",
+      en: "Booking — CHIMGAN DARBAZA, Tashkent — Official website",
     },
     description: {
       ru: "Бронирование дневного отдыха и проживания: выберите даты — администратор подтвердит бронь в ближайшее время.",

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
 import { BookingDrawer } from "@/components/sections/BookingDrawer";
 import { Icon } from "@/components/ui/Icon";
-import { rooms } from "@/content/rooms";
+import { rooms, EXELY_ROOM_TYPE } from "@/content/rooms";
 import { resortImages } from "@/content/images";
 import { dictionaries } from "@/content/translations";
 import { getLocaleParam, getRoom } from "@/lib/content";
@@ -150,10 +150,11 @@ export default async function RoomDetailPage({ params }: PageProps) {
                 </div>
               </div>
 
-              {/* Mobile CTA — full navigation so the Exely engine embeds on /bron. */}
+              {/* Mobile CTA — full navigation to /bron with the room-type so the
+                  Exely engine opens straight on this room. */}
               <div className="mt-10 lg:hidden">
                 <a
-                  href={localizePath(locale, "/bron")}
+                  href={localizePath(locale, `/bron?room-type=${EXELY_ROOM_TYPE[room.slug] ?? ""}`)}
                   className="btn-press flex items-center justify-center rounded-full bg-[var(--accent)] py-4 text-base font-bold text-[var(--on-accent)] transition-all duration-300 hover:bg-[var(--accent-strong)]"
                 >
                   {dict.bookNow}

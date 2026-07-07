@@ -1,4 +1,5 @@
 import { dictionaries } from "@/content/translations";
+import { EXELY_ROOM_TYPE } from "@/content/rooms";
 import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
 
@@ -18,7 +19,11 @@ export function BookingDrawer({ locale, roomTitle, roomSlug, priceFrom }: Bookin
     locale === "ru" ? "Подбор подходящих дат" : locale === "uz" ? "Mos sanalarni tanlaymiz" : "We help pick the dates",
   ];
 
-  const requestHref = `${localizePath(locale, "/bron")}?room=${encodeURIComponent(roomSlug)}`;
+  // Exely reads room-type=<id> to open on the right room (not a slug).
+  const roomType = EXELY_ROOM_TYPE[roomSlug];
+  const requestHref = roomType
+    ? `${localizePath(locale, "/bron")}?room-type=${roomType}`
+    : localizePath(locale, "/bron");
 
   return (
     <div className="rounded-3xl border border-[color:var(--line)] bg-[var(--paper)] p-6 shadow-[var(--shadow-card)]">

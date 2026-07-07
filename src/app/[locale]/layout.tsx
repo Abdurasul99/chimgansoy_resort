@@ -11,6 +11,7 @@ import { SeasonDetector } from "@/components/ui/SeasonDetector";
 import { AnalyticsEvents } from "@/components/ui/AnalyticsEvents";
 import { LogoIntro } from "@/components/ui/LogoIntro";
 import { StickyBookingCta } from "@/components/layout/StickyBookingCta";
+import { HideOnBron } from "@/components/ui/HideOnBron";
 import { dictionaries } from "@/content/translations";
 import { isLocale, locales, type Locale } from "@/i18n/config";
 import { localizedUrl, originForLocale } from "@/i18n/domains";
@@ -154,9 +155,15 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         </a>
         <Header locale={locale as Locale} />
         <main id="main">{children}</main>
-        <Footer locale={locale as Locale} />
+        {/* Footer + FAQ widget hidden on /bron (Exely: no distractions on the
+            booking page; the floating widget also overlaps the cart on mobile). */}
+        <HideOnBron>
+          <Footer locale={locale as Locale} />
+        </HideOnBron>
         <ScrollObserver />
-        <FaqPanel key={locale} locale={locale} />
+        <HideOnBron>
+          <FaqPanel key={locale} locale={locale} />
+        </HideOnBron>
         <StickyBookingCta locale={locale as Locale} />
         <SeasonDetector />
         <AnalyticsEvents />

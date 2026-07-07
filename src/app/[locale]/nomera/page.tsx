@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/sections/PageHero";
+import { BookingWidget } from "@/components/sections/BookingWidget";
 import { RoomCatalog } from "@/components/sections/RoomCatalog";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
@@ -72,6 +73,9 @@ export default async function RoomsPage({ params }: PageProps) {
         image={resortImages.glampingDay}
         eyebrow="CHIMGAN DARBAZA"
       />
+
+      {/* Search widget — dates/guests -> Exely engine on /bron (Exely SEO tip) */}
+      <BookingWidget locale={locale} />
 
       {/* Room catalog — glamping + cottage, both bookable */}
       <section className="px-4 py-14 sm:px-6 sm:py-20 lg:px-8">

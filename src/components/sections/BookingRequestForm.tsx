@@ -3,17 +3,9 @@
 import { useState } from "react";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { GuestSelect } from "@/components/ui/GuestSelect";
-import { rooms } from "@/content/rooms";
+import { rooms, EXELY_ROOM_TYPE } from "@/content/rooms";
 import { localizePath } from "@/i18n/routing";
 import { text } from "@/lib/localize";
-
-// Exely Suite room-type ids — carried to the booking engine on /bron so it opens
-// straight on the chosen item. (Topchan / day visit, glamping, cottage.)
-const EXELY_ROOM_ID: Record<string, string> = {
-  day: "5075762",
-  glamping: "5075760",
-  cottage: "5075761",
-};
 
 // What the guest can book: a day visit (topchan) + the two room types.
 const STAY_OPTIONS = [
@@ -87,7 +79,7 @@ export function BookingRequestForm({
           payment — no name/phone needed here. */}
       <form action={localizePath(locale, "/bron")} method="get" className="mt-6 space-y-4">
         {/* The selected stay -> Exely room-type id, read by the engine on /bron */}
-        <input type="hidden" name="room-type" value={EXELY_ROOM_ID[staySlug] ?? ""} />
+        <input type="hidden" name="room-type" value={EXELY_ROOM_TYPE[staySlug] ?? ""} />
 
         {/* Stay-type selector — pick a day visit, glamping, or the cottage */}
         <div>

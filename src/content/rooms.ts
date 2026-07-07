@@ -95,6 +95,17 @@ export const rooms: Room[] = [
   },
 ];
 
+/**
+ * Exely Suite room-type ids per stay option — used on every booking link
+ * (/bron?room-type=<id>) so the engine opens straight on the chosen item.
+ * Full list is in the Exely package's links_room.html.
+ */
+export const EXELY_ROOM_TYPE: Record<string, string> = {
+  day: "5075762", // Topchan / day visit
+  glamping: "5075760",
+  cottage: "5075761",
+};
+
 export const roomCategories = [
   {
     id: "all",
