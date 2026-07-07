@@ -38,6 +38,9 @@ next-dev.err.log
 .env*
 !.env.example
 
+# credentials handoff doc — NEVER commit (contains access notes / secrets)
+ACCESS.md
+
 # vercel
 .vercel
 
