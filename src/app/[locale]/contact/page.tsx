@@ -9,7 +9,6 @@ import { getLocaleParam } from "@/lib/content";
 import { buildMetadata } from "@/lib/metadata";
 import { imageStyle } from "@/lib/images";
 import { text } from "@/lib/localize";
-import Link from "next/link";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
