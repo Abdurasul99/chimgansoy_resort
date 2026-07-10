@@ -74,13 +74,6 @@ export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
                 {/* Gradient overlay */}
                 <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,18,14,1.0)_0%,rgba(12,18,14,0.55)_45%,rgba(12,18,14,0.08)_100%)]" />
 
-                {/* Honest render badge — this photo is a visualization, not a real shot yet */}
-                {room.rendered && (
-                  <span className="absolute left-5 top-5 rounded-full border border-white/25 bg-black/40 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-white/85 backdrop-blur-sm">
-                    {locale === "ru" ? "Визуализация" : locale === "uz" ? "Vizualizatsiya" : "Rendering"}
-                  </span>
-                )}
-
                 {/* Floating price badge */}
                 <div className="glass-badge absolute right-5 top-5 rounded-full px-4 py-1.5 backdrop-blur-sm">
                   <p className="text-xs font-bold text-white/80">{text(room.priceFrom, locale)}</p>
