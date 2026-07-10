@@ -51,11 +51,6 @@ const ITEMS: Item[] = [
     desc: { ru: "6 гектаров: коттеджи, бассейн, спорт и парковка.", uz: "6 gektar: kottejlar, basseyn, sport va parking.", en: "Six hectares: cottages, pool, sport and parking." },
   },
   {
-    image: "cottageDay",
-    title: { ru: "Коттеджи", uz: "Kottejlar", en: "Cottages" },
-    desc: { ru: "Просторные дома для семьи и компании.", uz: "Oila va do'stlar uchun keng uylar.", en: "Spacious houses for families and groups." },
-  },
-  {
     image: "pool",
     title: { ru: "Бассейн-лагуна", uz: "Laguna-basseyn", en: "Lagoon pool" },
     desc: { ru: "Бар у воды, шезлонги и вид на Чимган.", uz: "Suv yonida bar, shezlonglar va Chimgon manzarasi.", en: "Swim-up bar, loungers and Chimgan views." },
@@ -81,7 +76,7 @@ export function MasterPlan({ locale }: { locale: Locale }) {
           <p className="mt-5 text-base leading-7 text-white/60">{t.lead}</p>
         </div>
 
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {ITEMS.map((item) => {
             const img = resortImages[item.image];
             return (

@@ -87,7 +87,7 @@ export function BookingRequestForm({
           <span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
             {stayLabel}
           </span>
-          <div className="grid gap-2 sm:grid-cols-2">
+          <div className="grid gap-2 sm:grid-cols-3">
             {STAY_OPTIONS.map((o) => {
               const active = o.slug === staySlug;
               return (

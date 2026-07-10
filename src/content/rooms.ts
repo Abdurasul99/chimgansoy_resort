@@ -8,6 +8,8 @@ export type Room = {
   category: RoomCategory;
   /** false = not built yet → shown only in the Master Plan section, not bookable */
   available?: boolean;
+  /** true = bookable, but the photo is still a CGI render → show a "visualization" badge */
+  rendered?: boolean;
   image: keyof typeof resortImages;
   gallery: (keyof typeof resortImages)[];
   title: LocalizedString;
@@ -62,9 +64,9 @@ export const rooms: Room[] = [
   {
     slug: "cottage",
     category: "cottage",
-    available: false, // not built yet — lives in the Master Plan section
-    image: "receptionDay",
-    gallery: ["receptionDay", "restaurantBuilding", "galTopchanInside", "galKidsSwing"],
+    rendered: true, // bookable, but only a render photo exists yet → "visualization" badge
+    image: "cottageDay",
+    gallery: ["cottageDay", "cottage", "galTopchanInside", "galKidsSwing"],
     title: { ru: "Коттедж", uz: "Kottej", en: "Cottage" },
     eyebrow: {
       ru: "Для семьи и компании",

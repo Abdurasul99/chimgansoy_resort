@@ -66,6 +66,13 @@ export default async function RoomDetailPage({ params }: PageProps) {
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgba(12,18,14,0.97)_0%,rgba(12,18,14,0.55)_50%,rgba(12,18,14,0.12)_100%)]" />
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(12,18,14,0.60)_0%,transparent_65%)]" />
 
+        {/* Honest render badge — this hero photo is a visualization, not real yet */}
+        {room.rendered && (
+          <span className="absolute left-4 top-24 z-10 rounded-full border border-white/25 bg-black/40 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-white/85 backdrop-blur-sm sm:left-6 sm:top-32">
+            {locale === "ru" ? "Визуализация" : locale === "uz" ? "Vizualizatsiya" : "Rendering"}
+          </span>
+        )}
+
         <div className="mx-auto w-full max-w-7xl px-4 pb-10 pt-24 sm:pb-14 sm:pt-32 sm:px-6 lg:pb-20 lg:pt-40 lg:px-8">
           <div className="motion-rise">
             <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">CHIMGAN DARBAZA</p>
