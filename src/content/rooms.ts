@@ -27,7 +27,7 @@ export const rooms: Room[] = [
     slug: "glamping",
     category: "glamping",
     image: "galAframeTrio",
-    gallery: ["galAframeTrio", "galAframeCloseup", "galTopchanPeaks", "galTerritoryPanorama"],
+    gallery: ["galAframeTrio", "galMountainView", "galTopchanPeaks", "galTerritoryPanorama"],
     title: { ru: "Глэмпинг", uz: "Glemping", en: "Glamping" },
     eyebrow: {
       ru: "Проживание на природе",
