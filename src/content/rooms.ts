@@ -6,6 +6,8 @@ export type RoomCategory = "glamping" | "cottage";
 export type Room = {
   slug: RoomCategory;
   category: RoomCategory;
+  /** false = not built yet → shown only in the Master Plan section, not bookable */
+  available?: boolean;
   image: keyof typeof resortImages;
   gallery: (keyof typeof resortImages)[];
   title: LocalizedString;
@@ -24,8 +26,8 @@ export const rooms: Room[] = [
   {
     slug: "glamping",
     category: "glamping",
-    image: "glampingDay",
-    gallery: ["glampingDay", "cottage", "galTopchanPeaks", "galTerritoryPanorama"],
+    image: "galAframeTrio",
+    gallery: ["galAframeTrio", "galAframeCloseup", "galTopchanPeaks", "galTerritoryPanorama"],
     title: { ru: "Глэмпинг", uz: "Glemping", en: "Glamping" },
     eyebrow: {
       ru: "Проживание на природе",
@@ -60,6 +62,7 @@ export const rooms: Room[] = [
   {
     slug: "cottage",
     category: "cottage",
+    available: false, // not built yet — lives in the Master Plan section
     image: "receptionDay",
     gallery: ["receptionDay", "restaurantBuilding", "galTopchanInside", "galKidsSwing"],
     title: { ru: "Коттедж", uz: "Kottej", en: "Cottage" },

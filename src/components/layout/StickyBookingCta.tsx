@@ -34,7 +34,7 @@ export function StickyBookingCta({ locale }: StickyBookingCtaProps) {
   return (
     <a
       href={localizePath(locale, "/bron")}
-      className={`fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 flex min-h-[3.25rem] items-center justify-center gap-2 rounded-xl bg-[var(--accent)] px-5 py-3.5 text-sm font-bold text-[var(--on-accent)] shadow-[0_16px_40px_rgba(181,99,64,0.35)] transition-all duration-300 hover:bg-[var(--accent-strong)] sm:inset-x-auto sm:left-6 sm:right-auto sm:bottom-6 sm:w-auto ${
+      className={`fixed left-3 right-[4.75rem] bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 flex min-h-[3.25rem] items-center justify-center gap-2 rounded-xl bg-[var(--accent)] px-5 py-3.5 text-sm font-bold text-[var(--on-accent)] shadow-[0_16px_40px_rgba(181,99,64,0.35)] transition-all duration-300 hover:bg-[var(--accent-strong)] sm:inset-x-auto sm:left-6 sm:right-auto sm:bottom-6 sm:w-auto ${
         isVisible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0"
       }`}
     >

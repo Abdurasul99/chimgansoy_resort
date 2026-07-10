@@ -514,18 +514,20 @@ export const resortImages = {
   },
 } satisfies Record<string, ImageAsset>;
 
+// Real June-2026 photography only. The render set (01–18 + pool.jpg) is
+// reserved for the clearly-labelled "master plan" section, never the main gallery.
 export const galleryImages = [
-  resortImages.nightHero,
-  resortImages.glampingDay,
-  resortImages.glamping,
-  resortImages.cottageDay,
-  resortImages.cottage,
-  resortImages.hero,
-  resortImages.territoryAerial,
-  resortImages.tapchanAerial,
-  resortImages.restaurantBuilding,
-  resortImages.sportParking,
-  resortImages.entranceNight,
-  resortImages.entranceDay,
-  resortImages.receptionDay,
+  resortImages.galTerritoryPanorama,
+  resortImages.galTopchanPeaks,
+  resortImages.galTopchanRow,
+  resortImages.galMangalFire,
+  resortImages.galWaiterPlov,
+  resortImages.galAframeTrio,
+  resortImages.galMountainView,
+  resortImages.galTopchanSwing,
+  resortImages.galKazanStone,
+  resortImages.galFoodServing,
+  resortImages.galGreenHills,
+  resortImages.galPathway,
+  resortImages.galKidsSwing,
 ];

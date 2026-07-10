@@ -62,9 +62,9 @@ export default async function AboutPage({ params }: PageProps) {
       >
         <div
           className="absolute inset-0 -z-20 bg-cover bg-center"
-          style={imageStyle(resortImages.territoryAerial)}
+          style={imageStyle(resortImages.galTerritoryPanorama)}
           role="img"
-          aria-label={text(resortImages.territoryAerial.alt, locale)}
+          aria-label={text(resortImages.galTerritoryPanorama.alt, locale)}
         />
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgba(12,18,14,0.97)_0%,rgba(12,18,14,0.52)_55%,rgba(12,18,14,0.12)_100%)]" />
 
@@ -100,9 +100,9 @@ export default async function AboutPage({ params }: PageProps) {
             <div className="relative motion-reveal" data-delay="150">
               <div
                 className="aspect-[4/5] overflow-hidden rounded-3xl bg-cover bg-center shadow-[var(--shadow-card-hover)]"
-                style={imageStyle(resortImages.receptionDay)}
+                style={imageStyle(resortImages.galAframeTrio)}
                 role="img"
-                aria-label={text(resortImages.receptionDay.alt, locale)}
+                aria-label={text(resortImages.galAframeTrio.alt, locale)}
               />
             </div>
           </div>
@@ -136,9 +136,9 @@ export default async function AboutPage({ params }: PageProps) {
       <section className="relative isolate overflow-hidden min-h-[50vh] flex items-end">
         <div
           className="absolute inset-0 -z-10 bg-cover bg-center"
-          style={imageStyle(resortImages.territoryAerial)}
+          style={imageStyle(resortImages.galGreenHills)}
           role="img"
-          aria-label={text(resortImages.territoryAerial.alt, locale)}
+          aria-label={text(resortImages.galGreenHills.alt, locale)}
         />
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgba(12,18,14,0.90)_0%,rgba(12,18,14,0.30)_60%,rgba(12,18,14,0.05)_100%)]" />
         <div className="mx-auto w-full max-w-7xl px-4 pb-14 sm:px-6 lg:pb-20 lg:px-8">

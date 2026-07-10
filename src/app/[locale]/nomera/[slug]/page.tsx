@@ -15,8 +15,12 @@ type PageProps = {
   params: Promise<{ locale: string; slug: string }>;
 };
 
+// Only built, bookable rooms get a detail page; not-yet-built rooms (cottage)
+// live in the Master Plan section, so their /nomera/<slug> URL 404s.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
-  return rooms.map((room) => ({ slug: room.slug }));
+  return rooms.filter((room) => room.available !== false).map((room) => ({ slug: room.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

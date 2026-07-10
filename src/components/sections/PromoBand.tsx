@@ -19,7 +19,7 @@ export function PromoBand({ locale }: PromoBandProps) {
     <section className="relative isolate overflow-hidden bg-[var(--green)] px-4 py-16 text-white sm:px-6 lg:px-8">
       <div
         className="absolute inset-0 -z-20 bg-cover opacity-50"
-        style={imageStyle(resortImages.nightHero)}
+        style={imageStyle(resortImages.galTerritoryPanorama)}
         aria-hidden="true"
       />
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(12,18,14,0.92),rgba(12,18,14,0.62),rgba(12,18,14,0.44))]" />

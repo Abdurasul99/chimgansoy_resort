@@ -21,30 +21,39 @@ type Filter = "all" | RoomCategory;
 export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
   const [filter, setFilter] = useState<Filter>("all");
   const dict = dictionaries[locale];
+  // Only truly-built rooms are bookable here; the rest live in <MasterPlan>.
+  const bookableRooms = useMemo(() => rooms.filter((room) => room.available !== false), []);
+  const availableCategories = useMemo(
+    () => roomCategories.filter((c) => c.id === "all" || bookableRooms.some((room) => room.category === c.id)),
+    [bookableRooms],
+  );
+  const showFilter = new Set(bookableRooms.map((room) => room.category)).size > 1;
   const visibleRooms = useMemo(() => {
-    const filtered = filter === "all" ? rooms : rooms.filter((room) => room.category === filter);
+    const filtered = filter === "all" ? bookableRooms : bookableRooms.filter((room) => room.category === filter);
     return typeof limit === "number" ? filtered.slice(0, limit) : filtered;
-  }, [filter, limit]);
+  }, [filter, limit, bookableRooms]);
 
   return (
     <div>
-      {/* Filter pills */}
-      <div className="mb-5 sm:mb-8 flex flex-wrap gap-1.5 sm:gap-2">
-        {roomCategories.map((category) => (
-          <button
-            type="button"
-            key={category.id}
-            className={`btn-press relative rounded-full border px-4 py-1.5 sm:px-5 sm:py-2 text-xs sm:text-sm font-semibold transition-all duration-300 ${
-              filter === category.id
-                ? "border-[var(--mountain)] bg-[var(--mountain)] text-white"
-                : "border-[color:var(--line)] bg-[var(--paper)] text-[var(--muted)] hover:border-[var(--mountain)]/40 hover:text-[var(--ink)]"
-            }`}
-            onClick={() => setFilter(category.id as Filter)}
-          >
-            {text(category.label, locale)}
-          </button>
-        ))}
-      </div>
+      {/* Filter pills — hidden when only one category is bookable */}
+      {showFilter && (
+        <div className="mb-5 sm:mb-8 flex flex-wrap gap-1.5 sm:gap-2">
+          {availableCategories.map((category) => (
+            <button
+              type="button"
+              key={category.id}
+              className={`btn-press relative rounded-full border px-4 py-1.5 sm:px-5 sm:py-2 text-xs sm:text-sm font-semibold transition-all duration-300 ${
+                filter === category.id
+                  ? "border-[var(--mountain)] bg-[var(--mountain)] text-white"
+                  : "border-[color:var(--line)] bg-[var(--paper)] text-[var(--muted)] hover:border-[var(--mountain)]/40 hover:text-[var(--ink)]"
+              }`}
+              onClick={() => setFilter(category.id as Filter)}
+            >
+              {text(category.label, locale)}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="grid gap-5 sm:gap-8 lg:grid-cols-2">
         {visibleRooms.map((room) => {

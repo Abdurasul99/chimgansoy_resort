@@ -34,7 +34,7 @@ export default async function BookingPage({ params }: PageProps) {
         locale={locale}
         title={dict.pages.booking.title}
         lead={dict.pages.booking.lead}
-        image={resortImages.glampingDay}
+        image={resortImages.galTerritoryPanorama}
         eyebrow="CHIMGAN DARBAZA"
       />
 

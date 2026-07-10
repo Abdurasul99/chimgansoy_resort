@@ -100,7 +100,7 @@ export function PriceList({ locale }: PriceListProps) {
           <h2 className="mt-4 font-serif text-[clamp(2.4rem,6vw,4.2rem)] font-semibold leading-[1.02] text-[var(--ink)]">
             {t.titleA}
             <br />
-            <em className="text-[var(--accent-strong)]">{t.titleB}</em>
+            <em className="text-[var(--ink)]/75">{t.titleB}</em>
           </h2>
           <p className="mt-5 max-w-2xl text-base leading-7 text-[var(--muted)]">{t.lead}</p>
         </div>

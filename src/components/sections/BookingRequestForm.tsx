@@ -14,7 +14,8 @@ const STAY_OPTIONS = [
     title: { ru: "Дневной отдых", uz: "Kunlik dam", en: "Day visit" },
     meta: { ru: "Топчан · до 8 гостей", uz: "Topchan · 8 gacha", en: "Topchan · up to 8" },
   },
-  ...rooms.map((r) => ({ slug: r.slug, title: r.title, meta: r.capacity })),
+  // Only built, bookable rooms — cottage (available:false) is excluded.
+  ...rooms.filter((r) => r.available !== false).map((r) => ({ slug: r.slug, title: r.title, meta: r.capacity })),
 ];
 
 type Locale = "ru" | "uz" | "en";
@@ -86,7 +87,7 @@ export function BookingRequestForm({
           <span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
             {stayLabel}
           </span>
-          <div className="grid gap-2 sm:grid-cols-3">
+          <div className="grid gap-2 sm:grid-cols-2">
             {STAY_OPTIONS.map((o) => {
               const active = o.slug === staySlug;
               return (

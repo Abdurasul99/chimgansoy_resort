@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Manrope } from "next/font/google";
+import { Cormorant, Manrope } from "next/font/google";
 import { notFound } from "next/navigation";
 import Script from "next/script";
 import "../globals.css";
@@ -22,10 +22,11 @@ const sans = Manrope({
   display: "swap",
 });
 
-const serif = Playfair_Display({
+const serif = Cormorant({
   variable: "--font-serif",
   subsets: ["latin", "cyrillic"],
-  weight: ["600", "700"], // dropped 500 and 800 — unused; trims ~80kb font payload
+  weight: ["600", "700"],
+  style: ["normal", "italic"], // real italic — the elegant gold hero word + editorial accents
   display: "swap",
   preload: true,
 });

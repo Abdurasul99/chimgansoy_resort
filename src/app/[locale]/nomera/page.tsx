@@ -70,7 +70,7 @@ export default async function RoomsPage({ params }: PageProps) {
         locale={locale}
         title={dict.pages.rooms.title}
         lead={dict.pages.rooms.lead}
-        image={resortImages.glampingDay}
+        image={resortImages.galAframeTrio}
         eyebrow="CHIMGAN DARBAZA"
       />
 

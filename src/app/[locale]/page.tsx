@@ -1,24 +1,22 @@
 import type { Metadata } from "next";
-import { WeatherPanel } from "@/components/sections/WeatherPanel";
 import { Hero } from "@/components/sections/Hero";
 import { LeisureShowcase } from "@/components/sections/LeisureShowcase";
-import { PoolBooking } from "@/components/sections/PoolBooking";
+import { MasterPlan } from "@/components/sections/MasterPlan";
 import { RoomCatalog } from "@/components/sections/RoomCatalog";
 import { Faq } from "@/components/sections/Faq";
-import { Gallery } from "@/components/sections/Gallery";
 import { MapBlock } from "@/components/sections/MapBlock";
 import { PromoBand } from "@/components/sections/PromoBand";
 import { TestimonialsCarousel } from "@/components/sections/TestimonialsCarousel";
 import { PhotoMarquee } from "@/components/sections/PhotoMarquee";
 import { FaqJsonLd } from "@/components/seo/JsonLd";
 import { BentoGallery } from "@/components/sections/BentoGallery";
+// (Gallery masonry + WeatherPanel removed from home — see montage pass)
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { AnimatedStat } from "@/components/ui/AnimatedStat";
 import { PriceList } from "@/components/sections/PriceList";
 import { resortImages } from "@/content/images";
 import { homeShowcase } from "@/content/home-showcase";
-import { promotions } from "@/content/promotions";
 import { dictionaries } from "@/content/translations";
 import { pageSeo } from "@/content/seo";
 import { getLocaleParam } from "@/lib/content";
@@ -98,7 +96,7 @@ export default async function HomePage({ params }: PageProps) {
 
       {/* ── Editorial showcase ────────────────────────── */}
       <section className="overflow-hidden bg-[var(--ink)]" aria-label="Showcase">
-        {homeShowcase.map((item, index) => {
+        {homeShowcase.slice(0, 2).map((item, index) => {
           const image = resortImages[item.image];
           const isEven = index % 2 === 0;
           return (
@@ -172,9 +170,9 @@ export default async function HomePage({ params }: PageProps) {
               <div className="img-reveal-wrapper aspect-[4/5] overflow-hidden rounded-3xl shadow-[var(--shadow-card-hover)]">
                 <div
                   className="h-full w-full bg-cover bg-center transition-transform duration-[1500ms] ease-out hover:scale-110"
-                  style={imageStyle(resortImages.glampingDay)}
+                  style={imageStyle(resortImages.galAframeTrio)}
                   role="img"
-                  aria-label={text(resortImages.glampingDay.alt, locale)}
+                  aria-label={text(resortImages.galAframeTrio.alt, locale)}
                 />
               </div>
               {/* Top-right floating badge — cream surface, brand text (Stitch style) */}
@@ -196,13 +194,7 @@ export default async function HomePage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* ── Weather panel ─────────────────────────────── */}
-      <section className="py-10 sm:py-14">
-        <WeatherPanel locale={locale} />
-      </section>
-
-
-      {/* ── Rooms — glamping + cottage, bookable ──────── */}
+      {/* ── Rooms — glamping (real, bookable) ──────────── */}
       <section className="bg-[var(--surface)] px-4 py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
@@ -217,46 +209,11 @@ export default async function HomePage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* ── Pool — dedicated bookable amenity (Exely) ─── */}
-      <PoolBooking locale={locale} />
+      {/* ── Master plan — honest renders of what's being built (not bookable) ─── */}
+      <MasterPlan locale={locale} />
 
       {/* ── Развлечения и отдых — brand-styled leisure showcase ── */}
       <LeisureShowcase locale={locale} />
-
-      {/* ── Year-round ────────────────────────────────── */}
-      <section className="relative isolate overflow-hidden bg-[var(--surface)] px-4 py-24 sm:px-6 lg:px-8">
-        <div
-          className="absolute inset-0 -z-10 bg-cover bg-center opacity-8"
-          style={imageStyle(resortImages.territoryAerial)}
-          role="presentation"
-          aria-hidden="true"
-        />
-
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-10 sm:gap-16 lg:grid-cols-[1fr_1fr] lg:items-center">
-            <div className="motion-reveal">
-              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--muted)]">CHIMGAN DARBAZA</p>
-              <h2 className="display-md mt-4 font-serif font-semibold leading-tight text-[var(--ink)]">{dict.home.yearRoundTitle}</h2>
-              <p className="mt-6 text-base leading-8 text-[var(--muted)]">{dict.home.yearRoundText}</p>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {promotions.slice(0, 4).map((promo, i) => (
-                <div
-                  key={text(promo.badge, locale)}
-                  className="rounded-2xl border border-[var(--line)] bg-[var(--paper)] p-6 shadow-[var(--shadow-card)] transition-all duration-500 hover:shadow-[var(--shadow-card-hover)] motion-reveal"
-                  data-delay={String(i * 80)}
-                >
-                  <span className="inline-block rounded-full bg-[var(--sun)]/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-[var(--sun-dark)]">
-                    {text(promo.badge, locale)}
-                  </span>
-                  <h3 className="mt-4 font-serif text-xl font-semibold leading-snug text-[var(--ink)]">{text(promo.title, locale)}</h3>
-                  <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{text(promo.description, locale)}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ── Reviews — cinematic carousel ──────────────── */}
       <TestimonialsCarousel locale={locale} />
@@ -271,9 +228,6 @@ export default async function HomePage({ params }: PageProps) {
           <div className="mt-10 motion-reveal" data-delay="100">
             <BentoGallery locale={locale} />
           </div>
-          <div className="mt-10">
-            <Gallery locale={locale} />
-          </div>
         </div>
       </section>
 
@@ -283,9 +237,9 @@ export default async function HomePage({ params }: PageProps) {
           {([
             { image: "galKidsSwing", caption: locale === "uz" ? "Bolalar balandroq kuladi" : locale === "en" ? "Kids laugh louder here" : "Дети смеются\nгромче" },
             { image: "galMangalFire", caption: locale === "uz" ? "Mangal oldida kecha" : locale === "en" ? "Evening by the grill" : "Вечер\nу мангала" },
-            { image: "glampingDay", caption: locale === "uz" ? "Uycha oldidagi ilk foto" : locale === "en" ? "First photo by the cabin" : "Первое фото\nу домика" },
-            { image: "cottage", caption: locale === "uz" ? "Ikkalamiz uchun sunset" : locale === "en" ? "A sunset for two" : "Закат\nна двоих" },
-            { image: "entranceNight", caption: locale === "uz" ? "Kompaniya bilan keldik" : locale === "en" ? "Arrived with friends" : "Приехали\nкомпанией" },
+            { image: "galAframeCloseup", caption: locale === "uz" ? "Uycha oldidagi ilk foto" : locale === "en" ? "First photo by the cabin" : "Первое фото\nу домика" },
+            { image: "galTopchanPeaks", caption: locale === "uz" ? "Ikkalamiz uchun sunset" : locale === "en" ? "A sunset for two" : "Закат\nна двоих" },
+            { image: "galFoodServing", caption: locale === "uz" ? "Kompaniya bilan keldik" : locale === "en" ? "Arrived with friends" : "Приехали\nкомпанией" },
           ] as const).map(({ image, caption }) => {
             const img = resortImages[image];
             return (

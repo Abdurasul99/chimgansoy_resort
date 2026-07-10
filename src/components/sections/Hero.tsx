@@ -1,8 +1,5 @@
 import { dictionaries } from "@/content/translations";
 import type { Locale } from "@/i18n/config";
-import { localizePath } from "@/i18n/routing";
-import { WeatherWidget } from "@/components/sections/WeatherWidget";
-import { EmotionCycle } from "@/components/ui/EmotionCycle";
 import { HeroSlideshow } from "@/components/sections/HeroSlideshow";
 import { BookingWidget } from "@/components/sections/BookingWidget";
 import { SnowParticles } from "@/components/effects/SnowParticles";
@@ -25,8 +22,9 @@ export function Hero({ locale }: HeroProps) {
       {/* Dynamic photo slideshow — rotates summer photos, switches to winter in Dec–Mar */}
       <HeroSlideshow />
 
-      {/* Cinematic gradient: clear top, darkened bottom for text */}
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0)_32%,rgba(15,25,40,0.50)_64%,rgba(15,25,40,0.88)_100%)]" />
+      {/* Cinematic scrim — stronger through the title band so the white
+          headline stays legible on any slide (bright sky included) */}
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(10,17,28,0.42)_0%,rgba(10,17,28,0.22)_20%,rgba(10,17,28,0.42)_48%,rgba(10,17,28,0.68)_72%,rgba(10,17,28,0.92)_100%)]" />
 
       {/* Star layers — CSS-controlled, visible only in winter */}
       <div className="hero-stars absolute inset-0 -z-[5]" aria-hidden="true" />
@@ -182,93 +180,27 @@ export function Hero({ locale }: HeroProps) {
         {/* Heading — split display: last word in italic gold, oversized */}
         <h1
           className="display-xl motion-rise font-serif font-bold text-white"
-          style={{ animationDelay: "80ms" }}
+          style={{ animationDelay: "80ms", textShadow: "0 2px 30px rgba(0,0,0,0.35)" }}
         >
           {dict.home.title.split(" ").slice(0, -1).join(" ")}
           <br />
           <em className="text-[var(--sun)]">{dict.home.title.split(" ").at(-1)}</em>
         </h1>
 
-        {/* Altitude stamp — art-direction mark, desktop only */}
-        <div
-          className="motion-rise pointer-events-none absolute right-6 top-40 hidden rotate-12 lg:block"
-          style={{ animationDelay: "500ms" }}
-          aria-hidden="true"
-        >
-          <div className="flex h-28 w-28 items-center justify-center rounded-full border-2 border-dashed border-white/35 text-center">
-            <div>
-              <p className="font-serif text-2xl font-bold leading-none text-white/90">1700</p>
-              <p className="mt-1 text-[9px] font-bold uppercase tracking-[0.2em] text-white/55">
-                {locale === "ru" ? "метров" : locale === "uz" ? "metr" : "meters"}
-              </p>
-            </div>
-          </div>
-        </div>
+        {/* Lead + booking: quiet one-line lead on the LEFT, booking box on the
+            RIGHT (desktop). Stacks to one column on phones/tablets. */}
+        <div className="mt-8 grid items-end gap-8 lg:mt-10 lg:grid-cols-[1fr_minmax(0,26rem)] lg:gap-12">
+          {/* LEFT — one-line lead, lots of breathing room */}
+          <p
+            className="motion-rise max-w-md text-[1.1rem] leading-[1.7] text-white/85"
+            style={{ animationDelay: "200ms" }}
+          >
+            {dict.home.lead}
+          </p>
 
-        {/* Cycling emotion phrase */}
-        <div className="motion-rise mt-5" style={{ animationDelay: "140ms" }}>
-          <EmotionCycle locale={locale} />
-        </div>
-
-        {/* Lower hero: text on the LEFT, booking widget box on the RIGHT (desktop).
-            Collapses to a single stacked column on phones/tablets. */}
-        <div className="mt-6 grid items-end gap-8 lg:grid-cols-[1fr_minmax(0,26rem)] lg:gap-12">
-          {/* LEFT — lead + feature pills + live weather */}
-          <div>
-            <p
-              className="motion-rise max-w-lg text-[1.1rem] leading-[1.75] text-white/80"
-              style={{ animationDelay: "200ms" }}
-            >
-              {dict.home.lead}
-            </p>
-
-            {/* Feature pills — hidden on small screens */}
-            <div
-              className="motion-rise mt-10 hidden flex-wrap gap-2 lg:flex"
-              style={{ animationDelay: "320ms" }}
-            >
-              {dict.home.territoryPills.slice(0, 4).map((item) => (
-                <span key={item} className="glass-badge rounded-full px-4 py-1.5 text-xs font-semibold">
-                  {item}
-                </span>
-              ))}
-            </div>
-
-            {/* Live weather — hidden on small screens */}
-            <div className="motion-rise mt-6 hidden lg:block" style={{ animationDelay: "400ms" }}>
-              <WeatherWidget locale={locale} />
-            </div>
-          </div>
-
-          {/* RIGHT — booking search box (2x2: dates left, guests + submit right) */}
+          {/* RIGHT — booking search box */}
           <div className="motion-rise w-full max-w-xl lg:max-w-none" style={{ animationDelay: "240ms" }}>
             <BookingWidget locale={locale} variant="hero" />
-
-            <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2.5">
-              <a
-                href={localizePath(locale, "/nomera")}
-                className="group inline-flex items-center gap-1.5 text-sm font-bold text-white/85 transition-colors hover:text-white"
-              >
-                <span>{dict.details}</span>
-                <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </a>
-
-              {/* Pool booking CTA — full navigation so the Exely engine embeds on /bron */}
-              <a
-                href={localizePath(locale, "/bron")}
-                className="btn-press group inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-bold text-white backdrop-blur-sm transition hover:border-[var(--sun)] hover:bg-white/15"
-              >
-                <svg className="h-4 w-4 text-[var(--sun)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 7c1.6 0 2.4-1 4-1s2.4 1 4 1 2.4-1 4-1 2.4 1 4 1M3 12c1.6 0 2.4-1 4-1s2.4 1 4 1 2.4-1 4-1 2.4 1 4 1M3 17c1.6 0 2.4-1 4-1s2.4 1 4 1 2.4-1 4-1 2.4 1 4 1" />
-                </svg>
-                <span>{locale === "ru" ? "Забронировать бассейн" : locale === "uz" ? "Basseynni bron qilish" : "Book the pool"}</span>
-                <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </a>
-            </div>
           </div>
         </div>
       </div>
