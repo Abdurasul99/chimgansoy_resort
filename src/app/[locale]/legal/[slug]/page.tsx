@@ -22,14 +22,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const locale = await getLocaleParam(params);
   const policy = getPolicy(slug);
 
-  // Legal pages currently hold placeholder text pending lawyer approval.
-  // Keep them out of the index (thin/placeholder content hurts SEO) — flip
-  // to index once the final, lawyer-approved copy is in place.
   const meta = buildMetadata(locale, {
     title: policy.title,
     description: policy.description,
   }, `/legal/${policy.slug}`);
-  return { ...meta, robots: { index: false, follow: true } };
+  // Real legal documents are marked indexable; remaining placeholder pages
+  // (thin content) stay out of the index until their final copy lands.
+  return { ...meta, robots: { index: policy.indexable ?? false, follow: true } };
 }
 
 export default async function LegalPage({ params }: PageProps) {

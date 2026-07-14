@@ -56,9 +56,10 @@ export const footerNavigation = [
   {
     title: { ru: "Информация", uz: "Ma'lumot", en: "Information" },
     links: [
+      { href: "/legal/public-offer", label: { ru: "Публичная оферта", uz: "Ommaviy oferta", en: "Public offer" } },
+      { href: "/legal/privacy-policy", label: { ru: "Политика конфиденциальности", uz: "Maxfiylik siyosati", en: "Privacy policy" } },
+      { href: "/legal/payment-refund", label: { ru: "Возврат и отмена", uz: "Qaytarish va bekor qilish", en: "Refund & cancellation" } },
       { href: "/legal/how-to-get-there", label: { ru: "Как добраться", uz: "Qanday borish", en: "How to get there" } },
-      { href: "/legal/accommodation-rules", label: { ru: "Правила посещения", uz: "Tashrif qoidalari", en: "Visit rules" } },
-      { href: "/legal/privacy-policy", label: { ru: "Конфиденциальность", uz: "Maxfiylik", en: "Privacy policy" } },
     ],
   },
 ];
