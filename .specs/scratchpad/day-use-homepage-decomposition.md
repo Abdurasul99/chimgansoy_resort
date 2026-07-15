@@ -53,7 +53,6 @@
 ## Счётчики
 
 - Implementation steps: 9.
-- Actionable subtasks: 54.
+- Actionable subtasks: 55.
 - High-risk steps: 4 (1, 2, 3, 7).
 - Owner approvals: 4 обязательных gate и 1 условный analytics decision.
-
