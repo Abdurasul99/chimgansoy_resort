@@ -147,9 +147,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "pets",
     keywords: ["собака", "кот", "кошка", "питомец", "животн", "it", "mushuk", "hayvon", "dog", "cat", "pet", "animal"],
     answer: {
-      ru: "🐾 Питомцы на дневной визит — добро пожаловать, на поводке. Пожалуйста, напишите администратору в WhatsApp или Telegram заранее, чтобы согласовать дату и место.",
-      uz: "🐾 Kunlik tashrifda uy hayvonlari — bog'ichli holatda xush kelibsiz. Sanani va joyni kelishish uchun administrator bilan WhatsApp yoki Telegram orqali oldindan bog'laning.",
-      en: "🐾 Pets are welcome for a day visit, kept on a leash. Please message the administrator on WhatsApp or Telegram in advance to coordinate the date and spot.",
+      ru: "🐾 К сожалению, находиться на территории комплекса с домашними животными не допускается — это предусмотрено правилами пребывания. Спасибо за понимание.",
+      uz: "🐾 Afsuski, kompleks hududiga uy hayvonlarini olib kirish taqiqlanadi — bu tashrif qoidalarida belgilangan. Tushunganingiz uchun rahmat.",
+      en: "🐾 Unfortunately, pets are not allowed on the complex grounds — this is set out in the rules of stay. Thank you for understanding.",
     },
   },
 
