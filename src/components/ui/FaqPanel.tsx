@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { knowledge, matchKnowledge, type KnowledgeEntry } from "@/content/assistant-knowledge";
 import { contacts } from "@/content/contacts";
+import { AiChat } from "@/components/ui/AiChat";
 
 type Locale = "ru" | "uz" | "en";
 
@@ -47,6 +48,9 @@ const CLOSE_LABEL: Record<Locale, string> = {
   uz: "Yopish",
   en: "Close",
 };
+
+const TAB_FAQ: Record<Locale, string> = { ru: "Вопросы", uz: "Savollar", en: "FAQ" };
+const TAB_AI: Record<Locale, string> = { ru: "Спросить ИИ", uz: "AI'dan so'rash", en: "Ask AI" };
 
 // Order entries appear in the FAQ. Skips conversational entries (greeting, thanks).
 // Excludes content that doesn't fit the current day-use positioning (cottage, glamping,
@@ -225,6 +229,7 @@ function FaqQuestionRow({
 export function FaqPanel({ locale: rawLocale }: { locale: string }) {
   const locale = toLocale(rawLocale);
   const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState<"faq" | "ai">("faq");
   const [query, setQuery] = useState("");
   const [activeId, setActiveId] = useState<string | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -326,6 +331,28 @@ export function FaqPanel({ locale: rawLocale }: { locale: string }) {
             </button>
           </div>
 
+          {/* Tabs: FAQ / AI assistant */}
+          <div className="flex border-b border-[color:var(--line)] bg-[var(--paper)]">
+            {(["faq", "ai"] as const).map((mtab) => (
+              <button
+                key={mtab}
+                type="button"
+                onClick={() => setMode(mtab)}
+                className={`flex-1 py-2.5 text-sm font-semibold transition-colors ${
+                  mode === mtab
+                    ? "border-b-2 border-[var(--sun)] text-[var(--ink)]"
+                    : "text-[var(--muted)] hover:text-[var(--ink)]"
+                }`}
+              >
+                {mtab === "faq" ? TAB_FAQ[locale] : TAB_AI[locale]}
+              </button>
+            ))}
+          </div>
+
+          {mode === "ai" && <AiChat locale={locale} />}
+
+          {mode === "faq" && (
+            <>
           {/* Search */}
           <div className="border-b border-[color:var(--line)] bg-[var(--paper)] px-4 py-3">
             <div className="flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-[var(--surface)] px-3.5 py-2">
@@ -420,6 +447,8 @@ export function FaqPanel({ locale: rawLocale }: { locale: string }) {
               </a>
             </div>
           </div>
+            </>
+          )}
         </div>
       )}
 
