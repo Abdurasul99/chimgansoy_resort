@@ -10,7 +10,7 @@ import { TestimonialsCarousel } from "@/components/sections/TestimonialsCarousel
 import { PhotoMarquee } from "@/components/sections/PhotoMarquee";
 import { FaqJsonLd } from "@/components/seo/JsonLd";
 import { BentoGallery } from "@/components/sections/BentoGallery";
-// (Gallery masonry + WeatherPanel removed from home — see montage pass)
+import { WeatherPanel } from "@/components/sections/WeatherPanel";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { AnimatedStat } from "@/components/ui/AnimatedStat";
@@ -192,6 +192,11 @@ export default async function HomePage({ params }: PageProps) {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* ── Weather panel — live mountain conditions ──── */}
+      <section className="py-10 sm:py-14">
+        <WeatherPanel locale={locale} />
       </section>
 
       {/* ── Rooms — glamping (real, bookable) ──────────── */}
