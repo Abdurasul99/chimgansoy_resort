@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
-const MODEL = "llama-3.3-70b-versatile";
+const MODEL = "openai/gpt-oss-120b";
 
 type ChatMsg = { role: "user" | "assistant"; content: string };
 
@@ -52,9 +52,17 @@ export async function POST(req: NextRequest) {
     const res = await fetch(GROQ_URL, {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ model: MODEL, messages, temperature: 0.25, max_tokens: 700 }),
+      body: JSON.stringify({
+        model: MODEL,
+        messages,
+        temperature: 0.25,
+        max_tokens: 1000,
+        // gpt-oss is a reasoning model — keep the chain-of-thought short so the
+        // answer stays fast and fits the token budget (final text is in `content`).
+        reasoning_effort: "low",
+      }),
       // Fail fast so the client can show the contact fallback quickly.
-      signal: AbortSignal.timeout(20_000),
+      signal: AbortSignal.timeout(30_000),
     });
 
     if (!res.ok) {
