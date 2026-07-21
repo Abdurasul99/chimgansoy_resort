@@ -46,28 +46,7 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "empty" }, { status: 400 });
   }
 
-  const systemPrompt = buildSystemPrompt(locale);
-  // TEMP debug: echo the exact rendered prompt to compare local vs deployed.
-  if (history[history.length - 1].content === "__debugprompt__") {
-    return Response.json({ reply: systemPrompt });
-  }
-  const messages = [{ role: "system" as const, content: systemPrompt }, ...history];
-
-  // TEMP debug: do a real Groq call and return the raw shape to diagnose prod.
-  if (history[history.length - 1].content === "__debugcall__") {
-    const dbgBody = { model: MODEL, messages: [{ role: "system", content: systemPrompt }, { role: "user", content: "сколько гостей в шале и какие кровати?" }], temperature: 0.25, max_tokens: 1000, reasoning_effort: "low" };
-    const r = await fetch(GROQ_URL, { method: "POST", headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" }, body: JSON.stringify(dbgBody) });
-    const j = await r.json().catch(() => ({}));
-    return Response.json({
-      status: r.status,
-      model: j?.model,
-      finish: j?.choices?.[0]?.finish_reason,
-      content: j?.choices?.[0]?.message?.content ?? null,
-      reasoning: (j?.choices?.[0]?.message?.reasoning ?? "").slice(0, 200),
-      usage: j?.usage,
-      err: j?.error?.message,
-    });
-  }
+  const messages = [{ role: "system" as const, content: buildSystemPrompt(locale) }, ...history];
 
   try {
     const res = await fetch(GROQ_URL, {
