@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
     const res = await fetch(GROQ_URL, {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ model: MODEL, messages, temperature: 0.4, max_tokens: 700 }),
+      body: JSON.stringify({ model: MODEL, messages, temperature: 0.25, max_tokens: 700 }),
       // Fail fast so the client can show the contact fallback quickly.
       signal: AbortSignal.timeout(20_000),
     });
