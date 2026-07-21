@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
-const MODEL = "openai/gpt-oss-120b";
+const MODEL = "openai/gpt-oss-20b";
 
 type ChatMsg = { role: "user" | "assistant"; content: string };
 
