@@ -48,3 +48,6 @@ ACCESS.md
 *.tsbuildinfo
 next-env.d.ts
 .windsurf/
+
+.vercel
+.env*
