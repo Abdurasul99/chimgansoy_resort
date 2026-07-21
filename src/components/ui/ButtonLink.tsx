@@ -15,10 +15,11 @@ type ButtonLinkProps = {
 };
 
 const variants = {
-  primary: "bg-[var(--sun)] text-[var(--on-accent)] hover:bg-[var(--sun-dark)] shadow-sm",
-  secondary: "bg-[var(--mountain)] text-white hover:bg-slate-700",
-  ghost: "border border-[color:var(--line-strong)] text-[var(--ink)] hover:border-[var(--sun)] hover:text-[var(--sun-dark)]",
-  light: "bg-[var(--paper)] text-[var(--ink)] hover:bg-[var(--surface)] shadow-sm",
+  primary:
+    "bg-gradient-to-b from-[var(--sun)] to-[var(--sun-dark)] text-[var(--on-accent)] shadow-[0_8px_22px_-6px_rgba(220,140,0,0.55)] hover:shadow-[0_14px_30px_-6px_rgba(220,140,0,0.65)] hover:brightness-[1.03]",
+  secondary: "bg-[var(--mountain)] text-white hover:bg-slate-700 shadow-[0_8px_22px_-8px_rgba(30,41,59,0.5)]",
+  ghost: "border border-[color:var(--line-strong)] text-[var(--ink)] hover:border-[var(--sun)] hover:text-[var(--sun-dark)] hover:bg-[var(--sun)]/5",
+  light: "bg-[var(--paper)] text-[var(--ink)] ring-1 ring-[color:var(--line)] hover:bg-[var(--surface)] shadow-sm",
 };
 
 export function ButtonLink({
@@ -37,7 +38,7 @@ export function ButtonLink({
     </>
   );
 
-  const classes = `group inline-flex min-h-12 items-center justify-center gap-2 rounded-[6px] px-5 py-3 text-sm font-semibold transition duration-300 ${variants[variant]} ${className}`;
+  const classes = `group inline-flex min-h-12 items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sun)]/55 ${variants[variant]} ${className}`;
 
   if (external) {
     return (
