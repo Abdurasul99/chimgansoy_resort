@@ -20,9 +20,23 @@ const ROOM_NAMES: Record<string, string> = {
   "5076232": "Бассейн",
 };
 
+// Exely extra-service code -> human name (from hotel_info.services).
+const SERVICE_NAMES: Record<string, string> = {
+  "5075692": "Бассейн",
+};
+
 export type AvailOption = { name: string; price: number; freeCancellation: boolean };
+export type AvailService = { name: string; price: number; perPerson: boolean };
 export type AvailResult =
-  | { ok: true; checkin: string; checkout: string; adults: number; currency: "UZS"; options: AvailOption[] }
+  | {
+      ok: true;
+      checkin: string;
+      checkout: string;
+      adults: number;
+      currency: "UZS";
+      options: AvailOption[];
+      services: AvailService[];
+    }
   | { ok: false; error: "bad_dates" | "exely_failed" };
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
@@ -60,7 +74,7 @@ export async function checkAvailability(input: {
       signal: AbortSignal.timeout(12_000),
     });
     if (!res.ok) return { ok: false, error: "exely_failed" };
-    const data = (await res.json()) as { room_stays?: unknown };
+    const data = (await res.json()) as { room_stays?: unknown; services?: unknown };
     const stays = Array.isArray(data.room_stays) ? data.room_stays : [];
 
     // Collapse to one entry per room type, keeping the cheapest rate.
@@ -80,7 +94,21 @@ export async function checkAvailability(input: {
       if (!prev || price < prev.price) byName.set(name, { name, price, freeCancellation });
     }
 
-    return { ok: true, checkin, checkout, adults, currency: "UZS", options: [...byName.values()] };
+    // Extra services (e.g. the pool) with live per-date prices.
+    const rawServices = Array.isArray(data.services) ? data.services : [];
+    const services: AvailService[] = [];
+    for (const s of rawServices as Array<Record<string, unknown>>) {
+      const code = s.code as string | undefined;
+      const price = (s.price as { price_after_tax?: number } | undefined)?.price_after_tax ?? 0;
+      if (!code || price <= 0) continue;
+      services.push({
+        name: SERVICE_NAMES[code] ?? "Услуга",
+        price,
+        perPerson: s.charge_type === "per_person",
+      });
+    }
+
+    return { ok: true, checkin, checkout, adults, currency: "UZS", options: [...byName.values()], services };
   } catch {
     return { ok: false, error: "exely_failed" };
   }
