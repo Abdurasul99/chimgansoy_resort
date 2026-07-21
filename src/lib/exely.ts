@@ -63,6 +63,7 @@ export async function checkAvailability(input: {
   p.set("include_promo_restricted", "true");
   p.set("include_rates", "true");
   p.set("include_transfers", "false");
+  p.set("include_services", "true");
   p.set("language", "ru-ru");
   p.set("criterions[0].adults", String(adults));
   p.set("criterions[0].dates", `${checkin};${checkout}`);
