@@ -46,7 +46,12 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "empty" }, { status: 400 });
   }
 
-  const messages = [{ role: "system" as const, content: buildSystemPrompt(locale) }, ...history];
+  const systemPrompt = buildSystemPrompt(locale);
+  // TEMP debug: echo the exact rendered prompt to compare local vs deployed.
+  if (history[history.length - 1].content === "__debugprompt__") {
+    return Response.json({ reply: systemPrompt });
+  }
+  const messages = [{ role: "system" as const, content: systemPrompt }, ...history];
 
   try {
     const res = await fetch(GROQ_URL, {
