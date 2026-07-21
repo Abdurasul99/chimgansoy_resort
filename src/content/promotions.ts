@@ -23,9 +23,9 @@ export const promotions: Promotion[] = [
   {
     badge: { ru: "Для семей", uz: "Oilalar uchun", en: "For families" },
     title: {
-      ru: "Коттедж + активности на день",
-      uz: "Kottej + bir kunlik faoliyatlar",
-      en: "Cottage plus day activities",
+      ru: "Шале + активности на день",
+      uz: "Shale + bir kunlik faoliyatlar",
+      en: "Chalet plus day activities",
     },
     description: {
       ru: "Соберите семейный маршрут с проживанием, рестораном, детской зоной и прогулкой.",

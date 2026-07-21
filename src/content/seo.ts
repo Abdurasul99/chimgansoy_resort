@@ -18,21 +18,21 @@ export const pageSeo = {
       en: "CHIMGAN DARBAZA, Tashkent — Official website",
     },
     description: {
-      ru: "Глэмпинг, коттеджи и дневной отдых в 45 минутах от Ташкента: топчаны, мангал, казан, ресторан и панорама Чимгана на высоте 1700 м.",
-      uz: "Toshkentdan 45 daqiqada glemping, kottejlar va kunlik dam: topchanlar, mangal, qozon, restoran va 1700 m balandlikdagi Chimg'on manzarasi.",
-      en: "Glamping, cottages, and day visits 45 minutes from Tashkent: topchans, BBQ, kazan, restaurant, and Chimgan views at 1,700 m.",
+      ru: "Глэмпинг, шале и дневной отдых в 45 минутах от Ташкента: топчаны, мангал, казан, ресторан и панорама Чимгана на высоте 1700 м.",
+      uz: "Toshkentdan 45 daqiqada glemping, shale va kunlik dam: topchanlar, mangal, qozon, restoran va 1700 m balandlikdagi Chimg'on manzarasi.",
+      en: "Glamping, chalets, and day visits 45 minutes from Tashkent: topchans, BBQ, kazan, restaurant, and Chimgan views at 1,700 m.",
     },
   },
   rooms: {
     title: {
-      ru: "Номера: глэмпинг и коттеджи в горах",
-      uz: "Xonalar: tog'lardagi glemping va kottejlar",
-      en: "Rooms: glamping and cottages in the mountains",
+      ru: "Номера: глэмпинг и шале в горах",
+      uz: "Xonalar: tog'lardagi glemping va shale",
+      en: "Rooms: glamping and chalets in the mountains",
     },
     description: {
-      ru: "Глэмпинг на природе или просторный коттедж для компании — выберите формат и забронируйте ночь в горах Чимгана.",
-      uz: "Tabiat qo'ynidagi glemping yoki keng kottej — formatni tanlang va Chimg'on tog'larida tunni bron qiling.",
-      en: "Glamping in nature or a spacious cottage for your group — pick a format and book a night in the Chimgan mountains.",
+      ru: "Глэмпинг на природе или просторное шале для компании — выберите формат и забронируйте ночь в горах Чимгана.",
+      uz: "Tabiat qo'ynidagi glemping yoki keng shale — formatni tanlang va Chimg'on tog'larida tunni bron qiling.",
+      en: "Glamping in nature or a spacious chalet for your group — pick a format and book a night in the Chimgan mountains.",
     },
   },
   services: {

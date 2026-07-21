@@ -10,7 +10,6 @@ import { FaqPanel } from "@/components/ui/FaqPanel";
 import { SeasonDetector } from "@/components/ui/SeasonDetector";
 import { AnalyticsEvents } from "@/components/ui/AnalyticsEvents";
 import { LogoIntro } from "@/components/ui/LogoIntro";
-import { StickyBookingCta } from "@/components/layout/StickyBookingCta";
 import { HideOnBron } from "@/components/ui/HideOnBron";
 import { dictionaries } from "@/content/translations";
 import { isLocale, locales, type Locale } from "@/i18n/config";
@@ -165,7 +164,6 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         <HideOnBron>
           <FaqPanel key={locale} locale={locale} />
         </HideOnBron>
-        <StickyBookingCta locale={locale as Locale} />
         <SeasonDetector />
         <AnalyticsEvents />
         <LogoIntro locale={locale as Locale} />

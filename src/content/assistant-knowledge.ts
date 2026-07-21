@@ -32,14 +32,14 @@ export const knowledge: KnowledgeEntry[] = [
     },
   },
 
-  // ── Accommodation: cottages ─────────────────────────────
+  // ── Accommodation: chalet (Шале) ────────────────────────
   {
     id: "cottage",
-    keywords: ["коттедж", "коттеджи", "дом", "домик", "kottej", "uy", "uycha", "cottage", "house", "cabin"],
+    keywords: ["шале", "коттедж", "коттеджи", "дом", "домик", "shale", "shalet", "chalet", "kottej", "uy", "uycha", "cottage", "house", "cabin"],
     answer: {
-      ru: "🏡 Коттеджи рассчитаны до 6 гостей, около 58 м². Две зоны для сна, гостиная, терраса и парковка у дома. Подойдут для семьи или компании друзей.",
-      uz: "🏡 Kottejlar 6 mehmongacha mo'ljallangan, taxminan 58 m². Ikkita uxlash zonasi, mehmonxona, ayvon va uy yonida avtoturargoh. Oila yoki do'stlar uchun ajoyib.",
-      en: "🏡 Cottages fit up to 6 guests, around 58 m². Two sleeping zones, a living area, terrace, and parking by the house. Perfect for families or groups of friends.",
+      ru: "🏡 Шале рассчитано до 5 гостей. Две отдельные спальни (двуспальная кровать 180×200 и две односпальные) со своими санузлами, кухня-зал с диваном и терраса 35 м². Есть кондиционер, тёплый пол, Wi-Fi, телевизор, холодильник и полный кухонный набор. Подойдёт для семьи или компании друзей.",
+      uz: "🏡 Shale 5 mehmongacha mo'ljallangan. Ikkita alohida yotoqxona (ikki kishilik karavot 180×200 va ikkita bir kishilik) o'z sanuzeli bilan, divanli oshxona-zal va 35 m² terrasa. Konditsioner, issiq pol, Wi-Fi, televizor, muzlatkich va to'liq oshxona to'plami bor. Oila yoki do'stlar uchun ajoyib.",
+      en: "🏡 The chalet fits up to 5 guests. Two separate bedrooms (a double bed 180×200 and two singles) each with its own bathroom, a kitchen-lounge with a sofa, and a 35 m² terrace. It has air conditioning, a heated floor, Wi-Fi, TV, fridge, and a full kitchen set. Great for families or groups of friends.",
     },
   },
 
@@ -48,9 +48,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "glamping",
     keywords: ["глэмпинг", "глемпинг", "a-frame", "aframe", "афрейм", "палатка", "shator", "tent", "glamping"],
     answer: {
-      ru: "⛺ A-frame глэмпинг: до 4 гостей, около 32 м², панорамное остекление, терраса, кондиционер и Wi-Fi. Идеально для пары или маленькой семьи.",
-      uz: "⛺ A-frame glemping: 4 mehmongacha, taxminan 32 m², panoramali oyna, ayvon, konditsioner va Wi-Fi. Juftlik yoki kichik oila uchun ideal.",
-      en: "⛺ A-frame glamping: up to 4 guests, about 32 m², panoramic glazing, terrace, air conditioning, and Wi-Fi. Perfect for couples or small families.",
+      ru: "⛺ A-frame глэмпинг: до 3 гостей, 28 м² + терраса 15 м². Двуспальная кровать 180×200, собственный санузел с душем, кондиционер и Wi-Fi. Идеально для пары или маленькой семьи.",
+      uz: "⛺ A-frame glemping: 3 mehmongacha, 28 m² + terrasa 15 m². Ikki kishilik karavot 180×200, dushli xususiy sanuzel, konditsioner va Wi-Fi. Juftlik yoki kichik oila uchun ideal.",
+      en: "⛺ A-frame glamping: up to 3 guests, 28 m² + a 15 m² terrace. A double bed 180×200, a private ensuite shower room, air conditioning, and Wi-Fi. Perfect for couples or small families.",
     },
   },
 
