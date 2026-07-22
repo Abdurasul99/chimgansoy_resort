@@ -34,6 +34,7 @@ export const footerNavigation = [
       { href: "/nomera", label: { ru: "Номера", uz: "Xonalar", en: "Rooms" } },
       { href: "/nomera/glamping", label: { ru: "Глэмпинг", uz: "Glemping", en: "Glamping" } },
       { href: "/nomera/cottage", label: { ru: "Шале", uz: "Shale", en: "Chalet" } },
+      { href: "/nomera/pool", label: { ru: "Бассейн", uz: "Basseyn", en: "Pool" } },
       { href: "/bron", label: { ru: "Забронировать", uz: "Bron qilish", en: "Book now" } },
     ],
   },

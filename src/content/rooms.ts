@@ -1,7 +1,7 @@
 import { resortImages } from "./images";
 import type { LocalizedList, LocalizedString } from "./types";
 
-export type RoomCategory = "glamping" | "cottage";
+export type RoomCategory = "glamping" | "cottage" | "pool";
 
 export type Room = {
   slug: RoomCategory;
@@ -95,6 +95,42 @@ export const rooms: Room[] = [
     },
     relatedServices: ["kids-playground", "outdoor-cooking", "mini-football"],
   },
+  {
+    slug: "pool",
+    category: "pool",
+    image: "poolEvening",
+    gallery: ["poolEvening", "galMountainView", "galTerritoryPanorama"],
+    title: { ru: "Бассейн", uz: "Basseyn", en: "Pool" },
+    eyebrow: {
+      ru: "Летний отдых у воды",
+      uz: "Suv bo'yida yozgi dam",
+      en: "Summer by the water",
+    },
+    shortDescription: {
+      ru: "Открытый бассейн с видом на горы — бронируется отдельно, без ночёвки.",
+      uz: "Tog' manzarali ochiq basseyn — alohida, tunamasdan bron qilinadi.",
+      en: "An outdoor pool with mountain views — bookable separately, no overnight stay needed.",
+    },
+    description: {
+      ru: "Летний бассейн для дневного отдыха: приезжайте на день, бронируйте бассейн отдельно и совмещайте с топчаном, мангалом и кухней. Одно бронирование — до 4 гостей.",
+      uz: "Kunlik dam olish uchun yozgi basseyn: bir kunga keling, basseynni alohida bron qiling va topchan, mangal hamda oshxona bilan birga rejalashtiring. Bitta bron — 4 mehmongacha.",
+      en: "A summer pool for day visits: come for the day, book the pool separately, and pair it with a topchan, BBQ, and the kitchen. One booking covers up to 4 guests.",
+    },
+    priceFrom: { ru: "Цена при бронировании", uz: "Bron qilishda narx", en: "Price at booking" },
+    capacity: { ru: "до 4 гостей", uz: "4 mehmongacha", en: "up to 4 guests" },
+    size: { ru: "Открытый бассейн", uz: "Ochiq basseyn", en: "Outdoor pool" },
+    amenities: {
+      ru: ["Открытый летний бассейн", "Панорама гор", "Зона дневного отдыха рядом", "Отдельное бронирование"],
+      uz: ["Ochiq yozgi basseyn", "Tog' panoramasi", "Yaqinida kunlik dam olish zonasi", "Alohida bron"],
+      en: ["Outdoor summer pool", "Mountain panorama", "Day-lounge area nearby", "Booked separately"],
+    },
+    features: {
+      ru: ["Бронь на день, без проживания", "До 4 гостей на одно бронирование", "Работает в летний сезон", "Рядом топчаны, мангал и кухня"],
+      uz: ["Bir kunlik bron, yashashsiz", "Bitta bronga 4 mehmongacha", "Yozgi mavsumda ishlaydi", "Yaqinida topchan, mangal va oshxona"],
+      en: ["Day booking, no overnight stay", "Up to 4 guests per booking", "Open in the summer season", "Topchans, BBQ, and kitchen nearby"],
+    },
+    relatedServices: ["tapchan-zone", "outdoor-cooking", "restaurant"],
+  },
 ];
 
 /**
@@ -106,6 +142,7 @@ export const EXELY_ROOM_TYPE: Record<string, string> = {
   day: "5075762", // Topchan / day visit
   glamping: "5075760",
   cottage: "5075761",
+  pool: "5076232",
 };
 
 export const roomCategories = [
@@ -120,5 +157,9 @@ export const roomCategories = [
   {
     id: "cottage",
     label: { ru: "Шале", uz: "Shale", en: "Chalet" },
+  },
+  {
+    id: "pool",
+    label: { ru: "Бассейн", uz: "Basseyn", en: "Pool" },
   },
 ] as const;
