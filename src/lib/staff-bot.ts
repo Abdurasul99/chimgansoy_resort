@@ -11,10 +11,12 @@ import {
   answerCallbackQuery,
   editMessageText,
   esc,
+  sendChatAction,
   sendMessage,
   type InlineKeyboard,
 } from "./telegram";
 import { getAvailability, getFinance, getGuestFlow, pingPms } from "./exely-pms";
+import { answerStaffQuestion } from "./staff-ai";
 
 const SITE = "https://chimgandarbaza.uz";
 
@@ -59,7 +61,9 @@ function menuText(): string {
     "<b>CHIMGAN DARBAZA — панель персонала</b>",
     "",
     "Живые данные из системы бронирования Exely (отель 514200).",
-    "Выберите раздел:",
+    "Выберите раздел кнопкой — <b>или просто напишите вопрос текстом</b>:",
+    "<i>«сколько свободных шале в субботу?», «сколько денег пришло за неделю?»,",
+    "«кто заезжает завтра?» — ИИ ответит по живым данным.</i>",
   ].join("\n");
 }
 
@@ -265,7 +269,12 @@ function commandToAction(text: string): string | null {
 // ── Telegram update entry point ───────────────────────────────────────────────
 
 type TgUpdate = {
-  message?: { chat: { id: number }; from?: { id: number }; text?: string };
+  message?: {
+    chat: { id: number };
+    from?: { id: number };
+    text?: string;
+    reply_to_message?: { text?: string };
+  };
   callback_query?: {
     id: string;
     from: { id: number };
@@ -315,8 +324,28 @@ export async function handleStaffUpdate(
       );
       return;
     }
-    const action = commandToAction(update.message.text);
-    const view = await viewFor(action ?? "menu");
-    await sendMessage(chatId, view.text, { reply_markup: { inline_keyboard: view.keyboard } });
+    const text = update.message.text;
+    const action = commandToAction(text);
+    if (action || text.trim().startsWith("/")) {
+      // Known command → its view; unknown command → menu.
+      const view = await viewFor(action ?? "menu");
+      await sendMessage(chatId, view.text, { reply_markup: { inline_keyboard: view.keyboard } });
+      return;
+    }
+
+    // Free text → AI over live PMS data (single-turn; replied-to msg = context).
+    await sendChatAction(chatId, "typing");
+    const ai = await answerStaffQuestion(text, update.message.reply_to_message?.text);
+    if (ai.ok) {
+      await sendMessage(chatId, esc(ai.text), {
+        reply_markup: { inline_keyboard: [[{ text: "☰ Меню", callback_data: "menu" }]] },
+      });
+    } else {
+      await sendMessage(
+        chatId,
+        `🤖 ИИ сейчас недоступен (<code>${esc(ai.error)}</code>).\nКнопки меню работают без ИИ:`,
+        { reply_markup: { inline_keyboard: menuKeyboard() } },
+      );
+    }
   }
 }

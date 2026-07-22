@@ -77,6 +77,11 @@ export function answerCallbackQuery(id: string, text?: string) {
   return call("answerCallbackQuery", { callback_query_id: id, ...(text ? { text } : {}) });
 }
 
+/** Show "typing…" while the AI thinks (auto-expires after ~5s on Telegram's side). */
+export function sendChatAction(chatId: number | string, action = "typing") {
+  return call("sendChatAction", { chat_id: chatId, action });
+}
+
 /** Escape user/content text for safe HTML parse_mode. */
 export function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

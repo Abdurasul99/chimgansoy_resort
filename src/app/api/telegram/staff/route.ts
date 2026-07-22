@@ -3,6 +3,8 @@ import { handleStaffUpdate } from "@/lib/staff-bot";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// The AI path (Groq tool loop + Exely calls) can take 10-20s.
+export const maxDuration = 30;
 
 /**
  * Telegram webhook for the STAFF bot.
