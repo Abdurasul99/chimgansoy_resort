@@ -333,9 +333,12 @@ export async function handleStaffUpdate(
       return;
     }
 
-    // Free text → AI over live PMS data (single-turn; replied-to msg = context).
+    // Free text → AI over live PMS data (short per-chat memory + replied-to msg).
     await sendChatAction(chatId, "typing");
-    const ai = await answerStaffQuestion(text, update.message.reply_to_message?.text);
+    const ai = await answerStaffQuestion(text, {
+      chatId,
+      repliedTo: update.message.reply_to_message?.text,
+    });
     if (ai.ok) {
       await sendMessage(chatId, esc(ai.text), {
         reply_markup: { inline_keyboard: [[{ text: "☰ Меню", callback_data: "menu" }]] },

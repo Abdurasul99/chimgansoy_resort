@@ -97,7 +97,7 @@ const TOOLS = [
     function: {
       name: "public_prices",
       description:
-        "Публичные цены и доступность для гостей на даты (движок бронирования): варианты проживания с ценами и платные услуги (бассейн). Для вопросов «сколько стоит».",
+        "Публичные цены и доступность для гостей (движок бронирования): варианты проживания с ценами за ВЕСЬ период и платные услуги (бассейн). ВАЖНО: цены зависят от даты (будни/выходные отличаются) — чтобы узнать цену за конкретную ночь, вызывай на ОДНУ ночь (checkout = checkin + 1 день); для нескольких ночей/дат делай отдельный вызов на каждую.",
       parameters: {
         type: "object",
         properties: {
@@ -169,30 +169,53 @@ async function runTool(name: string, rawArgs: string): Promise<unknown> {
 
 // ── prompt ────────────────────────────────────────────────────────────────────
 
+const WEEKDAYS = ["воскресенье", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота"];
+
+/** The model must never do date math itself — give it a ready calendar. */
+function calendarLines(days = 14): string {
+  const base = new Date(Date.now() + 5 * 3600_000); // hotel time, UTC+5
+  const out: string[] = [];
+  for (let i = 0; i < days; i++) {
+    const d = new Date(base.getTime() + i * 86_400_000);
+    const iso = d.toISOString().slice(0, 10);
+    const w = WEEKDAYS[d.getUTCDay()];
+    const mark = i === 0 ? "  ← СЕГОДНЯ" : i === 1 ? "  ← завтра" : "";
+    out.push(`${iso} — ${w}${mark}`);
+  }
+  return out.join("\n");
+}
+
 function systemPrompt(): string {
-  const now = new Date(Date.now() + 5 * 3600_000); // hotel time, UTC+5
-  const today = now.toISOString().slice(0, 10);
-  const weekday = ["воскресенье", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота"][
-    now.getUTCDay()
-  ];
   return [
     "Ты — внутренний ИИ-ассистент персонала загородного комплекса CHIMGAN DARBAZA (Чимган, Узбекистан).",
     "Ты отвечаешь сотрудникам в служебном Telegram-боте. Собеседник — персонал, НЕ гость.",
     "",
-    `Сегодня ${today} (${weekday}), время отеля UTC+5.`,
+    "КАЛЕНДАРЬ ближайших дней (даты и дни недели бери ТОЛЬКО отсюда, сам не вычисляй):",
+    calendarLines(),
     "",
     "Все цифры бери ТОЛЬКО из инструментов — это живые данные Exely PMS (отель 514200):",
     "- pms_availability — шахматка на дату; pms_bookings — кто живёт/заезжает (имена, телефоны);",
     "- pms_finance — деньги за период (не будущее, ≤31 дня); pms_guest_flow — сводка заездов/выездов;",
-    "- public_prices — публичные цены проживания и услуг (бассейн) на даты.",
+    "- public_prices — публичные цены проживания и услуг (бассейн) на конкретные даты.",
     "",
     "Контекст: в PMS 10 «Глэмпинг A-frame» + 10 «Шале» (ночёвки). Топчаны и бассейн — дневной формат,",
     "их нет в шахматке; цены на них — через public_prices. Валюта — UZS, суммы пиши с разделителями (1 200 000 UZS).",
     "",
-    "Правила: отвечай кратко, на языке вопроса (по умолчанию по-русски). Указывай дату/период цифр (ДД.ММ).",
-    "Относительные даты (сегодня, завтра, выходные) переводи в конкретные сам. БЕЗ Markdown и HTML —",
-    "только простой текст, переносы строк и эмодзи. Если инструмент вернул ошибку — скажи об этом честно,",
-    "не выдумывай цифры. На вопросы не про работу отеля коротко откажись и предложи /menu.",
+    "ПРАВИЛА ТОЧНОСТИ (важнее всего):",
+    "1. Дату и день недели сверяй по календарю выше. «Суббота» = ближайшая суббота из календаря.",
+    "2. Цены зависят от даты (будни и выходные отличаются). НИКОГДА не называй цену без вызова",
+    "   public_prices на эту КОНКРЕТНУЮ дату. Спросили про несколько дат — отдельный вызов на каждую ночь.",
+    "3. Не обобщай («цены не меняются», «всегда столько») — говори только про даты, которые проверил.",
+    "4. Рядом с ценой всегда указывай тип (Глэмпинг/Шале), дату и день недели: «сб 25.07 — Глэмпинг 1 600 000 UZS».",
+    "5. Инструмент вернул ошибку или пусто — так и скажи, не выдумывай. Не уверен — проверь инструментом.",
+    "6. Дата названа неточно («в будни», «на неделе») — не переспрашивай: сам возьми ближайший подходящий",
+    "   день из календаря, проверь его и явно скажи, за какую дату цифра. Уточняй только при реальной двусмысленности.",
+    "",
+    "ТОН: тёплый и доброжелательный, как заботливый коллега 😊 Отвечай живо и по-человечески,",
+    "1–2 уместных эмодзи, в конце коротко предложи помочь ещё («Нужно что-то ещё — только скажите!»).",
+    "При этом кратко и по делу: цифры точные, без воды. Отвечай на языке вопроса (по умолчанию — по-русски).",
+    "БЕЗ Markdown и HTML — только простой текст и переносы строк.",
+    "На вопросы не про работу отеля мягко откажись и предложи /menu.",
   ].join("\n");
 }
 
@@ -204,7 +227,8 @@ async function callGroq(apiKey: string, messages: GroqMsg[], withTools: boolean)
     messages,
     temperature: 0.2,
     max_tokens: 700,
-    reasoning_effort: "low",
+    // "medium": noticeably better date/tool planning than "low", still fast on Groq.
+    reasoning_effort: "medium",
   };
   if (withTools) {
     body.tools = TOOLS;
@@ -220,20 +244,47 @@ async function callGroq(apiKey: string, messages: GroqMsg[], withTools: boolean)
 
 export type StaffAiResult = { ok: true; text: string } | { ok: false; error: string };
 
+// Short per-chat memory so follow-ups («а на воскресенье?») keep their context.
+// In-process only: survives while the lambda/process is warm, resets on cold
+// start — an acceptable trade-off vs. adding a store.
+const HISTORY_TTL_MS = 30 * 60_000;
+const HISTORY_MAX_TURNS = 8; // user+assistant messages kept per chat
+const history = new Map<number, { at: number; msgs: GroqMsg[] }>();
+
+function chatHistory(chatId: number): GroqMsg[] {
+  const h = history.get(chatId);
+  if (!h || Date.now() - h.at > HISTORY_TTL_MS) return [];
+  return h.msgs;
+}
+function remember(chatId: number, question: string, answer: string) {
+  const msgs = [
+    ...chatHistory(chatId),
+    { role: "user", content: question },
+    { role: "assistant", content: answer },
+  ].slice(-HISTORY_MAX_TURNS);
+  history.set(chatId, { at: Date.now(), msgs });
+  if (history.size > 200) {
+    // Drop the oldest entries so the map can't grow unbounded.
+    const oldest = [...history.entries()].sort((a, b) => a[1].at - b[1].at)[0];
+    if (oldest) history.delete(oldest[0]);
+  }
+}
+
 /**
- * Answer one staff question. `repliedTo` is the bot message the staffer replied
- * to (if any) — the only conversation context we keep, everything else is
- * single-turn so the bot stays stateless on serverless.
+ * Answer one staff question. Context = short in-process history for this chat
+ * plus (optionally) the bot message the staffer replied to.
  */
 export async function answerStaffQuestion(
   question: string,
-  repliedTo?: string,
+  opts: { chatId?: number; repliedTo?: string } = {},
 ): Promise<StaffAiResult> {
   const apiKey = process.env.GROQ_API_KEY?.trim();
   if (!apiKey) return { ok: false, error: "no_groq_key" };
 
   const messages: GroqMsg[] = [{ role: "system", content: systemPrompt() }];
-  if (repliedTo?.trim()) messages.push({ role: "assistant", content: repliedTo.slice(0, 1500) });
+  if (opts.chatId != null) messages.push(...chatHistory(opts.chatId));
+  if (opts.repliedTo?.trim())
+    messages.push({ role: "assistant", content: opts.repliedTo.slice(0, 1500) });
   messages.push({ role: "user", content: question.slice(0, 1000) });
 
   try {
@@ -258,7 +309,7 @@ export async function answerStaffQuestion(
       }
 
       const text = msg.content?.trim();
-      if (text) return { ok: true, text: text.slice(0, 3800) };
+      if (text) return finish(question, text, opts.chatId);
       return { ok: false, error: "groq_empty" };
     }
 
@@ -266,9 +317,17 @@ export async function answerStaffQuestion(
     const res = await callGroq(apiKey, messages, false);
     if (!res.ok) return { ok: false, error: `groq_${res.status}` };
     const text = ((await res.json()) as GroqResponse).choices?.[0]?.message?.content?.trim();
-    return text ? { ok: true, text: text.slice(0, 3800) } : { ok: false, error: "groq_empty" };
+    return text ? finish(question, text, opts.chatId) : { ok: false, error: "groq_empty" };
   } catch (e) {
     console.error("[staff-ai] threw:", e);
     return { ok: false, error: "ai_failed" };
   }
+}
+
+function finish(question: string, text: string, chatId?: number): StaffAiResult {
+  const clipped = text.slice(0, 3800);
+  if (chatId != null) remember(chatId, question, clipped);
+  // Observability: staff Q&A in server logs (dev console / Vercel logs).
+  console.log(`[staff-ai] Q: ${question.slice(0, 120)} | A: ${clipped.slice(0, 300).replace(/\n/g, " ⏎ ")}`);
+  return { ok: true, text: clipped };
 }
