@@ -14,12 +14,9 @@ import {
   sendMessage,
   type InlineKeyboard,
 } from "./telegram";
-import { getAvailability, getFinance, getGuestFlow, pingPms, roomTypeName } from "./exely-pms";
+import { getAvailability, getFinance, getGuestFlow, pingPms } from "./exely-pms";
 
 const SITE = "https://chimgandarbaza.uz";
-
-// Bookable room types for the online-booking deep links (Exely engine codes).
-const BOOKABLE_TYPES = ["5075761", "5075760", "5075762", "5075692"]; // Шале, Глэмпинг, Топчан, Бассейн
 
 // ── date / money helpers ──────────────────────────────────────────────────────
 
@@ -154,48 +151,30 @@ async function renderGuests(from: string, to: string): Promise<View> {
   return { text, keyboard: nav };
 }
 
-function renderBookMenu(): View {
-  const t = todayISO();
-  const rows: InlineKeyboard = BOOKABLE_TYPES.map((id) => [
-    { text: `🆕 ${roomTypeName(id)}`, callback_data: `bk:${id}` },
-  ]);
-  rows.push([{ text: "☰ Меню", callback_data: "menu" }]);
+function renderBook(): View {
+  // Exely's booking engine is a JS embed on /bron (hotel BE-INT-chimgandarbaza-
+  // uz_2026-06-24); it has no create-reservation REST endpoint and no hosted URL
+  // that pre-fills dates, so the honest path is a single link into the engine
+  // where the guest picks dates + room and pays online.
+  const url = `${SITE}/ru/bron`;
   const text = [
     "<b>🆕 Онлайн-бронирование</b>",
     "",
-    `Выберите тип. Бот пришлёт ссылку на онлайн-бронирование Exely с датами ${fmtDate(
-      t,
-    )} → ${fmtDate(addDays(t, 1))} (даты и гостей можно поменять на странице).`,
+    "Модуль бронирования Exely — выбор дат, номера/топчана и оплата онлайн.",
+    "Откройте сами или перешлите ссылку гостю — он забронирует и оплатит сам:",
     "",
-    "Ссылку можно переслать гостю — он завершит оплату сам.",
-  ].join("\n");
-  return { text, keyboard: rows };
-}
-
-function renderBookLink(typeId: string): View {
-  const checkin = todayISO();
-  const checkout = addDays(checkin, 1);
-  const url = `${SITE}/ru/bron?room-type=${encodeURIComponent(
-    typeId,
-  )}&checkin=${checkin}&checkout=${checkout}&adults=2`;
-  const text = [
-    `<b>🆕 ${esc(roomTypeName(typeId))}</b>`,
-    "",
-    `Даты: ${fmtDate(checkin)} → ${fmtDate(checkout)}, 2 гостя`,
-    "",
-    "Нажмите кнопку, чтобы открыть онлайн-бронирование, или перешлите гостю:",
     url,
   ].join("\n");
   const keyboard: InlineKeyboard = [
-    [{ text: "🌐 Открыть бронирование", url }],
-    [{ text: "◀︎ Типы", callback_data: "book" }, { text: "☰ Меню", callback_data: "menu" }],
+    [{ text: "🌐 Открыть онлайн-бронирование", url }],
+    [{ text: "☰ Меню", callback_data: "menu" }],
   ];
   return { text, keyboard };
 }
 
 async function renderPing(): Promise<View> {
   const res = await pingPms();
-  const base = process.env.EXELY_API_BASE?.trim() || "partner.hopenapi.com (по умолчанию)";
+  const base = process.env.EXELY_API_BASE?.trim() || "connect.hopenapi.com/api/exelypms/v1";
   const keyboard: InlineKeyboard = [[{ text: "🔄 Ещё раз", callback_data: "ping" }, { text: "☰ Меню", callback_data: "menu" }]];
   if (res.ok) {
     return {
@@ -248,9 +227,7 @@ async function viewFor(action: string): Promise<View> {
     case "gf":
       return renderGuests(args[0] || todayISO(), args[1] || todayISO());
     case "book":
-      return renderBookMenu();
-    case "bk":
-      return renderBookLink(args[0]);
+      return renderBook();
     case "ping":
       return renderPing();
     default:

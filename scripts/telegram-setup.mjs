@@ -74,6 +74,19 @@ switch (cmd) {
     console.log(JSON.stringify(res.result ?? res, null, 2));
     break;
   }
+  case "updates": {
+    // Find who has messaged the bot (to fill TELEGRAM_STAFF_IDS).
+    // Only works while NO webhook is set (webhook + getUpdates are exclusive).
+    const res = await api("getUpdates", {});
+    const seen = new Map();
+    for (const u of res.result ?? []) {
+      const f = u.message?.from ?? u.callback_query?.from;
+      if (f) seen.set(f.id, `${f.first_name ?? ""} ${f.last_name ?? ""} @${f.username ?? "-"}`.trim());
+    }
+    if (seen.size === 0) console.log("No messages yet. Send any message to the bot, then re-run.");
+    for (const [id, name] of seen) console.log(`${id}\t${name}`);
+    break;
+  }
   default:
-    console.log("Commands: set <url> | info | delete | me");
+    console.log("Commands: set <url> | info | delete | me | updates");
 }
