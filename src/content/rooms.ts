@@ -98,8 +98,8 @@ export const rooms: Room[] = [
   {
     slug: "pool",
     category: "pool",
-    image: "poolEvening",
-    gallery: ["poolEvening", "galMountainView", "galTerritoryPanorama"],
+    image: "pool",
+    gallery: ["pool", "poolEvening", "galTerritoryPanorama"],
     title: { ru: "Бассейн", uz: "Basseyn", en: "Pool" },
     eyebrow: {
       ru: "Летний отдых у воды",
