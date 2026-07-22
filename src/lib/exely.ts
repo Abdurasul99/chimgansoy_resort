@@ -20,9 +20,10 @@ const ROOM_NAMES: Record<string, string> = {
   "5076232": "Бассейн",
 };
 
-// Exely extra-service code -> human name (from hotel_info.services).
-const SERVICE_NAMES: Record<string, string> = {
-  "5075692": "Бассейн",
+// Exely extra-service code -> catalog meta (from hotel_info.services; the
+// availability call doesn't always echo charge_type, so pin it here).
+const SERVICE_META: Record<string, { name: string; perPerson: boolean }> = {
+  "5075692": { name: "Бассейн", perPerson: true },
 };
 
 export type AvailOption = { name: string; price: number; freeCancellation: boolean };
@@ -102,10 +103,11 @@ export async function checkAvailability(input: {
       const code = s.code as string | undefined;
       const price = (s.price as { price_after_tax?: number } | undefined)?.price_after_tax ?? 0;
       if (!code || price <= 0) continue;
+      const meta = SERVICE_META[code];
       services.push({
-        name: SERVICE_NAMES[code] ?? "Услуга",
+        name: meta?.name ?? "Услуга",
         price,
-        perPerson: s.charge_type === "per_person",
+        perPerson: meta?.perPerson ?? s.charge_type === "per_person",
       });
     }
 

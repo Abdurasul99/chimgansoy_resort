@@ -16,7 +16,7 @@ const COPY: Record<
     placeholder: "Спросите что угодно…",
     error: "Не получилось ответить. Напишите нам напрямую:",
     thinking: "Печатает…",
-    disclaimer: "ИИ-помощник · точные цены и даты подтверждает администратор",
+    disclaimer: "ИИ может ошибаться · точную информацию подтвердит администратор",
     send: "Отправить",
   },
   uz: {
@@ -25,7 +25,7 @@ const COPY: Record<
     placeholder: "Istalgan narsani so'rang…",
     error: "Javob berib bo'lmadi. Bizga to'g'ridan-to'g'ri yozing:",
     thinking: "Yozmoqda…",
-    disclaimer: "AI-yordamchi · aniq narx va sanalarni administrator tasdiqlaydi",
+    disclaimer: "AI xato qilishi mumkin · aniq ma'lumotni administrator tasdiqlaydi",
     send: "Yuborish",
   },
   en: {
@@ -34,7 +34,7 @@ const COPY: Record<
     placeholder: "Ask anything…",
     error: "Couldn't answer just now. Message us directly:",
     thinking: "Typing…",
-    disclaimer: "AI assistant · exact prices and dates are confirmed by the administrator",
+    disclaimer: "AI can make mistakes · the administrator confirms exact details",
     send: "Send",
   },
 };
