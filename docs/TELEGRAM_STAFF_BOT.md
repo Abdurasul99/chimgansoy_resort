@@ -6,12 +6,15 @@ Exely PMS and lets staff:
 - **🏠 Свободные номера** — free rooms per type for any date (the "шахматка" numbers)
 - **💰 Деньги** — money flow (payments) for today / 7 / 30 days
 - **👥 Гости** — visitor flow: arrivals, departures, headcount
-- **🆕 Онлайн-бронь** — one-tap prefilled link to the Exely online booking engine
+- **🆕 Онлайн-бронь** — a link into the Exely online booking engine (guest picks
+  dates + room and pays there)
 - **🔌 Диагностика** — checks the API connection and reports the exact error
 
 It runs **inside the existing Next.js app** as a webhook route — no separate
 server. Everything is stateless (state lives in inline-button `callback_data`),
 so it works on Vercel serverless.
+
+Bot: **[@chimgandarbaza_bot](https://t.me/chimgandarbaza_bot)** (hotel 514200).
 
 ---
 
@@ -23,8 +26,8 @@ Telegram  ──POST──▶  /api/telegram/staff  ──▶  src/lib/staff-bot
                       check allowlist)                │
                                                       ▼
                                           src/lib/exely-pms.ts
-                                          (Exely WebPMS Universal API,
-                                           X-API-KEY, /api/webpms/v1)
+                                          (Exely PMS API, X-API-KEY,
+                                           connect.hopenapi.com/api/exelypms/v1)
 ```
 
 Files:
@@ -33,43 +36,37 @@ Files:
 |---|---|
 | `src/app/api/telegram/staff/route.ts` | Webhook: secret check, allowlist, always 200 |
 | `src/lib/staff-bot.ts` | Commands, inline menus, message formatting |
-| `src/lib/exely-pms.ts` | Typed Exely WebPMS API client + aggregations |
+| `src/lib/exely-pms.ts` | Typed Exely PMS API client + aggregations |
 | `src/lib/telegram.ts` | Tiny Telegram Bot API helper (fetch, no SDK) |
-| `scripts/telegram-setup.mjs` | Register / inspect / delete the webhook |
+| `scripts/telegram-setup.mjs` | Register / inspect / delete the webhook; find staff IDs |
+| `scripts/staff-bot-poll.mjs` | Local runner: drive the bot without a public webhook |
 
 ---
 
-## The Exely API — important
+## The Exely API (confirmed)
 
-The bot uses Exely's **official** "Universal API Exely PMS" (aka TravelLine
-WebPMS Universal API), **not** the unofficial widget scrape in `src/lib/exely.ts`.
+The bot uses Exely's **official** "Универсальный API Exely PMS" (v1.5.0), **not**
+the unofficial widget scrape in `src/lib/exely.ts`.
 
+- **Base URL: `https://connect.hopenapi.com/api/exelypms/v1`** (confirmed live
+  2026-07-22 — `GET /rooms` → 200). Set in `EXELY_API_BASE`; the code also
+  defaults to this.
 - Auth: single integration key in the **`X-API-KEY`** header
   (Exely admin → Управление отелем → Настройки → Интеграции →
-  «Доступ к Универсальному API Exely PMS»).
-- Base path: **`/api/webpms/v1`**. Confirmed endpoints: `/rooms`, `/bookings`,
-  `/analytics/payments`, `/analytics/services`, `/companies`.
+  «Доступ к Универсальному API Exely PMS»). Stored as `EXELY_API_KEY`.
+- **No IP whitelisting needed.**
+- Full spec: PDF on Google Drive linked from
+  <https://exely.com/ru/help/kb335710/>. Swagger:
+  <https://connect.hopenapi.com/api/exelypms/swagger/ui/index>.
 
-### ⚠️ Host must be confirmed (one-time)
+Endpoints used: `GET /rooms`; `GET /bookings?state=Active&affectsPeriodFrom&affectsPeriodTo`
+(returns `{bookingNumbers:[]}` — then `GET /bookings/{number}` per number);
+`GET /analytics/payments?startDateTime&endDateTime` (`yyyyMMddHHmm`, no future
+dates, ≤31 days). Analytics endpoints return `{"data": null}` when the period is
+empty — the client treats that as no data.
 
-The key is an **Exely** key. During setup two hosts were tested from a dev machine:
-
-- `partner.tlintegration.com` (TravelLine / RU cluster) → **401** (key not valid there)
-- `partner.hopenapi.com` (Exely cluster) → **403** at the QRATOR edge
-
-So the exact base host for hotel **514200** still needs confirming. Do one of:
-
-1. In the Exely extranet, open the API/integration docs shown next to the key —
-   it states the base URL. Set it in `EXELY_API_BASE` (include `/api/webpms/v1`).
-2. Or ask Exely support: *"What is the base URL of the Universal API for hotel
-   514200, and does my calling server IP need whitelisting?"*
-
-Then set `EXELY_API_BASE` and run **🔌 Диагностика** in the bot — it prints
-`✅` with a room count, or the exact HTTP error. If whitelisting is required,
-the Vercel serverless egress IP is dynamic; in that case run this route on a
-fixed-IP host (or a Vercel plan with a static egress IP) and allowlist it.
-
-Default host if `EXELY_API_BASE` is unset: `https://partner.hopenapi.com/api/webpms/v1`.
+Inventory today: 20 rooms — 10 Глэмпинг (`roomTypeId 5075760`) + 10 Шале
+(`5075761`). Topchan/pool are day-use and are **not** in the PMS room inventory.
 
 ---
 
@@ -80,7 +77,7 @@ Add to Vercel (project `chimgandarbaza`) **and** `.env.local`:
 ```
 # Exely official PMS API
 EXELY_API_KEY=<integration-key>       # from the Exely admin Integrations tab
-# EXELY_API_BASE=https://partner.hopenapi.com/api/webpms/v1   # set once confirmed
+EXELY_API_BASE=https://connect.hopenapi.com/api/exelypms/v1
 
 # Staff bot
 TELEGRAM_STAFF_BOT_TOKEN=             # from @BotFather (a NEW, separate bot)
@@ -93,27 +90,58 @@ TELEGRAM_WEBHOOK_SECRET=              # any random string; Telegram echoes it ba
 
 ---
 
-## Setup steps
+## Finding staff Telegram IDs
 
-1. **Create the bot**: message [@BotFather](https://t.me/BotFather) → `/newbot`
-   → copy the token into `TELEGRAM_STAFF_BOT_TOKEN`.
-2. **Get staff IDs**: each staffer messages the bot; it replies with their
-   numeric ID (also get it from [@userinfobot](https://t.me/userinfobot)). Put the
-   IDs, comma-separated, in `TELEGRAM_STAFF_IDS`.
-3. **Set a webhook secret**: any random string in `TELEGRAM_WEBHOOK_SECRET`.
-4. **Set the vars in Vercel** and deploy (this account deploys via the Vercel
-   CLI — `git push` does not auto-deploy).
-5. **Register the webhook** (after deploy):
+Each staffer sends any message to the bot, then:
+
+```powershell
+& 'C:\Program Files\nodejs\node.exe' .\scripts\telegram-setup.mjs updates
+```
+
+It prints `id  name` for everyone who has messaged (works only while no webhook
+is set). Put the numeric IDs, comma-separated, in `TELEGRAM_STAFF_IDS`. Until an
+ID is on the allowlist the bot replies to that user with their own ID and nothing
+else.
+
+---
+
+## Deploy (production, 24/7)
+
+This Vercel account deploys via the **Vercel CLI** — `git push` does **not**
+auto-deploy.
+
+1. Set the env vars above in Vercel (project `chimgandarbaza`).
+2. Deploy: `vercel --prod` (from the manager@ account).
+3. Register the webhook (once the route is live):
    ```powershell
    & 'C:\Program Files\nodejs\node.exe' .\scripts\telegram-setup.mjs set https://chimgandarbaza.uz/api/telegram/staff
    & 'C:\Program Files\nodejs\node.exe' .\scripts\telegram-setup.mjs info   # verify
    ```
-6. In Telegram, send `/start` to the bot → the menu appears. Tap
-   **🔌 Диагностика** to confirm the Exely connection.
+   `set` reads `TELEGRAM_WEBHOOK_SECRET` from `.env.local` and passes it as the
+   webhook `secret_token`, so the value in Vercel must match.
+4. In Telegram, send `/start` → the menu appears. Tap **🔌 Диагностика** to
+   confirm the Exely connection.
 
-Quick health check without Telegram: open
-`https://chimgandarbaza.uz/api/telegram/staff` in a browser — returns
-`{"ok":true,"configured":true}` when all three (token, key, allowlist) are set.
+Health check without Telegram: open
+`https://chimgandarbaza.uz/api/telegram/staff` — returns
+`{"ok":true,"configured":true}` when token, key, and allowlist are all set.
+
+---
+
+## Test locally (no deploy)
+
+Run the bot from your machine against the real Exely API, no public webhook:
+
+```powershell
+# terminal 1 — app
+& 'C:\Program Files\nodejs\node.exe' .\node_modules\next\dist\bin\next dev -p 3000
+# terminal 2 — poller (long-polls Telegram → forwards to the local route)
+& 'C:\Program Files\nodejs\node.exe' .\scripts\staff-bot-poll.mjs
+```
+
+Make sure **no** webhook is set first (`telegram-setup.mjs delete`), otherwise
+Telegram won't deliver updates to `getUpdates`. Stop the poller (and delete any
+webhook) before switching to production.
 
 ---
 
@@ -125,7 +153,7 @@ Quick health check without Telegram: open
 | `/svobodno` | Free rooms today |
 | `/dengi` | Money flow today |
 | `/gosti` | Visitor flow today |
-| `/bron` | Online-booking links |
+| `/bron` | Online-booking link |
 | `/ping` | API diagnostic |
 
 Most navigation is via inline buttons (date arrows, period switches), so staff
@@ -135,17 +163,14 @@ rarely type commands.
 
 ## Notes / limits
 
-- **Online booking** produces a prefilled link to the existing Exely booking
-  engine (`/ru/bron?room-type=…`), which creates a real Exely reservation. The
-  Universal API is read + operations (check-in/out, payments) — it has **no
-  create-reservation endpoint**, so fully in-chat booking creation would need
-  Exely's distribution/booking-process API (separate OAuth credentials). Add
-  that later if desired.
+- **Online booking**: the Universal API is read + operations (check-in/out,
+  payments) — it has **no create-reservation endpoint**. So "book online" is a
+  link to the Exely booking engine on `/bron`, where the guest picks dates + room
+  and pays. The engine is a JS embed (`BE-INT-chimgandarbaza-uz_2026-06-24`) with
+  no URL that pre-fills dates, so the bot can't deep-link specific dates/rooms.
 - **Room-type names**: `ROOM_TYPE_NAMES` in `src/lib/exely-pms.ts` maps
-  `roomTypeId → name`. PMS internal ids may differ from booking-engine codes;
-  once a live `/rooms` response is seen, adjust the map if a type shows as
-  «Тип 12345».
-- **Query params** for `/bookings` and `/analytics/*` (`stayDateFrom` /
-  `dateFrom`) follow the documented WebPMS build; if a live call returns empty
-  where data is expected, confirm the exact param names for hotel 514200 and
-  tweak `searchBookings` / `getPayments` in `exely-pms.ts`.
+  `roomTypeId → name`; confirmed against live `/rooms` (`5075760` Глэмпинг,
+  `5075761` Шале). If a new type appears as «Категория 12345», add it there.
+- **Money direction**: payments are summed by `actionKind` (0/4 add, 1 refund,
+  2/3 cancellations). `getFinance` caps the end of the window at hotel-now because
+  the payments endpoint rejects future timestamps.

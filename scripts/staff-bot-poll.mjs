@@ -22,6 +22,10 @@ const SECRET = env("TELEGRAM_WEBHOOK_SECRET");
 const ROUTE = process.env.ROUTE_URL || "http://localhost:3000/api/telegram/staff";
 if (!TOKEN) { console.error("no TELEGRAM_STAFF_BOT_TOKEN"); process.exit(1); }
 
+// Never let a stray rejection kill the long-poll loop.
+process.on("unhandledRejection", (e) => console.error("unhandledRejection:", String(e).slice(0, 200)));
+process.on("uncaughtException", (e) => console.error("uncaughtException:", String(e).slice(0, 200)));
+
 const tg = (m, b) =>
   fetch(`https://api.telegram.org/bot${TOKEN}/${m}`, {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b ?? {}),
