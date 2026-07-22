@@ -39,13 +39,35 @@ const COPY: Record<
   },
 };
 
+const LANG_CHIPS: { code: Locale; label: string }[] = [
+  { code: "ru", label: "Рус" },
+  { code: "uz", label: "O'zb" },
+  { code: "en", label: "Eng" },
+];
+
+const ANY_LANG_NOTE: Record<Locale, string> = {
+  ru: "или пишите на любом языке",
+  uz: "yoki istalgan tilda yozing",
+  en: "or write in any language",
+};
+
 export function AiChat({ locale }: { locale: Locale }) {
-  const t = COPY[locale];
-  const [messages, setMessages] = useState<Msg[]>([{ role: "assistant", content: t.greeting }]);
+  const [lang, setLang] = useState<Locale>(locale);
+  const t = COPY[lang];
+  const [messages, setMessages] = useState<Msg[]>([{ role: "assistant", content: COPY[locale].greeting }]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
+
+  function switchLang(next: Locale) {
+    if (next === lang) return;
+    setLang(next);
+    // Before the guest has written anything, restart the greeting in the new language.
+    setMessages((m) =>
+      m.some((x) => x.role === "user") ? m : [{ role: "assistant", content: COPY[next].greeting }],
+    );
+  }
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
@@ -64,7 +86,7 @@ export function AiChat({ locale }: { locale: Locale }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         // Drop the opening greeting (UI-only) from what we send to the model.
-        body: JSON.stringify({ messages: next.slice(1), locale }),
+        body: JSON.stringify({ messages: next.slice(1), locale: lang }),
       });
       const data = (await res.json().catch(() => null)) as { reply?: string } | null;
       if (!res.ok || !data?.reply) throw new Error("failed");
@@ -78,6 +100,40 @@ export function AiChat({ locale }: { locale: Locale }) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
+      {/* Conversation language picker */}
+      <div className="flex items-center gap-1.5 border-b border-[color:var(--line)] bg-[var(--paper)] px-4 py-2">
+        <svg
+          className="h-3.5 w-3.5 shrink-0 text-[var(--muted)]"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={1.8}
+          aria-hidden
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 21a9 9 0 100-18 9 9 0 000 18zm0 0c2.5-2.2 4-5.4 4-9s-1.5-6.8-4-9c-2.5 2.2-4 5.4-4 9s1.5 6.8 4 9zM3.5 9h17M3.5 15h17"
+          />
+        </svg>
+        {LANG_CHIPS.map((c) => (
+          <button
+            key={c.code}
+            type="button"
+            onClick={() => switchLang(c.code)}
+            aria-pressed={lang === c.code}
+            className={`rounded-full px-2.5 py-1 text-[11px] font-semibold transition-colors ${
+              lang === c.code
+                ? "bg-[var(--ink)] text-[var(--paper)]"
+                : "bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--ink)]"
+            }`}
+          >
+            {c.label}
+          </button>
+        ))}
+        <span className="ml-auto truncate text-[10px] text-[var(--muted)]">{ANY_LANG_NOTE[lang]}</span>
+      </div>
+
       {/* Messages */}
       <div ref={listRef} className="faq-scroll flex-1 space-y-3 overflow-y-auto px-4 py-4">
         {messages.map((m, i) => (
