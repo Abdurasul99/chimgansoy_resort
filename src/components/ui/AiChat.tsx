@@ -1,10 +1,75 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { contacts } from "@/content/contacts";
 
 type Locale = "ru" | "uz" | "en";
 type Msg = { role: "user" | "assistant"; content: string };
+
+// ── clickable links in assistant answers ─────────────────────────────────────
+// The model emits Markdown [text](url) (see ССЫЛКИ in ai-context.ts); we also
+// linkify bare URLs. Only http(s), tel:, mailto: and internal /paths become
+// links — anything else stays plain text.
+
+const MD_LINK = /\[([^\]\n]{1,80})\]\(([^)\s]{1,300})\)/g;
+const BARE_URL = /https?:\/\/[^\s<>"')\]]+/g;
+
+function safeHref(url: string): string | null {
+  if (/^https?:\/\//i.test(url) || /^(tel:|mailto:)/i.test(url)) return url;
+  if (url.startsWith("/") && !url.startsWith("//")) return url;
+  return null;
+}
+
+function AnswerLink({ href, children }: { href: string; children: ReactNode }) {
+  const external = /^https?:/i.test(href);
+  return (
+    <a
+      href={href}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      className="font-semibold text-[var(--accent-strong)] underline decoration-[var(--accent)]/40 underline-offset-2 transition-colors hover:decoration-[var(--accent-strong)]"
+    >
+      {children}
+    </a>
+  );
+}
+
+function linkifyBare(chunk: string, keyBase: string): ReactNode[] {
+  const out: ReactNode[] = [];
+  let last = 0;
+  let n = 0;
+  for (const m of chunk.matchAll(BARE_URL)) {
+    const i = m.index ?? 0;
+    if (i > last) out.push(chunk.slice(last, i));
+    const url = m[0].replace(/[.,;:!?]+$/, ""); // keep trailing punctuation as text
+    out.push(
+      <AnswerLink key={`${keyBase}u${n++}`} href={url}>
+        {url.replace(/^https?:\/\//, "")}
+      </AnswerLink>,
+    );
+    if (url.length < m[0].length) out.push(m[0].slice(url.length));
+    last = i + m[0].length;
+  }
+  if (last < chunk.length) out.push(chunk.slice(last));
+  return out;
+}
+
+/** Assistant text → text + clickable links (Markdown links first, then bare URLs). */
+function richText(text: string): ReactNode[] {
+  const out: ReactNode[] = [];
+  let last = 0;
+  let n = 0;
+  for (const m of text.matchAll(MD_LINK)) {
+    const [full, label, url] = m;
+    const i = m.index ?? 0;
+    if (i > last) out.push(...linkifyBare(text.slice(last, i), `s${n}`));
+    const href = safeHref(url);
+    out.push(href ? <AnswerLink key={`md${n}`} href={href}>{label}</AnswerLink> : full);
+    last = i + full.length;
+    n++;
+  }
+  if (last < text.length) out.push(...linkifyBare(text.slice(last), `t${n}`));
+  return out;
+}
 
 const COPY: Record<
   Locale,
@@ -145,7 +210,7 @@ export function AiChat({ locale }: { locale: Locale }) {
                   : "bg-[var(--surface)] text-[var(--ink)]"
               }`}
             >
-              {m.content}
+              {m.role === "assistant" ? richText(m.content) : m.content}
             </div>
           </div>
         ))}
