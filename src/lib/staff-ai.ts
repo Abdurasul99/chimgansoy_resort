@@ -15,6 +15,7 @@ import {
   roomTypeName,
 } from "./exely-pms";
 import { checkAvailability } from "./exely";
+import { venueFacts } from "./venue-facts";
 
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 const MODEL = "openai/gpt-oss-20b";
@@ -193,13 +194,21 @@ function systemPrompt(): string {
     "КАЛЕНДАРЬ ближайших дней (даты и дни недели бери ТОЛЬКО отсюда, сам не вычисляй):",
     calendarLines(),
     "",
-    "Все цифры бери ТОЛЬКО из инструментов — это живые данные Exely PMS (отель 514200):",
+    "═══ ЗНАНИЯ О КОМПЛЕКСЕ (можешь отвечать по ним напрямую, без инструментов) ═══",
+    venueFacts(),
+    "═══════════════════════════════════════════════════════════════════",
+    "",
+    "ЖИВЫЕ ДАННЫЕ — только из инструментов (Exely PMS, отель 514200):",
     "- pms_availability — шахматка на дату; pms_bookings — кто живёт/заезжает (имена, телефоны);",
     "- pms_finance — деньги за период (не будущее, ≤31 дня); pms_guest_flow — сводка заездов/выездов;",
-    "- public_prices — публичные цены проживания и услуг (бассейн) на конкретные даты.",
+    "- public_prices — цены ПРОЖИВАНИЯ и бассейна на конкретные даты (они зависят от даты!).",
     "",
-    "Контекст: в PMS 10 «Глэмпинг A-frame» + 10 «Шале» (ночёвки). Топчаны и бассейн — дневной формат,",
-    "их нет в шахматке; цены на них — через public_prices. Валюта — UZS, суммы пиши с разделителями (1 200 000 UZS).",
+    "Что откуда: цены дневного отдыха (топчан, въезд, мангал, казан, дрова, уголь) — ФИКСИРОВАННЫЕ,",
+    "бери из знаний выше, инструмент не нужен. Цены проживания (Глэмпинг/Шале) и бассейна — ТОЛЬКО",
+    "через public_prices. Занятость, гости, деньги — только через pms_*. Топчаны и бассейн в шахматке",
+    "PMS отсутствуют (дневной формат). Валюта — UZS, суммы пиши с разделителями (1 200 000 UZS).",
+    "Персонал может спросить «что ответить гостю…» — подскажи готовый ответ по знаниям выше",
+    "(правила отмены, время заезда, что взять с собой, питомцы и т.д.).",
     "",
     "ПРАВИЛА ТОЧНОСТИ (важнее всего):",
     "1. Дату и день недели сверяй по календарю выше. «Суббота» = ближайшая суббота из календаря.",
@@ -325,7 +334,14 @@ export async function answerStaffQuestion(
 }
 
 function finish(question: string, text: string, chatId?: number): StaffAiResult {
-  const clipped = text.slice(0, 3800);
+  // The model is told "no Markdown", but small models slip — strip emphasis
+  // markers so Telegram never shows literal ** / ` / ### characters.
+  const plain = text
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/\*\*([^*]*)\*\*/g, "$1")
+    .replace(/__([^_]*)__/g, "$1")
+    .replace(/`([^`]*)`/g, "$1");
+  const clipped = plain.slice(0, 3800);
   if (chatId != null) remember(chatId, question, clipped);
   // Observability: staff Q&A in server logs (dev console / Vercel logs).
   console.log(`[staff-ai] Q: ${question.slice(0, 120)} | A: ${clipped.slice(0, 300).replace(/\n/g, " ⏎ ")}`);

@@ -54,7 +54,9 @@ function linkifyBare(chunk: string, keyBase: string): ReactNode[] {
 }
 
 /** Assistant text → text + clickable links (Markdown links first, then bare URLs). */
-function richText(text: string): ReactNode[] {
+function richText(raw: string): ReactNode[] {
+  // Small models occasionally emit **bold** despite instructions — show clean text.
+  const text = raw.replace(/\*\*([^*]*)\*\*/g, "$1");
   const out: ReactNode[] = [];
   let last = 0;
   let n = 0;

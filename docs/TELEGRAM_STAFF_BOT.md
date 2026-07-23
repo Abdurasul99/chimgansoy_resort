@@ -8,7 +8,6 @@ Exely PMS and lets staff:
 - **👥 Гости** — visitor flow: arrivals, departures, headcount
 - **🆕 Онлайн-бронь** — a link into the Exely online booking engine (guest picks
   dates + room and pays there)
-- **🔌 Диагностика** — checks the API connection and reports the exact error
 
 It runs **inside the existing Next.js app** as a webhook route — no separate
 server. Everything is stateless (state lives in inline-button `callback_data`),
@@ -119,8 +118,8 @@ auto-deploy.
    ```
    `set` reads `TELEGRAM_WEBHOOK_SECRET` from `.env.local` and passes it as the
    webhook `secret_token`, so the value in Vercel must match.
-4. In Telegram, send `/start` → the menu appears. Tap **🔌 Диагностика** to
-   confirm the Exely connection.
+4. In Telegram, send `/start` → the menu appears. Ask the bot any question
+   (e.g. «сколько свободно завтра?») to confirm the Exely connection.
 
 Health check without Telegram: open
 `https://chimgandarbaza.uz/api/telegram/staff` — returns
@@ -154,7 +153,6 @@ webhook) before switching to production.
 | `/dengi` | Money flow today |
 | `/gosti` | Visitor flow today |
 | `/bron` | Online-booking link |
-| `/ping` | API diagnostic |
 
 Most navigation is via inline buttons (date arrows, period switches), so staff
 rarely type commands.

@@ -15,7 +15,7 @@ import {
   sendMessage,
   type InlineKeyboard,
 } from "./telegram";
-import { getAvailability, getFinance, getGuestFlow, pingPms } from "./exely-pms";
+import { getAvailability, getFinance, getGuestFlow } from "./exely-pms";
 import { answerStaffQuestion } from "./staff-ai";
 
 const SITE = "https://chimgandarbaza.uz";
@@ -52,7 +52,6 @@ function menuKeyboard(): InlineKeyboard {
       { text: "👥 Гости", callback_data: `gf:${t}:${t}` },
     ],
     [{ text: "🆕 Онлайн-бронь", callback_data: "book" }],
-    [{ text: "🔌 Диагностика API", callback_data: "ping" }],
   ];
 }
 
@@ -176,36 +175,6 @@ function renderBook(): View {
   return { text, keyboard };
 }
 
-async function renderPing(): Promise<View> {
-  const res = await pingPms();
-  const base = process.env.EXELY_API_BASE?.trim() || "connect.hopenapi.com/api/exelypms/v1";
-  const keyboard: InlineKeyboard = [[{ text: "🔄 Ещё раз", callback_data: "ping" }, { text: "☰ Меню", callback_data: "menu" }]];
-  if (res.ok) {
-    return {
-      text: [
-        "<b>🔌 Диагностика API</b>",
-        "",
-        "✅ Соединение с Exely WebPMS установлено.",
-        `Номеров получено: <b>${res.data.length}</b>`,
-        `Хост: <code>${esc(base)}</code>`,
-      ].join("\n"),
-      keyboard,
-    };
-  }
-  return {
-    text: [
-      "<b>🔌 Диагностика API</b>",
-      "",
-      "❌ Нет доступа к Exely WebPMS.",
-      `Ошибка: <code>${esc(res.error)}</code>`,
-      `Хост: <code>${esc(base)}</code>`,
-      "",
-      "Проверьте ключ <code>EXELY_API_KEY</code> и хост <code>EXELY_API_BASE</code>, либо уточните у поддержки Exely адрес API и нужен ли whitelisting IP.",
-    ].join("\n"),
-    keyboard,
-  };
-}
-
 function apiError(what: string, error: string, status?: number): string {
   return [
     `<b>⚠️ Не удалось получить ${what}</b>`,
@@ -213,7 +182,7 @@ function apiError(what: string, error: string, status?: number): string {
     `Exely API вернул ошибку${status ? ` (HTTP ${status})` : ""}:`,
     `<code>${esc(error)}</code>`,
     "",
-    "Попробуйте позже или запустите «Диагностика API».",
+    "Попробуйте позже.",
   ].join("\n");
 }
 
@@ -232,8 +201,6 @@ async function viewFor(action: string): Promise<View> {
       return renderGuests(args[0] || todayISO(), args[1] || todayISO());
     case "book":
       return renderBook();
-    case "ping":
-      return renderPing();
     default:
       return { text: menuText(), keyboard: menuKeyboard() };
   }
@@ -259,8 +226,6 @@ function commandToAction(text: string): string | null {
     case "/bron":
     case "/book":
       return "book";
-    case "/ping":
-      return "ping";
     default:
       return null;
   }
