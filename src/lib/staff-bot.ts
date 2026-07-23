@@ -1,11 +1,17 @@
 /**
- * Staff Telegram bot — command + callback handlers.
+ * Guest-facing Telegram bot for CHIMGAN DARBAZA (@chimgandarbaza_bot).
  *
- * Turns Exely PMS data into chat messages for hotel staff: free rooms
- * (шахматка), visitor flow, and online-booking links. Money/finance data is
- * intentionally NOT exposed to staff. Stateless: every interactive step
- * carries its state in inline callback_data, so it runs on serverless
- * (Vercel) with no session store.
+ * Designed for CLIENTS only (по требованию оператора): no staff data, no
+ * occupancy, no guest lists, no finances. What guests get:
+ *   🤖 AI concierge (prices, free dates, booking, directions — any language)
+ *   🌐 online booking link (Exely engine on the site)
+ *   🏷 fixed day-use price list
+ *   📞 contacts & directions
+ *
+ * The guest explicitly chooses «Поговорить с ИИ» first, and every AI answer
+ * is prefixed with 🤖 so it's always clear they are talking to an AI.
+ * Stateless: views carry their state in callback_data, so it runs on
+ * serverless (Vercel) with no session store.
  */
 
 import {
@@ -16,153 +22,132 @@ import {
   sendMessage,
   type InlineKeyboard,
 } from "./telegram";
-import { getAvailability, getGuestFlow } from "./exely-pms";
-import { answerStaffQuestion } from "./staff-ai";
+import { answerGuestQuestion } from "./staff-ai";
+import { contacts } from "@/content/contacts";
+import { priceList } from "@/content/pricing";
+import { money } from "./venue-facts";
 
 const SITE = "https://chimgandarbaza.uz";
-
-// ── date helpers ──────────────────────────────────────────────────────────────
-
-function todayISO(): string {
-  // Uzbekistan is UTC+5, no DST.
-  const now = new Date(Date.now() + 5 * 3600_000);
-  return now.toISOString().slice(0, 10);
-}
-function addDays(iso: string, n: number): string {
-  const d = new Date(iso + "T00:00:00Z");
-  d.setUTCDate(d.getUTCDate() + n);
-  return d.toISOString().slice(0, 10);
-}
-function fmtDate(iso: string): string {
-  const [y, m, d] = iso.split("-");
-  return `${d}.${m}.${y}`;
-}
+const BOOK_URL = `${SITE}/ru/bron`;
 
 // ── main menu ─────────────────────────────────────────────────────────────────
 
 function menuKeyboard(): InlineKeyboard {
-  const t = todayISO();
   return [
-    [{ text: "🏠 Свободные номера", callback_data: `av:${t}` }],
-    [{ text: "👥 Гости", callback_data: `gf:${t}:${t}` }],
-    [{ text: "🆕 Онлайн-бронь", callback_data: "book" }],
+    [{ text: "🤖 Поговорить с ИИ-помощником", callback_data: "ai" }],
+    [{ text: "🌐 Онлайн-бронирование", url: BOOK_URL }],
+    [
+      { text: "🏷 Цены дня", callback_data: "prices" },
+      { text: "📞 Контакты", callback_data: "contacts" },
+    ],
   ];
 }
 
 function menuText(): string {
   return [
-    "<b>CHIMGAN DARBAZA — панель персонала</b>",
+    "<b>👋 Добро пожаловать в CHIMGAN DARBAZA!</b>",
     "",
-    "Живые данные из системы бронирования Exely (отель 514200).",
-    "Выберите раздел кнопкой — <b>или просто напишите вопрос текстом</b>:",
-    "<i>«сколько свободных шале в субботу?», «кто заезжает завтра?»,",
-    "«сколько стоит топчан в пятницу?» — ИИ ответит по живым данным.</i>",
+    "Горный отдых в 45 минутах от Ташкента, высота 1700 м.",
+    "Топчаны и мангал на день, глэмпинги и шале с ночёвкой, бассейн.",
+    "Ежедневно 08:00–18:00.",
+    "",
+    "Выберите, что вам нужно:",
   ].join("\n");
 }
 
-// ── renderers: each returns { text, keyboard } ────────────────────────────────
+// ── views ─────────────────────────────────────────────────────────────────────
 
 type View = { text: string; keyboard: InlineKeyboard };
 
-async function renderAvailability(date: string): Promise<View> {
-  const res = await getAvailability(date);
-  const nav: InlineKeyboard = [
-    [
-      { text: "◀︎ День", callback_data: `av:${addDays(date, -1)}` },
-      { text: "🔄", callback_data: `av:${date}` },
-      { text: "День ▶︎", callback_data: `av:${addDays(date, 1)}` },
-    ],
-    [{ text: "🆕 Забронировать", callback_data: "book" }, { text: "☰ Меню", callback_data: "menu" }],
-  ];
-
-  if (!res.ok) return { text: apiError("свободные номера", res.error, res.status), keyboard: nav };
-
-  const a = res.data;
-  const lines = [
-    `<b>🏠 Свободные номера — ${fmtDate(date)}</b>`,
-    "",
-    ...a.byType.map(
-      (t) => `• <b>${esc(t.name)}</b> — свободно <b>${t.free}</b> из ${t.total} (занято ${t.occupied})`,
-    ),
-    "",
-    `Итого свободно: <b>${a.totalFree}</b> из ${a.totalRooms} · загрузка ${
-      a.totalRooms ? Math.round((a.totalOccupied / a.totalRooms) * 100) : 0
-    }%`,
-  ];
-  if (a.byType.length === 0) lines.splice(2, 0, "<i>Номерной фонд пуст или не отдан API.</i>", "");
-  return { text: lines.join("\n"), keyboard: nav };
+function backRow(): InlineKeyboard {
+  return [[{ text: "☰ Меню", callback_data: "menu" }]];
 }
 
-async function renderGuests(from: string, to: string): Promise<View> {
-  const res = await getGuestFlow(from, to);
-  const t = todayISO();
-  const nav: InlineKeyboard = [
-    [
-      { text: "Сегодня", callback_data: `gf:${t}:${t}` },
-      { text: "7 дней", callback_data: `gf:${t}:${addDays(t, 6)}` },
-    ],
-    [{ text: "☰ Меню", callback_data: "menu" }],
-  ];
-  if (!res.ok) return { text: apiError("гостей", res.error, res.status), keyboard: nav };
+function renderAiIntro(): View {
+  return {
+    text: [
+      "<b>🤖 ИИ-помощник CHIMGAN DARBAZA</b>",
+      "",
+      "Вы будете общаться с <b>искусственным интеллектом</b>. Он мгновенно отвечает про цены, свободные даты, бронирование и как добраться — на любом языке.",
+      "",
+      "Просто напишите ваш вопрос сообщением 👇",
+      "",
+      `<i>Точную информацию всегда подтвердит администратор: ${esc(contacts.phone)}</i>`,
+    ].join("\n"),
+    keyboard: [[{ text: "🌐 Онлайн-бронирование", url: BOOK_URL }], ...backRow()],
+  };
+}
 
-  const g = res.data;
-  const period = from === to ? fmtDate(from) : `${fmtDate(from)} — ${fmtDate(to)}`;
-  const text = [
-    `<b>👥 Поток гостей — ${period}</b>`,
-    "",
-    `Заезды: <b>${g.arrivals}</b>`,
-    `Выезды: <b>${g.departures}</b>`,
-    `Гостей (человек): <b>${g.guests}</b>`,
-    `Броней: ${g.bookings}`,
-  ].join("\n");
-  return { text, keyboard: nav };
+function renderPrices(): View {
+  const rows = priceList.map((p) => {
+    const sub = p.subtitle ? ` (${esc(p.subtitle.ru)})` : "";
+    return `• ${esc(p.title.ru)}${sub} — <b>${money(p.weekday)}</b> / <b>${money(p.weekend)}</b>`;
+  });
+  return {
+    text: [
+      "<b>🏷 Цены дневного отдыха</b>",
+      "<i>будни (Пн–Чт) / выходные (Пт–Вс), в сумах</i>",
+      "",
+      ...rows,
+      "",
+      "Каждая позиция оплачивается отдельно. Блюда кухни — по меню.",
+      "",
+      "🏕 Проживание (глэмпинг, шале) и бассейн: цены зависят от дат — спросите ИИ-помощника или откройте онлайн-бронирование.",
+    ].join("\n"),
+    keyboard: [
+      [{ text: "🤖 Спросить ИИ", callback_data: "ai" }, { text: "🌐 Бронирование", url: BOOK_URL }],
+      ...backRow(),
+    ],
+  };
+}
+
+function renderContacts(): View {
+  const phoneDigits = contacts.phone.replaceAll(" ", "");
+  return {
+    text: [
+      "<b>📞 Контакты CHIMGAN DARBAZA</b>",
+      "",
+      `Телефон: <a href="tel:${phoneDigits}">${esc(contacts.phone)}</a>`,
+      `WhatsApp: ${contacts.whatsapp}`,
+      `Telegram: ${contacts.telegram}`,
+      `Instagram: ${contacts.instagram}`,
+      `E-mail: ${esc(contacts.email)}`,
+      "",
+      `📍 ${esc(contacts.address.ru)}`,
+      `Карта: ${contacts.googleMapsUrl}`,
+      "",
+      "Ежедневно 08:00–18:00 (дневной отдых).",
+    ].join("\n"),
+    keyboard: backRow(),
+  };
 }
 
 function renderBook(): View {
-  // Exely's booking engine is a JS embed on /bron (hotel BE-INT-chimgandarbaza-
-  // uz_2026-06-24); it has no create-reservation REST endpoint and no hosted URL
-  // that pre-fills dates, so the honest path is a single link into the engine
-  // where the guest picks dates + room and pays online.
-  const url = `${SITE}/ru/bron`;
-  const text = [
-    "<b>🆕 Онлайн-бронирование</b>",
-    "",
-    "Модуль бронирования Exely — выбор дат, номера/топчана и оплата онлайн.",
-    "Откройте сами или перешлите ссылку гостю — он забронирует и оплатит сам:",
-    "",
-    url,
-  ].join("\n");
-  const keyboard: InlineKeyboard = [
-    [{ text: "🌐 Открыть онлайн-бронирование", url }],
-    [{ text: "☰ Меню", callback_data: "menu" }],
-  ];
-  return { text, keyboard };
-}
-
-function apiError(what: string, error: string, status?: number): string {
-  return [
-    `<b>⚠️ Не удалось получить ${what}</b>`,
-    "",
-    `Exely API вернул ошибку${status ? ` (HTTP ${status})` : ""}:`,
-    `<code>${esc(error)}</code>`,
-    "",
-    "Попробуйте позже.",
-  ].join("\n");
+  return {
+    text: [
+      "<b>🌐 Онлайн-бронирование</b>",
+      "",
+      "Выберите даты, номер или топчан и оплатите онлайн — бронь подтверждается сразу:",
+      "",
+      BOOK_URL,
+    ].join("\n"),
+    keyboard: [[{ text: "🌐 Открыть бронирование", url: BOOK_URL }], ...backRow()],
+  };
 }
 
 // ── dispatch ──────────────────────────────────────────────────────────────────
 
-async function viewFor(action: string): Promise<View> {
-  const [cmd, ...args] = action.split(":");
-  switch (cmd) {
-    case "menu":
-      return { text: menuText(), keyboard: menuKeyboard() };
-    case "av":
-      return renderAvailability(args[0] || todayISO());
-    case "gf":
-      return renderGuests(args[0] || todayISO(), args[1] || todayISO());
+function viewFor(action: string): View {
+  switch (action.split(":")[0]) {
+    case "ai":
+      return renderAiIntro();
+    case "prices":
+      return renderPrices();
+    case "contacts":
+      return renderContacts();
     case "book":
       return renderBook();
+    case "menu":
     default:
       return { text: menuText(), keyboard: menuKeyboard() };
   }
@@ -176,12 +161,14 @@ function commandToAction(text: string): string | null {
     case "/menu":
     case "/help":
       return "menu";
-    case "/svobodno":
-    case "/rooms":
-      return "av";
-    case "/gosti":
-    case "/guests":
-      return "gf";
+    case "/ai":
+      return "ai";
+    case "/ceny":
+    case "/prices":
+      return "prices";
+    case "/contacts":
+    case "/kontakty":
+      return "contacts";
     case "/bron":
     case "/book":
       return "book";
@@ -207,25 +194,14 @@ type TgUpdate = {
   };
 };
 
-/**
- * Handle one Telegram update. `authorized(userId)` decides access; unauthorized
- * users get a short refusal and nothing else.
- */
-export async function handleStaffUpdate(
-  update: TgUpdate,
-  authorized: (userId: number) => boolean,
-): Promise<void> {
+/** Handle one Telegram update. The bot is public — no allowlist. */
+export async function handleGuestUpdate(update: TgUpdate): Promise<void> {
   // Callback (button taps) — edit the message in place.
   if (update.callback_query) {
     const cq = update.callback_query;
-    const userId = cq.from.id;
-    if (!authorized(userId)) {
-      await answerCallbackQuery(cq.id, "Доступ только для персонала.");
-      return;
-    }
     await answerCallbackQuery(cq.id);
     if (!cq.message) return;
-    const view = await viewFor(cq.data || "menu");
+    const view = viewFor(cq.data || "menu");
     await editMessageText(cq.message.chat.id, cq.message.message_id, view.text, {
       reply_markup: { inline_keyboard: view.keyboard },
     });
@@ -235,42 +211,35 @@ export async function handleStaffUpdate(
   // Text message / command.
   if (update.message?.text) {
     const chatId = update.message.chat.id;
-    const userId = update.message.from?.id ?? chatId;
-    if (!authorized(userId)) {
-      await sendMessage(
-        chatId,
-        [
-          "🔒 Доступ к панели персонала CHIMGAN DARBAZA закрыт.",
-          "",
-          `Ваш Telegram ID: <code>${userId}</code>`,
-          "Передайте его администратору, чтобы получить доступ.",
-        ].join("\n"),
-      );
-      return;
-    }
     const text = update.message.text;
     const action = commandToAction(text);
     if (action || text.trim().startsWith("/")) {
       // Known command → its view; unknown command → menu.
-      const view = await viewFor(action ?? "menu");
+      const view = viewFor(action ?? "menu");
       await sendMessage(chatId, view.text, { reply_markup: { inline_keyboard: view.keyboard } });
       return;
     }
 
-    // Free text → AI over live PMS data (short per-chat memory + replied-to msg).
+    // Free text → the AI concierge. Every answer is visibly marked 🤖.
     await sendChatAction(chatId, "typing");
-    const ai = await answerStaffQuestion(text, {
+    const ai = await answerGuestQuestion(text, {
       chatId,
       repliedTo: update.message.reply_to_message?.text,
     });
     if (ai.ok) {
-      await sendMessage(chatId, esc(ai.text), {
-        reply_markup: { inline_keyboard: [[{ text: "☰ Меню", callback_data: "menu" }]] },
+      await sendMessage(chatId, `🤖 ${esc(ai.text)}`, {
+        reply_markup: { inline_keyboard: backRow() },
       });
     } else {
+      const phoneDigits = contacts.phone.replaceAll(" ", "");
       await sendMessage(
         chatId,
-        `🤖 ИИ сейчас недоступен (<code>${esc(ai.error)}</code>).\nКнопки меню работают без ИИ:`,
+        [
+          "🤖 Помощник сейчас недоступен, извините!",
+          "",
+          `Напишите или позвоните администратору: <a href="tel:${phoneDigits}">${esc(contacts.phone)}</a>`,
+          `WhatsApp: ${contacts.whatsapp}`,
+        ].join("\n"),
         { reply_markup: { inline_keyboard: menuKeyboard() } },
       );
     }

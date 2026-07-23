@@ -1,18 +1,24 @@
-# Telegram staff bot — Exely PMS console
+# Telegram guest bot — AI concierge
 
-A Telegram bot for **hotel staff** (not guests) that reads live data from the
-Exely PMS and lets staff:
+> **REPURPOSED 2026-07-23**: per the operator, this bot is for **GUESTS only**
+> (was a staff PMS console before — see git history). No staff data, no
+> occupancy, no guest lists, no finances. Public — no allowlist.
 
-- **🏠 Свободные номера** — free rooms per type for any date (the "шахматка" numbers)
-- **👥 Гости** — visitor flow: arrivals, departures, headcount
-- **🆕 Онлайн-бронь** — a link into the Exely online booking engine (guest picks
-  dates + room and pays there)
+What guests get from **[@chimgandarbaza_bot](https://t.me/chimgandarbaza_bot)**:
+
+- **🤖 ИИ-помощник** — the AI concierge (same Groq stack + shared venue
+  knowledge as the site chat): prices, free dates, booking, directions, any
+  language. Guests explicitly opt in via the «Поговорить с ИИ» screen and every
+  AI answer is prefixed 🤖.
+- **🌐 Онлайн-бронирование** — link into the Exely booking engine
+- **🏷 Цены дня** — fixed day-use price list (from `pricing.ts`)
+- **📞 Контакты** — phone/WhatsApp/Instagram, address, map, hours
 
 It runs **inside the existing Next.js app** as a webhook route — no separate
-server. Everything is stateless (state lives in inline-button `callback_data`),
-so it works on Vercel serverless.
-
-Bot: **[@chimgandarbaza_bot](https://t.me/chimgandarbaza_bot)** (hotel 514200).
+server. Stateless (views carry state in `callback_data`), so it works on
+Vercel serverless. The AI's only tool is the PUBLIC booking-engine
+availability/prices (`src/lib/exely.ts`); the PMS client (`exely-pms.ts`)
+stays in the repo unused, for a possible future owner/admin surface.
 
 ---
 
@@ -79,7 +85,6 @@ EXELY_API_BASE=https://connect.hopenapi.com/api/exelypms/v1
 
 # Staff bot
 TELEGRAM_STAFF_BOT_TOKEN=             # from @BotFather (a NEW, separate bot)
-TELEGRAM_STAFF_IDS=111111111,222222222   # numeric Telegram user IDs allowed in
 TELEGRAM_WEBHOOK_SECRET=              # any random string; Telegram echoes it back
 ```
 
@@ -88,18 +93,9 @@ TELEGRAM_WEBHOOK_SECRET=              # any random string; Telegram echoes it ba
 
 ---
 
-## Finding staff Telegram IDs
+## ~~Finding staff Telegram IDs~~ (obsolete)
 
-Each staffer sends any message to the bot, then:
-
-```powershell
-& 'C:\Program Files\nodejs\node.exe' .\scripts\telegram-setup.mjs updates
-```
-
-It prints `id  name` for everyone who has messaged (works only while no webhook
-is set). Put the numeric IDs, comma-separated, in `TELEGRAM_STAFF_IDS`. Until an
-ID is on the allowlist the bot replies to that user with their own ID and nothing
-else.
+The bot is public now — `TELEGRAM_STAFF_IDS` is ignored and can be deleted.
 
 ---
 
@@ -148,8 +144,9 @@ webhook) before switching to production.
 | Command | Action |
 |---|---|
 | `/start`, `/menu` | Main menu |
-| `/svobodno` | Free rooms today |
-| `/gosti` | Visitor flow today |
+| `/ai` | AI concierge intro |
+| `/ceny` | Day-use price list |
+| `/contacts` | Contacts & directions |
 | `/bron` | Online-booking link |
 
 Most navigation is via inline buttons (date arrows, period switches), so staff
