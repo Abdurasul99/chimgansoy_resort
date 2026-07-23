@@ -75,34 +75,60 @@ function richText(raw: string): ReactNode[] {
 
 const COPY: Record<
   Locale,
-  { greeting: string; placeholder: string; error: string; thinking: string; disclaimer: string; send: string }
+  {
+    greeting: string;
+    placeholder: string;
+    error: string;
+    thinking: string;
+    disclaimer: string;
+    send: string;
+    introTitle: string;
+    introText: string;
+    startButton: string;
+    humanLabel: string;
+  }
 > = {
   ru: {
     greeting:
-      "Здравствуйте! Я помощник CHIMGAN DARBAZA. Спрошу — отвечу про отдых, цены, бронирование и как добраться. Чем помочь?",
+      "Здравствуйте! Я ИИ-помощник CHIMGAN DARBAZA. Отвечу про отдых, цены, свободные даты, бронирование и как добраться. Чем помочь?",
     placeholder: "Спросите что угодно…",
     error: "Не получилось ответить. Напишите нам напрямую:",
     thinking: "Печатает…",
     disclaimer: "ИИ может ошибаться · точную информацию подтвердит администратор",
     send: "Отправить",
+    introTitle: "Виртуальный ИИ-помощник",
+    introText:
+      "Вы будете общаться с искусственным интеллектом — помощником CHIMGAN DARBAZA. Он мгновенно отвечает про цены, свободные даты, бронирование и как добраться. Точную информацию всегда подтверждает администратор.",
+    startButton: "Поговорить с ИИ",
+    humanLabel: "Или свяжитесь с администратором:",
   },
   uz: {
     greeting:
-      "Assalomu alaykum! Men CHIMGAN DARBAZA yordamchisiman. Dam olish, narxlar, bron va yo'l haqida so'rang. Nima bilan yordam beray?",
+      "Assalomu alaykum! Men CHIMGAN DARBAZA AI-yordamchisiman. Dam olish, narxlar, bo'sh sanalar, bron va yo'l haqida javob beraman. Nima bilan yordam beray?",
     placeholder: "Istalgan narsani so'rang…",
     error: "Javob berib bo'lmadi. Bizga to'g'ridan-to'g'ri yozing:",
     thinking: "Yozmoqda…",
     disclaimer: "AI xato qilishi mumkin · aniq ma'lumotni administrator tasdiqlaydi",
     send: "Yuborish",
+    introTitle: "Virtual AI-yordamchi",
+    introText:
+      "Siz sun'iy intellekt — CHIMGAN DARBAZA yordamchisi bilan suhbatlashasiz. U narxlar, bo'sh sanalar, bron va yo'l haqida darhol javob beradi. Aniq ma'lumotni har doim administrator tasdiqlaydi.",
+    startButton: "AI bilan suhbatlashish",
+    humanLabel: "Yoki administrator bilan bog'laning:",
   },
   en: {
     greeting:
-      "Hi! I'm the CHIMGAN DARBAZA assistant. Ask me about the visit, prices, booking, or how to get here. How can I help?",
+      "Hi! I'm the CHIMGAN DARBAZA AI assistant. Ask me about the visit, prices, available dates, booking, or how to get here. How can I help?",
     placeholder: "Ask anything…",
     error: "Couldn't answer just now. Message us directly:",
     thinking: "Typing…",
     disclaimer: "AI can make mistakes · the administrator confirms exact details",
     send: "Send",
+    introTitle: "Virtual AI assistant",
+    introText:
+      "You'll be chatting with an artificial intelligence — the CHIMGAN DARBAZA assistant. It replies instantly about prices, available dates, booking and directions. The administrator always confirms exact details.",
+    startButton: "Chat with the AI",
+    humanLabel: "Or contact the administrator:",
   },
 };
 
@@ -121,6 +147,9 @@ const ANY_LANG_NOTE: Record<Locale, string> = {
 export function AiChat({ locale }: { locale: Locale }) {
   const [lang, setLang] = useState<Locale>(locale);
   const t = COPY[lang];
+  // The guest must explicitly opt in to talking with an AI (transparency):
+  // the chat opens only after the "Chat with the AI" button on the intro screen.
+  const [started, setStarted] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([{ role: "assistant", content: COPY[locale].greeting }]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -201,6 +230,53 @@ export function AiChat({ locale }: { locale: Locale }) {
         <span className="ml-auto truncate text-[10px] text-[var(--muted)]">{ANY_LANG_NOTE[lang]}</span>
       </div>
 
+      {/* Intro gate: the guest knowingly chooses to talk to an AI */}
+      {!started ? (
+        <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 py-8 text-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--surface)] text-3xl" aria-hidden>
+            🤖
+          </div>
+          <div>
+            <p className="font-serif text-lg font-semibold text-[var(--ink)]">{t.introTitle}</p>
+            <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">{t.introText}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setStarted(true)}
+            className="w-full rounded-full bg-[var(--sun)] px-5 py-3 text-sm font-bold text-[var(--on-accent)] transition hover:bg-[var(--sun-dark)]"
+          >
+            🤖 {t.startButton}
+          </button>
+          <div className="w-full">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--muted)]">{t.humanLabel}</p>
+            <div className="mt-2 flex flex-wrap justify-center gap-2 text-xs font-semibold">
+              <a
+                href={`tel:${contacts.phone.replaceAll(" ", "")}`}
+                className="rounded-full border border-[color:var(--line)] px-3 py-1.5 text-[var(--ink)] hover:border-[var(--accent)]"
+              >
+                {contacts.phone}
+              </a>
+              <a
+                href={contacts.whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full bg-[#25D366]/10 px-3 py-1.5 text-[#128C4B] hover:bg-[#25D366]/20"
+              >
+                WhatsApp
+              </a>
+              <a
+                href={contacts.telegram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full bg-[#229ED9]/10 px-3 py-1.5 text-[#0088CC] hover:bg-[#229ED9]/20"
+              >
+                Telegram
+              </a>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <>
       {/* Messages */}
       <div ref={listRef} className="faq-scroll flex-1 space-y-3 overflow-y-auto px-4 py-4">
         {messages.map((m, i) => (
@@ -273,6 +349,8 @@ export function AiChat({ locale }: { locale: Locale }) {
         </div>
         <p className="mt-2 px-1 text-[10px] leading-tight text-[var(--muted)]">{t.disclaimer}</p>
       </div>
+        </>
+      )}
     </div>
   );
 }
