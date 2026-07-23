@@ -4,7 +4,6 @@ A Telegram bot for **hotel staff** (not guests) that reads live data from the
 Exely PMS and lets staff:
 
 - **🏠 Свободные номера** — free rooms per type for any date (the "шахматка" numbers)
-- **💰 Деньги** — money flow (payments) for today / 7 / 30 days
 - **👥 Гости** — visitor flow: arrivals, departures, headcount
 - **🆕 Онлайн-бронь** — a link into the Exely online booking engine (guest picks
   dates + room and pays there)
@@ -150,7 +149,6 @@ webhook) before switching to production.
 |---|---|
 | `/start`, `/menu` | Main menu |
 | `/svobodno` | Free rooms today |
-| `/dengi` | Money flow today |
 | `/gosti` | Visitor flow today |
 | `/bron` | Online-booking link |
 
@@ -169,6 +167,3 @@ rarely type commands.
 - **Room-type names**: `ROOM_TYPE_NAMES` in `src/lib/exely-pms.ts` maps
   `roomTypeId → name`; confirmed against live `/rooms` (`5075760` Глэмпинг,
   `5075761` Шале). If a new type appears as «Категория 12345», add it there.
-- **Money direction**: payments are summed by `actionKind` (0/4 add, 1 refund,
-  2/3 cancellations). `getFinance` caps the end of the window at hotel-now because
-  the payments endpoint rejects future timestamps.

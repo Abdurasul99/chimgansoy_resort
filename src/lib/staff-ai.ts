@@ -7,13 +7,7 @@
  * Stateless: optional context is only the message the staffer replied to.
  */
 
-import {
-  getAvailability,
-  getBookingsInPeriod,
-  getFinance,
-  getGuestFlow,
-  roomTypeName,
-} from "./exely-pms";
+import { getAvailability, getBookingsInPeriod, getGuestFlow, roomTypeName } from "./exely-pms";
 import { checkAvailability } from "./exely";
 import { venueFacts } from "./venue-facts";
 
@@ -57,22 +51,6 @@ const TOOLS = [
         properties: {
           from: { type: "string", description: "Начало периода YYYY-MM-DD" },
           to: { type: "string", description: "Конец периода YYYY-MM-DD" },
-        },
-        required: ["from", "to"],
-      },
-    },
-  },
-  {
-    type: "function",
-    function: {
-      name: "pms_finance",
-      description:
-        "Деньги (платежи) из PMS за период: поступления, возвраты, нетто, разбивка по способам оплаты. Только прошлое/сегодня, период не длиннее 31 дня.",
-      parameters: {
-        type: "object",
-        properties: {
-          from: { type: "string", description: "Начало YYYY-MM-DD" },
-          to: { type: "string", description: "Конец YYYY-MM-DD" },
         },
         required: ["from", "to"],
       },
@@ -143,15 +121,10 @@ async function runTool(name: string, rawArgs: string): Promise<unknown> {
           status: s.status,
           bookingStatus: s.bookingStatus,
           guests: (s.guestCountInfo?.adults ?? 0) + (s.guestCountInfo?.children ?? 0),
-          totalUZS: s.totalPrice?.amount,
           source: b.sourceChannelName,
         })),
       );
       return { ok: true, count: items.length, items: items.slice(0, 40) };
-    }
-    case "pms_finance": {
-      if (badDates(str("from"), str("to"))) return { ok: false, error: "bad_date_format" };
-      return getFinance(str("from"), str("to"));
     }
     case "pms_guest_flow": {
       if (badDates(str("from"), str("to"))) return { ok: false, error: "bad_date_format" };
@@ -200,15 +173,17 @@ function systemPrompt(): string {
     "",
     "ЖИВЫЕ ДАННЫЕ — только из инструментов (Exely PMS, отель 514200):",
     "- pms_availability — шахматка на дату; pms_bookings — кто живёт/заезжает (имена, телефоны);",
-    "- pms_finance — деньги за период (не будущее, ≤31 дня); pms_guest_flow — сводка заездов/выездов;",
+    "- pms_guest_flow — сводка заездов/выездов;",
     "- public_prices — цены ПРОЖИВАНИЯ и бассейна на конкретные даты (они зависят от даты!).",
     "",
     "Что откуда: цены дневного отдыха (топчан, въезд, мангал, казан, дрова, уголь) — ФИКСИРОВАННЫЕ,",
     "бери из знаний выше, инструмент не нужен. Цены проживания (Глэмпинг/Шале) и бассейна — ТОЛЬКО",
-    "через public_prices. Занятость, гости, деньги — только через pms_*. Топчаны и бассейн в шахматке",
+    "через public_prices. Занятость и гости — только через pms_*. Топчаны и бассейн в шахматке",
     "PMS отсутствуют (дневной формат). Валюта — UZS, суммы пиши с разделителями (1 200 000 UZS).",
     "Персонал может спросить «что ответить гостю…» — подскажи готовый ответ по знаниям выше",
     "(правила отмены, время заезда, что взять с собой, питомцы и т.д.).",
+    "ФИНАНСЫ: у тебя НЕТ доступа к данным о выручке, платежах и кассе. На вопросы про деньги/выручку",
+    "вежливо отвечай, что финансовая информация в боте недоступна — по этим вопросам к руководству.",
     "",
     "ПРАВИЛА ТОЧНОСТИ (важнее всего):",
     "1. Дату и день недели сверяй по календарю выше. «Суббота» = ближайшая суббота из календаря.",

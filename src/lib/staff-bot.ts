@@ -1,10 +1,11 @@
 /**
  * Staff Telegram bot — command + callback handlers.
  *
- * Turns Exely WebPMS data into chat messages for hotel staff: free rooms
- * (шахматка), money flow, visitor flow, and one-tap online-booking links.
- * Stateless: every interactive step carries its state in inline callback_data,
- * so it runs on serverless (Vercel) with no session store.
+ * Turns Exely PMS data into chat messages for hotel staff: free rooms
+ * (шахматка), visitor flow, and online-booking links. Money/finance data is
+ * intentionally NOT exposed to staff. Stateless: every interactive step
+ * carries its state in inline callback_data, so it runs on serverless
+ * (Vercel) with no session store.
  */
 
 import {
@@ -15,12 +16,12 @@ import {
   sendMessage,
   type InlineKeyboard,
 } from "./telegram";
-import { getAvailability, getFinance, getGuestFlow } from "./exely-pms";
+import { getAvailability, getGuestFlow } from "./exely-pms";
 import { answerStaffQuestion } from "./staff-ai";
 
 const SITE = "https://chimgandarbaza.uz";
 
-// ── date / money helpers ──────────────────────────────────────────────────────
+// ── date helpers ──────────────────────────────────────────────────────────────
 
 function todayISO(): string {
   // Uzbekistan is UTC+5, no DST.
@@ -36,10 +37,6 @@ function fmtDate(iso: string): string {
   const [y, m, d] = iso.split("-");
   return `${d}.${m}.${y}`;
 }
-function fmtMoney(n: number, currency = "UZS"): string {
-  const s = Math.round(n).toLocaleString("ru-RU").replace(/,/g, " ");
-  return `${s} ${currency}`;
-}
 
 // ── main menu ─────────────────────────────────────────────────────────────────
 
@@ -47,10 +44,7 @@ function menuKeyboard(): InlineKeyboard {
   const t = todayISO();
   return [
     [{ text: "🏠 Свободные номера", callback_data: `av:${t}` }],
-    [
-      { text: "💰 Деньги", callback_data: `fin:${t}:${t}` },
-      { text: "👥 Гости", callback_data: `gf:${t}:${t}` },
-    ],
+    [{ text: "👥 Гости", callback_data: `gf:${t}:${t}` }],
     [{ text: "🆕 Онлайн-бронь", callback_data: "book" }],
   ];
 }
@@ -61,8 +55,8 @@ function menuText(): string {
     "",
     "Живые данные из системы бронирования Exely (отель 514200).",
     "Выберите раздел кнопкой — <b>или просто напишите вопрос текстом</b>:",
-    "<i>«сколько свободных шале в субботу?», «сколько денег пришло за неделю?»,",
-    "«кто заезжает завтра?» — ИИ ответит по живым данным.</i>",
+    "<i>«сколько свободных шале в субботу?», «кто заезжает завтра?»,",
+    "«сколько стоит топчан в пятницу?» — ИИ ответит по живым данным.</i>",
   ].join("\n");
 }
 
@@ -96,36 +90,6 @@ async function renderAvailability(date: string): Promise<View> {
     }%`,
   ];
   if (a.byType.length === 0) lines.splice(2, 0, "<i>Номерной фонд пуст или не отдан API.</i>", "");
-  return { text: lines.join("\n"), keyboard: nav };
-}
-
-async function renderFinance(from: string, to: string): Promise<View> {
-  const res = await getFinance(from, to);
-  const t = todayISO();
-  const nav: InlineKeyboard = [
-    [
-      { text: "Сегодня", callback_data: `fin:${t}:${t}` },
-      { text: "7 дней", callback_data: `fin:${addDays(t, -6)}:${t}` },
-      { text: "30 дней", callback_data: `fin:${addDays(t, -29)}:${t}` },
-    ],
-    [{ text: "☰ Меню", callback_data: "menu" }],
-  ];
-  if (!res.ok) return { text: apiError("финансы", res.error, res.status), keyboard: nav };
-
-  const f = res.data;
-  const period = from === to ? fmtDate(from) : `${fmtDate(from)} — ${fmtDate(to)}`;
-  const lines = [
-    `<b>💰 Деньги — ${period}</b>`,
-    "",
-    `Поступления: <b>${fmtMoney(f.gross, f.currency)}</b>`,
-    f.refunds ? `Возвраты: −${fmtMoney(f.refunds, f.currency)}` : "",
-    `Итого (нетто): <b>${fmtMoney(f.net, f.currency)}</b>`,
-    `Платежей: ${f.count}`,
-  ].filter(Boolean);
-  if (f.byMethod.length) {
-    lines.push("", "<b>По способам оплаты:</b>");
-    for (const m of f.byMethod) lines.push(`• ${esc(m.method)} — ${fmtMoney(m.amount, f.currency)}`);
-  }
   return { text: lines.join("\n"), keyboard: nav };
 }
 
@@ -195,8 +159,6 @@ async function viewFor(action: string): Promise<View> {
       return { text: menuText(), keyboard: menuKeyboard() };
     case "av":
       return renderAvailability(args[0] || todayISO());
-    case "fin":
-      return renderFinance(args[0] || todayISO(), args[1] || todayISO());
     case "gf":
       return renderGuests(args[0] || todayISO(), args[1] || todayISO());
     case "book":
@@ -217,9 +179,6 @@ function commandToAction(text: string): string | null {
     case "/svobodno":
     case "/rooms":
       return "av";
-    case "/dengi":
-    case "/money":
-      return "fin";
     case "/gosti":
     case "/guests":
       return "gf";
