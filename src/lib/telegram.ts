@@ -82,6 +82,37 @@ export function sendChatAction(chatId: number | string, action = "typing") {
   return call("sendChatAction", { chat_id: chatId, action });
 }
 
+/** Photo card by public URL, with an HTML caption and optional buttons. */
+export function sendPhoto(
+  chatId: number | string,
+  photoUrl: string,
+  caption: string,
+  opts: SendOpts = {},
+) {
+  return call("sendPhoto", {
+    chat_id: chatId,
+    photo: photoUrl,
+    caption,
+    parse_mode: opts.parse_mode ?? "HTML",
+    ...(opts.reply_markup ? { reply_markup: opts.reply_markup } : {}),
+  });
+}
+
+/** Album of photos (2-10) by public URLs; per-photo captions supported. */
+export function sendMediaGroup(
+  chatId: number | string,
+  photos: { url: string; caption?: string }[],
+) {
+  return call("sendMediaGroup", {
+    chat_id: chatId,
+    media: photos.slice(0, 10).map((p) => ({
+      type: "photo",
+      media: p.url,
+      ...(p.caption ? { caption: p.caption, parse_mode: "HTML" } : {}),
+    })),
+  });
+}
+
 /** Escape user/content text for safe HTML parse_mode. */
 export function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

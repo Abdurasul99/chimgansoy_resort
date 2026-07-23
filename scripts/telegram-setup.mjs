@@ -87,6 +87,29 @@ switch (cmd) {
     for (const [id, name] of seen) console.log(`${id}\t${name}`);
     break;
   }
+  case "meta": {
+    // Bot profile polish: command list + descriptions (shown before /start).
+    const commands = [
+      { command: "start", description: "☰ Главное меню" },
+      { command: "ai", description: "🤖 ИИ-помощник — задать вопрос" },
+      { command: "daty", description: "🗓 Свободные даты и цены" },
+      { command: "ceny", description: "🏷 Цены дневного отдыха" },
+      { command: "pogoda", description: "🌤 Погода в Чимгане" },
+      { command: "foto", description: "📸 Фотографии комплекса" },
+      { command: "bron", description: "🌐 Онлайн-бронирование" },
+      { command: "contacts", description: "📞 Контакты и как добраться" },
+    ];
+    const r1 = await api("setMyCommands", { commands });
+    const r2 = await api("setMyShortDescription", {
+      short_description: "ИИ-помощник CHIMGAN DARBAZA: цены, свободные даты, бронирование 🏔",
+    });
+    const r3 = await api("setMyDescription", {
+      description:
+        "Горный отдых в 45 минутах от Ташкента: топчаны и мангал на день, глэмпинги и шале с ночёвкой, бассейн. 1700 м над уровнем моря 🏔\n\nИИ-помощник ответит на любой вопрос, покажет живые цены и свободные даты, поможет забронировать онлайн.",
+    });
+    console.log("setMyCommands:", r1.ok, "| shortDescription:", r2.ok, "| description:", r3.ok);
+    break;
+  }
   default:
-    console.log("Commands: set <url> | info | delete | me | updates");
+    console.log("Commands: set <url> | info | delete | me | updates | meta");
 }
