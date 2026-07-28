@@ -65,8 +65,17 @@ switch (cmd) {
     break;
   }
   case "delete": {
+    // Deleting the webhook takes the LIVE bot offline for guests — always
+    // print how to restore it, with the exact URL that was in use.
+    const before = await api("getWebhookInfo");
+    const prev = before?.result?.url;
     const res = await api("deleteWebhook", { drop_pending_updates: false });
     console.log(res.ok ? "✓ Webhook removed" : `✗ ${res.description}`);
+    if (res.ok && prev) {
+      console.log("");
+      console.log("⚠️  БОТ СЕЙЧАС НЕ ОТВЕЧАЕТ ГОСТЯМ. Вернуть обратно:");
+      console.log(`    node scripts/telegram-setup.mjs set ${prev}`);
+    }
     break;
   }
   case "me": {

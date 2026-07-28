@@ -31,6 +31,30 @@ const tg = (m, b) =>
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b ?? {}),
   }).then((r) => r.json());
 
+// SAFETY: production runs on a webhook (chimgandarbaza.uz). getUpdates and a
+// webhook are mutually exclusive — polling here would 409-loop, and deleting
+// the webhook to "fix" that would take the LIVE bot offline. Refuse instead.
+const hook = await tg("getWebhookInfo");
+if (hook?.result?.url) {
+  console.error(
+    [
+      "",
+      "⛔ Бот уже работает на боевом сервере (webhook):",
+      `   ${hook.result.url}`,
+      "",
+      "Локальный поллер сейчас НЕ нужен и работать не будет.",
+      "Просто пишите боту в Telegram — он отвечает из облака 24/7.",
+      "",
+      "Локальная отладка (ТОЛЬКО если действительно нужно) выключит бота у гостей:",
+      "   node scripts/telegram-setup.mjs delete      # ⚠️ бот перестанет отвечать",
+      "   ... отладка ...",
+      `   node scripts/telegram-setup.mjs set ${hook.result.url}   # вернуть обратно`,
+      "",
+    ].join("\n"),
+  );
+  process.exit(1);
+}
+
 console.log("Polling as staff bot → forwarding to", ROUTE, "\nCtrl+C to stop.\n");
 let offset = 0;
 for (;;) {
