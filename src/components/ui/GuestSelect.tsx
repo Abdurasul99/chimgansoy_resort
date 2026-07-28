@@ -127,6 +127,7 @@ export function GuestSelect({ name, label, defaultValue = "2", locale }: GuestSe
             width: pos?.width ?? 220,
             visibility: pos ? "visible" : "hidden",
           }}
+          data-lenis-prevent
           className="z-[100] max-h-[min(360px,70vh)] overflow-auto rounded-xl border border-[color:var(--line)] bg-[var(--paper)] p-2 shadow-[0_30px_80px_rgba(0,0,0,0.18)]"
         >
           {optionValues.map((v, i) => {

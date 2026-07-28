@@ -70,7 +70,7 @@ export function MasterPlan({ locale }: { locale: Locale }) {
       <div className="mx-auto max-w-7xl">
         <div className="max-w-3xl motion-reveal">
           <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[var(--sun)]">{t.eyebrow}</p>
-          <h2 id="masterplan-title" className="mt-4 font-serif text-[clamp(2.2rem,5vw,3.6rem)] font-semibold leading-[1.05]">
+          <h2 id="masterplan-title" className="motion-reveal-mask mt-4 font-serif text-[clamp(2.2rem,5vw,3.6rem)] font-semibold leading-[1.05]">
             {t.title}
           </h2>
           <p className="mt-5 text-base leading-7 text-white/60">{t.lead}</p>

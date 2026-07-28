@@ -53,7 +53,7 @@ export function LeisureShowcase({ locale }: { locale: Locale }) {
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="motion-reveal max-w-2xl">
             <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--accent-strong)]">{t.eyebrow}</p>
-            <h2 id="leisure-title" className="mt-3 font-serif text-4xl font-bold leading-[1.05] text-[var(--ink)] sm:text-5xl">
+            <h2 id="leisure-title" className="motion-reveal-mask mt-3 font-serif text-4xl font-bold leading-[1.05] text-[var(--ink)] sm:text-5xl">
               {t.title}
             </h2>
             <p className="mt-4 text-base leading-7 text-[var(--muted)]">{t.subtitle}</p>
@@ -85,7 +85,10 @@ export function LeisureShowcase({ locale }: { locale: Locale }) {
                 {/* Photo + gold category chip */}
                 <div className="relative h-56 overflow-hidden">
                   <div
-                    className="absolute inset-0 bg-cover bg-center transition-transform duration-[1.3s] ease-out group-hover:scale-[1.05]"
+                    // 18% bleed top and bottom gives the drift room to move
+                    // without ever exposing an edge inside the rounded card.
+                    data-parallax="0.04"
+                    className="absolute -inset-y-[18%] inset-x-0 bg-cover bg-center transition-transform duration-[1.3s] ease-out group-hover:scale-[1.05]"
                     style={imageStyle(image)}
                     role="img"
                     aria-label={text(image.alt, locale)}

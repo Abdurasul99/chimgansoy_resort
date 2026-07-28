@@ -97,7 +97,7 @@ export function PriceList({ locale }: PriceListProps) {
               {dayUseInfo.altitude} · {dayUseInfo.hours}
             </span>
           </div>
-          <h2 className="mt-4 font-serif text-[clamp(2.4rem,6vw,4.2rem)] font-semibold leading-[1.02] text-[var(--ink)]">
+          <h2 className="motion-reveal-mask mt-4 font-serif text-[clamp(2.4rem,6vw,4.2rem)] font-semibold leading-[1.02] text-[var(--ink)]">
             {t.titleA}
             <br />
             <em className="text-[var(--ink)]/75">{t.titleB}</em>
@@ -158,7 +158,14 @@ export function PriceList({ locale }: PriceListProps) {
                 return (
                   <li
                     key={item.key}
-                    className="group border-b border-dashed border-[color:var(--line-strong)] py-5 transition-colors hover:bg-[var(--surface)]/60"
+                    // Rows arrive one after another as the menu scrolls in.
+                    // Inline delay because the shared CSS ladder only covers a
+                    // handful of fixed steps and this list is price-driven.
+                    // No `transition-colors` here: .motion-reveal owns
+                    // transition-property on this element, so the utility would
+                    // be overridden anyway and only muddy the intent.
+                    className="motion-reveal group border-b border-dashed border-[color:var(--line-strong)] py-5 hover:bg-[var(--surface)]/60"
+                    style={{ transitionDelay: `${Math.min(i, 8) * 70}ms` }}
                   >
                     <div className="flex items-baseline gap-2">
                       {/* Index */}

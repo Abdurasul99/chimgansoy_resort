@@ -278,7 +278,9 @@ export function AiChat({ locale }: { locale: Locale }) {
       ) : (
         <>
       {/* Messages */}
-      <div ref={listRef} className="faq-scroll flex-1 space-y-3 overflow-y-auto px-4 py-4">
+      {/* data-lenis-prevent: the thread scrolls natively and doesn't chain out
+          to the page behind the panel. */}
+      <div ref={listRef} data-lenis-prevent className="faq-scroll flex-1 space-y-3 overflow-y-auto px-4 py-4">
         {messages.map((m, i) => (
           <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
             <div

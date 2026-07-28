@@ -17,6 +17,9 @@ export function lock(): void {
     // iOS Safari requires position:fixed to actually stop body scroll.
     document.body.style.cssText +=
       `;position:fixed;top:-${savedScrollY}px;left:0;right:0;width:100%;overflow:hidden;`;
+    // Smooth scrolling has to stand down too, otherwise it keeps easing towards
+    // a target while the body is pinned — and lands somewhere else on release.
+    window.__lenis?.stop();
   }
   lockCount += 1;
 }
@@ -28,6 +31,14 @@ export function unlock(): void {
   if (lockCount === 0) {
     document.body.style.cssText = savedCssText;
     window.scrollTo(0, savedScrollY);
+    // The document height was collapsed while pinned; re-measure before handing
+    // control back, then snap (not animate) to where the user actually was.
+    const lenis = window.__lenis;
+    if (lenis) {
+      lenis.resize();
+      lenis.start();
+      lenis.scrollTo(savedScrollY, { immediate: true, force: true });
+    }
   }
 }
 

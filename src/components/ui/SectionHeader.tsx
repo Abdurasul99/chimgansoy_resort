@@ -24,7 +24,10 @@ export function SectionHeader({
           <p className="kicker-rule mb-4">{eyebrow}</p>
         )
       ) : null}
-      <h2 className={`font-serif text-[clamp(2.2rem,5vw,3.6rem)] font-semibold leading-[1.05] tracking-tight text-[var(--ink)]${italic ? " italic" : ""}`}>
+      {/* motion-reveal-mask: the title wipes in top-down as it enters view.
+          Safe to hard-code — ScrollObserver reveals it wherever it renders, and
+          reduced-motion strips the mask entirely. */}
+      <h2 className={`motion-reveal-mask font-serif text-[clamp(2.2rem,5vw,3.6rem)] font-semibold leading-[1.05] tracking-tight text-[var(--ink)]${italic ? " italic" : ""}`}>
         {title}
       </h2>
       {text ? <p className="mt-5 text-base leading-7 text-[var(--muted)] sm:text-lg">{text}</p> : null}

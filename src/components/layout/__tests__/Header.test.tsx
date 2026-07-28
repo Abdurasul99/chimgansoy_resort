@@ -6,7 +6,7 @@
  * element does what it should.
  */
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, act } from "@testing-library/react";
+import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 // usePathname is mocked globally to "/ru" in tests/setup.ts
@@ -74,16 +74,29 @@ describe("Header", () => {
     expect(document.body.style.overflow).toBe("");
   });
 
-  it("header gains glass-nav class after the 48px scroll threshold", () => {
+  // The header reads scroll from the shared rAF scroll engine rather than
+  // handling `scroll` events inline, so the class lands on the next frame.
+  it("header gains glass-nav class after the 48px scroll threshold", async () => {
     const { container } = render(<Header locale="ru" />);
     const header = container.querySelector("header")!;
     expect(header.className).toContain("bg-transparent"); // initial
 
-    act(() => {
-      window.scrollY = 100;
-      window.dispatchEvent(new Event("scroll"));
-    });
+    window.scrollY = 100;
+    window.dispatchEvent(new Event("scroll"));
 
-    expect(header.className).toContain("glass-nav");
+    await waitFor(() => expect(header.className).toContain("glass-nav"));
+  });
+
+  it("header hides on scroll down past the hero and returns on scroll up", async () => {
+    const { container } = render(<Header locale="ru" />);
+    const header = container.querySelector("header")! as HTMLElement;
+
+    window.scrollY = 1200;
+    window.dispatchEvent(new Event("scroll"));
+    await waitFor(() => expect(header.style.translate).toBe("0 -100%"));
+
+    window.scrollY = 900;
+    window.dispatchEvent(new Event("scroll"));
+    await waitFor(() => expect(header.style.translate).toBe("0 0"));
   });
 });

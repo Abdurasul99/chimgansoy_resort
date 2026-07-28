@@ -156,6 +156,125 @@ html {
   /* NO transition — season change triggers full-page repaint every frame for 600ms */
 }
 
+/* ══════════════════════════════════════════════════════════════════
+   SMOOTH SCROLL (Lenis)
+   Lenis eases window.scrollTo instead of transforming a wrapper, so
+   position:sticky / position:fixed / the native scrollbar all keep
+   working. These are the runtime rules it needs (inlined rather than
+   importing lenis/dist/lenis.css so the iframe rule can be overridden).
+   ══════════════════════════════════════════════════════════════════ */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+/* Native `scroll-behavior: smooth` fights Lenis's own easing — CSS would
+   animate the very scrollTo calls Lenis is already animating. */
+html.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+/* Nested scrollers (concierge thread, dropdowns, horizontal strips) keep their
+   own native scrolling and don't chain out to the page. */
+.lenis [data-lenis-prevent],
+.lenis [data-lenis-prevent-wheel],
+.lenis [data-lenis-prevent-touch] {
+  overscroll-behavior: contain;
+}
+
+/* Lenis kills pointer events on iframes so the wheel reaches the page. The only
+   iframe here is the Google Map, and a dead map is a worse trade than a wheel
+   that zooms it — Google's embed already requires ctrl+scroll to zoom. */
+.lenis.lenis-smooth iframe {
+  pointer-events: auto;
+}
+
+/* ── Scroll progress rail — top hairline, driven by --scroll-progress ── */
+.scroll-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 60;
+  height: 2px;
+  pointer-events: none;
+  contain: strict;
+}
+.scroll-progress::after {
+  content: "";
+  display: block;
+  height: 100%;
+  transform: scaleX(var(--scroll-progress, 0));
+  transform-origin: left center;
+  background: linear-gradient(90deg, var(--sun), var(--accent-strong));
+  will-change: transform;
+}
+[data-season="winter"] .scroll-progress::after {
+  background: linear-gradient(90deg, var(--aurora-1), var(--aurora-3));
+}
+
+/* ── Parallax ──────────────────────────────────────────────────────
+   Uses the standalone `translate` property rather than `transform`, so it
+   composes with Tailwind transform utilities (scale, rotate, translate-x)
+   instead of overwriting whatever they set.
+   ────────────────────────────────────────────────────────────────── */
+[data-parallax] {
+  translate: 0 var(--parallax-y, 0px);
+  will-change: translate;
+}
+
+/* ── Hero scroll-out — content drifts up and dissolves, photo lags ──
+   No `will-change` here on purpose. These are full-viewport layers over a
+   background-image; a standing promotion hint keeps them composited for the
+   entire session, and measured ~7ms/frame even long after the hero has left
+   the screen. The engine also stops writing these vars once the hero is past.
+   ────────────────────────────────────────────────────────────────── */
+[data-hero-fx] .hero-fx-content {
+  translate: 0 var(--hero-shift, 0px);
+  opacity: var(--hero-fade, 1);
+}
+[data-hero-fx] .hero-fx-media {
+  translate: 0 var(--hero-media, 0px);
+}
+
+/* ── Masked headline reveal (the "Sora wipe") ──────────────────────
+   A mask that grows top-down, NOT clip-path and NOT overflow:hidden:
+
+   • clip-path collapsed to zero area makes IntersectionObserver report
+     `isIntersecting: false`, so ScrollObserver would never reveal it —
+     the heading stays invisible forever. A mask is a paint effect, so
+     IO still sees the element's full box.
+   • overflow:hidden would need a wrapper and clips the italic Cormorant
+     descenders and the gold word's overhang.
+
+   Ends at 130% so the tail of the wipe finishes off-glyph.
+   ────────────────────────────────────────────────────────────────── */
+.motion-reveal-mask {
+  -webkit-mask-image: linear-gradient(#000, #000);
+  mask-image: linear-gradient(#000, #000);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+  -webkit-mask-size: 100% 0%;
+  mask-size: 100% 0%;
+  transform: translateY(16px);
+  transition:
+    -webkit-mask-size 1.05s var(--ease-premium),
+    mask-size 1.05s var(--ease-premium),
+    transform 1.05s var(--ease-premium);
+}
+.motion-reveal-mask.is-visible {
+  -webkit-mask-size: 100% 130%;
+  mask-size: 100% 130%;
+  transform: none;
+}
+.motion-reveal-mask[data-delay="100"] { transition-delay: 100ms; }
+.motion-reveal-mask[data-delay="200"] { transition-delay: 200ms; }
+.motion-reveal-mask[data-delay="300"] { transition-delay: 300ms; }
+
 /* ──────────────────────────────────────────────────────────────
    Logo intro coordination — when the cream overlay covers the
    viewport, hide the header brand mark and freeze the Hero's
@@ -1343,6 +1462,22 @@ html { scroll-behavior: smooth; }
     opacity: 1;
     transform: none;
     transition: none;
+  }
+
+  /* Scroll-driven effects: show the end state, never the movement. */
+  .motion-reveal-mask {
+    -webkit-mask-image: none;
+    mask-image: none;
+    transform: none;
+    transition: none;
+  }
+
+  [data-parallax],
+  [data-hero-fx] .hero-fx-content,
+  [data-hero-fx] .hero-fx-media {
+    translate: none !important;
+    opacity: 1 !important;
+    will-change: auto;
   }
 
   .crystal-shimmer,

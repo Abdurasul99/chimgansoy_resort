@@ -58,7 +58,7 @@ export function HeroSlideshow() {
   if (isWinter) {
     return (
       <div
-        className="absolute inset-0 -z-20 bg-cover bg-center"
+        className="hero-fx-media absolute inset-0 -z-20 bg-cover bg-center"
         style={{ backgroundImage: `url(${WINTER_PHOTO})` }}
         role="img"
         aria-label="Winter A-frame cottages in the Chimgan mountains"
@@ -68,7 +68,7 @@ export function HeroSlideshow() {
 
   return (
     <>
-      <div className="absolute inset-0 -z-20 overflow-hidden">
+      <div className="hero-fx-media absolute inset-0 -z-20 overflow-hidden">
         {SUMMER_SLIDES.map((src, i) => (
           <div
             key={src}

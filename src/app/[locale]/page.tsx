@@ -82,7 +82,7 @@ export default async function HomePage({ params }: PageProps) {
                 <span className="font-serif text-sm italic text-[var(--muted)]/70">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <p className="font-serif text-[clamp(3.5rem,7vw,5.5rem)] font-bold leading-none tracking-tight text-[var(--ink)]">
+                <p className="motion-reveal-mask font-serif text-[clamp(3.5rem,7vw,5.5rem)] font-bold leading-none tracking-tight text-[var(--ink)]">
                   <AnimatedStat value={parseInt(stat.value)} />
                 </p>
                 <p className="max-w-[12rem] text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]">
@@ -106,8 +106,11 @@ export default async function HomePage({ params }: PageProps) {
                 index === 0 ? "min-h-[70vh] sm:min-h-[80vh] lg:min-h-[90vh]" : "min-h-[50vh] sm:min-h-[60vh] lg:min-h-[70vh]"
               }`}
             >
+              {/* Bled 15% past the article on both edges so the parallax drift
+                  never exposes a seam at the top or bottom of the frame. */}
               <div
-                className="absolute inset-0 bg-cover bg-center transition-transform duration-[1.4s] ease-out group-hover:scale-[1.04]"
+                data-parallax="0.08"
+                className="absolute -inset-y-[15%] inset-x-0 bg-cover bg-center transition-transform duration-[1.4s] ease-out group-hover:scale-[1.04]"
                 style={imageStyle(image)}
                 role="img"
                 aria-label={text(image.alt, locale)}
@@ -120,7 +123,7 @@ export default async function HomePage({ params }: PageProps) {
               <div className={`relative mx-auto w-full max-w-7xl px-4 pb-14 sm:px-6 lg:pb-20 lg:px-8 ${!isEven && index > 0 ? "text-right" : ""}`}>
                 <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">CHIMGAN DARBAZA</p>
                 <h2
-                  className={`mt-3 font-serif font-bold text-white motion-reveal ${
+                  className={`mt-3 font-serif font-bold text-white motion-reveal-mask ${
                     index === 0 ? "display-lg max-w-4xl" : "text-2xl max-w-2xl sm:text-4xl lg:text-5xl"
                   } ${!isEven && index > 0 ? "ml-auto" : ""}`}
                 >
@@ -152,7 +155,7 @@ export default async function HomePage({ params }: PageProps) {
             <div className="motion-reveal">
               <p className="mb-4 font-serif text-[clamp(5rem,12vw,9rem)] font-bold leading-none text-[var(--surface)]" aria-hidden="true">01</p>
               <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGAN DARBAZA</p>
-              <h2 className="display-md font-serif font-semibold text-[var(--ink)]">
+              <h2 className="motion-reveal-mask display-md font-serif font-semibold text-[var(--ink)]">
                 {dict.home.aboutTitle}
               </h2>
               <p className="mt-6 text-base leading-8 text-[var(--muted)]">{dict.home.aboutText}</p>
@@ -167,7 +170,12 @@ export default async function HomePage({ params }: PageProps) {
             </div>
 
             <div className="relative motion-reveal" data-delay="150">
-              <div className="img-reveal-wrapper aspect-[4/5] overflow-hidden rounded-3xl shadow-[var(--shadow-card-hover)]">
+              {/* The framed photo drifts; the two badges stay put — that speed
+                  difference is what reads as depth. */}
+              <div
+                data-parallax="0.06"
+                className="img-reveal-wrapper aspect-[4/5] overflow-hidden rounded-3xl shadow-[var(--shadow-card-hover)]"
+              >
                 <div
                   className="h-full w-full bg-cover bg-center transition-transform duration-[1500ms] ease-out hover:scale-110"
                   style={imageStyle(resortImages.galAframeTrio)}
@@ -238,7 +246,10 @@ export default async function HomePage({ params }: PageProps) {
 
       {/* ── Emotion photo strip ───────────────────────── */}
       <section className="overflow-hidden bg-[var(--surface)] py-2">
-        <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-none lg:grid lg:grid-cols-5 lg:overflow-visible">
+        <div
+          data-lenis-prevent-touch
+          className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-none lg:grid lg:grid-cols-5 lg:overflow-visible"
+        >
           {([
             { image: "galKidsSwing", caption: locale === "uz" ? "Bolalar balandroq kuladi" : locale === "en" ? "Kids laugh louder here" : "Дети смеются\nгромче" },
             { image: "galMangalFire", caption: locale === "uz" ? "Mangal oldida kecha" : locale === "en" ? "Evening by the grill" : "Вечер\nу мангала" },

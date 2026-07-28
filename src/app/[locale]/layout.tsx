@@ -6,6 +6,7 @@ import "../globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ScrollObserver } from "@/components/ui/ScrollObserver";
+import { SmoothScroll } from "@/components/ui/SmoothScroll";
 import { FaqPanel } from "@/components/ui/FaqPanel";
 import { SeasonDetector } from "@/components/ui/SeasonDetector";
 import { AnalyticsEvents } from "@/components/ui/AnalyticsEvents";
@@ -153,6 +154,9 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         <a href="#main" className="skip-link">
           {locale === "uz" ? "Asosiy qismga o'tish" : locale === "en" ? "Skip to content" : "К содержимому"}
         </a>
+        {/* Reading-progress rail — pure CSS off --scroll-progress, so it costs
+            one composited scaleX per frame and works with or without Lenis. */}
+        <div className="scroll-progress" aria-hidden="true" />
         <Header locale={locale as Locale} />
         <main id="main">{children}</main>
         {/* Footer + FAQ widget hidden on /bron (Exely: no distractions on the
@@ -160,6 +164,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         <HideOnBron>
           <Footer locale={locale as Locale} />
         </HideOnBron>
+        <SmoothScroll />
         <ScrollObserver />
         <HideOnBron>
           <FaqPanel key={locale} locale={locale} />

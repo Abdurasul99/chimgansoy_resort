@@ -11,6 +11,7 @@ import { localizePath, switchLocalePath } from "@/i18n/routing";
 import { text } from "@/lib/localize";
 import { SeasonToggle } from "@/components/ui/SeasonToggle";
 import { lock, unlock } from "@/lib/scroll-lock";
+import { onScrollFrame } from "@/lib/scroll-engine";
 
 type HeaderProps = {
   locale: Locale;
@@ -20,12 +21,25 @@ export function Header({ locale }: HeaderProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const dict = dictionaries[locale];
 
+  // Scrolling down past the hero tucks the bar away; any upward move brings it
+  // straight back. Reads from the shared scroll loop rather than adding a second
+  // scroll listener, and never hides while the mobile drawer is open.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 48);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    let lastY = window.scrollY;
+    return onScrollFrame(({ y }) => {
+      setScrolled(y > 48);
+      const delta = y - lastY;
+      // 6px of slack absorbs sub-pixel jitter from the inertial easing.
+      if (Math.abs(delta) > 6) {
+        setHidden(delta > 0 && y > 320);
+        lastY = y;
+      } else if (y <= 320) {
+        setHidden(false);
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -36,6 +50,9 @@ export function Header({ locale }: HeaderProps) {
 
   const isHeroPage = pathname.split("/").length <= 2;
   const isHeaderOnHero = isHeroPage && !scrolled;
+  // The burger lives in the bar, so the bar has to stay put while the drawer is
+  // open. Derived rather than pushed into state via an effect.
+  const isHidden = hidden && !isOpen;
   const languageOptions = [locale, ...locales.filter((item) => item !== locale)];
   // Soft text shadow for header text sitting on the hero photo — extra legibility
   // insurance on top of the scrim, on the brightest parts of the image.
@@ -44,9 +61,14 @@ export function Header({ locale }: HeaderProps) {
   return (
     <>
       <header
-        className={`sticky top-0 z-50 transition-all duration-500 ${
-          isHeaderOnHero ? "bg-transparent" : "glass-nav"
-        }`}
+        className={`sticky top-0 z-50 ${isHeaderOnHero ? "bg-transparent" : "glass-nav"}`}
+        style={{
+          // `translate` rather than a transform utility, so the slide is a cheap
+          // composited move that can't be clobbered by Tailwind transforms.
+          translate: isHidden ? "0 -100%" : "0 0",
+          transition:
+            "translate 420ms var(--ease-premium), background 500ms ease, box-shadow 500ms ease",
+        }}
       >
         {/* Legibility scrim — a soft top-down shade behind the header so the white
             nav/lang text stays readable over bright hero photos (sky/snow).

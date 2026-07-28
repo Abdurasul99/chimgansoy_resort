@@ -18,6 +18,9 @@ export function Hero({ locale }: HeroProps) {
       // legible while the hero photo is still downloading. No more blank/cream flash.
       className="relative isolate flex min-h-[100svh] items-end overflow-hidden -mt-[4.5rem] bg-[#0f1928]"
       aria-label="Hero"
+      // Marks this section for the scroll engine: it publishes --hero-shift /
+      // --hero-fade / --hero-media here as the hero leaves the viewport.
+      data-hero-fx
     >
       {/* Dynamic photo slideshow — rotates summer photos, switches to winter in Dec–Mar */}
       <HeroSlideshow />
@@ -175,7 +178,7 @@ export function Hero({ locale }: HeroProps) {
         </svg>
       </div>
 
-      <div className="relative mx-auto w-full max-w-7xl px-4 pb-16 pt-36 sm:px-6 lg:pb-24 lg:px-8">
+      <div className="hero-fx-content relative mx-auto w-full max-w-7xl px-4 pb-16 pt-36 sm:px-6 lg:pb-24 lg:px-8">
 
         {/* Heading — split display: last word in italic gold, oversized */}
         <h1
@@ -207,7 +210,7 @@ export function Hero({ locale }: HeroProps) {
 
       {/* Scroll indicator */}
       <div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 motion-rise"
+        className="hero-fx-content absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 motion-rise"
         style={{ animationDelay: "600ms" }}
         aria-hidden="true"
       >
