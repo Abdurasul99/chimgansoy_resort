@@ -26,8 +26,13 @@ export const rooms: Room[] = [
   {
     slug: "glamping",
     category: "glamping",
-    image: "galAframeTrio",
-    gallery: ["galAframeTrio", "galMountainView", "galTopchanPeaks", "galTerritoryPanorama"],
+    // Real interior shoot of the finished cabin. The previous set led with
+    // galAframeTrio — a landscape of the A-frames still as open shells — so the
+    // page never actually showed the room a guest books.
+    // Order matters: gallery[0] spans both columns on /nomera/[slug], so the
+    // wide exterior goes first and the rest sit in a clean 2×2 below it.
+    image: "aframeRoom",
+    gallery: ["aframeExterior", "aframeBed", "aframeLounge", "aframeBathroom", "aframeMinibar"],
     title: { ru: "Глэмпинг A-frame", uz: "Glemping A-frame", en: "A-frame Glamping" },
     eyebrow: {
       ru: "A-frame · проживание на природе",
@@ -35,9 +40,11 @@ export const rooms: Room[] = [
       en: "A-frame · nature stay",
     },
     shortDescription: {
-      ru: "Приватные шатры с гостиничным комфортом, панорамным видом и быстрым доступом к активностям.",
-      uz: "Mehmonxona qulayligi, panorama manzarasi va faoliyatlarga yaqin xususiy chodirlar.",
-      en: "Private tents with hotel-level comfort, panoramic views, and quick access to resort activities.",
+      // "Шатры/tents/chodirlar" contradicted the photos: these are solid timber
+      // A-frame cabins with tiled floors, AC and an ensuite — not tents.
+      ru: "Отдельные домики A-frame с гостиничным комфортом, панорамным окном и быстрым доступом к активностям.",
+      uz: "Mehmonxona qulayligi, panoramali deraza va faoliyatlarga tez chiqish imkoni bo'lgan alohida A-frame uychalari.",
+      en: "Standalone A-frame cabins with hotel-level comfort, a panoramic window, and quick access to resort activities.",
     },
     description: {
       ru: "Глэмпинг создан для гостей, которым важны тишина, воздух и ощущение природы без отказа от удобств. Формат подходит для романтического отдыха, коротких перезагрузок и камерных семейных поездок.",

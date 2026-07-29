@@ -92,6 +92,73 @@ export const resortImages = {
       en: "Wooden A-frame cabin up close",
     },
   },
+  /* ── A-frame glamping, finished & furnished (July 2026 shoot) ──
+     Shot portrait (2:3); stored pre-cropped to 4:3, which is the ratio the
+     room gallery uses. The room hero crops this further to ~2:1, so every
+     frame here is chosen to survive that second crop.
+     Note: galAframeTrio/galAframeCloseup show the SHELLS mid-construction —
+     these are the built rooms and are what /nomera/glamping must show. */
+  aframeRoom: {
+    src: "/images/resort/rooms/aframe-room.jpg",
+    localSrc: "/images/resort/rooms/aframe-room.jpg",
+    position: "center",
+    alt: {
+      ru: "Интерьер глэмпинга A-frame: кровать, панорамное окно с шторами и зона отдыха",
+      uz: "A-frame glemping ichki ko'rinishi: karavot, pardali panoramali deraza va dam olish zonasi",
+      en: "A-frame glamping interior: bed, curtained panoramic window and seating area",
+    },
+  },
+  aframeExterior: {
+    src: "/images/resort/rooms/aframe-exterior.jpg",
+    localSrc: "/images/resort/rooms/aframe-exterior.jpg",
+    position: "center",
+    alt: {
+      ru: "Готовые домики A-frame среди молодых сосен",
+      uz: "Yosh qarag'aylar orasidagi tayyor A-frame uychalari",
+      en: "Finished A-frame cabins among young pines",
+    },
+  },
+  aframeBed: {
+    src: "/images/resort/rooms/aframe-bed.jpg",
+    localSrc: "/images/resort/rooms/aframe-bed.jpg",
+    position: "center",
+    alt: {
+      ru: "Двуспальная кровать под деревянным сводом A-frame",
+      uz: "A-frame yog'och gumbazi ostidagi ikki kishilik karavot",
+      en: "Double bed under the wooden A-frame vault",
+    },
+  },
+  aframeLounge: {
+    src: "/images/resort/rooms/aframe-lounge.jpg",
+    localSrc: "/images/resort/rooms/aframe-lounge.jpg",
+    position: "center",
+    alt: {
+      ru: "Зона отдыха в глэмпинге: кресла, столик и телевизор",
+      uz: "Glempingdagi dam olish zonasi: kreslolar, stolcha va televizor",
+      en: "Glamping seating area: armchairs, side table and TV",
+    },
+  },
+  aframeBathroom: {
+    src: "/images/resort/rooms/aframe-bathroom.jpg",
+    localSrc: "/images/resort/rooms/aframe-bathroom.jpg",
+    position: "center",
+    alt: {
+      ru: "Собственный санузел в глэмпинге с душем и раковиной",
+      uz: "Glempingdagi dush va rakovinali xususiy sanuzel",
+      en: "Ensuite glamping bathroom with shower and washbasin",
+    },
+  },
+  aframeMinibar: {
+    src: "/images/resort/rooms/aframe-minibar.jpg",
+    localSrc: "/images/resort/rooms/aframe-minibar.jpg",
+    position: "center",
+    alt: {
+      ru: "Мини-бар с чайником, посудой и снеками в номере",
+      uz: "Xonadagi choynak, idish va gazaklar bilan mini-bar",
+      en: "In-room minibar with kettle, cups and snacks",
+    },
+  },
+
   galFoodServing: {
     src: "/images/resort/gallery/gal-food-serving.jpg",
     localSrc: "/images/resort/gallery/gal-food-serving.jpg",
