@@ -176,11 +176,14 @@ export default async function HomePage({ params }: PageProps) {
                 data-parallax="0.06"
                 className="img-reveal-wrapper aspect-[4/5] overflow-hidden rounded-3xl shadow-[var(--shadow-card-hover)]"
               >
+                {/* The grounds as they are today. galAframeTrio showed the
+                    A-frames still as open shells — wrong story for the section
+                    that says the place is 45 minutes away and ready for you. */}
                 <div
                   className="h-full w-full bg-cover bg-center transition-transform duration-[1500ms] ease-out hover:scale-110"
-                  style={imageStyle(resortImages.galAframeTrio)}
+                  style={imageStyle(resortImages.aframeLawn)}
                   role="img"
-                  aria-label={text(resortImages.galAframeTrio.alt, locale)}
+                  aria-label={text(resortImages.aframeLawn.alt, locale)}
                 />
               </div>
               {/* Top-right floating badge — cream surface, brand text (Stitch style) */}

@@ -32,7 +32,7 @@ export const rooms: Room[] = [
     // Order matters: gallery[0] spans both columns on /nomera/[slug], so the
     // wide exterior goes first and the rest sit in a clean 2×2 below it.
     image: "aframeRoom",
-    gallery: ["aframeExterior", "aframeBed", "aframeLounge", "aframeBathroom", "aframeMinibar"],
+    gallery: ["aframeLawnWide", "aframeBed", "aframeLounge", "aframeBathroom", "aframeMinibar"],
     title: { ru: "Глэмпинг A-frame", uz: "Glemping A-frame", en: "A-frame Glamping" },
     eyebrow: {
       ru: "A-frame · проживание на природе",

@@ -118,6 +118,31 @@ export const resortImages = {
       en: "Finished A-frame cabins among young pines",
     },
   },
+  /* Landscaping finished — lawn, path and grown pines. Shot after the gallery
+     above, so it is the only frame that shows the grounds as they are now.
+     Supplied at 896px (not the camera original), hence two purpose-built crops
+     instead of one master: each is used at a size that 896px actually covers.
+     A full-resolution original would let both go sharper. */
+  aframeLawn: {
+    src: "/images/resort/rooms/aframe-lawn.jpg",
+    localSrc: "/images/resort/rooms/aframe-lawn.jpg",
+    position: "center",
+    alt: {
+      ru: "Домики A-frame на подстриженном газоне с соснами и дорожкой",
+      uz: "Qarag'ay va yo'lakli o'rilgan maysazordagi A-frame uychalari",
+      en: "A-frame cabins on a manicured lawn with pines and a walkway",
+    },
+  },
+  aframeLawnWide: {
+    src: "/images/resort/rooms/aframe-lawn-wide.jpg",
+    localSrc: "/images/resort/rooms/aframe-lawn-wide.jpg",
+    position: "center",
+    alt: {
+      ru: "Ряд домиков A-frame вдоль газона и дорожки",
+      uz: "Maysazor va yo'lak bo'ylab A-frame uychalari qatori",
+      en: "A row of A-frame cabins along the lawn and walkway",
+    },
+  },
   aframeBed: {
     src: "/images/resort/rooms/aframe-bed.jpg",
     localSrc: "/images/resort/rooms/aframe-bed.jpg",
