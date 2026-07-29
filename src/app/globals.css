@@ -996,6 +996,63 @@ html { scroll-behavior: smooth; }
   transform-origin: left;
 }
 
+/* ── Hero scroll cue — hairline with a light running down it ──────
+   Replaces a bouncing chevron. Compositor-only: the beam is a single
+   translateY + opacity inside an overflow-hidden 1px track.
+   ────────────────────────────────────────────────────────────────── */
+.hero-scroll-cue {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0.25rem 0.75rem;
+}
+.hero-scroll-cue:focus-visible {
+  outline: 2px solid var(--sun);
+  outline-offset: 6px;
+  border-radius: 4px;
+}
+.hero-scroll-cue__track {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 58px;
+  overflow: hidden;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.26) 18%,
+    rgba(255, 255, 255, 0.26) 82%,
+    transparent 100%
+  );
+}
+.hero-scroll-cue__beam {
+  position: absolute;
+  left: -1px;
+  top: 0;
+  width: 3px;
+  height: 20px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, transparent, #fff 55%, transparent);
+  animation: hero-scroll-beam 2.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+@keyframes hero-scroll-beam {
+  0%   { transform: translateY(-24px); opacity: 0; }
+  22%  { opacity: 1; }
+  70%  { opacity: 1; }
+  100% { transform: translateY(60px); opacity: 0; }
+}
+.hero-scroll-cue:hover .hero-scroll-cue__beam {
+  animation-duration: 1.5s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll-cue__beam {
+    animation: none;
+    opacity: 0.9;
+    transform: translateY(19px);
+  }
+}
+
 /* ══════════════════════════════════════════════════════════════════
    CONCIERGE ARRIVAL — the wishing star
    A star sweeps in across the viewport on a high arc, glitter trailing

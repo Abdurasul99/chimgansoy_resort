@@ -2,13 +2,17 @@
 
 import { useEffect, useState } from "react";
 
-// Real June-2026 photography — finished objects only. The wooden reception
-// building is still under construction (exposed framing), so it's intentionally
-// kept OUT of the hero.
+// July-2026 shoot — the finished A-frames and the ridge they look out on.
+//
+// The source frames are portrait 2:3 and the hero is full-bleed, so these are
+// stored at 3:2 rather than 16:9 on purpose: a 16:9 master loses too much of
+// the sides once `bg-cover` fits it to a tall phone viewport. Each frame was
+// checked at BOTH ~1.8:1 (desktop) and ~0.46 (portrait phone) before being
+// picked — most of the collection survives neither.
 const SUMMER_SLIDES = [
-  "/images/resort/gallery/gal-territory-panorama.jpg",
-  "/images/resort/gallery/gal-topchan-row.jpg",
-  "/images/resort/gallery/gal-pathway.jpg",
+  "/images/resort/hero/hero-aframe-row.jpg",
+  "/images/resort/hero/hero-ridge.jpg",
+  "/images/resort/hero/hero-aframe-pines.jpg",
 ];
 
 const WINTER_PHOTO = "/images/resort/winter-google-aframe.jpg";

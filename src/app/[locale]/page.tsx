@@ -53,7 +53,7 @@ export default async function HomePage({ params }: PageProps) {
       <link
         rel="preload"
         as="image"
-        href="/images/resort/gallery/gal-territory-panorama.jpg"
+        href="/images/resort/hero/hero-aframe-row.jpg"
         fetchPriority="high"
       />
 

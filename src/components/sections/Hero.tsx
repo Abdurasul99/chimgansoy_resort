@@ -3,6 +3,7 @@ import type { Locale } from "@/i18n/config";
 import { HeroSlideshow } from "@/components/sections/HeroSlideshow";
 import { BookingWidget } from "@/components/sections/BookingWidget";
 import { SnowParticles } from "@/components/effects/SnowParticles";
+import { HeroScrollCue } from "@/components/ui/HeroScrollCue";
 
 type HeroProps = {
   locale: Locale;
@@ -208,22 +209,13 @@ export function Hero({ locale }: HeroProps) {
         </div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll cue — hairline with a light running down it, and a real
+          control: clicking hands off to the smooth-scroll engine. */}
       <div
-        className="hero-fx-content absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 motion-rise"
+        className="hero-fx-content absolute bottom-7 left-1/2 -translate-x-1/2 motion-rise"
         style={{ animationDelay: "600ms" }}
-        aria-hidden="true"
       >
-        <svg
-          className="h-8 w-8 text-white/50"
-          style={{ animation: "bounce-y 2s ease-in-out infinite" }}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={1.4}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
+        <HeroScrollCue locale={locale} />
       </div>
     </section>
   );
