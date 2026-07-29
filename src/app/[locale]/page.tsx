@@ -53,7 +53,7 @@ export default async function HomePage({ params }: PageProps) {
       <link
         rel="preload"
         as="image"
-        href="/images/resort/hero/hero-aframe-row.jpg"
+        href="/images/resort/hero/hero-lawn.jpg"
         fetchPriority="high"
       />
 
@@ -256,7 +256,9 @@ export default async function HomePage({ params }: PageProps) {
           {([
             { image: "galKidsSwing", caption: locale === "uz" ? "Bolalar balandroq kuladi" : locale === "en" ? "Kids laugh louder here" : "Дети смеются\nгромче" },
             { image: "galMangalFire", caption: locale === "uz" ? "Mangal oldida kecha" : locale === "en" ? "Evening by the grill" : "Вечер\nу мангала" },
-            { image: "galAframeTrio", caption: locale === "uz" ? "Uycha oldidagi ilk foto" : locale === "en" ? "First photo by the cabin" : "Первое фото\nу домика" },
+            // Was galAframeTrio — the A-frames still as open shells. A caption
+            // about your first photo by the cabin sat over a building site.
+            { image: "aframeLawnTall", caption: locale === "uz" ? "Uycha oldidagi ilk foto" : locale === "en" ? "First photo by the cabin" : "Первое фото\nу домика" },
             { image: "galTopchanPeaks", caption: locale === "uz" ? "Ikkalamiz uchun sunset" : locale === "en" ? "A sunset for two" : "Закат\nна двоих" },
             { image: "galFoodServing", caption: locale === "uz" ? "Kompaniya bilan keldik" : locale === "en" ? "Arrived with friends" : "Приехали\nкомпанией" },
           ] as const).map(({ image, caption }) => {

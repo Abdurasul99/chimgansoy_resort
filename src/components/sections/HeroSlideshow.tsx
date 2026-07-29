@@ -9,10 +9,15 @@ import { useEffect, useState } from "react";
 // the sides once `bg-cover` fits it to a tall phone viewport. Each frame was
 // checked at BOTH ~1.8:1 (desktop) and ~0.46 (portrait phone) before being
 // picked — most of the collection survives neither.
+// hero-lawn leads: it is the only frame showing the grounds finished — lawn
+// laid, pines grown in. It is also the only one NOT from the July gallery, and
+// only 896px was available, so it is upscaled (lanczos3 + unsharp) rather than
+// native. That holds up under the hero's dark scrim, but a full-resolution
+// original would be a straight upgrade — swap it in here if one turns up.
 const SUMMER_SLIDES = [
-  "/images/resort/hero/hero-aframe-row.jpg",
+  "/images/resort/hero/hero-lawn.jpg",
   "/images/resort/hero/hero-ridge.jpg",
-  "/images/resort/hero/hero-aframe-pines.jpg",
+  "/images/resort/hero/hero-aframe-row.jpg",
 ];
 
 const WINTER_PHOTO = "/images/resort/winter-google-aframe.jpg";

@@ -133,6 +133,18 @@ export const resortImages = {
       en: "A-frame cabins on a manicured lawn with pines and a walkway",
     },
   },
+  /* 3:4 — matches the emotion-strip cell natively, so no upscale here: the
+     cell renders ~288px wide and the 888px source is already 3x oversampled. */
+  aframeLawnTall: {
+    src: "/images/resort/rooms/aframe-lawn-tall.jpg",
+    localSrc: "/images/resort/rooms/aframe-lawn-tall.jpg",
+    position: "center",
+    alt: {
+      ru: "Домики A-frame на зелёном газоне среди сосен",
+      uz: "Qarag'aylar orasidagi yashil maysazorda A-frame uychalari",
+      en: "A-frame cabins on a green lawn among pines",
+    },
+  },
   aframeTerraceView: {
     src: "/images/resort/rooms/aframe-terrace-view.jpg",
     localSrc: "/images/resort/rooms/aframe-terrace-view.jpg",
