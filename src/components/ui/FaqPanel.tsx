@@ -195,6 +195,15 @@ export function FaqPanel({ locale: rawLocale }: { locale: string }) {
             />
           )}
 
+          {/* Presence pings — CSS, not framer-motion: they run on the
+              compositor and cost no main-thread work while idle. */}
+          {mounted && !open && (
+            <>
+              <span aria-hidden className="cg-ping" />
+              <span aria-hidden className="cg-ping cg-ping--late" />
+            </>
+          )}
+
           <motion.button
             type="button"
             onClick={() => setOpen((v) => !v)}
@@ -204,9 +213,13 @@ export function FaqPanel({ locale: rawLocale }: { locale: string }) {
             transition={{ type: "spring", stiffness: 260, damping: 17, delay: 0.6 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.93 }}
-            className="relative flex h-14 items-center gap-2.5 rounded-full bg-gradient-to-b from-[var(--sun)] to-[var(--sun-dark)] pl-4 pr-5 text-[var(--on-accent)] shadow-[0_14px_36px_rgba(220,140,0,0.42)] transition-shadow duration-300 hover:shadow-[0_18px_46px_rgba(220,140,0,0.5)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sun)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--paper)]"
+            className={`cg-btn relative flex h-14 items-center gap-2.5 rounded-full bg-gradient-to-b from-[var(--sun)] to-[var(--sun-dark)] pl-4 pr-5 text-[var(--on-accent)] shadow-[0_14px_36px_rgba(220,140,0,0.42)] transition-shadow duration-300 hover:shadow-[0_18px_46px_rgba(220,140,0,0.5)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sun)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--paper)] ${open ? "cg-quiet" : ""}`}
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--on-accent)]/15">
+            <span
+              className={`flex h-9 w-9 items-center justify-center overflow-hidden rounded-full ${
+                open ? "bg-[var(--on-accent)]/15" : "bg-[#0f1928] ring-1 ring-[var(--on-accent)]/25"
+              }`}
+            >
               <AnimatePresence mode="wait" initial={false}>
                 {open ? (
                   <motion.svg
@@ -224,19 +237,63 @@ export function FaqPanel({ locale: rawLocale }: { locale: string }) {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </motion.svg>
                 ) : (
+                  /* Sunrise over Chimgan — the logo's sun + ridge, alive.
+                     The ridge paints over the sun, so the sun rises out from
+                     behind the mountains rather than sliding across them. */
                   <motion.svg
-                    key="chat"
-                    initial={{ rotate: 90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: -90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2.2}
+                    key="mark"
+                    initial={{ scale: 0.7, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.7, opacity: 0 }}
+                    transition={{ duration: 0.22 }}
+                    className="cg-mark"
+                    viewBox="0 0 40 40"
+                    aria-hidden="true"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093M12 17h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <defs>
+                      <clipPath id="cg-clip">
+                        <circle cx="20" cy="20" r="20" />
+                      </clipPath>
+                      <radialGradient id="cg-glow-grad">
+                        <stop offset="0%" stopColor="#f4a52a" stopOpacity="0.9" />
+                        <stop offset="100%" stopColor="#f4a52a" stopOpacity="0" />
+                      </radialGradient>
+                    </defs>
+
+                    <g clipPath="url(#cg-clip)">
+                      {/* Night-sky base — the dark disc the scene sits in */}
+                      <rect width="40" height="40" fill="#0f1928" />
+
+                      {/* Sun glow, then the sun itself */}
+                      <circle className="cg-glow" cx="20" cy="25" r="13" fill="url(#cg-glow-grad)" />
+                      <circle className="cg-sun" cx="20" cy="25" r="6" fill="#f4a52a" />
+
+                      {/* Ridge — two peaks, echoing the brand mark. Kept low
+                          enough that the sun clears it at the top of its arc;
+                          that emerging disc is the whole point of the mark. */}
+                      <path
+                        d="M-4 40 L6 28 L12 32.5 L21 22 L27 28.5 L33 25 L44 40 Z"
+                        fill="#0b1420"
+                      />
+                      {/* Snow line on the main peak */}
+                      <path d="M21 22 L24.2 25.4 L21.6 25.9 L19.4 24.8 Z" fill="#2f4256" />
+                    </g>
+
+                    {/* AI sparks above the ridge */}
+                    <g fill="#ffd98a">
+                      <path
+                        className="cg-spark-a"
+                        d="M11 8.4 L11.9 10.1 L13.6 11 L11.9 11.9 L11 13.6 L10.1 11.9 L8.4 11 L10.1 10.1 Z"
+                      />
+                      <path
+                        className="cg-spark-b"
+                        d="M29 5.6 L29.7 7 L31.1 7.7 L29.7 8.4 L29 9.8 L28.3 8.4 L26.9 7.7 L28.3 7 Z"
+                      />
+                      <path
+                        className="cg-spark-c"
+                        d="M32 15.2 L32.5 16.2 L33.5 16.7 L32.5 17.2 L32 18.2 L31.5 17.2 L30.5 16.7 L31.5 16.2 Z"
+                      />
+                    </g>
                   </motion.svg>
                 )}
               </AnimatePresence>

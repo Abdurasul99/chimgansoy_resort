@@ -996,6 +996,108 @@ html { scroll-behavior: smooth; }
   transform-origin: left;
 }
 
+/* ══════════════════════════════════════════════════════════════════
+   CONCIERGE MARK — a living miniature of the brand logo
+   Sun rises from behind a mountain ridge, AI sparks twinkle above,
+   a presence ring pings outward. The ridge is painted OVER the sun,
+   so the sun genuinely rises out from behind the mountains.
+
+   Everything animates transform/opacity only. This button is
+   position:fixed and therefore on screen for the whole session, so
+   nothing here may touch a layout or paint property.
+   ══════════════════════════════════════════════════════════════════ */
+.cg-mark {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Sun — rises and sets on a slow loop; clipped by the ridge above it. */
+@keyframes cg-sun-rise {
+  0%, 100% { transform: translateY(8px); }
+  50%      { transform: translateY(-4.5px); }
+}
+.cg-sun {
+  animation: cg-sun-rise 7s ease-in-out infinite;
+}
+
+/* Warm glow breathing in step with the sun. */
+@keyframes cg-glow {
+  0%, 100% { opacity: 0.18; transform: translateY(8px) scale(0.9); }
+  50%      { opacity: 0.5;  transform: translateY(-4.5px) scale(1.12); }
+}
+.cg-glow {
+  animation: cg-glow 7s ease-in-out infinite;
+}
+
+/* AI sparks — staggered twinkle, the visual shorthand for "assistant". */
+@keyframes cg-spark {
+  0%, 100% { opacity: 0.15; transform: scale(0.6); }
+  50%      { opacity: 1;    transform: scale(1); }
+}
+.cg-spark-a { animation: cg-spark 2.6s ease-in-out infinite; transform-origin: 11px 11px; }
+.cg-spark-b { animation: cg-spark 2.6s ease-in-out infinite 0.85s; transform-origin: 29px 8px; }
+.cg-spark-c { animation: cg-spark 2.6s ease-in-out infinite 1.7s; transform-origin: 32px 17px; }
+
+/* Presence ping — "someone is here to answer". Two offset rings. */
+@keyframes cg-ping {
+  0%   { opacity: 0.45; transform: scale(0.82); }
+  70%  { opacity: 0;    transform: scale(1.45); }
+  100% { opacity: 0;    transform: scale(1.45); }
+}
+.cg-ping {
+  position: absolute;
+  inset: -2px;
+  border-radius: 999px;
+  border: 1.5px solid var(--sun);
+  pointer-events: none;
+  animation: cg-ping 3.4s var(--ease-premium) infinite;
+}
+.cg-ping--late {
+  animation-delay: 1.7s;
+}
+
+/* Hover: the sun climbs clear of the ridge and the scene warms up. */
+.cg-btn:hover .cg-sun,
+.cg-btn:focus-visible .cg-sun {
+  animation-play-state: paused;
+  transform: translateY(-5.5px);
+  transition: transform 0.5s var(--ease-premium);
+}
+.cg-btn:hover .cg-glow,
+.cg-btn:focus-visible .cg-glow {
+  animation-play-state: paused;
+  opacity: 0.6;
+  transform: translateY(-5.5px) scale(1.18);
+  transition: transform 0.5s var(--ease-premium), opacity 0.5s var(--ease-premium);
+}
+
+/* The panel is open — the mark is no longer the thing asking for attention. */
+.cg-quiet .cg-sun,
+.cg-quiet .cg-glow,
+.cg-quiet .cg-spark-a,
+.cg-quiet .cg-spark-b,
+.cg-quiet .cg-spark-c,
+.cg-quiet .cg-ping {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cg-sun,
+  .cg-glow,
+  .cg-spark-a,
+  .cg-spark-b,
+  .cg-spark-c {
+    animation: none;
+    transform: none;
+  }
+  /* Sun sits just clear of the ridge, sparks fully lit — the end state. */
+  .cg-sun { transform: translateY(-1px); }
+  .cg-glow { transform: translateY(-1px); opacity: 0.4; }
+  .cg-ping { display: none; }
+}
+
 .assistant-toggle {
   position: fixed;
   right: 1rem;
