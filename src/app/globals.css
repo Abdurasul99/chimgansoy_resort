@@ -997,6 +997,90 @@ html { scroll-behavior: smooth; }
 }
 
 /* ══════════════════════════════════════════════════════════════════
+   CONCIERGE ARRIVAL — the wishing star
+   A star sweeps in across the viewport on a high arc, glitter trailing
+   behind it, and bursts on the launcher — which then lights up out of
+   the flash. Plays once per session.
+
+   The star lives INSIDE the launcher's positioned wrapper, so its flight
+   ends at translate(0,0) — dead on the button at any viewport size,
+   with no JS measuring anything. Start offsets are in vw/vh so the arc
+   always crosses the screen.
+   ══════════════════════════════════════════════════════════════════ */
+.cg-star {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  pointer-events: none;
+  z-index: 2;
+  animation: cg-star-fly 1750ms cubic-bezier(0.45, 0.05, 0.3, 1) forwards;
+}
+
+/* The four-point sparkle itself. Rotation is on this inner element so the
+   flight path (outer) and the spin stay independent. */
+.cg-star__core {
+  position: absolute;
+  inset: 0;
+  background: #fff8e2;
+  box-shadow:
+    0 0 10px 2px rgba(255, 214, 120, 0.95),
+    0 0 26px 8px rgba(255, 186, 70, 0.55);
+  clip-path: polygon(
+    50% 0%, 60% 40%, 100% 50%, 60% 60%,
+    50% 100%, 40% 60%, 0% 50%, 40% 40%
+  );
+  animation: cg-star-spin 1750ms linear forwards;
+}
+
+/* Glitter — same arc, staggered a little behind, smaller and dimmer. */
+.cg-star__mote {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 244, 214, 0.95) 0%, rgba(255, 198, 92, 0.5) 45%, transparent 70%);
+  animation: cg-star-fly 1750ms cubic-bezier(0.45, 0.05, 0.3, 1) forwards;
+}
+.cg-star__mote--1 { animation-delay: 70ms;  scale: 0.62; }
+.cg-star__mote--2 { animation-delay: 140ms; scale: 0.46; }
+.cg-star__mote--3 { animation-delay: 210ms; scale: 0.32; }
+
+/* A lazy S across the screen: in from the upper left, up over the apex,
+   then swooping down onto the launcher. */
+@keyframes cg-star-fly {
+  0%   { opacity: 0; translate: -88vw -40vh; scale: 0.2; }
+  10%  { opacity: 1; }
+  35%  { translate: -52vw -66vh; scale: 1; }
+  62%  { translate: -26vw -52vh; scale: 1.05; }
+  85%  { translate: -6vw -16vh;  scale: 0.8; }
+  96%  { opacity: 1; translate: 0 0; scale: 0.34; }
+  100% { opacity: 0; translate: 0 0; scale: 0.1; }
+}
+
+@keyframes cg-star-spin {
+  from { rotate: 0deg; }
+  to   { rotate: 420deg; }
+}
+
+/* The flash the button is born from. */
+.cg-burst {
+  position: absolute;
+  inset: -6px;
+  border-radius: 999px;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle, rgba(255, 240, 200, 0.95) 0%, rgba(255, 190, 80, 0.5) 40%, transparent 72%);
+  animation: cg-burst 900ms var(--ease-premium) 1600ms forwards;
+}
+@keyframes cg-burst {
+  0%   { opacity: 0;    scale: 0.25; }
+  22%  { opacity: 0.95; scale: 0.9; }
+  100% { opacity: 0;    scale: 2.1; }
+}
+
+/* ══════════════════════════════════════════════════════════════════
    CONCIERGE MARK — a living miniature of the brand logo
    Sun rises from behind a mountain ridge, AI sparks twinkle above,
    a presence ring pings outward. The ridge is painted OVER the sun,
@@ -1084,6 +1168,12 @@ html { scroll-behavior: smooth; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* No flight, no flash — the launcher is simply there. */
+  .cg-star,
+  .cg-burst {
+    display: none;
+  }
+
   .cg-sun,
   .cg-glow,
   .cg-spark-a,
@@ -1380,83 +1470,6 @@ html { scroll-behavior: smooth; }
   width: 0.28rem;
   height: 0.28rem;
   animation-delay: 1.6s;
-}
-
-.assistant-intro {
-  position: fixed;
-  inset: 0;
-  z-index: 49;
-  pointer-events: none;
-}
-
-.assistant-intro__trail {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 6rem;
-  height: 2px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 251, 223, 0.65) 18%, rgba(255, 220, 121, 1) 62%, rgba(255, 255, 255, 0) 100%);
-  filter: drop-shadow(0 0 12px rgba(255, 220, 121, 0.7));
-  transform-origin: left center;
-  animation: assistant-shooting-star 1500ms var(--ease-premium) forwards;
-}
-
-.assistant-intro__head {
-  position: absolute;
-  top: -0.35rem;
-  left: 5.45rem;
-  width: 0.78rem;
-  height: 0.78rem;
-  border-radius: 0.2rem;
-  background: linear-gradient(135deg, #fffef7 0%, #ffe39d 50%, #ffba57 100%);
-  box-shadow:
-    0 0 18px rgba(255, 219, 118, 0.9),
-    0 0 44px rgba(255, 190, 84, 0.45);
-  transform: rotate(45deg);
-  animation: assistant-shooting-star 1500ms var(--ease-premium) forwards;
-}
-
-.assistant-intro__burst {
-  position: absolute;
-  width: 2.2rem;
-  height: 2.2rem;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 238, 188, 0.88) 0%, rgba(255, 194, 96, 0.45) 42%, rgba(255, 194, 96, 0) 74%);
-  opacity: 0;
-  animation: assistant-star-burst 1500ms var(--ease-premium) forwards;
-}
-
-@keyframes assistant-shooting-star {
-  0% {
-    opacity: 0;
-    transform: translate3d(-120px, 64px, 0) rotate(24deg) scale(0.82);
-  }
-  10% {
-    opacity: 1;
-  }
-  82% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: translate3d(var(--assistant-star-end-x), var(--assistant-star-end-y), 0) rotate(24deg) scale(1);
-  }
-}
-
-@keyframes assistant-star-burst {
-  0%,
-  72% {
-    opacity: 0;
-    transform: translate3d(-120px, 64px, 0) scale(0.2);
-  }
-  84% {
-    opacity: 0.78;
-    transform: translate3d(var(--assistant-star-end-x), var(--assistant-star-end-y), 0) scale(0.45);
-  }
-  100% {
-    opacity: 0;
-    transform: translate3d(var(--assistant-star-end-x), var(--assistant-star-end-y), 0) scale(1.45);
-  }
 }
 
 @keyframes assistant-spin {

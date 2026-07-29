@@ -133,6 +133,16 @@ export const resortImages = {
       en: "A-frame cabins on a manicured lawn with pines and a walkway",
     },
   },
+  aframeTerraceView: {
+    src: "/images/resort/rooms/aframe-terrace-view.jpg",
+    localSrc: "/images/resort/rooms/aframe-terrace-view.jpg",
+    position: "center",
+    alt: {
+      ru: "Вид на горный хребет с террасы домика",
+      uz: "Uycha terrasasidan tog' tizmasiga manzara",
+      en: "View of the mountain ridge from a cabin terrace",
+    },
+  },
   aframeLawnWide: {
     src: "/images/resort/rooms/aframe-lawn-wide.jpg",
     localSrc: "/images/resort/rooms/aframe-lawn-wide.jpg",

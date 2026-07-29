@@ -36,6 +36,11 @@ const HINT: Record<Locale, string> = {
   en: "Ask me — prices & free dates 👋",
 };
 
+/** Once-per-session flag for the arrival star. */
+const STAR_SEEN_KEY = "cgd_star_seen";
+/** Matches the .cg-burst delay in globals.css — the moment the star lands. */
+const STAR_LAND_MS = 1600;
+
 function toLocale(raw: string): Locale {
   if (raw === "uz" || raw === "en") return raw;
   return "ru";
@@ -46,18 +51,95 @@ export function FaqPanel({ locale: rawLocale }: { locale: string }) {
   const [open, setOpen] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [mounted, setMounted] = useState(false);
+  // Arrival choreography.
+  //   mode    — decided the instant we mount, BEFORE the star is due to launch.
+  //             Deciding late let the launcher spring in, then snap back to
+  //             scale 0 when the star started, then spring in again.
+  //   star    — the flight is actually on screen now.
+  //   landed  — the burst has fired; the launcher springs out of it.
+  const [mode, setMode] = useState<"pending" | "star" | "plain">("pending");
+  const [star, setStar] = useState(false);
+  const [landed, setLanded] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // First-load choreography: pop the launcher in, then float a hint bubble
-  // that draws the eye and explains the value, then quietly retire it.
+  // Reveal the launcher exactly when the star bursts on it.
+  useEffect(() => {
+    if (!star) return;
+    const t = window.setTimeout(() => setLanded(true), STAR_LAND_MS);
+    return () => window.clearTimeout(t);
+  }, [star]);
+
+  // Held back until the arrival has resolved one way or the other.
+  const hideLauncher = mode === "pending" || (mode === "star" && !landed);
+
+  // First-load choreography: a star sweeps in and bursts on the launcher,
+  // the launcher lights up out of the flash, then a hint bubble floats up to
+  // explain the value and quietly retires.
+  //
+  // The star only flies once per session — the whole point is that it feels
+  // like a small event, and an event that repeats on every page view is an
+  // irritation. Repeat views just get the launcher, popped in quickly.
   useEffect(() => {
     setMounted(true);
-    const t1 = setTimeout(() => setShowHint(true), 2000);
-    const t2 = setTimeout(() => setShowHint(false), 9000);
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
+
+    const reduced =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let alreadyFlown = true;
+    try {
+      alreadyFlown = sessionStorage.getItem(STAR_SEEN_KEY) === "1";
+    } catch {
+      // Private mode / storage disabled — treat as seen and skip the flourish.
+    }
+
+    const timers: number[] = [];
+    const hintAfter = (ms: number) => {
+      timers.push(window.setTimeout(() => setShowHint(true), ms));
+      timers.push(window.setTimeout(() => setShowHint(false), ms + 7000));
     };
+
+    if (reduced || alreadyFlown) {
+      setMode("plain");
+      hintAfter(2000);
+      return () => timers.forEach(window.clearTimeout);
+    }
+
+    // Decided now, not when the flight starts — see the note on `mode`.
+    setMode("star");
+    try {
+      sessionStorage.setItem(STAR_SEEN_KEY, "1");
+    } catch {}
+
+    const launch = () => {
+      setStar(true);
+      // Hint waits until the star has landed and the launcher has settled.
+      hintAfter(2900);
+    };
+
+    // On the homepage the logo intro owns the screen first; a star flying
+    // behind that overlay would simply be missed.
+    const gate = document.documentElement.getAttribute("data-intro");
+    if (gate) {
+      const onDone = () => {
+        window.removeEventListener("logo-intro:done", onDone);
+        timers.push(window.setTimeout(launch, 260));
+      };
+      window.addEventListener("logo-intro:done", onDone);
+      // Failsafe: the intro has its own 4s/6s escape hatches, so never wait longer.
+      timers.push(
+        window.setTimeout(() => {
+          window.removeEventListener("logo-intro:done", onDone);
+          launch();
+        }, 6500),
+      );
+      return () => {
+        window.removeEventListener("logo-intro:done", onDone);
+        timers.forEach(window.clearTimeout);
+      };
+    }
+
+    timers.push(window.setTimeout(launch, 420));
+    return () => timers.forEach(window.clearTimeout);
   }, []);
 
   useEffect(() => {
@@ -196,21 +278,46 @@ export function FaqPanel({ locale: rawLocale }: { locale: string }) {
           )}
 
           {/* Presence pings — CSS, not framer-motion: they run on the
-              compositor and cost no main-thread work while idle. */}
-          {mounted && !open && (
+              compositor and cost no main-thread work while idle.
+              Held back until the star has landed, so nothing pulses on an
+              empty spot before the launcher exists. */}
+          {mounted && !open && !hideLauncher && (
             <>
               <span aria-hidden className="cg-ping" />
               <span aria-hidden className="cg-ping cg-ping--late" />
             </>
           )}
 
+          {/* The wishing star: sweeps across the viewport, glitter trailing,
+              and bursts here. Purely decorative — hidden from assistive tech,
+              pointer-events off, and removed once it has played. */}
+          {star && !landed && (
+            <span aria-hidden className="cg-star">
+              <span className="cg-star__core" />
+            </span>
+          )}
+          {star && !landed && (
+            <>
+              <span aria-hidden className="cg-star cg-star__mote cg-star__mote--1" />
+              <span aria-hidden className="cg-star cg-star__mote cg-star__mote--2" />
+              <span aria-hidden className="cg-star cg-star__mote cg-star__mote--3" />
+            </>
+          )}
+          {star && <span aria-hidden className="cg-burst" />}
+
           <motion.button
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? CLOSE_LABEL[locale] : TITLES[locale]}
             initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 260, damping: 17, delay: 0.6 }}
+            // While the star is inbound the launcher is held at scale 0 and
+            // then springs out of the burst; otherwise it pops in after load.
+            animate={hideLauncher ? { scale: 0, opacity: 0 } : { scale: 1, opacity: 1 }}
+            transition={
+              mode === "star"
+                ? { type: "spring", stiffness: 300, damping: 15 }
+                : { type: "spring", stiffness: 260, damping: 17, delay: 0.6 }
+            }
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.93 }}
             className={`cg-btn relative flex h-14 items-center gap-2.5 rounded-full bg-gradient-to-b from-[var(--sun)] to-[var(--sun-dark)] pl-4 pr-5 text-[var(--on-accent)] shadow-[0_14px_36px_rgba(220,140,0,0.42)] transition-shadow duration-300 hover:shadow-[0_18px_46px_rgba(220,140,0,0.5)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sun)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--paper)] ${open ? "cg-quiet" : ""}`}

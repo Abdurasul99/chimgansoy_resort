@@ -8,22 +8,33 @@ import { text } from "@/lib/localize";
  * GPU-composited), pauses on hover so people can actually look at a photo.
  */
 
+/**
+ * Deliberately a MIX, not a clean swap to the new shoot.
+ *
+ * The strip is the first thing under the hero, so it has to state what this
+ * place is — and that is still primarily day-use: topchan, mangal, kazan,
+ * food. Twelve cabin interiors would quietly re-pitch the site as a hotel.
+ * So: the new A-frame material earns half the frames, the day-use story keeps
+ * the other half.
+ *
+ * The old "no A-frame shots here" rule is lifted — it existed because the
+ * cabins were still open shells. They are finished and furnished now.
+ */
 const ROW_A = [
   "galTopchanPeaks",
   "galFoodServing",
-  "galPathway",
+  "aframeLawnWide",
   "galKazanStone",
   "galTopchanSwing",
-  "galMountainView",
+  "aframeTerraceView",
 ] as const;
 
-// NOTE: no A-frame shots here — cabins are still under construction
 const ROW_B = [
-  "galTopchanRidge",
-  "galTopchanInside",
+  "aframeRoom",
   "galMangalFire",
+  "aframeBed",
   "galTerritoryPanorama",
-  "galWaiterPlov",
+  "aframeLounge",
   "galGreenHills",
 ] as const;
 
