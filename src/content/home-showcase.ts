@@ -7,44 +7,51 @@ export type HomeShowcaseItem = {
   copy: LocalizedString;
 };
 
+/**
+ * The two full-bleed editorial frames under the numbers band, plus a third
+ * used on inner pages. They carry the resort story now — the stay first, the
+ * grounds second — rather than the day-use pitch they used to make. Frames
+ * come from the finished-cabin shoots for the same reason: the homepage should
+ * show the thing a guest actually books.
+ */
 export const homeShowcase: HomeShowcaseItem[] = [
   {
-    image: "galTerritoryPanorama",
+    image: "aframeLawnBanner",
     title: {
-      ru: "Дневной отдых, где весь день складывается в одном месте",
-      uz: "Butun kun bitta hududda jamlanadigan kunlik dam",
-      en: "A day visit where everything comes together in one place",
+      ru: "Двадцать домиков на шести гектарах в горах",
+      uz: "Tog'larda olti gektarda yigirma uycha",
+      en: "Twenty cabins on six hectares in the mountains",
     },
     copy: {
-      ru: "Топчаны, мангал, казан, готовое меню, прогулки и виды на Чимган — всё на 6 гектарах в 45 минутах от Ташкента.",
-      uz: "Topchanlar, mangal, qozon, tayyor menyu, sayrlar va Chimgon manzaralari — 6 gektar hududda, Toshkentdan 45 daqiqada.",
-      en: "Topchans, BBQ, kazan, ready-made menu, walks, and Chimgan views — all on six hectares, 45 minutes from Tashkent.",
+      ru: "Десять A-frame для двоих-троих и десять шале с двумя спальнями. Каждый домик — отдельный, со своей террасой и видом на хребет. Бассейн включён в проживание.",
+      uz: "Ikki-uch kishilik o'nta A-frame va ikki yotoqxonali o'nta shale. Har bir uycha alohida — o'z terrasasi va tizma manzarasi bilan. Basseyn narxga kiritilgan.",
+      en: "Ten A-frames for two or three, and ten two-bedroom chalets. Each cabin stands alone, with its own terrace and a view of the ridge. The pool comes with the stay.",
     },
   },
   {
-    image: "galTopchanPeaks",
+    image: "chaletLounge",
     title: {
-      ru: "Топчан с курпача — для всей компании",
-      uz: "Kurpachali topchan — butun do'stlar uchun",
-      en: "A topchan with kurpacha — for your whole group",
+      ru: "Шале с кухней-залом — для семьи и компании",
+      uz: "Oshxona-zalli shale — oila va do'stlar uchun",
+      en: "A chalet with a kitchen-lounge — for family and friends",
     },
     copy: {
-      ru: "Приватный топчан до 8 человек в тени сосен. Курпача в комплекте, мангал и казан — в аренду рядом.",
-      uz: "Qarag'aylar soyasidagi 8 kishigacha xususiy topchan. Kurpacha to'plami bilan, mangal va qozon yaqinda ijaraga.",
-      en: "A private topchan for up to 8 guests in the shade of the pines. Kurpacha included; BBQ and kazan available to rent nearby.",
+      ru: "Две спальни с собственными санузлами, кухня-зал с диваном, тёплый пол и терраса 35 м². До 5 гостей.",
+      uz: "Alohida sanuzelli ikkita yotoqxona, divanli oshxona-zal, issiq pol va 35 m² terrasa. 5 mehmongacha.",
+      en: "Two bedrooms with ensuite bathrooms, a kitchen-lounge with a sofa, heated floors, and a 35 m² terrace. Up to 5 guests.",
     },
   },
   {
-    image: "galMountainView",
+    image: "aframeTerraceView",
     title: {
-      ru: "Горы Чимгана за порогом топчана",
-      uz: "Topchan ostonangizdayoq Chimgon tog'lari",
-      en: "The Chimgan range right at your doorstep",
+      ru: "Горы Чимгана начинаются за террасой",
+      uz: "Chimgon tog'lari terrasa ortidan boshlanadi",
+      en: "The Chimgan range starts off your terrace",
     },
     copy: {
-      ru: "Лёгкие пешие маршруты, конные прогулки и канатные дороги — добавьте активность к спокойному дню на природе.",
-      uz: "Yengil piyoda marshrutlar, ot minish va kanat yo'llari — sokin tabiatdagi kunga faollik qo'shing.",
-      en: "Easy walking trails, horse rides, and cable cars nearby — add a layer of activity to a slow day in nature.",
+      ru: "Пешие маршруты, конные прогулки и канатные дороги — в нескольких минутах от домика. Администратор подскажет сезонные варианты.",
+      uz: "Piyoda marshrutlar, ot minish va kanat yo'llari — uychadan bir necha daqiqa masofada. Administrator mavsumiy variantlarni aytadi.",
+      en: "Walking trails, horse rides, and cable cars — minutes from your cabin. The team can suggest what's best this season.",
     },
   },
 ];

@@ -18,9 +18,9 @@ export const pageSeo = {
       en: "CHIMGAN DARBAZA, Tashkent — Official website",
     },
     description: {
-      ru: "Глэмпинг, шале и дневной отдых в 45 минутах от Ташкента: топчаны, мангал, казан, ресторан и панорама Чимгана на высоте 1700 м.",
-      uz: "Toshkentdan 45 daqiqada glemping, shale va kunlik dam: topchanlar, mangal, qozon, restoran va 1700 m balandlikdagi Chimg'on manzarasi.",
-      en: "Glamping, chalets, and day visits 45 minutes from Tashkent: topchans, BBQ, kazan, restaurant, and Chimgan views at 1,700 m.",
+      ru: "Шале и A-frame глэмпинг на высоте 1700 м в 45 минутах от Ташкента: бассейн включён в проживание, кухня на территории, панорама Чимгана. Есть дневные визиты.",
+      uz: "Toshkentdan 45 daqiqada, 1700 m balandlikda shale va A-frame glemping: basseyn narxga kiritilgan, hududda oshxona, Chimg'on panoramasi. Kunlik tashriflar ham bor.",
+      en: "Chalets and A-frame glamping at 1,700 m, 45 minutes from Tashkent: pool included with every stay, kitchen on site, Chimgan views. Day visits available too.",
     },
   },
   rooms: {
@@ -42,9 +42,9 @@ export const pageSeo = {
       en: "Resort services and infrastructure",
     },
     description: {
-      ru: "Ресторан, топчаны с курпача, мангал и казан, зоны пикника, детская площадка и активности на территории.",
-      uz: "Restoran, kurpachali topchanlar, mangal va qozon, piknik zonalari, bolalar maydoni va faoliyatlar.",
-      en: "Restaurant, kurpacha topchans, BBQ and kazan, picnic zones, kids playground, and on-site activities.",
+      ru: "Кухня и ресторан, мангал и казан, зоны отдыха, детская площадка и горные маршруты рядом с курортом.",
+      uz: "Oshxona va restoran, mangal va qozon, dam olish zonalari, bolalar maydoni va kurort yaqinidagi tog' marshrutlari.",
+      en: "Kitchen and restaurant, BBQ and kazan, lounge areas, a kids playground, and mountain trails next to the resort.",
     },
   },
   about: {
@@ -54,9 +54,9 @@ export const pageSeo = {
       en: "About the resort in the Chimgan mountains",
     },
     description: {
-      ru: "Дневной отдых и проживание на высоте 1700 м в 45 минутах от Ташкента — природа, тишина и полная инфраструктура.",
-      uz: "Toshkentdan 45 daqiqada 1700 m balandlikda kunlik dam va yashash — tabiat, osoyishtalik va to'liq infratuzilma.",
-      en: "Day visits and stays at 1,700 m, 45 minutes from Tashkent — nature, quiet, and full infrastructure.",
+      ru: "Проживание в шале и глэмпинге на высоте 1700 м в 45 минутах от Ташкента — 6 гектаров, бассейн, кухня и горы Чимгана.",
+      uz: "Toshkentdan 45 daqiqada, 1700 m balandlikda shale va glempingda yashash — 6 gektar, basseyn, oshxona va Chimg'on tog'lari.",
+      en: "Chalet and glamping stays at 1,700 m, 45 minutes from Tashkent — six hectares, a pool, a kitchen, and the Chimgan mountains.",
     },
   },
   place: {
@@ -91,9 +91,9 @@ export const pageSeo = {
       en: "Booking — CHIMGAN DARBAZA, Tashkent — Official website",
     },
     description: {
-      ru: "Бронирование дневного отдыха и проживания: выберите даты — администратор подтвердит бронь в ближайшее время.",
-      uz: "Kunlik dam va yashashni bron qilish: sanalarni tanlang — administrator bronni tez orada tasdiqlaydi.",
-      en: "Book a day visit or a stay: pick the dates and our team will confirm shortly.",
+      ru: "Бронирование шале, глэмпинга и дневных визитов: выберите даты — администратор подтвердит бронь в ближайшее время.",
+      uz: "Shale, glemping va kunlik tashriflarni bron qilish: sanalarni tanlang — administrator bronni tez orada tasdiqlaydi.",
+      en: "Book a chalet, a glamping cabin, or a day visit: pick the dates and our team will confirm shortly.",
     },
   },
 } satisfies Record<string, PageSeo>;

@@ -191,9 +191,26 @@ export function Hero({ locale }: HeroProps) {
           <em className="text-[var(--sun)]">{dict.home.title.split(" ").at(-1)}</em>
         </h1>
 
+        {/* What you actually book here, in three words each. The hero used to
+            say "day visit, topchans" — this is the stay-led replacement, and it
+            sits above the lead so the format registers before the prose does. */}
+        <ul
+          className="motion-rise mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 sm:gap-x-4"
+          style={{ animationDelay: "160ms" }}
+        >
+          {dict.home.heroChips.map((chip, i) => (
+            <li key={chip} className="flex items-center gap-3 sm:gap-4">
+              {i > 0 && <span aria-hidden className="h-1 w-1 rounded-full bg-[var(--sun)]/70" />}
+              <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/75 sm:text-xs">
+                {chip}
+              </span>
+            </li>
+          ))}
+        </ul>
+
         {/* Lead + booking: quiet one-line lead on the LEFT, booking box on the
             RIGHT (desktop). Stacks to one column on phones/tablets. */}
-        <div className="mt-8 grid items-end gap-8 lg:mt-10 lg:grid-cols-[1fr_minmax(0,26rem)] lg:gap-12">
+        <div className="mt-7 grid items-end gap-8 lg:mt-9 lg:grid-cols-[1fr_minmax(0,26rem)] lg:gap-12">
           {/* LEFT — one-line lead, lots of breathing room */}
           <p
             className="motion-rise max-w-md text-[1.1rem] leading-[1.7] text-white/85"

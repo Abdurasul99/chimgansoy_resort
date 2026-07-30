@@ -34,12 +34,39 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return buildMetadata(locale, pageSeo.home, "/");
 }
 
+// Resort numbers, not day-use numbers. "8 guests per topchan" and "10 hours
+// open" used to sit here — both describe a venue you leave before dinner.
+// Unit count comes from venueFacts(): 10 A-frames + 10 chalets.
 const stats = [
   { value: "1700", label: { ru: "м над уровнем моря", uz: "m balandlikda", en: "m above sea level" } },
-  { value: "8", label: { ru: "гостей на топчан", uz: "kishi topchan uchun", en: "guests per topchan" } },
-  { value: "10", label: { ru: "часов открыты", uz: "soat ochiq", en: "hours open" } },
+  { value: "20", label: { ru: "домиков на территории", uz: "hududdagi uychalar", en: "cabins on the grounds" } },
+  { value: "6", label: { ru: "гектаров территории", uz: "gektar hudud", en: "hectares of grounds" } },
   { value: "45", label: { ru: "мин от Ташкента", uz: "min Toshkentdan", en: "min from Tashkent" } },
 ] as const;
+
+/** Slim typographic band under the two stay cards. Deliberately photo-free:
+ *  the only pool image in the repo is a CGI render (see MasterPlan), and a
+ *  render sitting under real interior photography would read as a photo. */
+const poolBand = {
+  ru: {
+    label: "Бассейн",
+    title: "Включён в проживание",
+    copy: "Гостям шале и глэмпинга бассейн входит в стоимость. Можно забронировать и отдельно — на день, без ночёвки, до 4 гостей.",
+    cta: "О бассейне",
+  },
+  uz: {
+    label: "Basseyn",
+    title: "Yashash narxiga kiritilgan",
+    copy: "Shale va glemping mehmonlari uchun basseyn narxga kiritilgan. Alohida ham bron qilish mumkin — bir kunga, tunamasdan, 4 mehmongacha.",
+    cta: "Basseyn haqida",
+  },
+  en: {
+    label: "The pool",
+    title: "Included with every stay",
+    copy: "Chalet and glamping guests get the pool as part of the rate. It can also be booked on its own — for the day, no overnight stay, up to 4 guests.",
+    cta: "About the pool",
+  },
+} as const;
 
 export default async function HomePage({ params }: PageProps) {
   const locale = await getLocaleParam(params);
@@ -63,11 +90,68 @@ export default async function HomePage({ params }: PageProps) {
       {/* ── Hero ──────────────────────────────────────── */}
       <Hero locale={locale} />
 
-      {/* ── Living photo strip — real June 2026 shots ─── */}
+      {/* ── Living photo strip — real 2026 shots ──────── */}
       <PhotoMarquee locale={locale} />
 
-      {/* ── Price list (day-use) — primary value prop ─── */}
-      <PriceList locale={locale} />
+      {/* ── Stays — the primary product, first thing under the strip ──
+          This slot used to hold the day-use price list. The site sells nights
+          now: two stay formats, then the pool that comes with both. ── */}
+      <section id="stay" className="bg-[var(--paper)] px-4 py-20 sm:py-28 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div className="motion-reveal max-w-2xl">
+              <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--accent-strong)]">
+                <span>{dict.home.stayEyebrow}</span>
+                <span className="h-px w-10 bg-[var(--accent-strong)]/40" />
+                <span className="text-[var(--muted)]">
+                  {locale === "ru"
+                    ? "заезд 15:00 · выезд 12:00"
+                    : locale === "uz"
+                      ? "kirish 15:00 · chiqish 12:00"
+                      : "check-in 15:00 · check-out 12:00"}
+                </span>
+              </div>
+              <h2 className="motion-reveal-mask mt-4 font-serif text-[clamp(2.4rem,6vw,4.2rem)] font-semibold leading-[1.02] text-[var(--ink)]">
+                {dict.home.roomsTitle}
+              </h2>
+              <p className="mt-5 text-base leading-7 text-[var(--muted)]">{dict.home.roomsText}</p>
+            </div>
+            <ButtonLink
+              href={localizePath(locale, "/nomera")}
+              variant="ghost"
+              className="lg:mb-1 btn-press motion-reveal"
+              data-delay="100"
+            >
+              {dict.viewAll}
+            </ButtonLink>
+          </div>
+
+          <RoomCatalog locale={locale} limit={2} />
+
+          {/* Pool — the non-obvious inclusion, stated in words */}
+          <div
+            className="motion-reveal mt-6 grid gap-6 rounded-3xl bg-[var(--mountain)] p-7 text-white sm:p-9 lg:grid-cols-[1fr_auto] lg:items-center"
+            data-delay="120"
+          >
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--sun)]">
+                {poolBand[locale].label}
+              </p>
+              <h3 className="mt-3 font-serif text-2xl font-semibold leading-tight sm:text-3xl">
+                {poolBand[locale].title}
+              </h3>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-white/70">{poolBand[locale].copy}</p>
+            </div>
+            <ButtonLink
+              href={localizePath(locale, "/nomera/pool")}
+              variant="light"
+              className="btn-press justify-self-start lg:justify-self-end"
+            >
+              {poolBand[locale].cta}
+            </ButtonLink>
+          </div>
+        </div>
+      </section>
 
       {/* ── Numbers band — editorial oversized numerals ── */}
       <section className="bg-[var(--surface-warm)] border-y border-[var(--line)] px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
@@ -136,7 +220,9 @@ export default async function HomePage({ params }: PageProps) {
                 )}
                 {index === 0 && (
                   <div className="mt-8 motion-reveal" data-delay="200">
-                    <ButtonLink href={localizePath(locale, "/place")} variant="primary" className="btn-press">
+                    {/* Went to /place (nearby attractions) while the copy above
+                        it talks about the cabins — sends people to the rooms now. */}
+                    <ButtonLink href={localizePath(locale, "/nomera")} variant="primary" className="btn-press">
                       {dict.viewAll}
                     </ButtonLink>
                   </div>
@@ -194,11 +280,13 @@ export default async function HomePage({ params }: PageProps) {
                   {locale === "ru" ? "мин от Ташкента" : locale === "uz" ? "min Toshkentdan" : "min from Tashkent"}
                 </p>
               </div>
-              {/* Bottom-left floating badge — forest green, white text (Stitch style) */}
+              {/* Bottom-left floating badge — forest green, white text (Stitch style).
+                  Was "08–18 open hours", which is the day-visit window and read
+                  as "we close before dinner" next to a stay-led headline. */}
               <div className="editorial-badge editorial-badge--accent absolute -bottom-6 -left-6 hidden lg:block">
-                <p className="font-serif text-4xl font-bold leading-none">08–18</p>
+                <p className="font-serif text-4xl font-bold leading-none">15:00</p>
                 <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-white/80">
-                  {locale === "ru" ? "часы работы" : locale === "uz" ? "ish vaqti" : "open hours"}
+                  {locale === "ru" ? "заезд · выезд 12:00" : locale === "uz" ? "kirish · chiqish 12:00" : "check-in · out 12:00"}
                 </p>
               </div>
             </div>
@@ -211,26 +299,16 @@ export default async function HomePage({ params }: PageProps) {
         <WeatherPanel locale={locale} />
       </section>
 
-      {/* ── Rooms — glamping (real, bookable) ──────────── */}
-      <section className="bg-[var(--surface)] px-4 py-24 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-12 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div className="motion-reveal">
-              <SectionHeader title={dict.home.roomsTitle} text={dict.home.roomsText} />
-            </div>
-            <ButtonLink href={localizePath(locale, "/nomera")} variant="ghost" className="lg:mb-1 btn-press motion-reveal" data-delay="100">
-              {dict.viewAll}
-            </ButtonLink>
-          </div>
-          <RoomCatalog locale={locale} limit={2} />
-        </div>
-      </section>
+      {/* ── Развлечения и отдых — brand-styled leisure showcase ── */}
+      <LeisureShowcase locale={locale} />
 
       {/* ── Master plan — honest renders of what's being built (not bookable) ─── */}
       <MasterPlan locale={locale} />
 
-      {/* ── Развлечения и отдых — brand-styled leisure showcase ── */}
-      <LeisureShowcase locale={locale} />
+      {/* ── Day visit — the secondary product now, not the headline.
+          Kept in full (real fixed prices, still sold) but it comes after the
+          stay story instead of leading the page. ── */}
+      <PriceList locale={locale} />
 
       {/* ── Reviews — cinematic carousel ──────────────── */}
       <TestimonialsCarousel locale={locale} />
@@ -254,14 +332,15 @@ export default async function HomePage({ params }: PageProps) {
           data-lenis-prevent-touch
           className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-none lg:grid lg:grid-cols-5 lg:overflow-visible"
         >
+          {/* An overnight in five frames: arrive, wake up, morning on the
+              terrace, evening at the grill, kids. Two topchan/serving shots
+              used to open this strip — they told a day-trip story. */}
           {([
-            { image: "galKidsSwing", caption: locale === "uz" ? "Bolalar balandroq kuladi" : locale === "en" ? "Kids laugh louder here" : "Дети смеются\nгромче" },
-            { image: "galMangalFire", caption: locale === "uz" ? "Mangal oldida kecha" : locale === "en" ? "Evening by the grill" : "Вечер\nу мангала" },
-            // Was the June A-frame shot — cabins still as open shells. A caption
-            // about your first photo by the cabin sat over a building site.
             { image: "aframeLawnTall", caption: locale === "uz" ? "Uycha oldidagi ilk foto" : locale === "en" ? "First photo by the cabin" : "Первое фото\nу домика" },
-            { image: "galTopchanPeaks", caption: locale === "uz" ? "Ikkalamiz uchun sunset" : locale === "en" ? "A sunset for two" : "Закат\nна двоих" },
-            { image: "galFoodServing", caption: locale === "uz" ? "Kompaniya bilan keldik" : locale === "en" ? "Arrived with friends" : "Приехали\nкомпанией" },
+            { image: "chaletBedroomDouble", caption: locale === "uz" ? "Tog'larda uyg'onish" : locale === "en" ? "Waking up in the mountains" : "Просыпаться\nв горах" },
+            { image: "aframeTerraceView", caption: locale === "uz" ? "Terrasadagi tong" : locale === "en" ? "Morning on the terrace" : "Утро\nна террасе" },
+            { image: "galMangalFire", caption: locale === "uz" ? "Mangal oldida kecha" : locale === "en" ? "Evening by the grill" : "Вечер\nу мангала" },
+            { image: "galKidsSwing", caption: locale === "uz" ? "Bolalar balandroq kuladi" : locale === "en" ? "Kids laugh louder here" : "Дети смеются\nгромче" },
           ] as const).map(({ image, caption }) => {
             const img = resortImages[image];
             return (

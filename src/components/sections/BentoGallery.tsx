@@ -15,35 +15,40 @@ type Cell = {
   span: string;
 };
 
+/**
+ * Curation follows the site's product: the hero cell and the tall cell are the
+ * two rooms a guest books, the rest is the grounds and the day around them.
+ * The mosaic used to open on a topchan and give two cells to the day-use kit.
+ */
 const CELLS: Cell[] = [
   {
-    image: "galTopchanPeaks",
-    caption: { ru: "Топчаны у подножия", uz: "Tog' etagidagi topchanlar", en: "Topchans at the foothills" },
+    image: "chaletLounge",
+    caption: { ru: "Кухня-зал в шале", uz: "Shaledagi oshxona-zal", en: "The chalet kitchen-lounge" },
     span: "md:col-span-2 md:row-span-2",
   },
   {
-    image: "galFoodServing",
-    caption: { ru: "Кухня на углях", uz: "Cho'g'dagi taomlar", en: "Charcoal kitchen" },
+    image: "aframeRoom",
+    caption: { ru: "Глэмпинг A-frame", uz: "A-frame glemping", en: "A-frame glamping" },
     span: "",
   },
   {
-    image: "galTopchanSwing",
-    caption: { ru: "Кровать-качели", uz: "Arg'imchoq karavot", en: "Swing bed" },
+    image: "aframeTerraceView",
+    caption: { ru: "Вид с террасы", uz: "Terrasadan manzara", en: "The view from the terrace" },
     span: "",
+  },
+  {
+    image: "chaletBedroomDouble",
+    caption: { ru: "Спальня шале", uz: "Shale yotoqxonasi", en: "Chalet bedroom" },
+    span: "md:row-span-2",
+  },
+  {
+    image: "aframeLawnWide",
+    caption: { ru: "Домики на газоне", uz: "Maysazordagi uychalar", en: "Cabins on the lawn" },
+    span: "md:col-span-2",
   },
   {
     image: "galMangalFire",
     caption: { ru: "Мангал и казан", uz: "Mangal va qozon", en: "Mangal & kazan" },
-    span: "md:row-span-2",
-  },
-  {
-    image: "galPathway",
-    caption: { ru: "Прогулки по территории", uz: "Hudud bo'ylab sayr", en: "Garden walks" },
-    span: "md:col-span-2",
-  },
-  {
-    image: "galKidsSwing",
-    caption: { ru: "Детская зона", uz: "Bolalar maydonchasi", en: "Kids corner" },
     span: "",
   },
   {

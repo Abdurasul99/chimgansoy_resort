@@ -26,28 +26,28 @@ const copy = {
   ru: {
     perksTitle: "В каждом размещении",
     perks: [
+      "Бассейн включён в стоимость",
       "Панорама Чимгана из окна",
-      "Парковка рядом с номером",
-      "Доступ ко всей территории и топчанам",
-      "Ресторан и готовое меню",
+      "Собственная терраса и парковка у домика",
+      "Кухня и готовое меню на территории",
     ],
   },
   uz: {
     perksTitle: "Har bir turar joyda",
     perks: [
+      "Basseyn narxga kiritilgan",
       "Derazadan Chimg'on panoramasi",
-      "Xona yonida parking",
-      "Butun hudud va topchanlardan foydalanish",
-      "Restoran va tayyor menyu",
+      "Xususiy terrasa va uycha yonida parking",
+      "Hududda oshxona va tayyor menyu",
     ],
   },
   en: {
     perksTitle: "Every stay includes",
     perks: [
+      "The pool, included in the rate",
       "Chimgan views from the window",
-      "Parking next to your room",
-      "Full access to the grounds and topchans",
-      "Restaurant and ready-made menu",
+      "A private terrace and parking by the cabin",
+      "Kitchen and ready-made menu on site",
     ],
   },
 } as const;

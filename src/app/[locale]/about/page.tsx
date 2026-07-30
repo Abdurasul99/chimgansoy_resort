@@ -26,20 +26,20 @@ const values = [
   },
   {
     num: "02",
-    title: { ru: "Приватный топчан для компании", uz: "Do'stlar uchun xususiy topchan", en: "A private topchan for your group" },
+    title: { ru: "Двадцать отдельных домиков", uz: "Yigirma alohida uycha", en: "Twenty standalone cabins" },
     copy: {
-      ru: "Каждый топчан — отдельное приватное пространство до 8 человек: курпача, тень, место под мангал и казан рядом. Удобно для семьи или компании.",
-      uz: "Har bir topchan — 8 kishigacha alohida xususiy joy: kurpacha, soya, yonida mangal va qozon joyi. Oila yoki do'stlar uchun qulay.",
-      en: "Each topchan is a private space for up to 8 guests — kurpacha cushions, shade, and a BBQ / kazan spot at hand. Built for families and groups.",
+      ru: "Десять A-frame для двоих-троих и десять шале с двумя спальнями и кухней-залом. Каждый домик стоит отдельно — со своей террасой, санузлом и видом на хребет. Бассейн включён в проживание.",
+      uz: "Ikki-uch kishilik o'nta A-frame va ikki yotoqxona hamda oshxona-zalli o'nta shale. Har bir uycha alohida turadi — o'z terrasasi, sanuzeli va tizma manzarasi bilan. Basseyn yashash narxiga kiritilgan.",
+      en: "Ten A-frames for two or three, and ten chalets with two bedrooms and a kitchen-lounge. Each cabin stands on its own — its own terrace, bathroom, and view of the ridge. The pool is included in the stay.",
     },
   },
   {
     num: "03",
-    title: { ru: "Круглый год, каждый день", uz: "Yil davomida, har kuni", en: "Year-round, every day" },
+    title: { ru: "Круглый год в горах", uz: "Yil davomida tog'larda", en: "Year-round in the mountains" },
     copy: {
-      ru: "Работаем ежедневно с 08:00 до 18:00 в любой сезон. Летом — топчаны в тени и мангал на свежем воздухе. Осенью и зимой — горный воздух, костёр и горячий чай.",
-      uz: "Har kuni 08:00 dan 18:00 gacha, har qanday mavsumda ishlaymiz. Yozda — soyadagi topchanlar va ochiq havodagi mangal. Kuz va qishda — tog' havosi, gulxan va issiq choy.",
-      en: "Open daily 08:00–18:00, every season. In summer — shaded topchans and open-air BBQ. In autumn and winter — mountain air, a fire, and hot tea.",
+      ru: "Летом — бассейн, терраса и ужин на воздухе. Осенью и зимой — тёплый пол в шале, горный воздух и снежные вершины в панорамном окне. Заезд с 15:00, выезд до 12:00; дневные визиты — с 08:00 до 18:00.",
+      uz: "Yozda — basseyn, terrasa va ochiq havoda kechki ovqat. Kuz va qishda — shaledagi issiq pol, tog' havosi va panoramali derazadagi qorli cho'qqilar. Kirish 15:00 dan, chiqish 12:00 gacha; kunlik tashriflar — 08:00 dan 18:00 gacha.",
+      en: "In summer — the pool, the terrace, and dinner in the open air. In autumn and winter — heated floors in the chalet, mountain air, and snowy peaks through the panoramic window. Check-in from 15:00, check-out by 12:00; day visits run 08:00–18:00.",
     },
   },
 ];

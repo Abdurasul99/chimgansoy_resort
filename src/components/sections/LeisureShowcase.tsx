@@ -16,22 +16,22 @@ import { text } from "@/lib/localize";
 const COPY: Record<Locale, { eyebrow: string; title: string; subtitle: string; details: string; viewAll: string }> = {
   ru: {
     eyebrow: "На территории",
-    title: "Развлечения и отдых",
-    subtitle: "Топчаны с курпача, мангал и казан, кухня, зона пикника и горные активности — всё для дня в горах.",
+    title: "Чем занять день",
+    subtitle: "Кухня и ресторан, мангал и казан, зоны отдыха и горные маршруты рядом — из этого складывается день между заездом и выездом.",
     details: "Подробнее",
     viewAll: "Все услуги",
   },
   uz: {
     eyebrow: "Hududda",
-    title: "Ko'ngilochar va dam olish",
-    subtitle: "Kurpachali topchanlar, mangal va qozon, oshxona, piknik zonasi va tog' faoliyatlari — tog'dagi kun uchun hammasi.",
+    title: "Kunni nima bilan to'ldirish",
+    subtitle: "Oshxona va restoran, mangal va qozon, dam olish zonalari va yaqindagi tog' marshrutlari — kirish va chiqish orasidagi kun shundan tashkil topadi.",
     details: "Batafsil",
     viewAll: "Barcha xizmatlar",
   },
   en: {
     eyebrow: "On the grounds",
-    title: "Leisure & activities",
-    subtitle: "Topchans with kurpacha, BBQ and kazan, kitchen, a picnic zone, and mountain activities — everything for a day in the mountains.",
+    title: "How the day fills up",
+    subtitle: "The kitchen and restaurant, BBQ and kazan, lounge areas, and mountain trails nearby — this is what happens between check-in and check-out.",
     details: "Details",
     viewAll: "All services",
   },

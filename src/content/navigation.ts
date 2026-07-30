@@ -39,7 +39,7 @@ export const footerNavigation = [
     ],
   },
   {
-    title: { ru: "Дневной отдых", uz: "Kunlik dam", en: "Day visit" },
+    title: { ru: "Дневной визит", uz: "Kunlik tashrif", en: "Day visit" },
     links: [
       { href: "/services/tapchan-zone", label: { ru: "Топчаны и курпача", uz: "Topchan va kurpacha", en: "Topchan & kurpacha" } },
       { href: "/services/outdoor-cooking", label: { ru: "Мангал и казан", uz: "Mangal va qozon", en: "BBQ & kazan" } },

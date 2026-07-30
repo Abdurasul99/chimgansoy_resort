@@ -9,32 +9,31 @@ import { text } from "@/lib/localize";
  */
 
 /**
- * Deliberately a MIX, not a clean swap to the new shoot.
+ * The strip is the first thing under the hero, so it states what this place
+ * is — and that is a resort you stay at. Row A is the stay: cabin exteriors,
+ * chalet lounge, A-frame interior, the ridge from a terrace. Row B carries the
+ * grounds and the food, which support the stay rather than replace it.
  *
- * The strip is the first thing under the hero, so it has to state what this
- * place is — and that is still primarily day-use: topchan, mangal, kazan,
- * food. Twelve cabin interiors would quietly re-pitch the site as a hotel.
- * So: the new A-frame material earns half the frames, the day-use story keeps
- * the other half.
- *
- * The old "no A-frame shots here" rule is lifted — it existed because the
- * cabins were still open shells. They are finished and furnished now.
+ * It used to be a deliberate 50/50 split with the topchan/mangal/kazan day-use
+ * set, on the reasoning that day-use was the primary product. It isn't any
+ * more, so the split moved with it — two day-use frames remain in row B
+ * because the day visit is still sold, just no longer the pitch.
  */
 const ROW_A = [
-  "galTopchanPeaks",
-  "galFoodServing",
   "aframeLawnWide",
-  "galKazanStone",
-  "galTopchanSwing",
+  "chaletLounge",
+  "aframeRoom",
   "aframeTerraceView",
+  "chaletBedroomDouble",
+  "aframeLounge",
 ] as const;
 
 const ROW_B = [
-  "aframeRoom",
+  "galTerritoryPanorama",
+  "chaletDining",
   "galMangalFire",
   "aframeBed",
-  "galTerritoryPanorama",
-  "aframeLounge",
+  "galFoodServing",
   "galGreenHills",
 ] as const;
 

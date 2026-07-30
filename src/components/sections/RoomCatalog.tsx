@@ -27,7 +27,10 @@ export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
     () => roomCategories.filter((c) => c.id === "all" || bookableRooms.some((room) => room.category === c.id)),
     [bookableRooms],
   );
-  const showFilter = new Set(bookableRooms.map((room) => room.category)).size > 1;
+  // No filter on a truncated list (the homepage passes `limit`): filtering a
+  // grid that is already cut to two cards reads as broken — "Все" shows fewer
+  // rooms than there are, and one filter shows one card. /nomera keeps them.
+  const showFilter = limit === undefined && new Set(bookableRooms.map((room) => room.category)).size > 1;
   const visibleRooms = useMemo(() => {
     const filtered = filter === "all" ? bookableRooms : bookableRooms.filter((room) => room.category === filter);
     return typeof limit === "number" ? filtered.slice(0, limit) : filtered;

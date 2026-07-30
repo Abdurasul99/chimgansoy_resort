@@ -1,5 +1,6 @@
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { priceList, dayUseInfo, includedPerks, whatToBring } from "@/content/pricing";
+import { EXELY_ROOM_TYPE } from "@/content/rooms";
 import { resortImages } from "@/content/images";
 import { dictionaries } from "@/content/translations";
 import type { Locale } from "@/i18n/config";
@@ -15,41 +16,50 @@ function formatPrice(value: number): string {
   return value.toLocaleString("ru-RU").replaceAll(",", " ");
 }
 
+/**
+ * Positioned as the alternative to a stay, not as the headline offer — this
+ * section used to sit second on the homepage and open with "Дневной отдых в
+ * горах" in hero type. The prices are unchanged and still real; only the frame
+ * around them moved.
+ */
 const copy = {
   ru: {
-    eyebrow: "Прайс-лист",
-    titleA: "Дневной отдых",
-    titleB: "в горах",
-    lead: "Топчан с курпачами, мангал, казан и место у костра — выбирайте формат и проводите день в горах. Можно с готовым меню от кухни или со своими продуктами.",
+    eyebrow: "Без ночёвки",
+    titleA: "Приехать",
+    titleB: "на день",
+    lead: "Не готовы остаться на ночь — приезжайте на день. Топчан с курпачами, мангал, казан и готовое меню от кухни. Фиксированный прайс, без брони проживания.",
     legend: "будни → выходные",
-    altNote: "Будни: Пн–Чт · Выходные: Пт–Вс · Цены в сумах",
+    altNote: "Будни: Пн–Чт · Выходные: Пт–Вс · Цены в сумах · Дневной визит 08:00–18:00",
     includedTitle: "Что входит",
     bringTitle: "Что взять с собой",
-    cta: "Забронировать дату",
+    cta: "Забронировать день",
+    stayLink: "Хотите остаться на ночь? Шале и глэмпинг",
     photoNote: "Топчан № 12 — июнь 2026",
   },
   uz: {
-    eyebrow: "Narxlar",
-    titleA: "Tog'larda",
-    titleB: "kunlik dam",
-    lead: "Kurpachali topchan, mangal, qozon va gulxan joyi — formatni tanlang va kunni tog'larda o'tkazing. Oshxonadan tayyor menyu yoki o'z mahsulotlaringiz bilan.",
+    eyebrow: "Tunamasdan",
+    titleA: "Bir kunga",
+    titleB: "kelish",
+    lead: "Tunab qolishga tayyor bo'lmasangiz — bir kunga keling. Kurpachali topchan, mangal, qozon va oshxonadan tayyor menyu. Narx fiksirlangan, yashash broni shart emas.",
     legend: "hafta kunlari → dam olish",
-    altNote: "Hafta kunlari: Du–Pay · Dam olish: Ju–Yak · Narxlar so'mda",
+    altNote: "Hafta kunlari: Du–Pay · Dam olish: Ju–Yak · Narxlar so'mda · Kunlik tashrif 08:00–18:00",
     includedTitle: "Nima kiradi",
     bringTitle: "O'zingiz bilan oling",
-    cta: "Sanani bron qilish",
+    cta: "Kunni bron qilish",
+    stayLink: "Tunab qolmoqchimisiz? Shale va glemping",
     photoNote: "12-topchan — iyun 2026",
   },
   en: {
-    eyebrow: "Price list",
-    titleA: "A day out",
-    titleB: "in the mountains",
-    lead: "Topchan with cushions, BBQ grill, kazan, and a fire spot — pick your setup and spend the day in the mountains. Order from our menu or bring your own.",
+    eyebrow: "No overnight stay",
+    titleA: "Come for",
+    titleB: "the day",
+    lead: "Not ready to stay the night? Come for the day instead. A topchan with cushions, BBQ grill, kazan, and a ready-made kitchen menu — fixed prices, no room booking needed.",
     legend: "weekdays → weekends",
-    altNote: "Weekdays: Mon–Thu · Weekends: Fri–Sun · Prices in UZS",
+    altNote: "Weekdays: Mon–Thu · Weekends: Fri–Sun · Prices in UZS · Day visits 08:00–18:00",
     includedTitle: "What's included",
     bringTitle: "What to bring",
-    cta: "Book your date",
+    cta: "Book a day visit",
+    stayLink: "Want to stay the night? Chalets and glamping",
     photoNote: "Topchan no. 12 — June 2026",
   },
 } as const;
@@ -84,12 +94,14 @@ export function PriceList({ locale }: PriceListProps) {
   const currency = text(dayUseInfo.currencyShort, locale);
 
   return (
-    <section className="relative overflow-hidden bg-[var(--paper)] px-4 py-20 sm:py-28 sm:px-6 lg:px-8">
+    <section id="day-visit" className="relative overflow-hidden bg-[var(--paper)] px-4 py-16 sm:py-24 sm:px-6 lg:px-8">
       <TopoLines />
 
       <div className="relative mx-auto max-w-6xl">
-        {/* Header — editorial, two-tone title */}
-        <div className="mb-14 motion-reveal">
+        {/* Header — one size down from the stay section's headline, and the
+            title sits on one line rather than stacked, so this reads as the
+            secondary offer it is. */}
+        <div className="mb-12 motion-reveal">
           <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--accent-strong)]">
             <span>{t.eyebrow}</span>
             <span className="h-px w-10 bg-[var(--accent-strong)]/40" />
@@ -97,12 +109,20 @@ export function PriceList({ locale }: PriceListProps) {
               {dayUseInfo.altitude} · {dayUseInfo.hours}
             </span>
           </div>
-          <h2 className="motion-reveal-mask mt-4 font-serif text-[clamp(2.4rem,6vw,4.2rem)] font-semibold leading-[1.02] text-[var(--ink)]">
-            {t.titleA}
-            <br />
-            <em className="text-[var(--ink)]/75">{t.titleB}</em>
+          <h2 className="motion-reveal-mask mt-4 font-serif text-[clamp(1.9rem,4.2vw,3rem)] font-semibold leading-[1.05] text-[var(--ink)]">
+            {t.titleA} <em className="text-[var(--ink)]/75">{t.titleB}</em>
           </h2>
-          <p className="mt-5 max-w-2xl text-base leading-7 text-[var(--muted)]">{t.lead}</p>
+          <p className="mt-4 max-w-2xl text-base leading-7 text-[var(--muted)]">{t.lead}</p>
+          {/* Way back up to the primary product for anyone who landed here first */}
+          <a
+            href="#stay"
+            className="group mt-5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--forest-dark)] transition-colors hover:text-[var(--accent-strong)]"
+          >
+            {t.stayLink}
+            <svg className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </a>
         </div>
 
         {/* Split: sticky photo + menu */}
@@ -228,7 +248,14 @@ export function PriceList({ locale }: PriceListProps) {
 
             {/* CTA */}
             <div className="mt-8 flex flex-wrap items-center gap-4">
-              <ButtonLink href={localizePath(locale, "/bron")} variant="primary" reload className="btn-press">
+              {/* Opens the booking engine straight on the day-visit room type
+                  instead of the default (a stay), which is what /bron shows. */}
+              <ButtonLink
+                href={localizePath(locale, `/bron?room-type=${EXELY_ROOM_TYPE.day}`)}
+                variant="primary"
+                reload
+                className="btn-press"
+              >
                 {t.cta}
               </ButtonLink>
               <p className="text-sm text-[var(--muted)]">
