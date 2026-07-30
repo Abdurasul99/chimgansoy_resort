@@ -141,6 +141,71 @@ export const resortImages = {
       en: "A-frame cabins on a green lawn among pines",
     },
   },
+  /* ── Chalet / Шале, finished & furnished (July 2026 shoot) ──
+     Same treatment as the A-frame set: portrait 2:3 sources stored at 4:3,
+     each frame checked at the room-gallery ratio AND at the ~2:1 the room
+     hero crops it to. Chosen to mirror the published spec — two bedrooms
+     (one double, one twin), an ensuite per bedroom, kitchen-lounge with sofa. */
+  chaletLounge: {
+    src: "/images/resort/rooms/chalet-lounge.jpg",
+    localSrc: "/images/resort/rooms/chalet-lounge.jpg",
+    position: "center",
+    alt: {
+      ru: "Кухня-зал шале: угловой диван, обеденный стол и деревянный свод",
+      uz: "Shale oshxona-zali: burchak divan, ovqat stoli va yog'och gumbaz",
+      en: "Chalet kitchen-lounge: corner sofa, dining table and timber vault",
+    },
+  },
+  chaletDining: {
+    src: "/images/resort/rooms/chalet-dining.jpg",
+    localSrc: "/images/resort/rooms/chalet-dining.jpg",
+    position: "center",
+    alt: {
+      ru: "Обеденная зона шале с телевизором и диваном",
+      uz: "Shale ovqatlanish zonasi: televizor va divan",
+      en: "Chalet dining area with TV and sofa",
+    },
+  },
+  chaletBedroomDouble: {
+    src: "/images/resort/rooms/chalet-bedroom-double.jpg",
+    localSrc: "/images/resort/rooms/chalet-bedroom-double.jpg",
+    position: "center",
+    alt: {
+      ru: "Спальня шале с двуспальной кроватью 180×200 и окном",
+      uz: "Shale yotoqxonasi: 180×200 ikki kishilik karavot va deraza",
+      en: "Chalet bedroom with a 180×200 double bed and window",
+    },
+  },
+  chaletBedroomTwin: {
+    src: "/images/resort/rooms/chalet-bedroom-twin.jpg",
+    localSrc: "/images/resort/rooms/chalet-bedroom-twin.jpg",
+    position: "center",
+    alt: {
+      ru: "Вторая спальня шале с двумя односпальными кроватями 90×200",
+      uz: "Shalening ikkinchi yotoqxonasi: ikkita 90×200 bir kishilik karavot",
+      en: "Second chalet bedroom with two 90×200 single beds",
+    },
+  },
+  chaletBathroom: {
+    src: "/images/resort/rooms/chalet-bathroom.jpg",
+    localSrc: "/images/resort/rooms/chalet-bathroom.jpg",
+    position: "center",
+    alt: {
+      ru: "Санузел шале со стеклянной душевой — свой у каждой спальни",
+      uz: "Shale sanuzeli shishali dush bilan — har bir yotoqxonada o'zi bor",
+      en: "Chalet bathroom with a glass shower — one per bedroom",
+    },
+  },
+  chaletKitchen: {
+    src: "/images/resort/rooms/chalet-kitchen.jpg",
+    localSrc: "/images/resort/rooms/chalet-kitchen.jpg",
+    position: "center",
+    alt: {
+      ru: "Кухонная зона шале: холодильник, минибар и посуда",
+      uz: "Shale oshxona zonasi: muzlatkich, minibar va idishlar",
+      en: "Chalet kitchen area: fridge, minibar and crockery",
+    },
+  },
   aframeTerraceView: {
     src: "/images/resort/rooms/aframe-terrace-view.jpg",
     localSrc: "/images/resort/rooms/aframe-terrace-view.jpg",

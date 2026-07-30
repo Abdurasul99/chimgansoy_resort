@@ -60,17 +60,21 @@ export const rooms: Room[] = [
       en: ["Double bed 180×200", "Private terrace", "Ensuite shower room", "Air conditioning", "Wi-Fi"],
     },
     features: {
-      ru: ["1 спальная комната, 28 м²", "Собственный санузел", "Заезд с 15:00, выезд до 12:00", "Быстрый выход к прогулочным маршрутам"],
-      uz: ["1 yotoq xonasi, 28 m²", "Xususiy sanuzel", "Kirish 15:00 dan, chiqish 12:00 gacha", "Sayr yo'llariga tez chiqish"],
-      en: ["1 bedroom, 28 m²", "Private bathroom", "Check-in from 15:00, check-out by 12:00", "Quick access to walking routes"],
+      ru: ["1 спальная комната, 28 м²", "Собственный санузел 3,6 м²", "Терраса 15 м²", "Заезд с 15:00, выезд до 12:00"],
+      uz: ["1 yotoq xonasi, 28 m²", "Xususiy sanuzel 3,6 m²", "Terrasa 15 m²", "Kirish 15:00 dan, chiqish 12:00 gacha"],
+      en: ["1 bedroom, 28 m²", "Private bathroom 3.6 m²", "Terrace 15 m²", "Check-in from 15:00, check-out by 12:00"],
     },
     relatedServices: ["restaurant", "tapchan-zone", "experience"],
   },
   {
     slug: "cottage",
     category: "cottage",
-    image: "receptionDay",
-    gallery: ["receptionDay", "restaurantBuilding", "galTopchanInside", "galKidsSwing"],
+    // Real interior shoot of the finished chalet. Previously receptionDay +
+    // restaurantBuilding — i.e. the reception block and the restaurant, not the
+    // chalet at all, so anyone booking a Шале was looking at another building.
+    // gallery[0] spans both columns, so the wide lounge shot leads.
+    image: "chaletLounge",
+    gallery: ["chaletDining", "chaletBedroomDouble", "chaletBedroomTwin", "chaletBathroom", "chaletKitchen"],
     title: { ru: "Шале", uz: "Shale", en: "Chalet" },
     eyebrow: {
       ru: "Для семьи и компании",
