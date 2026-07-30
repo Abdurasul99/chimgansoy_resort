@@ -27,7 +27,7 @@ export const rooms: Room[] = [
     slug: "glamping",
     category: "glamping",
     // Real interior shoot of the finished cabin. The previous set led with
-    // galAframeTrio — a landscape of the A-frames still as open shells — so the
+    // the June A-frame landscape, which had them still as open shells — so the
     // page never actually showed the room a guest books.
     // Order matters: gallery[0] spans both columns on /nomera/[slug], so the
     // wide exterior goes first and the rest sit in a clean 2×2 below it.

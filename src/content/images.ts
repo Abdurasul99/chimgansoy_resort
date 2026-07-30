@@ -72,32 +72,15 @@ export const resortImages = {
       en: "Inside a topchan with kurpacha cushions",
     },
   },
-  galAframeTrio: {
-    src: "/images/resort/gallery/gal-aframe-trio.jpg",
-    localSrc: "/images/resort/gallery/gal-aframe-trio.jpg",
-    position: "center",
-    alt: {
-      ru: "A-frame домики на фоне снежного хребта",
-      uz: "Qorli tizma fonidagi A-frame uychalar",
-      en: "A-frame cabins against the snowy ridge",
-    },
-  },
-  galAframeCloseup: {
-    src: "/images/resort/gallery/gal-aframe-closeup.jpg",
-    localSrc: "/images/resort/gallery/gal-aframe-closeup.jpg",
-    position: "center",
-    alt: {
-      ru: "Деревянный A-frame домик крупным планом",
-      uz: "Yog'och A-frame uychasi yaqindan",
-      en: "Wooden A-frame cabin up close",
-    },
-  },
   /* ── A-frame glamping, finished & furnished (July 2026 shoot) ──
      Shot portrait (2:3); stored pre-cropped to 4:3, which is the ratio the
      room gallery uses. The room hero crops this further to ~2:1, so every
      frame here is chosen to survive that second crop.
-     Note: galAframeTrio/galAframeCloseup show the SHELLS mid-construction —
-     these are the built rooms and are what /nomera/glamping must show. */
+
+     There is deliberately no A-frame photo here from the June shoot: both of
+     those (gal-aframe-trio, gal-aframe-closeup) showed the cabins as open
+     shells on bare earth, and were removed from the repo entirely rather than
+     left around to be picked up by mistake. */
   aframeRoom: {
     src: "/images/resort/rooms/aframe-room.jpg",
     localSrc: "/images/resort/rooms/aframe-room.jpg",
@@ -131,6 +114,19 @@ export const resortImages = {
       ru: "Домики A-frame на подстриженном газоне с соснами и дорожкой",
       uz: "Qarag'ay va yo'lakli o'rilgan maysazordagi A-frame uychalari",
       en: "A-frame cabins on a manicured lawn with pines and a walkway",
+    },
+  },
+  /* Wide banner cut of the lawn frame. Points at the hero file on purpose —
+     same 1800px asset, already cached by the homepage, and it displays at
+     ≤1440px so the browser downscales rather than stretching it. */
+  aframeLawnBanner: {
+    src: "/images/resort/hero/hero-lawn.jpg",
+    localSrc: "/images/resort/hero/hero-lawn.jpg",
+    position: "center",
+    alt: {
+      ru: "Готовый глэмпинг A-frame на зелёном газоне",
+      uz: "Yashil maysazordagi tayyor A-frame glemping",
+      en: "Finished A-frame glamping on a green lawn",
     },
   },
   /* 3:4 — matches the emotion-strip cell natively, so no upscale here: the
@@ -636,7 +632,7 @@ export const galleryImages = [
   resortImages.galTopchanRow,
   resortImages.galMangalFire,
   resortImages.galWaiterPlov,
-  resortImages.galAframeTrio,
+  resortImages.aframeLawnTall,
   resortImages.galMountainView,
   resortImages.galTopchanSwing,
   resortImages.galKazanStone,

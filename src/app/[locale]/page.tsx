@@ -176,9 +176,10 @@ export default async function HomePage({ params }: PageProps) {
                 data-parallax="0.06"
                 className="img-reveal-wrapper aspect-[4/5] overflow-hidden rounded-3xl shadow-[var(--shadow-card-hover)]"
               >
-                {/* The grounds as they are today. galAframeTrio showed the
-                    A-frames still as open shells — wrong story for the section
-                    that says the place is 45 minutes away and ready for you. */}
+                {/* The grounds as they are today. This used to be the June
+                    A-frame shot, which had the cabins as open shells — wrong
+                    story for a section saying the place is 45 minutes away and
+                    ready for you. That photo is gone from the repo now. */}
                 <div
                   className="h-full w-full bg-cover bg-center transition-transform duration-[1500ms] ease-out hover:scale-110"
                   style={imageStyle(resortImages.aframeLawn)}
@@ -256,7 +257,7 @@ export default async function HomePage({ params }: PageProps) {
           {([
             { image: "galKidsSwing", caption: locale === "uz" ? "Bolalar balandroq kuladi" : locale === "en" ? "Kids laugh louder here" : "Дети смеются\nгромче" },
             { image: "galMangalFire", caption: locale === "uz" ? "Mangal oldida kecha" : locale === "en" ? "Evening by the grill" : "Вечер\nу мангала" },
-            // Was galAframeTrio — the A-frames still as open shells. A caption
+            // Was the June A-frame shot — cabins still as open shells. A caption
             // about your first photo by the cabin sat over a building site.
             { image: "aframeLawnTall", caption: locale === "uz" ? "Uycha oldidagi ilk foto" : locale === "en" ? "First photo by the cabin" : "Первое фото\nу домика" },
             { image: "galTopchanPeaks", caption: locale === "uz" ? "Ikkalamiz uchun sunset" : locale === "en" ? "A sunset for two" : "Закат\nна двоих" },

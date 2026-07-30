@@ -100,9 +100,9 @@ export default async function AboutPage({ params }: PageProps) {
             <div className="relative motion-reveal" data-delay="150">
               <div
                 className="aspect-[4/5] overflow-hidden rounded-3xl bg-cover bg-center shadow-[var(--shadow-card-hover)]"
-                style={imageStyle(resortImages.galAframeTrio)}
+                style={imageStyle(resortImages.aframeLawn)}
                 role="img"
-                aria-label={text(resortImages.galAframeTrio.alt, locale)}
+                aria-label={text(resortImages.aframeLawn.alt, locale)}
               />
             </div>
           </div>
