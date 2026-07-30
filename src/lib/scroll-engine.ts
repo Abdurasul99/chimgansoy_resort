@@ -97,7 +97,7 @@ function queueScan() {
 /** Drops the cached style targets. Called when the page itself changes. */
 function resetTargets() {
   heroEl = undefined;
-  progressEl = undefined;
+  progressEls = undefined;
   heroLast = "";
   lastProgress = "";
 }
@@ -162,23 +162,28 @@ function updateHero(y: number, vh: number) {
 }
 
 /**
- * Style target for the reading-progress rail.
+ * Style targets for scroll progress: the top hairline and the tick rail.
  *
- * Written on the element that consumes it, NOT on <html>. A custom property set
+ * Written on the elements that consume it, NOT on <html>. A custom property set
  * on the root element invalidates computed style for the entire document —
  * every frame, on a page with thousands of nodes.
  */
-let progressEl: HTMLElement | null | undefined;
+const PROGRESS_TARGETS = ".scroll-progress, .scroll-ticks";
+let progressEls: HTMLElement[] | undefined;
 let lastProgress = "";
 
 function publish(progress: number) {
-  if (progressEl === undefined) progressEl = document.querySelector<HTMLElement>(".scroll-progress");
-  if (!progressEl) return;
+  // Re-query if the list is empty or React swapped the nodes out from under us
+  // (an `isConnected` check per frame is free; a stale node reference is not).
+  if (progressEls === undefined || progressEls.length === 0 || !progressEls[0].isConnected) {
+    progressEls = Array.from(document.querySelectorAll<HTMLElement>(PROGRESS_TARGETS));
+  }
+  if (progressEls.length === 0) return;
   // 3 decimals is ~1px of travel on a 1440px bar — finer than anyone can see.
   const p = progress.toFixed(3);
   if (p === lastProgress) return;
   lastProgress = p;
-  progressEl.style.setProperty("--scroll-progress", p);
+  for (const el of progressEls) el.style.setProperty("--scroll-progress", p);
 }
 
 function frame() {

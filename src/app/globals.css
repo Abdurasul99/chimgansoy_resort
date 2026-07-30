@@ -996,6 +996,88 @@ html { scroll-behavior: smooth; }
   transform-origin: left;
 }
 
+/* ══════════════════════════════════════════════════════════════════
+   SCROLL TICK RAIL — right-edge ruler, one mark per notch, with a
+   heavier cursor that rides the page.
+
+   Driven entirely off --scroll-progress, which scroll-engine writes onto
+   this element (not onto <html> — that would invalidate computed style
+   for the whole document every frame). So it costs one composited
+   `translate` per frame and no JS of its own.
+
+   mix-blend-mode: difference is doing real work here. The rail is fixed,
+   so it passes over cream sections AND over the dark editorial bands and
+   photos; any single ink or white value disappears against half of them.
+   Difference-blending white marks inverts them against whatever is behind,
+   so they stay legible the whole way down.
+   ══════════════════════════════════════════════════════════════════ */
+.scroll-ticks {
+  /* Keep these three in sync with the number of <span> ticks in layout.tsx —
+     the cursor's travel is derived from them. */
+  --tick-count: 22;
+  --tick-h: 1.5px;
+  --tick-gap: 7px;
+
+  position: fixed;
+  right: 0.9rem;
+  top: 50%;
+  z-index: 40;
+  display: none; /* desktop only — see the media query below */
+  translate: 0 -50%;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--tick-gap);
+  pointer-events: none;
+  mix-blend-mode: difference;
+}
+
+/* Only where there is room to spare beside the content. On phones and
+   tablets the right edge belongs to the concierge launcher. */
+@media (min-width: 1024px) {
+  .scroll-ticks {
+    display: flex;
+  }
+}
+
+.scroll-ticks__tick {
+  width: 9px;
+  height: var(--tick-h);
+  border-radius: 1px;
+  background: #fff;
+  opacity: 0.3;
+}
+
+/* Every 5th mark is longer — gives the rail a sense of scale. */
+.scroll-ticks__tick--major {
+  width: 15px;
+  opacity: 0.45;
+}
+
+.scroll-ticks__cursor {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 20px;
+  height: 2px;
+  border-radius: 1px;
+  background: #fff;
+  translate: 0
+    calc(
+      var(--scroll-progress, 0) *
+        (
+          var(--tick-count) * var(--tick-h) + (var(--tick-count) - 1) *
+            var(--tick-gap) - 2px
+        )
+    );
+  will-change: translate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-ticks__cursor {
+    will-change: auto;
+  }
+}
+
 /* ── Hero scroll cue — hairline with a light running down it ──────
    Replaces a bouncing chevron. Compositor-only: the beam is a single
    translateY + opacity inside an overflow-hidden 1px track.

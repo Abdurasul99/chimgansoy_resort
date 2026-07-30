@@ -157,6 +157,19 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         {/* Reading-progress rail — pure CSS off --scroll-progress, so it costs
             one composited scaleX per frame and works with or without Lenis. */}
         <div className="scroll-progress" aria-hidden="true" />
+        {/* Tick rail on the right edge — same --scroll-progress, no extra JS.
+            Hidden on /bron so nothing floats over the Exely booking cart. */}
+        <HideOnBron>
+          <div className="scroll-ticks" aria-hidden="true">
+            {Array.from({ length: 22 }, (_, i) => (
+              <span
+                key={i}
+                className={`scroll-ticks__tick${i % 5 === 0 ? " scroll-ticks__tick--major" : ""}`}
+              />
+            ))}
+            <span className="scroll-ticks__cursor" />
+          </div>
+        </HideOnBron>
         <Header locale={locale as Locale} />
         <main id="main">{children}</main>
         {/* Footer + FAQ widget hidden on /bron (Exely: no distractions on the
