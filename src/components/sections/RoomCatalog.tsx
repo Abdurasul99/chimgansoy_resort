@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { resortImages } from "@/content/images";
-import { roomCategories, rooms, EXELY_ROOM_TYPE, type RoomCategory } from "@/content/rooms";
+import { roomCategories, rooms, EXELY_ROOM_TYPE, INCLUDED_LABEL, type RoomCategory } from "@/content/rooms";
 import { dictionaries } from "@/content/translations";
 import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
@@ -109,6 +109,34 @@ export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
                     </li>
                   ))}
                 </ul>
+
+                {/* What the rate covers. The pool chip is gold and carries a
+                    slow shine because it is the non-obvious one: guests have no
+                    reason to assume a separately-sold day product is free with
+                    a stay unless the page says so. */}
+                {room.included && room.included.length > 0 && (
+                  <div className="mt-6 rounded-2xl border border-[color:var(--line)] bg-[var(--surface-warm)] px-4 py-3.5">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]">
+                      {text(INCLUDED_LABEL, locale)}
+                    </p>
+                    <ul className="mt-2.5 flex flex-wrap gap-1.5">
+                      {room.included.map((perk, i) => (
+                        <li
+                          key={text(perk.label, locale)}
+                          className={`perk-chip${perk.highlight ? " perk-chip--hero" : ""}`}
+                          style={{ animationDelay: `${i * 70}ms` }}
+                        >
+                          {perk.highlight ? (
+                            <Icon name="pool" className="h-3.5 w-3.5 shrink-0" />
+                          ) : (
+                            <Icon name="check" className="h-3 w-3 shrink-0 text-[var(--green)]" />
+                          )}
+                          {text(perk.label, locale)}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 {/* CTAs */}
                 <div className="mt-6 flex flex-col gap-3 sm:flex-row">

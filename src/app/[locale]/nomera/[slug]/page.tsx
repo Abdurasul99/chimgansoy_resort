@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
 import { BookingDrawer } from "@/components/sections/BookingDrawer";
 import { Icon } from "@/components/ui/Icon";
-import { rooms, EXELY_ROOM_TYPE } from "@/content/rooms";
+import { rooms, EXELY_ROOM_TYPE, INCLUDED_LABEL } from "@/content/rooms";
 import { resortImages } from "@/content/images";
 import { dictionaries } from "@/content/translations";
 import { getLocaleParam, getRoom } from "@/lib/content";
@@ -107,6 +107,32 @@ export default async function RoomDetailPage({ params }: PageProps) {
                 </p>
                 <p className="mt-4 text-lg leading-8 text-[var(--muted)]">{text(room.description, locale)}</p>
               </div>
+
+              {/* What the rate covers — same chips as the catalogue card, so a
+                  guest who noticed the pool inclusion there sees it confirmed. */}
+              {room.included && room.included.length > 0 && (
+                <div className="mt-10 rounded-2xl border border-[color:var(--line)] bg-[var(--surface-warm)] px-5 py-4 motion-reveal" data-delay="50">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]">
+                    {text(INCLUDED_LABEL, locale)}
+                  </p>
+                  <ul className="mt-3 flex flex-wrap gap-2">
+                    {room.included.map((perk, i) => (
+                      <li
+                        key={text(perk.label, locale)}
+                        className={`perk-chip${perk.highlight ? " perk-chip--hero" : ""}`}
+                        style={{ animationDelay: `${i * 70}ms` }}
+                      >
+                        {perk.highlight ? (
+                          <Icon name="pool" className="h-3.5 w-3.5 shrink-0" />
+                        ) : (
+                          <Icon name="check" className="h-3 w-3 shrink-0 text-[var(--green)]" />
+                        )}
+                        {text(perk.label, locale)}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               {/* Amenities + Features */}
               <div className="mt-12 grid gap-10 sm:grid-cols-2 motion-reveal" data-delay="100">

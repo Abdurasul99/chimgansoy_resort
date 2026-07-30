@@ -8,6 +8,7 @@ type IconProps = {
     | "map"
     | "menu"
     | "phone"
+    | "pool"
     | "send"
     | "star"
     | "telegram"
@@ -80,6 +81,19 @@ export function Icon({ name, className = "h-5 w-5" }: IconProps) {
       return (
         <svg {...common}>
           <path d="M20 4 9.5 14.5M20 4l-5.5 16-5-5-5.5-2L20 4Z" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      );
+    case "pool":
+      // Three stacked waves — reads as water at 14px, which a swimmer glyph does not.
+      return (
+        <svg {...common}>
+          <path
+            d="M2.5 7.5c1.6 0 1.6 1.4 3.2 1.4S7.3 7.5 8.9 7.5s1.6 1.4 3.2 1.4 1.6-1.4 3.2-1.4 1.6 1.4 3.2 1.4 1.6-1.4 3.2-1.4M2.5 12.4c1.6 0 1.6 1.4 3.2 1.4s1.6-1.4 3.2-1.4 1.6 1.4 3.2 1.4 1.6-1.4 3.2-1.4 1.6 1.4 3.2 1.4 1.6-1.4 3.2-1.4M2.5 17.3c1.6 0 1.6 1.4 3.2 1.4s1.6-1.4 3.2-1.4 1.6 1.4 3.2 1.4 1.6-1.4 3.2-1.4 1.6 1.4 3.2 1.4 1.6-1.4 3.2-1.4"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </svg>
       );
     case "star":

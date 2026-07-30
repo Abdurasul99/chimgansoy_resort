@@ -114,9 +114,11 @@ export const knowledge: KnowledgeEntry[] = [
     id: "pool",
     keywords: ["бассейн", "купаться", "плавать", "basseyn", "suzish", "pool", "swimming", "swim"],
     answer: {
-      ru: "Бассейна у нас нет. Зато есть топчаны с курпача в тени, мангал и казан, кухня с готовым меню и чистый горный воздух — отлично для жаркого дня.",
-      uz: "Bizda basseyn yo'q. Lekin soyada kurpachali topchanlar, mangal va qozon, tayyor menyuli oshxona va toza tog' havosi bor — issiq kun uchun ajoyib.",
-      en: "We don't have a pool. Instead there are shaded topchans with kurpacha, a BBQ and kazan, a kitchen menu, and clean mountain air — great for a hot day.",
+      // This used to answer "we don't have a pool" — while the pool was a
+      // bookable Exely room type, had its own page, and sat in the footer nav.
+      ru: "🏊 Открытый бассейн с видом на горы, работает в летний сезон. Можно забронировать отдельно на день, без ночёвки — одно бронирование до 4 гостей. А гостям глэмпинга и шале бассейн уже включён в стоимость проживания, отдельно бронировать не нужно.",
+      uz: "🏊 Tog' manzarali ochiq basseyn, yozgi mavsumda ishlaydi. Uni tunamasdan, bir kunga alohida bron qilish mumkin — bitta bron 4 mehmongacha. Glemping va shale mehmonlari uchun esa basseyn yashash narxiga allaqachon kiritilgan, alohida bron qilish shart emas.",
+      en: "🏊 An outdoor pool with mountain views, open in the summer season. You can book it on its own for the day, no overnight stay — one booking covers up to 4 guests. For glamping and chalet guests the pool is already included in the room rate, with no separate booking needed.",
     },
   },
 

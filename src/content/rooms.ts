@@ -3,6 +3,20 @@ import type { LocalizedList, LocalizedString } from "./types";
 
 export type RoomCategory = "glamping" | "cottage" | "pool";
 
+/** A perk covered by the room rate, shown as a chip on the card and room page. */
+export type RoomPerk = {
+  label: LocalizedString;
+  /** Draws the eye — used for the pool, the headline inclusion. */
+  highlight?: boolean;
+};
+
+/** Heading above the perk chips. Kept here so both render sites share one source. */
+export const INCLUDED_LABEL: LocalizedString = {
+  ru: "Включено в стоимость",
+  uz: "Narxga kiritilgan",
+  en: "Included in the rate",
+};
+
 export type Room = {
   slug: RoomCategory;
   category: RoomCategory;
@@ -19,6 +33,12 @@ export type Room = {
   size: LocalizedString;
   amenities: LocalizedList;
   features: LocalizedList;
+  /**
+   * What the rate covers, as chips. The pool is the point of this: it is sold
+   * as a standalone day product AND comes free with every overnight stay, and
+   * nothing on the site said so.
+   */
+  included?: RoomPerk[];
   relatedServices: string[];
 };
 
@@ -64,6 +84,15 @@ export const rooms: Room[] = [
       uz: ["1 yotoq xonasi, 28 m²", "Xususiy sanuzel 3,6 m²", "Terrasa 15 m²", "Kirish 15:00 dan, chiqish 12:00 gacha"],
       en: ["1 bedroom, 28 m²", "Private bathroom 3.6 m²", "Terrace 15 m²", "Check-in from 15:00, check-out by 12:00"],
     },
+    included: [
+      {
+        label: { ru: "Бассейн", uz: "Basseyn", en: "Pool" },
+        highlight: true,
+      },
+      { label: { ru: "Собственная терраса", uz: "Xususiy terrasa", en: "Private terrace" } },
+      { label: { ru: "Кондиционер", uz: "Konditsioner", en: "Air conditioning" } },
+      { label: { ru: "Wi-Fi", uz: "Wi-Fi", en: "Wi-Fi" } },
+    ],
     relatedServices: ["restaurant", "tapchan-zone", "experience"],
   },
   {
@@ -104,6 +133,15 @@ export const rooms: Room[] = [
       uz: ["Yotoqxona 1 (15.9 m²): ikki kishilik karavot 180×200", "Yotoqxona 2 (15.6 m²): ikkita bir kishilik karavot 90×200", "Oshxona-zal divan bilan", "Har bir yotoqxonada alohida sanuzel (4.7 m²)", "Kirish 15:00 dan, chiqish 12:00 gacha"],
       en: ["Bedroom 1 (15.9 m²): double bed 180×200", "Bedroom 2 (15.6 m²): two single beds 90×200", "Kitchen-lounge with a sofa", "Ensuite bathroom in each bedroom (4.7 m²)", "Check-in from 15:00, check-out by 12:00"],
     },
+    included: [
+      {
+        label: { ru: "Бассейн", uz: "Basseyn", en: "Pool" },
+        highlight: true,
+      },
+      { label: { ru: "Тёплый пол", uz: "Issiq pol", en: "Heated floor" } },
+      { label: { ru: "Полная кухня", uz: "To'liq oshxona", en: "Full kitchen" } },
+      { label: { ru: "Wi-Fi", uz: "Wi-Fi", en: "Wi-Fi" } },
+    ],
     relatedServices: ["kids-playground", "outdoor-cooking", "mini-football"],
   },
   {
@@ -123,9 +161,9 @@ export const rooms: Room[] = [
       en: "An outdoor pool with mountain views — bookable separately, no overnight stay needed.",
     },
     description: {
-      ru: "Летний бассейн для дневного отдыха: приезжайте на день, бронируйте бассейн отдельно и совмещайте с топчаном, мангалом и кухней. Одно бронирование — до 4 гостей.",
-      uz: "Kunlik dam olish uchun yozgi basseyn: bir kunga keling, basseynni alohida bron qiling va topchan, mangal hamda oshxona bilan birga rejalashtiring. Bitta bron — 4 mehmongacha.",
-      en: "A summer pool for day visits: come for the day, book the pool separately, and pair it with a topchan, BBQ, and the kitchen. One booking covers up to 4 guests.",
+      ru: "Летний бассейн для дневного отдыха: приезжайте на день, бронируйте бассейн отдельно и совмещайте с топчаном, мангалом и кухней. Одно бронирование — до 4 гостей. Гостям глэмпинга и шале бассейн включён в стоимость проживания — отдельно бронировать не нужно.",
+      uz: "Kunlik dam olish uchun yozgi basseyn: bir kunga keling, basseynni alohida bron qiling va topchan, mangal hamda oshxona bilan birga rejalashtiring. Bitta bron — 4 mehmongacha. Glemping va shale mehmonlari uchun basseyn yashash narxiga kiritilgan — alohida bron qilish shart emas.",
+      en: "A summer pool for day visits: come for the day, book the pool separately, and pair it with a topchan, BBQ, and the kitchen. One booking covers up to 4 guests. For glamping and chalet guests the pool is included in the room rate — no separate booking needed.",
     },
     priceFrom: { ru: "Цена при бронировании", uz: "Bron qilishda narx", en: "Price at booking" },
     capacity: { ru: "до 4 гостей", uz: "4 mehmongacha", en: "up to 4 guests" },
