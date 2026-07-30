@@ -18,9 +18,9 @@ export const pageSeo = {
       en: "CHIMGAN DARBAZA, Tashkent — Official website",
     },
     description: {
-      ru: "Шале и A-frame глэмпинг на высоте 1700 м в 45 минутах от Ташкента: бассейн включён в проживание, кухня на территории, панорама Чимгана. Есть дневные визиты.",
-      uz: "Toshkentdan 45 daqiqada, 1700 m balandlikda shale va A-frame glemping: basseyn narxga kiritilgan, hududda oshxona, Chimg'on panoramasi. Kunlik tashriflar ham bor.",
-      en: "Chalets and A-frame glamping at 1,700 m, 45 minutes from Tashkent: pool included with every stay, kitchen on site, Chimgan views. Day visits available too.",
+      ru: "Шале и A-frame глэмпинг на высоте 1700 м в 45 минутах от Ташкента: бассейн включён в проживание, кухня на территории, панорама Чимгана с террасы.",
+      uz: "Toshkentdan 45 daqiqada, 1700 m balandlikda shale va A-frame glemping: basseyn narxga kiritilgan, hududda oshxona, terrasadan Chimg'on panoramasi.",
+      en: "Chalets and A-frame glamping at 1,700 m, 45 minutes from Tashkent: pool included with every stay, kitchen on site, Chimgan views from your terrace.",
     },
   },
   rooms: {
@@ -91,9 +91,9 @@ export const pageSeo = {
       en: "Booking — CHIMGAN DARBAZA, Tashkent — Official website",
     },
     description: {
-      ru: "Бронирование шале, глэмпинга и дневных визитов: выберите даты — администратор подтвердит бронь в ближайшее время.",
-      uz: "Shale, glemping va kunlik tashriflarni bron qilish: sanalarni tanlang — administrator bronni tez orada tasdiqlaydi.",
-      en: "Book a chalet, a glamping cabin, or a day visit: pick the dates and our team will confirm shortly.",
+      ru: "Бронирование шале, глэмпинга и бассейна: выберите даты — администратор подтвердит бронь в ближайшее время.",
+      uz: "Shale, glemping va basseynni bron qilish: sanalarni tanlang — administrator bronni tez orada tasdiqlaydi.",
+      en: "Book a chalet, a glamping cabin, or the pool: pick the dates and our team will confirm shortly.",
     },
   },
 } satisfies Record<string, PageSeo>;

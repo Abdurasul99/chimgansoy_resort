@@ -83,9 +83,9 @@ export const faqItems: FaqItem[] = [
       en: "Can we come for the day, without staying over?",
     },
     answer: {
-      ru: "Да. Дневной визит работает с 08:00 до 18:00: топчан с курпача до 8 человек, мангал и казан в аренду, дрова и уголь на месте, готовое меню от кухни. Каждая позиция оплачивается отдельно, прайс фиксированный. Уточните детали у администратора при бронировании.",
-      uz: "Ha. Kunlik tashrif 08:00 dan 18:00 gacha: 8 kishigacha kurpachali topchan, mangal va qozon ijarasi, joyda o'tin va ko'mir, oshxonadan tayyor menyu. Har bir pozitsiya alohida to'lanadi, narx fiksirlangan. Tafsilotlarni bron qilishda administratordan aniqlashtiring.",
-      en: "Yes. Day visits run 08:00–18:00: a topchan with kurpacha cushions for up to 8 guests, BBQ grill and kazan to rent, firewood and charcoal on site, and a ready-made kitchen menu. Each item is paid for separately, at fixed prices. Ask the administrator for details when you book.",
+      ru: "Дневной отдых с арендой топчана мы больше не проводим — комплекс работает как курорт с проживанием. Единственный вариант без ночёвки — бронирование бассейна на день в летний сезон: до 4 гостей на одно бронирование, цена за человека. Всё остальное на территории доступно гостям, которые останавливаются в шале или глэмпинге.",
+      uz: "Topchan ijarasi bilan kunlik dam olishni biz endi o'tkazmaymiz — majmua yashash bilan kurort sifatida ishlaydi. Tunamasdan yagona variant — yozgi mavsumda basseynni bir kunga bron qilish: bitta bronga 4 mehmongacha, narx bir kishi uchun. Hududdagi qolgan hamma narsa shale yoki glempingda to'xtagan mehmonlar uchun.",
+      en: "We no longer run day visits with topchan rental — the property operates as a resort with overnight stays. The one option without staying over is a day booking for the pool in the summer season: up to 4 guests per booking, priced per person. Everything else on the grounds is for guests staying in a chalet or a glamping cabin.",
     },
   },
 ];

@@ -38,18 +38,15 @@ export const footerNavigation = [
       { href: "/bron", label: { ru: "Забронировать", uz: "Bron qilish", en: "Book now" } },
     ],
   },
-  {
-    title: { ru: "Дневной визит", uz: "Kunlik tashrif", en: "Day visit" },
-    links: [
-      { href: "/services/tapchan-zone", label: { ru: "Топчаны и курпача", uz: "Topchan va kurpacha", en: "Topchan & kurpacha" } },
-      { href: "/services/outdoor-cooking", label: { ru: "Мангал и казан", uz: "Mangal va qozon", en: "BBQ & kazan" } },
-    ],
-  },
+  // The "Дневной визит" group (topchan + BBQ) is gone — day visits are closed.
+  // BBQ and kazan rental survives as a service for staying guests, so it moved
+  // into "Территория" rather than disappearing with the group.
   {
     title: { ru: "Территория", uz: "Hudud", en: "Territory" },
     links: [
-      { href: "/services/restaurant", label: { ru: "Ресторан", uz: "Restoran", en: "Restaurant" } },
-      { href: "/services/picnic-zone", label: { ru: "Зона пикника", uz: "Piknik zonasi", en: "Picnic zone" } },
+      { href: "/services/restaurant", label: { ru: "Кухня и меню", uz: "Oshxona va menyu", en: "Kitchen & menu" } },
+      { href: "/services/outdoor-cooking", label: { ru: "Мангал и казан", uz: "Mangal va qozon", en: "BBQ & kazan" } },
+      { href: "/services/picnic-zone", label: { ru: "Зоны отдыха", uz: "Dam olish zonalari", en: "Lounge areas" } },
       { href: "/services/experience", label: { ru: "Активности", uz: "Faoliyatlar", en: "Activities" } },
       { href: "/place", label: { ru: "Места рядом", uz: "Atrofdagi joylar", en: "Nearby attractions" } },
     ],

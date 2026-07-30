@@ -81,9 +81,13 @@ export const knowledge: KnowledgeEntry[] = [
     id: "checkin",
     keywords: ["заезд", "выезд", "check-in", "checkin", "checkout", "kirish", "chiqish", "во сколько заезд", "когда заезд"],
     answer: {
-      ru: "🕑 Заезд — после 14:00, выезд — до 12:00. Раннее заселение или поздний выезд возможны по согласованию с администратором (зависит от загрузки).",
-      uz: "🕑 Kirish — 14:00 dan keyin, chiqish — 12:00 gacha. Erta kirish yoki kech chiqish administrator bilan kelishilgan holda mumkin (band bo'lishiga bog'liq).",
-      en: "🕑 Check-in from 2:00 PM, check-out by 12:00 PM. Early check-in or late check-out can be arranged with the administrator (depending on availability).",
+      // 15:00, matching rooms.ts room specs and venue-facts.ts. This entry said
+      // 14:00, so the concierge and the room pages disagreed. NOTE: the public
+      // offer in policies-legal.ts also still says 14:00 — that one needs the
+      // operator to confirm which is correct, since it is a contract term.
+      ru: "🕑 Заезд — с 15:00, выезд — до 12:00. Раннее заселение или поздний выезд возможны по согласованию с администратором (зависит от загрузки).",
+      uz: "🕑 Kirish — 15:00 dan, chiqish — 12:00 gacha. Erta kirish yoki kech chiqish administrator bilan kelishilgan holda mumkin (band bo'lishiga bog'liq).",
+      en: "🕑 Check-in from 3:00 PM, check-out by 12:00 PM. Early check-in or late check-out can be arranged with the administrator (depending on availability).",
     },
   },
 
@@ -138,9 +142,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "kids",
     keywords: ["дети", "ребен", "детск", "семей", "семья", "bola", "bolalar", "oila", "kids", "child", "children", "family", "playground"],
     answer: {
-      ru: "👨‍👩‍👧 Дневной формат отлично подходит для семей с детьми: безопасные прогулочные зоны, пикник-зоны под соснами, мягкие курпача на топчане, готовое меню от кухни. Можно приехать на день и спокойно разместиться компанией до 8 человек на топчан.",
-      uz: "👨‍👩‍👧 Kunlik format bolali oilalar uchun ajoyib: xavfsiz sayr zonalari, qarag'aylar ostidagi piknik joylari, topchandagi yumshoq kurpacha, oshxonadan tayyor menyu. Bir kunga kelib, 8 kishigacha do'stlar davrasi bilan bemalol joylashishingiz mumkin.",
-      en: "👨‍👩‍👧 The day-visit format is great for families: safe walking zones, picnic spots under the pines, soft kurpacha on the topchan, and a ready-made kitchen menu. Come for a day and settle in as a group of up to 8 per topchan.",
+      ru: "👨‍👩‍👧 Для семей с детьми удобнее всего шале: две отдельные спальни и кухня-зал, до 5 гостей. На территории детская площадка, безопасные прогулочные зоны, бассейн (включён в проживание) и готовое меню от кухни. Для большой компании можно взять несколько домиков — администратор поможет собрать бронь.",
+      uz: "👨‍👩‍👧 Bolali oilalar uchun shale eng qulay: ikkita alohida yotoqxona va oshxona-zal, 5 mehmongacha. Hududda bolalar maydonchasi, xavfsiz sayr zonalari, basseyn (yashashga kiritilgan) va oshxonadan tayyor menyu. Katta guruh uchun bir nechta uycha olish mumkin — administrator bronni yig'ishga yordam beradi.",
+      en: "👨‍👩‍👧 For families the chalet works best: two separate bedrooms and a kitchen-lounge, up to 5 guests. The grounds have a kids playground, safe walking areas, the pool (included in the stay), and a ready-made kitchen menu. For a bigger group you can take several cabins — the administrator will help put the booking together.",
     },
   },
 
@@ -160,9 +164,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "activities",
     keywords: ["активности", "развлечения", "что делать", "чем заняться", "досуг", "faoliyat", "ko'ngilochar", "nima qilish", "activities", "what to do", "entertainment", "things"],
     answer: {
-      ru: "🎯 На территории — топчаны с курпача, мангал и казан в аренду, готовое меню от кухни, пикник-зоны под соснами и панорама Чимгана. Можно гулять по горным маршрутам рядом или попробовать конную прогулку и канатные дороги.",
-      uz: "🎯 Hududda — kurpachali topchanlar, ijaraga mangal va qozon, oshxonadan tayyor menyu, qarag'aylar ostidagi piknik joylari va Chimgon panoramasi. Yaqindagi tog' marshrutlarida sayr qilish, ot minib ko'rish yoki kanat yo'liga borish mumkin.",
-      en: "🎯 On the territory — topchans with kurpacha, BBQ grill and kazan to rent, a ready-made kitchen menu, picnic spots under the pines, and views of Chimgan. Nearby you can hike mountain routes, ride horses, or try the cable cars.",
+      ru: "🎯 На территории — бассейн, мангал и казан в аренду, кухня с готовым меню, прогулочные зоны на 6 гектарах, детская площадка и панорама Чимгана с террасы. Рядом горные маршруты, конные прогулки и канатные дороги.",
+      uz: "🎯 Hududda — basseyn, ijaraga mangal va qozon, tayyor menyuli oshxona, 6 gektarda sayr zonalari, bolalar maydonchasi va terrasadan Chimgon panoramasi. Yaqinida tog' marshrutlari, ot minish va kanat yo'llari.",
+      en: "🎯 On the grounds — the pool, BBQ grill and kazan to rent, a kitchen with a ready-made menu, walking areas across six hectares, a kids playground, and the Chimgan panorama from your terrace. Mountain trails, horse rides, and cable cars are nearby.",
     },
   },
 
@@ -171,9 +175,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "winter",
     keywords: ["зим", "снег", "тюбинг", "лыж", "санки", "qish", "qor", "winter", "snow", "ski", "tubing", "sledding"],
     answer: {
-      ru: "❄️ Зимой работаем как и летом — ежедневно с 08:00 до 18:00. Тёплые зоны на топчане, мангал и казан, готовое меню и горячий чай. Снежный сезон обычно с декабря по март — точные условия зависят от погоды, лучше уточнить заранее.",
-      uz: "❄️ Qishda ham yozdek ishlaymiz — har kuni 08:00 dan 18:00 gacha. Topchandagi iliq zonalar, mangal va qozon, tayyor menyu va issiq choy. Qor mavsumi odatda dekabrdan martgacha — aniq sharoitlar ob-havoga bog'liq, oldindan aniqlashtirish yaxshiroq.",
-      en: "❄️ Winter hours are the same as summer — daily 08:00–18:00. Warm topchan setups, BBQ grill and kazan, the kitchen menu, and hot tea. Snow season runs roughly December through March — exact conditions depend on the weather, best to check ahead.",
+      ru: "❄️ Работаем круглый год. В шале тёплый пол, в глэмпинге кондиционер с обогревом, из панорамного окна — снежные вершины Чимгана. Кухня работает, мангал и казан можно арендовать. Снежный сезон обычно с декабря по март — точные условия зависят от погоды, лучше уточнить заранее.",
+      uz: "❄️ Yil davomida ishlaymiz. Shalede issiq pol, glempingda isitishli konditsioner, panoramali derazadan — Chimgonning qorli cho'qqilari. Oshxona ishlaydi, mangal va qozonni ijaraga olish mumkin. Qor mavsumi odatda dekabrdan martgacha — aniq sharoitlar ob-havoga bog'liq, oldindan aniqlashtirish yaxshiroq.",
+      en: "❄️ We're open year-round. Heated floors in the chalets, air conditioning with heating in the glamping cabins, and the snowy Chimgan peaks through the panoramic window. The kitchen runs as usual and a BBQ grill or kazan can be rented. Snow season runs roughly December through March — exact conditions depend on the weather, best to check ahead.",
     },
   },
 
@@ -182,9 +186,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "events",
     keywords: ["мероприят", "банкет", "праздник", "корпоратив", "свадьб", "tadbir", "bayram", "to'y", "korporativ", "event", "banquet", "party", "wedding", "corporate"],
     answer: {
-      ru: "🎉 Небольшие семейные и корпоративные форматы возможны: ресторан, топчаны, гриль-зона и активности комбинируем под программу. Свяжитесь с администратором, обсудим детали.",
-      uz: "🎉 Kichik oilaviy va korporativ formatlar mumkin: restoran, topchanlar, gril zonasi va faoliyatlar dasturga moslashtirilib birlashtiriladi. Administrator bilan bog'lanib, tafsilotlarni muhokama qiling.",
-      en: "🎉 Small family and corporate events are possible — we combine the restaurant, tapchan zones, grill area, and activities to fit your program. Contact the administrator to discuss details.",
+      ru: "🎉 Небольшие семейные и корпоративные форматы возможны: несколько домиков под группу, кухня с предзаказом меню, гриль-зона и активности — комбинируем под программу. Свяжитесь с администратором, обсудим детали.",
+      uz: "🎉 Kichik oilaviy va korporativ formatlar mumkin: guruh uchun bir nechta uycha, menyuni oldindan buyurtma qilish bilan oshxona, gril zonasi va faoliyatlar — dasturga moslashtiramiz. Administrator bilan bog'lanib, tafsilotlarni muhokama qiling.",
+      en: "🎉 Small family and corporate formats work: several cabins for the group, the kitchen with a pre-ordered menu, the grill area, and activities — combined to fit your program. Contact the administrator to discuss details.",
     },
   },
 
@@ -193,9 +197,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "dayvisit",
     keywords: ["днем", "дневной", "на день", "без ночевки", "без проживания", "kunduzi", "kunlik", "yashamasdan", "day visit", "without stay", "without overnight", "just visit"],
     answer: {
-      ru: "☀️ Да, сейчас мы работаем только в формате дневного отдыха — без ночёвок. Топчан с курпача до 8 человек, мангал и казан в аренду, дрова и уголь на месте, меню от кухни. Ежедневно с 08:00 до 18:00.",
-      uz: "☀️ Ha, hozir biz faqat kunlik dam olish formatida ishlayapmiz — tunamasdan. 8 kishigacha kurpachali topchan, mangal va qozon ijarasi, joyda o'tin va ko'mir, oshxonadan menyu. Har kuni 08:00 dan 18:00 gacha.",
-      en: "☀️ Yes, we currently run as a day-only venue — no overnight stays. A topchan with kurpacha for up to 8 guests, BBQ grill and kazan to rent, firewood and charcoal on site, and a kitchen menu. Open daily 08:00–18:00.",
+      ru: "☀️ Дневной отдых с арендой топчана мы больше не проводим — комплекс работает как курорт с проживанием: глэмпинг A-frame и шале. Без ночёвки можно забронировать только бассейн на день (летний сезон, до 4 гостей на бронирование, цена за человека). Всё остальное на территории — для гостей, которые остановились у нас.",
+      uz: "☀️ Topchan ijarasi bilan kunlik dam olishni endi o'tkazmaymiz — majmua yashash bilan kurort sifatida ishlaydi: A-frame glemping va shale. Tunamasdan faqat basseynni bir kunga bron qilish mumkin (yozgi mavsum, bronga 4 mehmongacha, narx bir kishi uchun). Hududdagi qolgani — bizda to'xtagan mehmonlar uchun.",
+      en: "☀️ We no longer run day visits with topchan rental — the property operates as a resort with overnight stays: A-frame glamping and chalets. The only thing bookable without staying over is the pool for a day (summer season, up to 4 guests per booking, priced per person). Everything else on the grounds is for guests staying with us.",
     },
   },
 

@@ -305,10 +305,9 @@ export default async function HomePage({ params }: PageProps) {
       <MasterPlan locale={locale} />
 
       {/* The day-use price list used to sit here (and before that, second on the
-          page). It is off the homepage entirely now — this is a resort you book
-          a night at, and a topchan tariff table was the loudest thing arguing
-          otherwise. <PriceList> is still in the repo, wired to the real prices
-          in content/pricing.ts, for whenever the day visit gets its own page. */}
+          page). Day visits are closed now, so the section and its component are
+          gone; the retired topchan/entry prices are parked in
+          content/pricing.ts as `retiredDayUse` if the format ever comes back. */}
 
       {/* ── Reviews — cinematic carousel ──────────────── */}
       <TestimonialsCarousel locale={locale} />

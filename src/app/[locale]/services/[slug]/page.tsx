@@ -17,6 +17,13 @@ type PageProps = {
   params: Promise<{ locale: string; slug: string }>;
 };
 
+// Without this, any slug outside generateStaticParams is rendered on demand and
+// answers 200 with an empty page instead of 404 — so /services/tapchan-zone,
+// retired with the day visit but already indexed, kept returning a live URL.
+// (nomera/[slug] has always set this; services/[slug] never did, which means
+// every invalid service URL has been answering 200.)
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return services.map((service) => ({ slug: service.slug }));
 }

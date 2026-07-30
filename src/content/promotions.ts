@@ -36,14 +36,14 @@ export const promotions: Promotion[] = [
   {
     badge: { ru: "Будни", uz: "Ish kunlari", en: "Weekdays" },
     title: {
-      ru: "Тихий день на природе",
-      uz: "Tabiat qo'ynida sokin kun",
-      en: "A quiet day in nature",
+      ru: "Тихая ночь в горах",
+      uz: "Tog'larda sokin tun",
+      en: "A quiet night in the mountains",
     },
     description: {
-      ru: "Идеально для топчана, ресторана и короткой перезагрузки без ночёвки.",
-      uz: "Topchan, restoran va tunamasdan qisqa hordiq uchun ideal.",
-      en: "Ideal for tapchan lounging, the restaurant, and a short reset without an overnight stay.",
+      ru: "Глэмпинг на двоих в будни — короткая перезагрузка с террасой, бассейном и ужином от кухни.",
+      uz: "Ish kunlarida ikki kishilik glemping — terrasa, basseyn va oshxonadan kechki ovqat bilan qisqa hordiq.",
+      en: "Midweek glamping for two — a short reset with a terrace, the pool, and dinner from the kitchen.",
     },
   },
 ];

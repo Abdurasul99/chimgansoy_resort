@@ -9,7 +9,23 @@ export type PriceItem = {
   weekend: number;
 };
 
-export const priceList: PriceItem[] = [
+/**
+ * Day visits are closed, so this is no longer a day-use price list.
+ *
+ * `retiredDayUse` holds the two positions that only existed for day visitors —
+ * the per-car entry fee and the topchan rental. They are kept, not deleted, so
+ * the numbers are on hand if the format ever reopens, but nothing renders them
+ * and `venueFacts()` must not quote them: an AI answer with a live topchan
+ * price is a booking the venue can't honour.
+ *
+ * `priceList` keeps the cooking extras, which services.ts already describes as
+ * rentals available to staying guests.
+ *
+ * ASSUMPTION worth confirming with the operator: that these four keep the same
+ * Mon–Thu / Fri–Sun prices now that they're sold to overnight guests rather
+ * than as part of a day package.
+ */
+export const retiredDayUse: PriceItem[] = [
   {
     key: "entry",
     icon: "car",
@@ -26,6 +42,9 @@ export const priceList: PriceItem[] = [
     weekday: 150_000,
     weekend: 300_000,
   },
+];
+
+export const priceList: PriceItem[] = [
   {
     key: "kazan",
     icon: "kazan",
@@ -58,27 +77,15 @@ export const priceList: PriceItem[] = [
   },
 ];
 
-export const dayUseInfo = {
-  hours: "08:00–18:00",
-  altitude: "1700 м",
-  altitudeShort: { ru: "1700 м над уровнем моря", uz: "1700 m balandlikda", en: "1,700 m above sea level" } satisfies LocalizedString,
+/**
+ * `dayUseInfo`, `whatToBring` and `includedPerks` lived here too. All three were
+ * read only by <PriceList>, which is deleted along with the day visit, and all
+ * three were day-visit copy ("Продукты для шашлыка", "Чистая зона отдыха",
+ * hours 08:00–18:00). Removed rather than left as dead exports; `git show
+ * HEAD~1:src/content/pricing.ts` has them if the format reopens.
+ */
+export const priceLabels = {
   weekdaysLabel: { ru: "Пн–Чт", uz: "Du–Pay", en: "Mon–Thu" } satisfies LocalizedString,
   weekendLabel: { ru: "Пт–Вс", uz: "Ju–Yak", en: "Fri–Sun" } satisfies LocalizedString,
   currencyShort: { ru: "сум", uz: "so'm", en: "UZS" } satisfies LocalizedString,
 };
-
-export const whatToBring: LocalizedString[] = [
-  { ru: "Продукты для шашлыка / казан-кебаба", uz: "Shashlik / qozon-kabob uchun mahsulotlar", en: "Food for BBQ / kazan-kebab" },
-  { ru: "Тёплая одежда — вечером в горах прохладно", uz: "Iliq kiyim — kechqurun tog'da salqin", en: "Warm clothes — evenings are cool in the mountains" },
-  { ru: "Удобная обувь для прогулок", uz: "Sayr uchun qulay poyabzal", en: "Comfortable shoes for walks" },
-  { ru: "Солнцезащитный крем и кепка", uz: "Quyoshdan himoya kremi va kepka", en: "Sunscreen and a cap" },
-  { ru: "Хорошее настроение и компанию", uz: "Yaxshi kayfiyat va do'stlar", en: "Good mood and good company" },
-];
-
-export const includedPerks: LocalizedString[] = [
-  { ru: "Готовое место для мангала и казана", uz: "Mangal va qozon uchun tayyor joy", en: "Ready-to-use BBQ and kazan spot" },
-  { ru: "Горный воздух и панорамы", uz: "Tog' havosi va panoramalar", en: "Mountain air and views" },
-  { ru: "Парковка на территории", uz: "Hududda parking", en: "On-site parking" },
-  { ru: "Чистая зона отдыха", uz: "Toza dam olish zonasi", en: "Clean recreation area" },
-  { ru: "Готовое меню от кухни", uz: "Oshxonadan tayyor menyu", en: "Ready-made menu from our kitchen" },
-];

@@ -7,16 +7,14 @@ import { rooms, EXELY_ROOM_TYPE } from "@/content/rooms";
 import { localizePath } from "@/i18n/routing";
 import { text } from "@/lib/localize";
 
-// What the guest can book: a day visit (topchan) + the two room types.
-const STAY_OPTIONS = [
-  {
-    slug: "day",
-    title: { ru: "Дневной отдых", uz: "Kunlik dam", en: "Day visit" },
-    meta: { ru: "Топчан · до 8 гостей", uz: "Topchan · 8 gacha", en: "Topchan · up to 8" },
-  },
-  // Only built, bookable rooms — cottage (available:false) is excluded.
-  ...rooms.filter((r) => r.available !== false).map((r) => ({ slug: r.slug, title: r.title, meta: r.capacity })),
-];
+// What the guest can book. A hand-written "Дневной отдых · Топчан" option used
+// to lead this list AND be the default, so anyone opening /bron without a room
+// in the URL was pointed at the day visit. Day visits are closed; the options
+// are now exactly the bookable units.
+// Only built, bookable rooms — anything with available:false is excluded.
+const STAY_OPTIONS = rooms
+  .filter((r) => r.available !== false)
+  .map((r) => ({ slug: r.slug, title: r.title, meta: r.capacity }));
 
 type Locale = "ru" | "uz" | "en";
 
@@ -63,8 +61,11 @@ export function BookingRequestForm({
   defaultRoom = "",
 }: Props) {
   // Room/stay selection — pre-fill from the card the guest came from (?room=…),
-  // otherwise default to a day visit. The selected stay maps to an Exely room-type.
-  const initialSlug = STAY_OPTIONS.some((o) => o.slug === defaultRoom) ? defaultRoom : "day";
+  // otherwise default to the first bookable unit. The selected stay maps to an
+  // Exely room-type.
+  const initialSlug = STAY_OPTIONS.some((o) => o.slug === defaultRoom)
+    ? defaultRoom
+    : (STAY_OPTIONS[0]?.slug ?? "");
   const [staySlug, setStaySlug] = useState(initialSlug);
 
   const stayLabel =
@@ -82,7 +83,7 @@ export function BookingRequestForm({
         {/* The selected stay -> Exely room-type id, read by the engine on /bron */}
         <input type="hidden" name="room-type" value={EXELY_ROOM_TYPE[staySlug] ?? ""} />
 
-        {/* Stay-type selector — pick a day visit, glamping, or the cottage */}
+        {/* Stay-type selector — glamping, chalet, or the pool */}
         <div>
           <span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
             {stayLabel}

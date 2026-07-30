@@ -57,9 +57,9 @@ export const policies: PolicyPage[] = [
     slug: "resort-visiting-rules",
     title: { ru: "Правила посещения курорта", uz: "Kurortga tashrif qoidalari", en: "Resort visiting rules" },
     description: {
-      ru: "Правила для дневных гостей и посетителей территории.",
-      uz: "Kunlik mehmonlar va hududga tashrif buyuruvchilar uchun qoidalar.",
-      en: "Rules for day visitors and resort territory guests.",
+      ru: "Правила поведения на территории комплекса для гостей и посетителей.",
+      uz: "Mehmonlar va tashrif buyuruvchilar uchun majmua hududidagi xatti-harakat qoidalari.",
+      en: "Rules of conduct on the resort grounds for guests and visitors.",
     },
     sections: [
       {

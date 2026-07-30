@@ -16,9 +16,12 @@ export type Service = {
 /**
  * Order matters: this array drives both the /services page and the leisure grid
  * on the homepage, so the first card is what a visitor reads as "the main thing
- * here". It used to open on the topchan; the site sells nights now, so the
- * services that support a stay — kitchen, trails, cooking — come first and the
- * topchan sits last as the day-visit product it is.
+ * here". It used to open on the topchan.
+ *
+ * The `tapchan-zone` entry is gone entirely — day visits are closed, so a
+ * bookable topchan is no longer a service. Anything referencing that slug had
+ * to go with it (rooms.ts relatedServices, the footer nav group), or it would
+ * link to a page that no longer generates.
  */
 export const services: Service[] = [
   {
@@ -32,9 +35,9 @@ export const services: Service[] = [
       en: "A ready-made kitchen menu — breakfast, dinner, and BBQ dishes to your terrace.",
     },
     description: {
-      ru: "Кухня работает на территории: мангальные блюда, плов, узбекская классика и сезонные позиции по предзаказу. Подача на террасу домика, к топчану или в зал — администратор примет заказ. Если хочется готовить самим, в шале есть полная кухня, а мангал и казан берутся в аренду.",
-      uz: "Oshxona hududda ishlaydi: mangal taomlari, palov, o'zbek klassikasi va oldindan buyurtma asosida mavsumiy taomlar. Uycha terrasasiga, topchanga yoki zalga xizmat — administrator buyurtmani qabul qiladi. O'zingiz pishirmoqchi bo'lsangiz, shalede to'liq oshxona bor, mangal va qozon ijaraga olinadi.",
-      en: "The kitchen works on site: BBQ dishes, plov, Uzbek classics, and seasonal items by pre-order. Served to your cabin terrace, to a topchan, or in the dining room. Prefer to cook? The chalet has a full kitchen, and a BBQ grill or kazan can be rented.",
+      ru: "Кухня работает на территории: мангальные блюда, плов, узбекская классика и сезонные позиции по предзаказу. Подача на террасу домика или в зал — администратор примет заказ. Если хочется готовить самим, в шале есть полная кухня, а мангал и казан берутся в аренду.",
+      uz: "Oshxona hududda ishlaydi: mangal taomlari, palov, o'zbek klassikasi va oldindan buyurtma asosida mavsumiy taomlar. Uycha terrasasiga yoki zalga xizmat — administrator buyurtmani qabul qiladi. O'zingiz pishirmoqchi bo'lsangiz, shalede to'liq oshxona bor, mangal va qozon ijaraga olinadi.",
+      en: "The kitchen works on site: BBQ dishes, plov, Uzbek classics, and seasonal items by pre-order. Served to your cabin terrace or in the dining room. Prefer to cook? The chalet has a full kitchen, and a BBQ grill or kazan can be rented.",
     },
     highlights: {
       ru: ["Готовое меню", "Подача на террасу", "Предзаказ позиций", "Узбекская кухня"],
@@ -90,46 +93,26 @@ export const services: Service[] = [
   {
     slug: "picnic-zone",
     category: "relax",
-    image: "galTopchanRow",
-    title: { ru: "Зона пикника", uz: "Piknik zonasi", en: "Picnic zone" },
+    // Was galTopchanRow — a row of topchans, i.e. a photo of the product we no
+    // longer sell, illustrating the grounds.
+    image: "galGreenHills",
+    title: { ru: "Территория и зоны отдыха", uz: "Hudud va dam olish zonalari", en: "The grounds & lounge areas" },
     shortDescription: {
-      ru: "Открытые площадки среди сосен для семейного дня и встреч на природе.",
-      uz: "Qarag'aylar orasidagi ochiq maydonlar — oilaviy kun va tabiatdagi uchrashuvlar uchun.",
-      en: "Open spots among the pines for a family day or a gathering in nature.",
+      ru: "Шесть гектаров среди сосен: прогулочные дорожки, открытые площадки и детская зона.",
+      uz: "Qarag'aylar orasida olti gektar: sayr yo'lakchalari, ochiq maydonlar va bolalar zonasi.",
+      en: "Six hectares among the pines: walking paths, open lawns, and a kids area.",
     },
     description: {
-      ru: "Открытая часть территории среди сосен с панорамой на Чимган. Подходит для семейных встреч, корпоративных выездов и спокойного дня вдали от города. Парковка и зона мангала — рядом.",
-      uz: "Qarag'aylar orasidagi hududning ochiq qismi, Chimgon panoramasi bilan. Oilaviy uchrashuvlar, korporativ sayohatlar va shahar shovqinidan uzoq sokin kun uchun mos. Avtoturargoh va mangal hududi yaqin.",
-      en: "Open territory among the pines with views of the Chimgan range. Works for family gatherings, corporate outings, and a calm day away from the city — parking and the BBQ area are close by.",
+      ru: "Территория открыта для гостей на всё время проживания: прогулочные дорожки между домиками, открытые площадки с панорамой на Чимган, детская площадка и места для встреч на воздухе. Парковка — рядом с домиком, зона мангала — в нескольких шагах.",
+      uz: "Hudud yashash davomida mehmonlar uchun ochiq: uychalar orasidagi sayr yo'lakchalari, Chimgon panoramasi bilan ochiq maydonlar, bolalar maydonchasi va ochiq havoda uchrashuv joylari. Parking — uycha yonida, mangal zonasi — bir necha qadamda.",
+      en: "The grounds are open to guests for the whole stay: walking paths between the cabins, open lawns with a view of the Chimgan range, a kids playground, and spots to gather outdoors. Parking sits by your cabin, the BBQ area a few steps away.",
     },
     highlights: {
-      ru: ["Просторная территория", "Сосны и панорама гор", "Парковка рядом", "Можно с детьми"],
-      uz: ["Keng hudud", "Qarag'aylar va tog' panoramasi", "Avtoturargoh yaqin", "Bolalar bilan mumkin"],
-      en: ["Spacious grounds", "Pines and mountain views", "Parking nearby", "Family-friendly"],
+      ru: ["6 гектаров территории", "Сосны и панорама гор", "Детская площадка", "Парковка у домика"],
+      uz: ["6 gektar hudud", "Qarag'aylar va tog' panoramasi", "Bolalar maydonchasi", "Uycha yonida parking"],
+      en: ["Six hectares of grounds", "Pines and mountain views", "Kids playground", "Parking by your cabin"],
     },
-    bestFor: { ru: "Семейный выезд на природу", uz: "Oilaviy tabiatga chiqish", en: "A family outing in nature" },
-  },
-  {
-    slug: "tapchan-zone",
-    category: "relax",
-    image: "galTopchanSwing",
-    title: { ru: "Топчан и курпача", uz: "Topchan va kurpacha", en: "Topchan & kurpacha" },
-    shortDescription: {
-      ru: "Приватный топчан с курпача — для дневного визита, до 8 гостей.",
-      uz: "Kurpachali xususiy topchan — kunlik tashrif uchun, 8 mehmongacha.",
-      en: "A private topchan with kurpacha cushions — for a day visit, up to 8 guests.",
-    },
-    description: {
-      ru: "Топчан — традиционная открытая платформа в тени деревьев с набором курпача, местом под мангал и казан рядом. Основной формат для гостей, которые приезжают на день без ночёвки; арендуется отдельно по фиксированному прайсу.",
-      uz: "Topchan — daraxtlar soyasidagi an'anaviy ochiq supa: kurpacha to'plami, yonida mangal va qozon joyi. Tunamasdan bir kunga keladigan mehmonlar uchun asosiy format; fiksirlangan narx bo'yicha alohida ijaraga olinadi.",
-      en: "A topchan is a traditional open platform under the tree canopy, with a kurpacha cushion set and a BBQ / kazan spot at hand. It's the main format for guests who come for the day without an overnight stay, rented separately at a fixed price.",
-    },
-    highlights: {
-      ru: ["До 8 человек на топчан", "Включены курпача", "Тень и горный воздух", "Формат дневного визита"],
-      uz: ["Topchan uchun 8 kishigacha", "Kurpacha to'plami", "Soya va tog' havosi", "Kunlik tashrif formati"],
-      en: ["Up to 8 guests per topchan", "Kurpacha set included", "Shade and mountain air", "Day-visit format"],
-    },
-    bestFor: { ru: "День на природе без ночёвки", uz: "Tunamasdan tabiatda kun", en: "A day in nature, no overnight" },
+    bestFor: { ru: "Спокойный день на территории", uz: "Hududda sokin kun", en: "A slow day on the grounds" },
   },
 ];
 

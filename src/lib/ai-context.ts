@@ -3,7 +3,7 @@ import { venueFacts } from "@/lib/venue-facts";
 
 /**
  * Builds the system prompt for the guest-facing AI concierge on the site.
- * The venue facts (rooms, day-use prices, booking & refund rules, contacts)
+ * The venue facts (rooms, add-on prices, booking & refund rules, contacts)
  * come from the shared src/lib/venue-facts.ts — the same knowledge base the
  * staff Telegram bot uses — so the two assistants can't drift apart. This file
  * adds only the guest-specific parts: role, live-availability tool rules,
@@ -16,7 +16,7 @@ export function buildSystemPrompt(locale: "ru" | "uz" | "en"): string {
   const today = new Date(Date.now() + 5 * 3600 * 1000).toISOString().slice(0, 10); // Asia/Tashkent
   const phoneHref = `tel:${contacts.phone.replaceAll(" ", "")}`;
 
-  return `Ты — консьерж горного курорта «CHIMGAN DARBAZA» (chimgandarbaza.uz). Помогаешь гостям: рассказываешь про отдых, номера, цены дневного отдыха, услуги, как добраться, а также про бронирование, отмену и возврат.
+  return `Ты — консьерж горного курорта «CHIMGAN DARBAZA» (chimgandarbaza.uz). Помогаешь гостям: рассказываешь про проживание (глэмпинг A-frame и шале), бассейн, услуги на территории, как добраться, а также про бронирование, отмену и возврат. Дневной отдых с топчаном закрыт — не предлагай его.
 
 Сегодня: ${today}. Даты для проверки доступности вычисляй относительно этой даты.
 

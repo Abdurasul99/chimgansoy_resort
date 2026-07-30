@@ -93,7 +93,7 @@ export const rooms: Room[] = [
       { label: { ru: "Кондиционер", uz: "Konditsioner", en: "Air conditioning" } },
       { label: { ru: "Wi-Fi", uz: "Wi-Fi", en: "Wi-Fi" } },
     ],
-    relatedServices: ["restaurant", "tapchan-zone", "experience"],
+    relatedServices: ["restaurant", "picnic-zone", "experience"],
   },
   {
     slug: "cottage",
@@ -161,24 +161,24 @@ export const rooms: Room[] = [
       en: "An outdoor pool with mountain views — bookable separately, no overnight stay needed.",
     },
     description: {
-      ru: "Летний бассейн для дневного отдыха: приезжайте на день, бронируйте бассейн отдельно и совмещайте с топчаном, мангалом и кухней. Одно бронирование — до 4 гостей. Гостям глэмпинга и шале бассейн включён в стоимость проживания — отдельно бронировать не нужно.",
-      uz: "Kunlik dam olish uchun yozgi basseyn: bir kunga keling, basseynni alohida bron qiling va topchan, mangal hamda oshxona bilan birga rejalashtiring. Bitta bron — 4 mehmongacha. Glemping va shale mehmonlari uchun basseyn yashash narxiga kiritilgan — alohida bron qilish shart emas.",
-      en: "A summer pool for day visits: come for the day, book the pool separately, and pair it with a topchan, BBQ, and the kitchen. One booking covers up to 4 guests. For glamping and chalet guests the pool is included in the room rate — no separate booking needed.",
+      ru: "Гостям глэмпинга и шале бассейн включён в стоимость проживания — отдельно бронировать не нужно. Приехать только на бассейн, без ночёвки, тоже можно: это отдельное бронирование до 4 гостей, цена за человека и зависит от даты. Рядом кухня и зона мангала.",
+      uz: "Glemping va shale mehmonlari uchun basseyn yashash narxiga kiritilgan — alohida bron qilish shart emas. Faqat basseynga, tunamasdan kelish ham mumkin: bu alohida bron, 4 mehmongacha, narx bir kishi uchun va sanaga bog'liq. Yaqinida oshxona va mangal zonasi.",
+      en: "For glamping and chalet guests the pool is included in the room rate — no separate booking needed. Coming just for the pool, without an overnight stay, also works: that's a separate booking for up to 4 guests, priced per person and depending on the date. The kitchen and BBQ area are nearby.",
     },
     priceFrom: { ru: "Цена при бронировании", uz: "Bron qilishda narx", en: "Price at booking" },
     capacity: { ru: "до 4 гостей", uz: "4 mehmongacha", en: "up to 4 guests" },
     size: { ru: "Открытый бассейн", uz: "Ochiq basseyn", en: "Outdoor pool" },
     amenities: {
-      ru: ["Открытый летний бассейн", "Панорама гор", "Зона дневного отдыха рядом", "Отдельное бронирование"],
-      uz: ["Ochiq yozgi basseyn", "Tog' panoramasi", "Yaqinida kunlik dam olish zonasi", "Alohida bron"],
+      ru: ["Открытый летний бассейн", "Панорама гор", "Включён в проживание", "Или отдельное бронирование"],
+      uz: ["Ochiq yozgi basseyn", "Tog' panoramasi", "Yashashga kiritilgan", "Yoki alohida bron"],
       en: ["Outdoor summer pool", "Mountain panorama", "Day-lounge area nearby", "Booked separately"],
     },
     features: {
-      ru: ["Бронь на день, без проживания", "До 4 гостей на одно бронирование", "Работает в летний сезон", "Рядом топчаны, мангал и кухня"],
-      uz: ["Bir kunlik bron, yashashsiz", "Bitta bronga 4 mehmongacha", "Yozgi mavsumda ishlaydi", "Yaqinida topchan, mangal va oshxona"],
-      en: ["Day booking, no overnight stay", "Up to 4 guests per booking", "Open in the summer season", "Topchans, BBQ, and kitchen nearby"],
+      ru: ["Включён в проживание в шале и глэмпинге", "Или бронь на день, до 4 гостей", "Работает в летний сезон", "Рядом мангал и кухня"],
+      uz: ["Shale va glempingda yashashga kiritilgan", "Yoki bir kunlik bron, 4 mehmongacha", "Yozgi mavsumda ishlaydi", "Yaqinida mangal va oshxona"],
+      en: ["Included with chalet and glamping stays", "Or a day booking for up to 4 guests", "Open in the summer season", "BBQ and kitchen nearby"],
     },
-    relatedServices: ["tapchan-zone", "outdoor-cooking", "restaurant"],
+    relatedServices: ["outdoor-cooking", "restaurant", "picnic-zone"],
   },
 ];
 
@@ -188,7 +188,10 @@ export const rooms: Room[] = [
  * Full list is in the Exely package's links_room.html.
  */
 export const EXELY_ROOM_TYPE: Record<string, string> = {
-  day: "5075762", // Topchan / day visit
+  // The day-visit / topchan type (5075762) is deliberately not listed: day
+  // visits are closed, so nothing on the site should be able to open the engine
+  // on it. NOTE: the tariff itself still exists inside Exely — it has to be
+  // switched off in the Exely extranet, which can't be done from here.
   glamping: "5075760",
   cottage: "5075761",
   pool: "5076232",
