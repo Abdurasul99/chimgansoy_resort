@@ -5,17 +5,39 @@ export type FaqItem = {
   answer: LocalizedString;
 };
 
+/**
+ * Homepage FAQ — also emitted as FAQPage JSON-LD, so these answers can end up
+ * in Google's rich results. Keep them factually identical to
+ * src/lib/venue-facts.ts, which is what both AI assistants answer from.
+ *
+ * Every entry here used to describe a day-only venue, opening with "we
+ * currently run as a day-only venue" — which contradicted the rest of the site
+ * and venue-facts.ts, and was the version Google had indexed. Stays lead now;
+ * the day visit is the last entry, not the premise.
+ */
 export const faqItems: FaqItem[] = [
   {
     question: {
-      ru: "Можно приехать только на день?",
-      uz: "Faqat bir kunga kelish mumkinmi?",
-      en: "Can we come just for the day?",
+      ru: "Какие форматы проживания есть?",
+      uz: "Qanday yashash formatlari bor?",
+      en: "What stay formats do you have?",
     },
     answer: {
-      ru: "Да, сейчас мы работаем только в формате дневного отдыха — ежедневно с 08:00 до 18:00. Доступны топчан с курпача до 8 человек, мангал и казан в аренду, дрова и уголь на месте, готовое меню от кухни.",
-      uz: "Ha, hozir biz faqat kunlik dam olish formatida ishlayapmiz — har kuni 08:00 dan 18:00 gacha. 8 kishigacha kurpachali topchan, mangal va qozon ijarasi, joyda o'tin va ko'mir, oshxonadan tayyor menyu mavjud.",
-      en: "Yes — we currently run as a day-only venue, open daily 08:00–18:00. Topchan with kurpacha for up to 8 guests, BBQ grill and kazan to rent, firewood and charcoal on site, plus a ready-made kitchen menu.",
+      ru: "Два формата. Глэмпинг A-frame — до 3 гостей, 28 м² плюс терраса 15 м², двуспальная кровать 180×200, собственный санузел с душем, кондиционер и Wi-Fi. Шале — до 5 гостей, две спальни (двуспальная 180×200 и две односпальные 90×200), кухня-зал с диваном, отдельный санузел у каждой спальни, тёплый пол и терраса 35 м². Заезд с 15:00, выезд до 12:00.",
+      uz: "Ikki format. A-frame glemping — 3 mehmongacha, 28 m² va 15 m² terrasa, 180×200 ikki kishilik karavot, dushli xususiy sanuzel, konditsioner va Wi-Fi. Shale — 5 mehmongacha, ikkita yotoqxona (180×200 ikki kishilik va ikkita 90×200 bir kishilik), divanli oshxona-zal, har bir yotoqxonada alohida sanuzel, issiq pol va 35 m² terrasa. Kirish 15:00 dan, chiqish 12:00 gacha.",
+      en: "Two formats. A-frame glamping — up to 3 guests, 28 m² plus a 15 m² terrace, a 180×200 double bed, an ensuite shower room, air conditioning, and Wi-Fi. The chalet — up to 5 guests, two bedrooms (one 180×200 double, one with two 90×200 singles), a kitchen-lounge with a sofa, an ensuite bathroom per bedroom, heated floors, and a 35 m² terrace. Check-in from 15:00, check-out by 12:00.",
+    },
+  },
+  {
+    question: {
+      ru: "Бассейн входит в стоимость проживания?",
+      uz: "Basseyn yashash narxiga kiradimi?",
+      en: "Is the pool included in the room rate?",
+    },
+    answer: {
+      ru: "Да. Гостям шале и глэмпинга бассейн включён в стоимость — отдельно бронировать не нужно. Без проживания бассейн бронируется отдельно, на день: одно бронирование до 4 гостей, цена указана за человека и зависит от даты. Работает в летний сезон.",
+      uz: "Ha. Shale va glemping mehmonlari uchun basseyn narxga kiritilgan — alohida bron qilish shart emas. Yashashsiz basseyn alohida, bir kunga bron qilinadi: bitta bron 4 mehmongacha, narx bir kishi uchun va sanaga bog'liq. Yozgi mavsumda ishlaydi.",
+      en: "Yes. For chalet and glamping guests the pool is included in the rate — no separate booking needed. Without a stay, the pool is booked on its own for the day: one booking covers up to 4 guests, priced per person and depending on the date. Open in the summer season.",
     },
   },
   {
@@ -25,45 +47,45 @@ export const faqItems: FaqItem[] = [
       en: "How does booking work?",
     },
     answer: {
-      ru: "Забронируйте даты на странице «Бронирование» или напишите нам в WhatsApp / Telegram — администратор подтвердит бронь в ближайшее время.",
-      uz: "«Bron qilish» sahifasida sanalarni bron qiling yoki WhatsApp / Telegram orqali yozing — administrator bronni tez orada tasdiqlaydi.",
-      en: "Book your dates on the Booking page, or message us on WhatsApp / Telegram — the administrator will confirm your reservation shortly.",
+      ru: "Выберите даты и забронируйте онлайн на странице «Бронирование» или оставьте заявку — администратор подтвердит бронь в ближайшее время. После подтверждения в течение 24 часов вносится предоплата 50% (при брони менее чем за сутки — сразу). Можно также написать в WhatsApp или Telegram.",
+      uz: "Sanalarni tanlab, «Bron qilish» sahifasida onlayn bron qiling yoki so'rov qoldiring — administrator bronni tez orada tasdiqlaydi. Tasdiqlangandan keyin 24 soat ichida 50% oldindan to'lov amalga oshiriladi (bir kundan kam qolganda — darhol). WhatsApp yoki Telegram orqali ham yozishingiz mumkin.",
+      en: "Pick your dates and book online on the Booking page, or send a request — the administrator will confirm shortly. A 50% deposit is due within 24 hours of confirmation (immediately for bookings made less than a day ahead). You can also message us on WhatsApp or Telegram.",
     },
   },
   {
     question: {
-      ru: "Подходит ли отдых для семей с детьми?",
-      uz: "Bolali oilalar uchun mosmi?",
-      en: "Is the venue family-friendly?",
+      ru: "Подходит для семей с детьми и компаний?",
+      uz: "Bolali oilalar va do'stlar guruhi uchun mosmi?",
+      en: "Is it suitable for families and groups?",
     },
     answer: {
-      ru: "Да. На территории 6 гектаров среди сосен — безопасные прогулочные зоны, пикник-зоны рядом с топчанами, мягкие курпача и готовое меню от кухни. Удобно приехать всей семьёй на день.",
-      uz: "Ha. 6 gektarli qarag'aylar orasidagi hudud — xavfsiz sayr zonalari, topchanlar yonidagi piknik joylari, yumshoq kurpacha va oshxonadan tayyor menyu. Butun oila bilan kunga kelish qulay.",
-      en: "Yes. Six hectares of pine forest — safe walking zones, picnic spots next to the topchans, soft kurpacha, and a ready-made kitchen menu. Easy to bring the whole family for the day.",
-    },
-  },
-  {
-    question: {
-      ru: "Можно ли организовать корпоратив или праздник?",
-      uz: "Korporativ yoki bayram tashkil qilish mumkinmi?",
-      en: "Can we organize a corporate event or celebration?",
-    },
-    answer: {
-      ru: "Да. Небольшие семейные и корпоративные форматы возможны по предварительному согласованию: несколько топчанов, аренда мангала и казана, предзаказ меню от кухни. Свяжитесь с администратором — обсудим детали.",
-      uz: "Ha. Kichik oilaviy va korporativ formatlar oldindan kelishuv asosida mumkin: bir nechta topchan, mangal va qozon ijarasi, oshxonadan menyuni oldindan buyurtma qilish. Administrator bilan bog'lanib, tafsilotlarni muhokama qiling.",
-      en: "Yes. Small family and corporate formats can be arranged in advance: several topchans, BBQ and kazan rentals, and pre-ordered menu items from the kitchen. Contact the administrator to discuss the details.",
+      ru: "Да. Шале рассчитано на 5 гостей: две отдельные спальни и кухня-зал — удобно с детьми или с друзьями. На 6 гектарах есть детская площадка, прогулочные зоны и кухня с готовым меню. Для компании можно взять несколько домиков — напишите администратору, поможем собрать бронь. Питомцев, к сожалению, на территорию не допускаем.",
+      uz: "Ha. Shale 5 mehmonga mo'ljallangan: ikkita alohida yotoqxona va oshxona-zal — bolalar yoki do'stlar bilan qulay. 6 gektar hududda bolalar maydonchasi, sayr zonalari va tayyor menyuli oshxona bor. Katta guruh uchun bir nechta uycha olish mumkin — administratorga yozing, bronni yig'ishga yordam beramiz. Afsuski, hayvonlarni hududga kirita olmaymiz.",
+      en: "Yes. The chalet sleeps five in two separate bedrooms plus a kitchen-lounge — comfortable with kids or with friends. The six hectares include a kids playground, walking areas, and a kitchen with a ready-made menu. For a larger group you can take several cabins — message the administrator and we'll put the booking together. Pets, unfortunately, are not allowed on the grounds.",
     },
   },
   {
     question: {
       ru: "Что у вас зимой?",
       uz: "Qishda nimalar bor?",
-      en: "What's open in winter?",
+      en: "What's it like in winter?",
     },
     answer: {
-      ru: "Зимой работаем так же — ежедневно с 08:00 до 18:00. Тёплые зоны на топчане, мангал и казан, готовое меню и горячий чай. Снежные виды бесплатно. Точные условия зависят от погоды — лучше уточнить заранее.",
-      uz: "Qishda ham xuddi yozdek ishlaymiz — har kuni 08:00 dan 18:00 gacha. Topchandagi iliq zonalar, mangal va qozon, tayyor menyu va issiq choy. Qor manzaralari bepul. Aniq sharoitlar ob-havoga bog'liq — oldindan aniqlashtirish yaxshiroq.",
-      en: "Winter hours are the same — daily 08:00–18:00. Warm topchan setups, BBQ grill and kazan, the kitchen menu, and hot tea. Snow views included. Exact conditions depend on the weather — best to confirm ahead.",
+      ru: "Работаем круглый год. В шале тёплый пол, в глэмпинге кондиционер с обогревом, а из панорамного окна видны снежные вершины Чимгана. Кухня работает, мангал и казан можно арендовать. Точные условия зависят от погоды — лучше уточнить перед поездкой.",
+      uz: "Yil davomida ishlaymiz. Shalede issiq pol, glempingda isitish rejimli konditsioner, panoramali derazadan esa Chimg'onning qorli cho'qqilari ko'rinadi. Oshxona ishlaydi, mangal va qozonni ijaraga olish mumkin. Aniq sharoitlar ob-havoga bog'liq — safardan oldin aniqlashtirish yaxshiroq.",
+      en: "We're open year-round. The chalets have heated floors, the glamping cabins have air conditioning with heating, and the panoramic window looks out on the snowy Chimgan peaks. The kitchen runs as usual, and a BBQ grill or kazan can be rented. Exact conditions depend on the weather — best to confirm before you travel.",
+    },
+  },
+  {
+    question: {
+      ru: "Можно приехать на день, без ночёвки?",
+      uz: "Tunamasdan, bir kunga kelish mumkinmi?",
+      en: "Can we come for the day, without staying over?",
+    },
+    answer: {
+      ru: "Да. Дневной визит работает с 08:00 до 18:00: топчан с курпача до 8 человек, мангал и казан в аренду, дрова и уголь на месте, готовое меню от кухни. Каждая позиция оплачивается отдельно, прайс фиксированный. Уточните детали у администратора при бронировании.",
+      uz: "Ha. Kunlik tashrif 08:00 dan 18:00 gacha: 8 kishigacha kurpachali topchan, mangal va qozon ijarasi, joyda o'tin va ko'mir, oshxonadan tayyor menyu. Har bir pozitsiya alohida to'lanadi, narx fiksirlangan. Tafsilotlarni bron qilishda administratordan aniqlashtiring.",
+      en: "Yes. Day visits run 08:00–18:00: a topchan with kurpacha cushions for up to 8 guests, BBQ grill and kazan to rent, firewood and charcoal on site, and a ready-made kitchen menu. Each item is paid for separately, at fixed prices. Ask the administrator for details when you book.",
     },
   },
 ];

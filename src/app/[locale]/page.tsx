@@ -14,7 +14,6 @@ import { WeatherPanel } from "@/components/sections/WeatherPanel";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { AnimatedStat } from "@/components/ui/AnimatedStat";
-import { PriceList } from "@/components/sections/PriceList";
 import { resortImages } from "@/content/images";
 import { homeShowcase } from "@/content/home-showcase";
 import { dictionaries } from "@/content/translations";
@@ -305,10 +304,11 @@ export default async function HomePage({ params }: PageProps) {
       {/* ── Master plan — honest renders of what's being built (not bookable) ─── */}
       <MasterPlan locale={locale} />
 
-      {/* ── Day visit — the secondary product now, not the headline.
-          Kept in full (real fixed prices, still sold) but it comes after the
-          stay story instead of leading the page. ── */}
-      <PriceList locale={locale} />
+      {/* The day-use price list used to sit here (and before that, second on the
+          page). It is off the homepage entirely now — this is a resort you book
+          a night at, and a topchan tariff table was the loudest thing arguing
+          otherwise. <PriceList> is still in the repo, wired to the real prices
+          in content/pricing.ts, for whenever the day visit gets its own page. */}
 
       {/* ── Reviews — cinematic carousel ──────────────── */}
       <TestimonialsCarousel locale={locale} />
