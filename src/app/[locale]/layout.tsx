@@ -11,6 +11,7 @@ import { FaqPanel } from "@/components/ui/FaqPanel";
 import { SeasonDetector } from "@/components/ui/SeasonDetector";
 import { AnalyticsEvents } from "@/components/ui/AnalyticsEvents";
 import { LogoIntro } from "@/components/ui/LogoIntro";
+import { YandexMetrica } from "@/components/ui/YandexMetrica";
 import { HideOnBron } from "@/components/ui/HideOnBron";
 import { dictionaries } from "@/content/translations";
 import { isLocale, locales, type Locale } from "@/i18n/config";
@@ -84,7 +85,14 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
       "https://t.me/+998701760011",
       "https://wa.me/998701760011",
     ],
-    image: `${originForLocale(locale)}/images/resort/hero.jpg`,
+    // These must be live URLs — the previous single entry pointed at
+    // /images/resort/hero.jpg, which 404s, so the richest signal Google had
+    // about this place resolved to nothing. Three real photos instead.
+    image: [
+      `${originForLocale(locale)}/images/resort/hero/hero-lawn.jpg`,
+      `${originForLocale(locale)}/images/resort/rooms/chalet-lounge.jpg`,
+      `${originForLocale(locale)}/images/resort/rooms/aframe-room.jpg`,
+    ],
     address: {
       "@type": "PostalAddress",
       addressCountry: "UZ",
@@ -97,10 +105,20 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
       longitude: 69.9904599,
     },
     priceRange: "$$",
+    // Facts mirror src/lib/venue-facts.ts, which is also what the AI concierge
+    // is briefed from — one story for crawlers and for guests.
+    numberOfRooms: 20,
+    checkinTime: "15:00",
+    checkoutTime: "12:00",
     amenityFeature: [
-      { "@type": "LocationFeatureSpecification", name: "Glamping", value: true },
-      { "@type": "LocationFeatureSpecification", name: "Restaurant", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Swimming pool", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Free WiFi", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Air conditioning", value: true },
       { "@type": "LocationFeatureSpecification", name: "Free parking", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Restaurant", value: true },
+      { "@type": "LocationFeatureSpecification", name: "BBQ facilities", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Children's playground", value: true },
+      { "@type": "LocationFeatureSpecification", name: "Mountain view", value: true },
     ],
   });
 
@@ -185,17 +203,26 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         <SeasonDetector />
         <AnalyticsEvents />
         <LogoIntro locale={locale as Locale} />
-        {/* GA4 — lazyOnload so analytics doesn't block first paint/LCP */}
+        {/* GA4 — afterInteractive, not lazyOnload.
+            lazyOnload waits for window.load, which on a page this photo-heavy
+            lands seconds in; every visitor who bounced before that was simply
+            never counted, and bounce-heavy traffic is exactly what you need to
+            see. afterInteractive still runs after hydration, so it costs no
+            LCP — gtag.js is async and off the critical path either way. */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-S7FS7C573H"
-          strategy="lazyOnload"
+          strategy="afterInteractive"
         />
-        <Script id="ga4-init" strategy="lazyOnload">{`
+        <Script id="ga4-init" strategy="afterInteractive">{`
           window.dataLayer=window.dataLayer||[];
           function gtag(){dataLayer.push(arguments);}
           gtag('js',new Date());
           gtag('config','G-S7FS7C573H',{send_page_view:true});
         `}</Script>
+        {/* Yandex.Metrica — renders nothing until the counter id is set.
+            Yandex is a real share of search in Uzbekistan and GA4 alone
+            leaves that half of the picture dark. */}
+        <YandexMetrica />
       </body>
     </html>
   );
