@@ -80,9 +80,9 @@ export const rooms: Room[] = [
       en: ["Double bed 180×200", "Private terrace", "Ensuite shower room", "Air conditioning", "Wi-Fi"],
     },
     features: {
-      ru: ["1 спальная комната, 28 м²", "Собственный санузел 3,6 м²", "Терраса 15 м²", "Заезд с 15:00, выезд до 12:00"],
-      uz: ["1 yotoq xonasi, 28 m²", "Xususiy sanuzel 3,6 m²", "Terrasa 15 m²", "Kirish 15:00 dan, chiqish 12:00 gacha"],
-      en: ["1 bedroom, 28 m²", "Private bathroom 3.6 m²", "Terrace 15 m²", "Check-in from 15:00, check-out by 12:00"],
+      ru: ["1 спальная комната, 28 м²", "Собственный санузел 3,6 м²", "Терраса 15 м²", "Заезд с 14:00, выезд до 12:00"],
+      uz: ["1 yotoq xonasi, 28 m²", "Xususiy sanuzel 3,6 m²", "Terrasa 15 m²", "Kirish 14:00 dan, chiqish 12:00 gacha"],
+      en: ["1 bedroom, 28 m²", "Private bathroom 3.6 m²", "Terrace 15 m²", "Check-in from 14:00, check-out by 12:00"],
     },
     included: [
       {
@@ -129,9 +129,9 @@ export const rooms: Room[] = [
       en: ["Shower room", "Air conditioning", "Heated floor", "Wi-Fi", "TV", "Fridge", "Electric stove", "Microwave", "Full kitchen set", "Minibar"],
     },
     features: {
-      ru: ["Спальня 1 (15.9 м²): двуспальная кровать 180×200", "Спальня 2 (15.6 м²): две односпальные 90×200", "Кухня-зал с диваном", "Отдельный санузел в каждой спальне (4.7 м²)", "Заезд с 15:00, выезд до 12:00"],
-      uz: ["Yotoqxona 1 (15.9 m²): ikki kishilik karavot 180×200", "Yotoqxona 2 (15.6 m²): ikkita bir kishilik karavot 90×200", "Oshxona-zal divan bilan", "Har bir yotoqxonada alohida sanuzel (4.7 m²)", "Kirish 15:00 dan, chiqish 12:00 gacha"],
-      en: ["Bedroom 1 (15.9 m²): double bed 180×200", "Bedroom 2 (15.6 m²): two single beds 90×200", "Kitchen-lounge with a sofa", "Ensuite bathroom in each bedroom (4.7 m²)", "Check-in from 15:00, check-out by 12:00"],
+      ru: ["Спальня 1 (15.9 м²): двуспальная кровать 180×200", "Спальня 2 (15.6 м²): две односпальные 90×200", "Кухня-зал с диваном", "Отдельный санузел в каждой спальне (4.7 м²)", "Заезд с 14:00, выезд до 12:00"],
+      uz: ["Yotoqxona 1 (15.9 m²): ikki kishilik karavot 180×200", "Yotoqxona 2 (15.6 m²): ikkita bir kishilik karavot 90×200", "Oshxona-zal divan bilan", "Har bir yotoqxonada alohida sanuzel (4.7 m²)", "Kirish 14:00 dan, chiqish 12:00 gacha"],
+      en: ["Bedroom 1 (15.9 m²): double bed 180×200", "Bedroom 2 (15.6 m²): two single beds 90×200", "Kitchen-lounge with a sofa", "Ensuite bathroom in each bedroom (4.7 m²)", "Check-in from 14:00, check-out by 12:00"],
     },
     included: [
       {

@@ -23,9 +23,9 @@ export const faqItems: FaqItem[] = [
       en: "What stay formats do you have?",
     },
     answer: {
-      ru: "Два формата. Глэмпинг A-frame — до 3 гостей, 28 м² плюс терраса 15 м², двуспальная кровать 180×200, собственный санузел с душем, кондиционер и Wi-Fi. Шале — до 5 гостей, две спальни (двуспальная 180×200 и две односпальные 90×200), кухня-зал с диваном, отдельный санузел у каждой спальни, тёплый пол и терраса 35 м². Заезд с 15:00, выезд до 12:00.",
-      uz: "Ikki format. A-frame glemping — 3 mehmongacha, 28 m² va 15 m² terrasa, 180×200 ikki kishilik karavot, dushli xususiy sanuzel, konditsioner va Wi-Fi. Shale — 5 mehmongacha, ikkita yotoqxona (180×200 ikki kishilik va ikkita 90×200 bir kishilik), divanli oshxona-zal, har bir yotoqxonada alohida sanuzel, issiq pol va 35 m² terrasa. Kirish 15:00 dan, chiqish 12:00 gacha.",
-      en: "Two formats. A-frame glamping — up to 3 guests, 28 m² plus a 15 m² terrace, a 180×200 double bed, an ensuite shower room, air conditioning, and Wi-Fi. The chalet — up to 5 guests, two bedrooms (one 180×200 double, one with two 90×200 singles), a kitchen-lounge with a sofa, an ensuite bathroom per bedroom, heated floors, and a 35 m² terrace. Check-in from 15:00, check-out by 12:00.",
+      ru: "Два формата. Глэмпинг A-frame — до 3 гостей, 28 м² плюс терраса 15 м², двуспальная кровать 180×200, собственный санузел с душем, кондиционер и Wi-Fi. Шале — до 5 гостей, две спальни (двуспальная 180×200 и две односпальные 90×200), кухня-зал с диваном, отдельный санузел у каждой спальни, тёплый пол и терраса 35 м². Заезд с 14:00, выезд до 12:00.",
+      uz: "Ikki format. A-frame glemping — 3 mehmongacha, 28 m² va 15 m² terrasa, 180×200 ikki kishilik karavot, dushli xususiy sanuzel, konditsioner va Wi-Fi. Shale — 5 mehmongacha, ikkita yotoqxona (180×200 ikki kishilik va ikkita 90×200 bir kishilik), divanli oshxona-zal, har bir yotoqxonada alohida sanuzel, issiq pol va 35 m² terrasa. Kirish 14:00 dan, chiqish 12:00 gacha.",
+      en: "Two formats. A-frame glamping — up to 3 guests, 28 m² plus a 15 m² terrace, a 180×200 double bed, an ensuite shower room, air conditioning, and Wi-Fi. The chalet — up to 5 guests, two bedrooms (one 180×200 double, one with two 90×200 singles), a kitchen-lounge with a sofa, an ensuite bathroom per bedroom, heated floors, and a 35 m² terrace. Check-in from 14:00, check-out by 12:00.",
     },
   },
   {

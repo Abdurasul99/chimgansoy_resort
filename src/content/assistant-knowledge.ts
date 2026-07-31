@@ -81,13 +81,12 @@ export const knowledge: KnowledgeEntry[] = [
     id: "checkin",
     keywords: ["заезд", "выезд", "check-in", "checkin", "checkout", "kirish", "chiqish", "во сколько заезд", "когда заезд"],
     answer: {
-      // 15:00, matching rooms.ts room specs and venue-facts.ts. This entry said
-      // 14:00, so the concierge and the room pages disagreed. NOTE: the public
-      // offer in policies-legal.ts also still says 14:00 — that one needs the
-      // operator to confirm which is correct, since it is a contract term.
-      ru: "🕑 Заезд — с 15:00, выезд — до 12:00. Раннее заселение или поздний выезд возможны по согласованию с администратором (зависит от загрузки).",
-      uz: "🕑 Kirish — 15:00 dan, chiqish — 12:00 gacha. Erta kirish yoki kech chiqish administrator bilan kelishilgan holda mumkin (band bo'lishiga bog'liq).",
-      en: "🕑 Check-in from 3:00 PM, check-out by 12:00 PM. Early check-in or late check-out can be arranged with the administrator (depending on availability).",
+      // 14:00 — confirmed by the operator, and it matches the public offer.
+      // The room specs and this entry had drifted to 15:00; the offer was the
+      // one that was right all along.
+      ru: "🕑 Заезд — с 14:00, выезд — до 12:00. Ресепшн работает круглосуточно, так что приехать можно и поздно вечером. Раннее заселение или поздний выезд возможны по согласованию с администратором (зависит от загрузки).",
+      uz: "🕑 Kirish — 14:00 dan, chiqish — 12:00 gacha. Resepshn 24 soat ishlaydi, shuning uchun kech kechqurun ham kelish mumkin. Erta kirish yoki kech chiqish administrator bilan kelishilgan holda mumkin (band bo'lishiga bog'liq).",
+      en: "🕑 Check-in from 2:00 PM, check-out by 12:00 PM. Reception is staffed around the clock, so a late-evening arrival is fine. Early check-in or late check-out can be arranged with the administrator (depending on availability).",
     },
   },
 
