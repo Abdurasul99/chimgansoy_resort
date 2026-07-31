@@ -154,6 +154,17 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
             #be-search-form and the booking engine into #be-booking-form.
             The context lang is set per locale (ru/uz/en match Exely's codes). */}
         <meta name="google-site-verification" content="8dVDfmmZ_xQLLonKp7OAXJL5jV_SWm_pdwZciODsKRk" />
+        {/* Yandex.Webmaster — the Search Console equivalent for Yandex, which
+            is where a large share of Uzbek search traffic comes from. Absent
+            until NEXT_PUBLIC_YANDEX_VERIFICATION is set, so it never ships an
+            empty tag. Value is the content="..." string Yandex shows under
+            "Meta tag" when adding the site. */}
+        {process.env.NEXT_PUBLIC_YANDEX_VERIFICATION && (
+          <meta
+            name="yandex-verification"
+            content={process.env.NEXT_PUBLIC_YANDEX_VERIFICATION}
+          />
+        )}
         <link rel="dns-prefetch" href="https://ibe.hopenapi.com" />
         <link rel="dns-prefetch" href="https://uz-ibe.hopenapi.com" />
         <script
