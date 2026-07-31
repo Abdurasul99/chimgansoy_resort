@@ -89,7 +89,10 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
     // /images/resort/hero.jpg, which 404s, so the richest signal Google had
     // about this place resolved to nothing. Three real photos instead.
     image: [
-      `${originForLocale(locale)}/images/resort/hero/hero-lawn.jpg`,
+      // hero-lawn.jpg has a tower crane in the sky — a poor first impression to
+      // hand Google and the social-share preview. The cropped banner and the
+      // finished interiors carry no construction artefacts.
+      `${originForLocale(locale)}/images/resort/hero/hero-aframe-interior.jpg`,
       `${originForLocale(locale)}/images/resort/rooms/chalet-lounge.jpg`,
       `${originForLocale(locale)}/images/resort/rooms/aframe-room.jpg`,
     ],

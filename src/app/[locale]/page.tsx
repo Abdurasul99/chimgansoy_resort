@@ -84,7 +84,7 @@ export default async function HomePage({ params }: PageProps) {
       <link
         rel="preload"
         as="image"
-        href="/images/resort/hero/hero-lawn.jpg"
+        href="/images/resort/hero/hero-aframe-interior.jpg"
         fetchPriority="high"
       />
 
@@ -357,7 +357,9 @@ export default async function HomePage({ params }: PageProps) {
             { image: "chaletBedroomDouble", caption: locale === "uz" ? "Tog'larda uyg'onish" : locale === "en" ? "Waking up in the mountains" : "Просыпаться\nв горах" },
             { image: "aframeTerraceView", caption: locale === "uz" ? "Terrasadagi tong" : locale === "en" ? "Morning on the terrace" : "Утро\nна террасе" },
             { image: "chaletLounge", caption: locale === "uz" ? "Shaledagi kecha" : locale === "en" ? "An evening in the chalet" : "Вечер\nв шале" },
-            { image: "galKidsSwing", caption: locale === "uz" ? "Bolalar balandroq kuladi" : locale === "en" ? "Kids laugh louder here" : "Дети смеются\nгромче" },
+            // Was galKidsSwing — a stranger sitting on a swing looking at his
+            // phone, which is not a picture of anything we sell.
+            { image: "chaletBedroomTwin", caption: locale === "uz" ? "Bolalarga —\no'z xonasi" : locale === "en" ? "A room of\ntheir own" : "Детям —\nсвоя комната" },
           ] as const).map(({ image, caption }) => {
             const img = resortImages[image];
             return (

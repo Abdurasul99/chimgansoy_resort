@@ -14,10 +14,20 @@ import { useEffect, useState } from "react";
 // only 896px was available, so it is upscaled (lanczos3 + unsharp) rather than
 // native. That holds up under the hero's dark scrim, but a full-resolution
 // original would be a straight upgrade — swap it in here if one turns up.
+// Every wide exterior frame in the repo carries a construction artefact, and
+// the hero is the one place where that is unmissable:
+//   hero-aframe-row  — red/white mast standing in the sky above the roofline
+//   hero-lawn        — tower crane between the second and third cabin
+//   hero-ridge       — two lattice pylons across the middle of the view
+//   hero-aframe-pines / aframe-exterior — geotextile and sand instead of lawn
+// So the hero now leads with the finished A-frame interior, cut to 3:2 from the
+// 4662×6993 original of the July shoot, and follows with the ridge cropped left
+// of the pylons. Both are clean at full size. A retouch of the crane was tried
+// and thrown away — it smeared roof texture across the sky.
+// A proper wide exterior, shot after the cranes leave, would beat both.
 const SUMMER_SLIDES = [
-  "/images/resort/hero/hero-lawn.jpg",
-  "/images/resort/hero/hero-ridge.jpg",
-  "/images/resort/hero/hero-aframe-row.jpg",
+  "/images/resort/hero/hero-aframe-interior.jpg",
+  "/images/resort/hero/hero-ridge-clean.jpg",
 ];
 
 const WINTER_PHOTO = "/images/resort/winter-google-aframe.jpg";

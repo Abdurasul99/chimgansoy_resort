@@ -116,12 +116,12 @@ export const resortImages = {
       en: "A-frame cabins on a manicured lawn with pines and a walkway",
     },
   },
-  /* Wide banner cut of the lawn frame. Points at the hero file on purpose —
-     same 1800px asset, already cached by the homepage, and it displays at
-     ≤1440px so the browser downscales rather than stretching it. */
+  /* Wide banner cut of the lawn frame — the sky above y≈395 is cropped away
+     because it holds a tower crane and the overhead wires. Used on the About
+     and /bron heroes and behind the closing promo band. */
   aframeLawnBanner: {
-    src: "/images/resort/hero/hero-lawn.jpg",
-    localSrc: "/images/resort/hero/hero-lawn.jpg",
+    src: "/images/resort/hero/hero-lawn-banner.jpg",
+    localSrc: "/images/resort/hero/hero-lawn-banner.jpg",
     position: "center",
     alt: {
       ru: "Готовый глэмпинг A-frame на зелёном газоне",
@@ -209,9 +209,13 @@ export const resortImages = {
   /* The ridge, wide, with nothing man-made in frame except a terrace rail.
      Added because every "mountains" image in the gallery set has a topchan or a
      tent somewhere in it, and those were illustrating page heroes. */
+  /* hero-ridge.jpg itself has two red-and-white lattice pylons standing in the
+     middle of the view and a blurred terrace rail across the bottom — it was
+     wrong of this key to point there while heading /place, /contact and every
+     legal page. This is the same frame cropped left of the pylons. */
   mountainRidge: {
-    src: "/images/resort/hero/hero-ridge.jpg",
-    localSrc: "/images/resort/hero/hero-ridge.jpg",
+    src: "/images/resort/hero/hero-ridge-clean.jpg",
+    localSrc: "/images/resort/hero/hero-ridge-clean.jpg",
     position: "center",
     alt: {
       ru: "Хребет Чимгана с террасы курорта",

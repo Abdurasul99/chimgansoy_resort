@@ -6,7 +6,23 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
-const MODEL = "openai/gpt-oss-20b";
+/**
+ * Two models on purpose.
+ *
+ * 20b at reasoning_effort "low" was what shipped, and it could not hold the
+ * language instruction: guests writing Russian got answers in Kazakh, and digit
+ * grouping came out as "320 0000 сум" for a 3 200 000 rate.
+ *
+ * 120b fixes both — but Groq's free tier caps it at 8 000 tokens per minute and
+ * one request costs ~3 700 (the venue knowledge base is a big system prompt).
+ * That is barely two guests a minute before everyone starts seeing errors, so
+ * it cannot be the only model. On a 429 we drop to 20b, which has a far larger
+ * TPM allowance, rather than showing the guest a failure.
+ *
+ * Raising the Groq plan above the free tier would let 120b serve every request.
+ */
+const MODEL_PRIMARY = "openai/gpt-oss-120b";
+const MODEL_FALLBACK = "openai/gpt-oss-20b";
 
 type ChatMsg = { role: "user" | "assistant"; content: string };
 type ToolCall = { id: string; function: { name: string; arguments: string } };
@@ -39,13 +55,19 @@ const TOOLS = [
   },
 ];
 
-async function callGroq(apiKey: string, messages: GroqMsg[], withTools: boolean): Promise<Response> {
+async function callGroq(
+  apiKey: string,
+  messages: GroqMsg[],
+  withTools: boolean,
+  model: string = MODEL_PRIMARY,
+): Promise<Response> {
   const body: Record<string, unknown> = {
-    model: MODEL,
+    model,
     messages,
-    temperature: 0.25,
+    temperature: 0.15,
     max_tokens: 1000,
-    reasoning_effort: "low",
+    // "low" was starving the language and price-formatting rules of attention.
+    reasoning_effort: "medium",
   };
   if (withTools) {
     body.tools = TOOLS;
@@ -57,6 +79,23 @@ async function callGroq(apiKey: string, messages: GroqMsg[], withTools: boolean)
     body: JSON.stringify(body),
     signal: AbortSignal.timeout(30_000),
   });
+}
+
+/**
+ * Calls the good model, and silently drops to the lighter one when Groq says we
+ * are over the per-minute token allowance. A guest waiting on a price should
+ * never see an error because another guest asked a question ten seconds ago.
+ */
+async function callWithFallback(
+  apiKey: string,
+  messages: GroqMsg[],
+  withTools: boolean,
+): Promise<{ res: Response; model: string }> {
+  const res = await callGroq(apiKey, messages, withTools, MODEL_PRIMARY);
+  if (res.status !== 429) return { res, model: MODEL_PRIMARY };
+
+  console.warn("[chat] primary model rate-limited, falling back to", MODEL_FALLBACK);
+  return { res: await callGroq(apiKey, messages, withTools, MODEL_FALLBACK), model: MODEL_FALLBACK };
 }
 
 /**
@@ -100,7 +139,7 @@ export async function POST(req: NextRequest) {
 
   try {
     // First pass — the model may ask to check live availability.
-    let res = await callGroq(apiKey, messages, true);
+    let { res, model } = await callWithFallback(apiKey, messages, true);
     if (!res.ok) {
       const detail = await res.text().catch(() => "");
       console.error(`[chat] Groq ${res.status}: ${detail.slice(0, 300)}`);
@@ -124,8 +163,14 @@ export async function POST(req: NextRequest) {
             : { ok: false, error: "unknown_tool" };
         messages.push({ role: "tool", tool_call_id: tc.id, content: JSON.stringify(result) });
       }
-      // Second pass — model turns the tool result into a natural answer.
-      res = await callGroq(apiKey, messages, false);
+      // Second pass — model turns the tool result into a natural answer. Stay
+      // on whichever model answered the first pass so the voice doesn't switch
+      // mid-conversation.
+      res = await callGroq(apiKey, messages, false, model);
+      if (res.status === 429 && model === MODEL_PRIMARY) {
+        model = MODEL_FALLBACK;
+        res = await callGroq(apiKey, messages, false, model);
+      }
       if (!res.ok) {
         const detail = await res.text().catch(() => "");
         console.error(`[chat] Groq(2) ${res.status}: ${detail.slice(0, 300)}`);
