@@ -36,13 +36,18 @@ const BOOK_URL = `${SITE}/ru/bron`;
 const IMG = `${SITE}/images/resort`;
 
 const HERO_PHOTO = `${IMG}/02-aerial-full-territory.jpg`;
+// URLs here are hardcoded, so they bypass content/images.ts and its mapping —
+// which meant "Шале с видом на горы" was sending guests a photo of the padel
+// courts (18 holds the sport zone, not the chalets). Captions now match what is
+// actually inside each file; see the verified table in content/images.ts.
+// The chalet and glamping frames are real photography, the rest are renders.
 const ALBUM: { url: string; caption: string }[] = [
   { url: `${IMG}/02-aerial-full-territory.jpg`, caption: "Вся территория с высоты 🏔" },
   { url: `${IMG}/rooms/chalet-lounge.jpg`, caption: "Кухня-зал в шале" },
-  { url: `${IMG}/14-aframe-glamping-day.jpg`, caption: "Глэмпинг A-frame" },
-  { url: `${IMG}/18-cottage-day-mountains.jpg`, caption: "Шале с видом на горы" },
-  { url: `${IMG}/16-pool-day-lifestyle.jpg`, caption: "Бассейн" },
-  { url: `${IMG}/09-aerial-night-masterplan.jpg`, caption: "Вечер в горах ✨" },
+  { url: `${IMG}/rooms/aframe-room.jpg`, caption: "Глэмпинг A-frame внутри" },
+  { url: `${IMG}/16-pool-day-lifestyle.jpg`, caption: "Бассейн с высоты (визуализация)" },
+  { url: `${IMG}/17-workout-padel-zone.jpg`, caption: "Бассейн днём (визуализация)" },
+  { url: `${IMG}/07-aframe-glamping-evening.jpg`, caption: "Вечер у бассейна (визуализация) ✨" },
 ];
 
 // ── date helpers ──────────────────────────────────────────────────────────────

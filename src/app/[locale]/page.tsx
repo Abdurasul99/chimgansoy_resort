@@ -43,27 +43,32 @@ const stats = [
   { value: "45", label: { ru: "мин от Ташкента", uz: "min Toshkentdan", en: "min from Tashkent" } },
 ] as const;
 
-/** Slim typographic band under the two stay cards. Deliberately photo-free:
- *  the only pool image in the repo is a CGI render (see MasterPlan), and a
- *  render sitting under real interior photography would read as a photo. */
+/** Band under the two stay cards. It ran photo-free at first because the pool
+ *  frames were assumed to be a render of something unbuilt; they are in fact
+ *  the operator's own visualisations of the pool that is sold today, so the
+ *  band leads with one — carrying a "визуализация" mark, since every pool image
+ *  in the repo is CGI and it sits directly under real interior photography. */
 const poolBand = {
   ru: {
     label: "Бассейн",
     title: "Включён в проживание",
     copy: "Гостям шале и глэмпинга бассейн входит в стоимость. Можно забронировать и отдельно — на день, без ночёвки, до 4 гостей.",
     cta: "О бассейне",
+    renderNote: "Визуализация",
   },
   uz: {
     label: "Basseyn",
     title: "Yashash narxiga kiritilgan",
     copy: "Shale va glemping mehmonlari uchun basseyn narxga kiritilgan. Alohida ham bron qilish mumkin — bir kunga, tunamasdan, 4 mehmongacha.",
     cta: "Basseyn haqida",
+    renderNote: "Vizualizatsiya",
   },
   en: {
     label: "The pool",
     title: "Included with every stay",
     copy: "Chalet and glamping guests get the pool as part of the rate. It can also be booked on its own — for the day, no overnight stay, up to 4 guests.",
     cta: "About the pool",
+    renderNote: "Rendering",
   },
 } as const;
 
@@ -127,27 +132,39 @@ export default async function HomePage({ params }: PageProps) {
 
           <RoomCatalog locale={locale} limit={2} />
 
-          {/* Pool — the non-obvious inclusion, stated in words */}
+          {/* Pool — the non-obvious inclusion, now with the frame to sell it */}
           <div
-            className="motion-reveal mt-6 grid gap-6 rounded-3xl bg-[var(--mountain)] p-7 text-white sm:p-9 lg:grid-cols-[1fr_auto] lg:items-center"
+            className="motion-reveal mt-6 grid overflow-hidden rounded-3xl bg-[var(--mountain)] text-white lg:grid-cols-[1.05fr_1fr]"
             data-delay="120"
           >
-            <div>
+            <figure className="relative order-first min-h-[240px] sm:min-h-[320px] lg:order-last lg:min-h-[380px]">
+              <div
+                className="absolute inset-0 bg-cover bg-center"
+                style={imageStyle(resortImages.poolAerial)}
+                role="img"
+                aria-label={text(resortImages.poolAerial.alt, locale)}
+              />
+              {/* Every pool frame we hold is CGI — say so rather than let it
+                  pass as photography next to the real room shoots above. */}
+              <figcaption className="absolute left-4 top-4 rounded-full border border-white/25 bg-black/40 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-white/85 backdrop-blur-sm">
+                {poolBand[locale].renderNote}
+              </figcaption>
+            </figure>
+
+            <div className="p-7 sm:p-9 lg:self-center">
               <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--sun)]">
                 {poolBand[locale].label}
               </p>
               <h3 className="mt-3 font-serif text-2xl font-semibold leading-tight sm:text-3xl">
                 {poolBand[locale].title}
               </h3>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-white/70">{poolBand[locale].copy}</p>
+              <p className="mt-3 max-w-xl text-sm leading-7 text-white/70">{poolBand[locale].copy}</p>
+              <div className="mt-6">
+                <ButtonLink href={localizePath(locale, "/nomera/pool")} variant="light" className="btn-press">
+                  {poolBand[locale].cta}
+                </ButtonLink>
+              </div>
             </div>
-            <ButtonLink
-              href={localizePath(locale, "/nomera/pool")}
-              variant="light"
-              className="btn-press justify-self-start lg:justify-self-end"
-            >
-              {poolBand[locale].cta}
-            </ButtonLink>
           </div>
         </div>
       </section>

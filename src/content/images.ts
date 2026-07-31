@@ -337,9 +337,31 @@ export const resortImages = {
       en: "Swing at the kids playground",
     },
   },
+  /* ── CGI render set (01–18 + pool.jpg) ────────────────────────────────
+     WARNING: the numbered filenames do NOT describe their contents. Several
+     were named one step off from the frame they hold, and the keys below were
+     wired to the names rather than to what is actually inside the JPEGs. That
+     is why /nomera/pool showed the entrance gate under "Бассейн" and the
+     master-plan "падел и мини-футбол" card showed a swimming pool.
+
+     Verified by opening every file used on the site:
+       01 → padel + mini-football + parking, aerial   (name says master plan)
+       02 → full master-plan aerial                    ✓ name correct
+       05 → topchan rows + restaurant, aerial          (name says sport/parking)
+       06 → SURPA entrance gate at dusk                (name says evening pool)
+       07 → evening pool party                         (name says A-frame evening)
+       08 → A-frame glamping evening, fire pit         (name says cottages)
+       14 → A-frame glamping day, fire pit             ✓ name correct
+       15 → chalets by day with mountains              (name says pool aerial)
+       16 → lagoon pool, aerial                        (name says pool day)
+       17 → pool by day with palms                     (name says workout/padel)
+       18 → padel + workout zone                       (name says cottages day)
+     Keys below point at CONTENT. Renaming the files would be the real fix, but
+     the URLs are also hardcoded in lib/staff-bot.ts, so this stays a mapping
+     until someone does both together. */
   hero: {
     src: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=2400&q=85",
-    localSrc: "/images/resort/01-aerial-masterplan-day.jpg",
+    localSrc: "/images/resort/02-aerial-full-territory.jpg",
     position: "center",
     alt: {
       ru: "Вид сверху на территорию CHIMGAN DARBAZA",
@@ -379,7 +401,7 @@ export const resortImages = {
   },
   sportParking: {
     src: "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?auto=format&fit=crop&w=1800&q=85",
-    localSrc: "/images/resort/05-sport-parking-aerial.jpg",
+    localSrc: "/images/resort/01-aerial-masterplan-day.jpg",
     position: "center",
     alt: {
       ru: "Спортивные площадки и парковка курорта",
@@ -389,17 +411,17 @@ export const resortImages = {
   },
   poolEvening: {
     src: "https://images.unsplash.com/photo-1572331165267-854da2b10ccc?auto=format&fit=crop&w=2200&q=85",
-    localSrc: "/images/resort/06-pool-evening-lifestyle.jpg",
+    localSrc: "/images/resort/07-aframe-glamping-evening.jpg",
     position: "center",
     alt: {
-      ru: "Вечерний бассейн с видом на горы",
+      ru: "Вечерний бассейн с подсветкой, огнём и видом на горы",
       uz: "Tog' manzarali kechki basseyn",
       en: "Evening pool with mountain views",
     },
   },
   glamping: {
     src: "https://images.unsplash.com/photo-1504851149312-7a075b496cc7?auto=format&fit=crop&w=1800&q=85",
-    localSrc: "/images/resort/07-aframe-glamping-evening.jpg",
+    localSrc: "/images/resort/08-cottage-evening-mountains.jpg",
     position: "center",
     alt: {
       ru: "A-frame глэмпинг вечером",
@@ -409,12 +431,12 @@ export const resortImages = {
   },
   cottage: {
     src: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=85",
-    localSrc: "/images/resort/08-cottage-evening-mountains.jpg",
+    localSrc: "/images/resort/15-pool-aerial.jpg",
     position: "center",
     alt: {
-      ru: "Коттеджи вечером на фоне гор",
-      uz: "Tog' fonidagi kechki kottejlar",
-      en: "Evening cottages against the mountains",
+      ru: "Шале с террасами на фоне заснеженных гор",
+      uz: "Qorli tog'lar fonida terrasali shalelar",
+      en: "Chalets with terraces against the snowy mountains",
     },
   },
   nightHero: {
@@ -489,7 +511,7 @@ export const resortImages = {
   },
   poolAerial: {
     src: "https://images.unsplash.com/photo-1572331165267-854da2b10ccc?auto=format&fit=crop&w=1800&q=85",
-    localSrc: "/images/resort/15-pool-aerial.jpg",
+    localSrc: "/images/resort/16-pool-day-lifestyle.jpg",
     position: "center",
     alt: {
       ru: "Бассейн с высоты — вид на территорию курорта",
@@ -499,17 +521,17 @@ export const resortImages = {
   },
   poolLifestyle: {
     src: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1800&q=85",
-    localSrc: "/images/resort/16-pool-day-lifestyle.jpg",
+    localSrc: "/images/resort/17-workout-padel-zone.jpg",
     position: "center",
     alt: {
-      ru: "Дневной отдых у бассейна",
-      uz: "Basseyn yonidagi kunduzgi dam olish",
-      en: "Daytime rest by the pool",
+      ru: "Бассейн днём: шезлонги, пальмы и горы на горизонте",
+      uz: "Kunduzgi basseyn: shezlonglar, palmalar va ufqdagi tog'lar",
+      en: "The pool by day: loungers, palms and mountains on the horizon",
     },
   },
   workoutPadel: {
     src: "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1800&q=85",
-    localSrc: "/images/resort/17-workout-padel-zone.jpg",
+    localSrc: "/images/resort/18-cottage-day-mountains.jpg",
     position: "center",
     alt: {
       ru: "Workout и padel-зона",
@@ -519,7 +541,7 @@ export const resortImages = {
   },
   cottageDay: {
     src: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=85",
-    localSrc: "/images/resort/18-cottage-day-mountains.jpg",
+    localSrc: "/images/resort/15-pool-aerial.jpg",
     position: "center",
     alt: {
       ru: "Коттеджи днем с видом на горы",

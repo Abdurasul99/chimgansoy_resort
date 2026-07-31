@@ -46,19 +46,21 @@ const COPY: Record<Locale, { eyebrow: string; title: string; lead: string; badge
 
 const ITEMS: Item[] = [
   {
-    image: "hero", // 01-aerial-masterplan-day render
+    image: "territoryAerial", // 02 — the actual full master-plan aerial
     title: { ru: "Полный мастер-план", uz: "To'liq master-reja", en: "Full master plan" },
-    desc: { ru: "6 гектаров: коттеджи, бассейн, спорт и парковка.", uz: "6 gektar: kottejlar, basseyn, sport va parking.", en: "Six hectares: cottages, pool, sport and parking." },
+    desc: { ru: "6 гектаров: шале, глэмпинг, бассейн, спорт и парковка.", uz: "6 gektar: shale, glemping, basseyn, sport va parking.", en: "Six hectares: chalets, glamping, pool, sport and parking." },
   },
   {
-    image: "pool",
-    title: { ru: "Бассейн-лагуна", uz: "Laguna-basseyn", en: "Lagoon pool" },
-    desc: { ru: "Бар у воды, шезлонги и вид на Чимган.", uz: "Suv yonida bar, shezlonglar va Chimgon manzarasi.", en: "Swim-up bar, loungers and Chimgan views." },
-  },
-  {
-    image: "workoutPadel",
+    // Was "workoutPadel", which resolved to a photo of the swimming pool — the
+    // sport card advertised padel courts with a pool render.
+    image: "workoutPadel", // now 18 — the real padel + workout frame
     title: { ru: "Спорт: падел и мини-футбол", uz: "Sport: padel va mini-futbol", en: "Sport: padel & mini-football" },
-    desc: { ru: "Корты и зона воркаута на свежем воздухе.", uz: "Kortlar va ochiq havodagi vorkaut zonasi.", en: "Courts and an open-air workout zone." },
+    desc: { ru: "Корты, воркаут-зона и поле на фоне гор.", uz: "Kortlar, vorkaut zonasi va tog'lar fonidagi maydon.", en: "Courts, a workout zone and a pitch against the mountains." },
+  },
+  {
+    image: "sportParking", // 01 — padel, mini-football and parking from above
+    title: { ru: "Мини-футбол и парковка", uz: "Mini-futbol va parking", en: "Mini-football & parking" },
+    desc: { ru: "Поле с освещением, корты и парковка на въезде.", uz: "Yoritilgan maydon, kortlar va kirishdagi parking.", en: "A floodlit pitch, courts and parking by the entrance." },
   },
 ];
 
