@@ -43,8 +43,15 @@ const CATEGORY_LABEL: Record<string, LocalizedString> = {
   activity: { ru: "Активности", uz: "Faollik", en: "Activity" },
 };
 
-export function LeisureShowcase({ locale }: { locale: Locale }) {
+/**
+ * `limit` trims the grid on the homepage. services[] is ordered so the BBQ card
+ * sits last, which means limit={3} drops exactly that one — the coals-and-fire
+ * frame was the last of the shashlik story on the homepage. The service itself
+ * is untouched and still listed in full on /services.
+ */
+export function LeisureShowcase({ locale, limit }: { locale: Locale; limit?: number }) {
   const t = COPY[locale];
+  const visible = typeof limit === "number" ? services.slice(0, limit) : services;
 
   return (
     <section className="bg-[var(--surface)] px-4 py-16 sm:px-6 sm:py-24 lg:px-8" aria-labelledby="leisure-title">
@@ -72,7 +79,7 @@ export function LeisureShowcase({ locale }: { locale: Locale }) {
 
         {/* Cards */}
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map((s, index) => {
+          {visible.map((s, index) => {
             const image = resortImages[s.image];
             return (
               <a

@@ -27,7 +27,9 @@ export const services: Service[] = [
   {
     slug: "restaurant",
     category: "food",
-    image: "galFoodServing",
+    // Was galFoodServing — a hand carrying a plate of shashlik on bare ground.
+    // It led the homepage grid and made the kitchen read as a barbecue stop.
+    image: "chaletDining",
     title: { ru: "Кухня и меню", uz: "Oshxona va menyu", en: "Kitchen & menu" },
     shortDescription: {
       ru: "Готовое меню от кухни — завтрак, ужин и мангальные блюда на террасу.",
@@ -49,7 +51,10 @@ export const services: Service[] = [
   {
     slug: "experience",
     category: "activity",
-    image: "galMountainView",
+    // Was galMountainView, which has a grey topchan tent on unlandscaped earth
+    // filling the left third — the retired product, on a building site, selling
+    // mountain walks. This is the ridge seen from a cabin terrace instead.
+    image: "aframeTerraceView",
     title: { ru: "Горные прогулки рядом", uz: "Atrofdagi tog' sayrlari", en: "Mountain walks nearby" },
     shortDescription: {
       ru: "Лёгкие пешие маршруты, конные прогулки и канатные дороги в районе Чимгана.",
@@ -67,6 +72,31 @@ export const services: Service[] = [
       en: ["Hiking routes", "Horse riding", "Chimgan cable cars", "Seasonal options"],
     },
     bestFor: { ru: "Активная половина дня", uz: "Kunning faol yarmi", en: "An active half-day" },
+  },
+  {
+    slug: "picnic-zone",
+    category: "relax",
+    // Was galTopchanRow (the retired product), then galGreenHills — an empty
+    // hillside with nothing of the resort in it. The grounds card now shows the
+    // grounds: cabins along the finished lawn and walkway.
+    image: "aframeLawnWide",
+    title: { ru: "Территория и зоны отдыха", uz: "Hudud va dam olish zonalari", en: "The grounds & lounge areas" },
+    shortDescription: {
+      ru: "Шесть гектаров среди сосен: прогулочные дорожки, открытые площадки и детская зона.",
+      uz: "Qarag'aylar orasida olti gektar: sayr yo'lakchalari, ochiq maydonlar va bolalar zonasi.",
+      en: "Six hectares among the pines: walking paths, open lawns, and a kids area.",
+    },
+    description: {
+      ru: "Территория открыта для гостей на всё время проживания: прогулочные дорожки между домиками, открытые площадки с панорамой на Чимган, детская площадка и места для встреч на воздухе. Парковка — рядом с домиком, зона мангала — в нескольких шагах.",
+      uz: "Hudud yashash davomida mehmonlar uchun ochiq: uychalar orasidagi sayr yo'lakchalari, Chimgon panoramasi bilan ochiq maydonlar, bolalar maydonchasi va ochiq havoda uchrashuv joylari. Parking — uycha yonida, mangal zonasi — bir necha qadamda.",
+      en: "The grounds are open to guests for the whole stay: walking paths between the cabins, open lawns with a view of the Chimgan range, a kids playground, and spots to gather outdoors. Parking sits by your cabin, the BBQ area a few steps away.",
+    },
+    highlights: {
+      ru: ["6 гектаров территории", "Сосны и панорама гор", "Детская площадка", "Парковка у домика"],
+      uz: ["6 gektar hudud", "Qarag'aylar va tog' panoramasi", "Bolalar maydonchasi", "Uycha yonida parking"],
+      en: ["Six hectares of grounds", "Pines and mountain views", "Kids playground", "Parking by your cabin"],
+    },
+    bestFor: { ru: "Спокойный день на территории", uz: "Hududda sokin kun", en: "A slow day on the grounds" },
   },
   {
     slug: "outdoor-cooking",
@@ -89,30 +119,6 @@ export const services: Service[] = [
       en: ["BBQ grill rental", "Kazan rental", "Firewood and charcoal sold on site", "Bring your own food welcome"],
     },
     bestFor: { ru: "Шашлык на природе", uz: "Tabiatda shashlik", en: "Open-air BBQ" },
-  },
-  {
-    slug: "picnic-zone",
-    category: "relax",
-    // Was galTopchanRow — a row of topchans, i.e. a photo of the product we no
-    // longer sell, illustrating the grounds.
-    image: "galGreenHills",
-    title: { ru: "Территория и зоны отдыха", uz: "Hudud va dam olish zonalari", en: "The grounds & lounge areas" },
-    shortDescription: {
-      ru: "Шесть гектаров среди сосен: прогулочные дорожки, открытые площадки и детская зона.",
-      uz: "Qarag'aylar orasida olti gektar: sayr yo'lakchalari, ochiq maydonlar va bolalar zonasi.",
-      en: "Six hectares among the pines: walking paths, open lawns, and a kids area.",
-    },
-    description: {
-      ru: "Территория открыта для гостей на всё время проживания: прогулочные дорожки между домиками, открытые площадки с панорамой на Чимган, детская площадка и места для встреч на воздухе. Парковка — рядом с домиком, зона мангала — в нескольких шагах.",
-      uz: "Hudud yashash davomida mehmonlar uchun ochiq: uychalar orasidagi sayr yo'lakchalari, Chimgon panoramasi bilan ochiq maydonlar, bolalar maydonchasi va ochiq havoda uchrashuv joylari. Parking — uycha yonida, mangal zonasi — bir necha qadamda.",
-      en: "The grounds are open to guests for the whole stay: walking paths between the cabins, open lawns with a view of the Chimgan range, a kids playground, and spots to gather outdoors. Parking sits by your cabin, the BBQ area a few steps away.",
-    },
-    highlights: {
-      ru: ["6 гектаров территории", "Сосны и панорама гор", "Детская площадка", "Парковка у домика"],
-      uz: ["6 gektar hudud", "Qarag'aylar va tog' panoramasi", "Bolalar maydonchasi", "Uycha yonida parking"],
-      en: ["Six hectares of grounds", "Pines and mountain views", "Kids playground", "Parking by your cabin"],
-    },
-    bestFor: { ru: "Спокойный день на территории", uz: "Hududda sokin kun", en: "A slow day on the grounds" },
   },
 ];
 

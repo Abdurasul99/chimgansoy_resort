@@ -9,15 +9,15 @@ import { text } from "@/lib/localize";
  */
 
 /**
- * The strip is the first thing under the hero, so it states what this place
- * is — and that is a resort you stay at. Row A is the stay: cabin exteriors,
- * chalet lounge, A-frame interior, the ridge from a terrace. Row B carries the
- * grounds and the food, which support the stay rather than replace it.
+ * The strip is the first thing under the hero, so it states what this place is:
+ * twelve frames, all of them the chalet and the A-frames.
  *
- * It used to be a deliberate 50/50 split with the topchan/mangal/kazan day-use
- * set, on the reasoning that day-use was the primary product. It isn't any
- * more, so the split moved with it — two day-use frames remain in row B
- * because the day visit is still sold, just no longer the pitch.
+ * Row B used to mix in the grounds and the food — a plate of shashlik being
+ * carried, coals in a mangal, a bare hillside. That was the last of the
+ * day-visit pitch on the homepage, and next to the room shoots it read as a
+ * different business. Every frame here is now a room a guest books, shot after
+ * the landscaping was finished (nothing from the construction-era set, where
+ * the ground is still geotextile and sand).
  */
 const ROW_A = [
   "aframeLawnWide",
@@ -29,12 +29,12 @@ const ROW_A = [
 ] as const;
 
 const ROW_B = [
-  "galTerritoryPanorama",
   "chaletDining",
-  "galMangalFire",
   "aframeBed",
-  "galFoodServing",
-  "galGreenHills",
+  "chaletKitchen",
+  "aframeMinibar",
+  "chaletBedroomTwin",
+  "aframeLawn",
 ] as const;
 
 function Strip({ keys, reverse, locale }: { keys: readonly (keyof typeof resortImages)[]; reverse?: boolean; locale: Locale }) {

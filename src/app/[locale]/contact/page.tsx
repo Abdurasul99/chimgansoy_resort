@@ -33,9 +33,9 @@ export default async function ContactPage({ params }: PageProps) {
       >
         <div
           className="absolute inset-0 -z-20 bg-cover bg-center"
-          style={imageStyle(resortImages.galMountainView)}
+          style={imageStyle(resortImages.mountainRidge)}
           role="img"
-          aria-label={text(resortImages.galMountainView.alt, locale)}
+          aria-label={text(resortImages.mountainRidge.alt, locale)}
         />
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgba(12,18,14,0.97)_0%,rgba(12,18,14,0.55)_55%,rgba(12,18,14,0.14)_100%)]" />
 

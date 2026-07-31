@@ -315,8 +315,9 @@ export default async function HomePage({ params }: PageProps) {
         <WeatherPanel locale={locale} />
       </section>
 
-      {/* ── Развлечения и отдых — brand-styled leisure showcase ── */}
-      <LeisureShowcase locale={locale} />
+      {/* ── На территории — three cards; the BBQ one is last in services[] and
+             is deliberately cut here, staying on /services ── */}
+      <LeisureShowcase locale={locale} limit={3} />
 
       {/* ── Master plan — honest renders of what's being built (not bookable) ─── */}
       <MasterPlan locale={locale} />
@@ -355,7 +356,7 @@ export default async function HomePage({ params }: PageProps) {
             { image: "aframeLawnTall", caption: locale === "uz" ? "Uycha oldidagi ilk foto" : locale === "en" ? "First photo by the cabin" : "Первое фото\nу домика" },
             { image: "chaletBedroomDouble", caption: locale === "uz" ? "Tog'larda uyg'onish" : locale === "en" ? "Waking up in the mountains" : "Просыпаться\nв горах" },
             { image: "aframeTerraceView", caption: locale === "uz" ? "Terrasadagi tong" : locale === "en" ? "Morning on the terrace" : "Утро\nна террасе" },
-            { image: "galMangalFire", caption: locale === "uz" ? "Mangal oldida kecha" : locale === "en" ? "Evening by the grill" : "Вечер\nу мангала" },
+            { image: "chaletLounge", caption: locale === "uz" ? "Shaledagi kecha" : locale === "en" ? "An evening in the chalet" : "Вечер\nв шале" },
             { image: "galKidsSwing", caption: locale === "uz" ? "Bolalar balandroq kuladi" : locale === "en" ? "Kids laugh louder here" : "Дети смеются\nгромче" },
           ] as const).map(({ image, caption }) => {
             const img = resortImages[image];

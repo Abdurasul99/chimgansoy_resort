@@ -43,7 +43,7 @@ export default async function LegalPage({ params }: PageProps) {
         locale={locale}
         title={text(policy.title, locale)}
         lead={text(policy.description, locale)}
-        image={resortImages.galMountainView}
+        image={resortImages.mountainRidge}
         eyebrow="CHIMGAN DARBAZA"
       />
 

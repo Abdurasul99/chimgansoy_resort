@@ -151,7 +151,7 @@ export const rooms: Room[] = [
     // [pool, poolEvening, galTerritoryPanorama], where poolEvening resolved to
     // the entrance gate — so the Бассейн page showed a building.
     image: "pool",
-    gallery: ["poolAerial", "poolLifestyle", "poolEvening", "galTerritoryPanorama"],
+    gallery: ["poolAerial", "poolLifestyle", "poolEvening"],
     title: { ru: "Бассейн", uz: "Basseyn", en: "Pool" },
     eyebrow: {
       ru: "Летний отдых у воды",

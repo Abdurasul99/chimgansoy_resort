@@ -206,6 +206,19 @@ export const resortImages = {
       en: "Chalet kitchen area: fridge, minibar and crockery",
     },
   },
+  /* The ridge, wide, with nothing man-made in frame except a terrace rail.
+     Added because every "mountains" image in the gallery set has a topchan or a
+     tent somewhere in it, and those were illustrating page heroes. */
+  mountainRidge: {
+    src: "/images/resort/hero/hero-ridge.jpg",
+    localSrc: "/images/resort/hero/hero-ridge.jpg",
+    position: "center",
+    alt: {
+      ru: "Хребет Чимгана с террасы курорта",
+      uz: "Kurort terrasasidan Chimgon tizmasi",
+      en: "The Chimgan ridge seen from the resort terrace",
+    },
+  },
   aframeTerraceView: {
     src: "/images/resort/rooms/aframe-terrace-view.jpg",
     localSrc: "/images/resort/rooms/aframe-terrace-view.jpg",
