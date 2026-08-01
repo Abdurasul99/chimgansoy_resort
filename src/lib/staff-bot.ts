@@ -440,6 +440,12 @@ export async function handleGuestUpdate(update: TgUpdate): Promise<void> {
     const text = update.message.text;
     const action = commandToAction(text);
 
+    // Logged so a new group's id can be read straight from the runtime logs.
+    // A bot cannot look up its own chats, and getUpdates is unavailable while a
+    // webhook is set, so without this the only way to learn a chat id is to ask
+    // someone in that chat to run /id and copy the number back.
+    console.log(`[bot] chat ${chatId} (${update.message.chat.type ?? "private"}) says: ${text.slice(0, 40)}`);
+
     /**
      * In a group the bot must keep quiet unless it is spoken to.
      *

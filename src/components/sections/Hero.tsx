@@ -243,45 +243,35 @@ export function Hero({ locale }: HeroProps) {
               no route out of the first screen. Plain <a>, not the router link,
               so /bron loads fresh and Exely's embed script runs. */}
           <div className="motion-rise w-full min-w-0 max-w-xl lg:max-w-none" style={{ animationDelay: "240ms" }}>
-            <BookingWidget locale={locale} variant="hero" />
-
-            {/* The pool is the only thing here you can buy without booking a
-                night, and it now has its own request form that lands straight
-                in Telegram. Sending it to /nomera/pool rather than the Exely
-                engine is deliberate: Exely holds room inventory, the pool lead
-                goes to the operator's bot. Sized to hold its own next to the
-                search widget — this was a text link nobody was going to see. */}
-            {/* Was styled with hero-pool-cta / __icon / __arrow — none of which
-                exist in globals.css. With no rule to size it, the inline SVG
-                fell back to its intrinsic size and covered a third of the hero.
-                Plain utilities now, and the shared <Icon name="pool"> (three
-                waves, drawn to stay readable at 14px) instead of a second
-                hand-rolled path. */}
-            {/* Solid gold, not the glass pill it started as: the pool is the
-                product the homepage now leads on, and a translucent card on a
-                photo of water is the one thing guaranteed not to be noticed. */}
+            {/* Above the date picker, not below it. The widget searches stays;
+                the pool is what the homepage leads on now, so it takes the
+                first position and the larger footprint. Solid gold, because a
+                translucent card over a photograph of water is the one
+                treatment guaranteed to go unnoticed. */}
             <a
               href={localizePath(locale, "/nomera/pool#pool-request")}
-              className="btn-press group mt-3 flex w-full items-center gap-3.5 rounded-2xl bg-gradient-to-b from-[var(--sun)] to-[var(--sun-dark)] px-4 py-4 text-[var(--on-accent)] shadow-[0_14px_34px_-10px_rgba(220,140,0,0.8)] transition-all duration-300 hover:brightness-[1.05]"
+              className="btn-press group mb-3 flex w-full items-center gap-4 rounded-2xl bg-gradient-to-b from-[var(--sun)] to-[var(--sun-dark)] px-5 py-5 text-[var(--on-accent)] shadow-[0_18px_44px_-12px_rgba(220,140,0,0.9)] transition-all duration-300 hover:brightness-[1.05] sm:px-6 sm:py-6"
             >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--on-accent)]/12">
-                <Icon name="pool" className="h-6 w-6" />
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--on-accent)]/12 sm:h-14 sm:w-14">
+                <Icon name="pool" className="h-7 w-7 sm:h-8 sm:w-8" />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block text-[1.05rem] font-extrabold leading-tight sm:text-[1.15rem]">
+                <span className="block text-[1.2rem] font-extrabold leading-tight sm:text-[1.4rem]">
                   {dict.home.heroPoolCta}
                 </span>
-                <span className="mt-0.5 block truncate text-[0.78rem] font-semibold leading-snug opacity-70">
+                <span className="mt-1 block truncate text-[0.82rem] font-semibold leading-snug opacity-75 sm:text-[0.88rem]">
                   {poolHint[locale]}
                 </span>
               </span>
               <span
                 aria-hidden
-                className="shrink-0 text-xl font-bold transition-transform duration-300 group-hover:translate-x-0.5"
+                className="shrink-0 text-2xl font-bold transition-transform duration-300 group-hover:translate-x-1"
               >
                 →
               </span>
             </a>
+
+            <BookingWidget locale={locale} variant="hero" />
           </div>
         </div>
       </div>
