@@ -403,10 +403,10 @@ function commandToAction(text: string): string | null {
 
 type TgUpdate = {
   message?: {
-    chat: { id: number };
+    chat: { id: number; type?: string };
     from?: { id: number };
     text?: string;
-    reply_to_message?: { text?: string };
+    reply_to_message?: { text?: string; from?: { is_bot?: boolean } };
   };
   callback_query?: {
     id: string;
@@ -439,6 +439,25 @@ export async function handleGuestUpdate(update: TgUpdate): Promise<void> {
     const chatId = update.message.chat.id;
     const text = update.message.text;
     const action = commandToAction(text);
+
+    /**
+     * In a group the bot must keep quiet unless it is spoken to.
+     *
+     * This handler was written for one-to-one chats, where every message is a
+     * question for the concierge. Dropped into the staff group that receives
+     * pool requests, that same rule would have the bot answer each message
+     * colleagues send each other — unusable, and it would burn the Groq
+     * allowance on chatter. So outside a private chat we act only on an
+     * explicit command, an @mention, or a reply to something the bot said.
+     */
+    const isGroup = (update.message.chat.type ?? "private") !== "private";
+    if (isGroup) {
+      const addressed =
+        text.trim().startsWith("/") ||
+        /@chimgandarbaza_bot/i.test(text) ||
+        update.message.reply_to_message?.from?.is_bot === true;
+      if (!addressed) return;
+    }
 
     if (action === "photos") {
       await sendPhotoAlbum(chatId);
