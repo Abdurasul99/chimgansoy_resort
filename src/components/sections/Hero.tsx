@@ -1,5 +1,7 @@
 import { dictionaries } from "@/content/translations";
+import { EXELY_ROOM_TYPE } from "@/content/rooms";
 import type { Locale } from "@/i18n/config";
+import { localizePath } from "@/i18n/routing";
 import { HeroSlideshow } from "@/components/sections/HeroSlideshow";
 import { BookingWidget } from "@/components/sections/BookingWidget";
 import { SnowParticles } from "@/components/effects/SnowParticles";
@@ -219,9 +221,23 @@ export function Hero({ locale }: HeroProps) {
             {dict.home.lead}
           </p>
 
-          {/* RIGHT — booking search box */}
+          {/* RIGHT — booking search box, plus a way past it. The widget searches
+              stays; the pool is the one thing sold without a night, and it had
+              no route out of the first screen. Plain <a>, not the router link,
+              so /bron loads fresh and Exely's embed script runs. */}
           <div className="motion-rise w-full max-w-xl lg:max-w-none" style={{ animationDelay: "240ms" }}>
             <BookingWidget locale={locale} variant="hero" />
+
+            <a
+              href={localizePath(locale, `/bron?room-type=${EXELY_ROOM_TYPE.pool}`)}
+              className="group mt-3 inline-flex items-center gap-2 text-sm font-semibold text-white/75 transition-colors hover:text-white"
+            >
+              <svg aria-hidden className="h-4 w-4 shrink-0 text-[var(--sun)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round">
+                <path d="M2 16c1.5 0 1.5 1.2 3 1.2S6.5 16 8 16s1.5 1.2 3 1.2S12.5 16 14 16s1.5 1.2 3 1.2S18.5 16 20 16M2 20c1.5 0 1.5 1.2 3 1.2S6.5 20 8 20s1.5 1.2 3 1.2S12.5 20 14 20s1.5 1.2 3 1.2S18.5 20 20 20M8 14V5a2 2 0 1 1 4 0M16 14V5a2 2 0 1 1 4 0" />
+              </svg>
+              {dict.home.heroPoolCta}
+              <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+            </a>
           </div>
         </div>
       </div>
