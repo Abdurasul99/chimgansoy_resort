@@ -15,6 +15,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { AnimatedStat } from "@/components/ui/AnimatedStat";
 import { resortImages } from "@/content/images";
+import { EXELY_ROOM_TYPE } from "@/content/rooms";
 import { homeShowcase } from "@/content/home-showcase";
 import { dictionaries } from "@/content/translations";
 import { pageSeo } from "@/content/seo";
@@ -53,6 +54,7 @@ const poolBand = {
     label: "Бассейн",
     title: "Включён в проживание",
     copy: "Гостям шале и глэмпинга бассейн входит в стоимость. Можно забронировать и отдельно — на день, без ночёвки, до 4 гостей.",
+    book: "Забронировать бассейн",
     cta: "О бассейне",
     renderNote: "Визуализация",
   },
@@ -60,6 +62,7 @@ const poolBand = {
     label: "Basseyn",
     title: "Yashash narxiga kiritilgan",
     copy: "Shale va glemping mehmonlari uchun basseyn narxga kiritilgan. Alohida ham bron qilish mumkin — bir kunga, tunamasdan, 4 mehmongacha.",
+    book: "Basseynni bron qilish",
     cta: "Basseyn haqida",
     renderNote: "Vizualizatsiya",
   },
@@ -67,6 +70,7 @@ const poolBand = {
     label: "The pool",
     title: "Included with every stay",
     copy: "Chalet and glamping guests get the pool as part of the rate. It can also be booked on its own — for the day, no overnight stay, up to 4 guests.",
+    book: "Book the pool",
     cta: "About the pool",
     renderNote: "Rendering",
   },
@@ -159,7 +163,21 @@ export default async function HomePage({ params }: PageProps) {
                 {poolBand[locale].title}
               </h3>
               <p className="mt-3 max-w-xl text-sm leading-7 text-white/70">{poolBand[locale].copy}</p>
-              <div className="mt-6">
+              {/* The band only linked to the pool's description page, so the
+                  one thing bookable without an overnight stay had no way to be
+                  booked from the homepage. `reload` forces a full navigation so
+                  Exely's loader mounts on /bron and reads room-type from the
+                  query — that is where the guest enters their details and gets
+                  the confirmation e-mail. */}
+              <div className="mt-6 flex flex-wrap gap-3">
+                <ButtonLink
+                  href={localizePath(locale, `/bron?room-type=${EXELY_ROOM_TYPE.pool}`)}
+                  variant="primary"
+                  reload
+                  className="btn-press"
+                >
+                  {poolBand[locale].book}
+                </ButtonLink>
                 <ButtonLink href={localizePath(locale, "/nomera/pool")} variant="light" className="btn-press">
                   {poolBand[locale].cta}
                 </ButtonLink>
