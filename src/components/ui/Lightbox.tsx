@@ -69,11 +69,15 @@ export function Lightbox({ images, locale, startIndex = 0, open, onClose }: Prop
       role="dialog"
       aria-modal="true"
       aria-label={text(img.alt, locale)}
-      className="fixed inset-0 z-[100] flex flex-col bg-black/92 backdrop-blur-sm"
+      // h-[100dvh]: on phones the browser chrome makes 100vh taller than what
+      // is actually visible, which pushed the thumbnails and the bottom of the
+      // photo off-screen.
+      className="fixed inset-0 z-[100] flex h-[100dvh] flex-col bg-black/92 backdrop-blur-sm"
       onClick={onClose}
     >
-      {/* Bar: counter + close */}
-      <div className="flex items-center justify-between px-4 py-4 sm:px-6">
+      {/* Bar: counter + close. shrink-0 so it never gives up height to the
+          stage and lands on top of the photo. */}
+      <div className="flex shrink-0 items-center justify-between px-4 py-3 sm:px-6 sm:py-4">
         <span className="text-sm font-bold tabular-nums text-white/70">
           {index + 1} / {images.length}
         </span>
@@ -89,8 +93,11 @@ export function Lightbox({ images, locale, startIndex = 0, open, onClose }: Prop
         </button>
       </div>
 
-      {/* Stage — click-through guarded so taps on the photo don't close it */}
-      <div className="relative flex flex-1 items-center justify-center px-4 pb-4 sm:px-16">
+      {/* Stage — click-through guarded so taps on the photo don't close it.
+          min-h-0 is the important part: a flex child defaults to
+          min-height:auto and refuses to shrink under its content, so the image
+          grew past the viewport and its bottom was cut off. */}
+      <div className="relative flex min-h-0 flex-1 items-center justify-center px-2 sm:px-16">
         {images.length > 1 && (
           <button
             type="button"
@@ -109,7 +116,7 @@ export function Lightbox({ images, locale, startIndex = 0, open, onClose }: Prop
           src={img.localSrc ?? img.src}
           alt={text(img.alt, locale)}
           onClick={(e) => e.stopPropagation()}
-          className="max-h-full max-w-full rounded-xl object-contain shadow-2xl"
+          className="h-full w-full rounded-lg object-contain shadow-2xl sm:rounded-xl"
         />
 
         {images.length > 1 && (
@@ -129,7 +136,7 @@ export function Lightbox({ images, locale, startIndex = 0, open, onClose }: Prop
       {/* Thumbnails — the fastest way to reach a specific shot */}
       {images.length > 1 && (
         <div
-          className="flex gap-2 overflow-x-auto px-4 pb-5 scrollbar-none sm:justify-center sm:px-6"
+          className="flex shrink-0 gap-2 overflow-x-auto px-4 py-3 scrollbar-none sm:justify-center sm:px-6 sm:py-4"
           onClick={(e) => e.stopPropagation()}
         >
           {images.map((thumb, i) => (

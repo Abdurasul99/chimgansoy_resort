@@ -51,6 +51,26 @@ function money(n: number): string {
 }
 
 /**
+ * Normalises whatever the guest typed into a number Telegram will recognise.
+ *
+ * Telegram only turns a phone into a tappable "call" when it reads as an
+ * international number, so "90 000 00 00" or "+998 90 000-00-00" have to be
+ * flattened to +998900000000 first. Uzbek numbers arrive in several shapes:
+ * with +998, with a bare 998, or as the 9 national digits.
+ */
+function telLink(raw: string): { display: string; wa?: string } {
+  const digits = raw.replace(/\D/g, "");
+  let intl = "";
+  if (digits.length === 12 && digits.startsWith("998")) intl = digits;
+  else if (digits.length === 9) intl = `998${digits}`;
+  else if (digits.length > 9 && digits.length <= 15) intl = digits;
+
+  // Nothing recognisable — show it back exactly as typed rather than guess.
+  if (!intl) return { display: raw };
+  return { display: `+${intl}`, wa: `https://wa.me/${intl}` };
+}
+
+/**
  * Where pool leads land in Telegram.
  *
  * TELEGRAM_ADMIN_CHAT_ID is the intended name; TELEGRAM_STAFF_IDS is accepted
@@ -128,25 +148,39 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
   const tariff = isWeekend(date) ? "выходной" : "будний";
   const total = poolPricing.perPerson ? rate * guests : rate;
 
+  const tel = telLink(phone);
+
   const lines = [
     "<b>🏊 Заявка на бассейн</b>",
     "",
     `<b>Имя:</b> ${esc(name)}`,
-    `<b>Телефон:</b> ${esc(phone)}`,
+    // Bare international number, deliberately not wrapped in a link. Telegram's
+    // HTML mode only accepts http(s) and tg:// in <a href>, so the tel: anchor
+    // that used to be here was never a working call button. A plain +998…
+    // number, on the other hand, Telegram detects itself and offers to dial.
+    `<b>Телефон:</b> ${esc(tel.display)}`,
     `<b>Дата:</b> ${esc(date)} (${tariff} тариф)`,
     `<b>Гостей:</b> ${guests}`,
     `<b>К оплате:</b> ${money(rate)} сум${poolPricing.perPerson ? " × " + guests : ""} = <b>${money(total)} сум</b>`,
     ...(message ? ["", `<b>Комментарий:</b> ${esc(message)}`] : []),
     "",
-    `📞 <a href="tel:${phone.replace(/[^\d+]/g, "")}">Позвонить гостю</a>`,
     `<i>Заявка с сайта chimgandarbaza.uz · язык гостя: ${lang}</i>`,
   ].join("\n");
+
+  // WhatsApp opens in one tap from an inline button — https is the only scheme
+  // Telegram allows there, so this is the closest thing to a call button that
+  // actually works. The number itself above stays tappable for a real call.
+  const keyboard = tel.wa
+    ? { inline_keyboard: [[{ text: "💬 Написать в WhatsApp", url: tel.wa }]] }
+    : undefined;
 
   const chatIds = adminChatIds();
   if (chatIds.length === 0) {
     console.error("[pool] no TELEGRAM_ADMIN_CHAT_ID / TELEGRAM_STAFF_IDS set — Telegram skipped");
   }
-  const results = await Promise.all(chatIds.map((id) => sendMessage(id, lines)));
+  const results = await Promise.all(
+    chatIds.map((id) => sendMessage(id, lines, keyboard ? { reply_markup: keyboard } : {})),
+  );
   const telegramOk = results.some((r) => r !== null);
 
   const emailOk = await sendEmailCopy(
@@ -154,7 +188,7 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
     `<div style="font-family:system-ui,sans-serif;max-width:520px">
       <h2 style="color:#1a4d2e">🏊 Заявка на бассейн</h2>
       <p><b>Имя:</b> ${esc(name)}<br>
-         <b>Телефон:</b> ${esc(phone)}<br>
+         <b>Телефон:</b> <a href="tel:${esc(tel.display)}">${esc(tel.display)}</a><br>
          <b>Дата:</b> ${esc(date)} (${tariff} тариф)<br>
          <b>Гостей:</b> ${guests}<br>
          <b>К оплате:</b> ${money(total)} сум</p>
