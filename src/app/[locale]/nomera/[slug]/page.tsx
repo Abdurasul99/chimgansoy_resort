@@ -134,10 +134,22 @@ export default async function RoomDetailPage({ params }: PageProps) {
         </div>
       </section>
 
+      {/* ── Pool request form ─────────────────────────────
+          Straight under the hero, full width, so it is the first thing on the
+          page after the photo — and wide enough for the tariff to sit as two
+          cards and the fields as a comfortable two-column grid. ── */}
+      {isPool && (
+        <section id="pool-request" className="scroll-mt-24 bg-[var(--surface)] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+          <div className="mx-auto max-w-3xl">
+            <PoolRequestForm locale={locale} />
+          </div>
+        </section>
+      )}
+
       {/* ── Main content + sticky booking panel ──────── */}
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="grid gap-16 lg:grid-cols-[1fr_380px] lg:items-start">
+          <div className={`grid gap-16 lg:items-start ${isPool ? "" : "lg:grid-cols-[1fr_380px]"}`}>
 
             {/* Left — content */}
             <div>
@@ -238,28 +250,22 @@ export default async function RoomDetailPage({ params }: PageProps) {
               </div>
             </div>
 
-            {/* Right column. For stays this is the desktop-only sticky booking
-                panel. For the pool it holds the request form and is shown at
-                every width — the single-column stack puts it right under the
-                description, so there is one form in the DOM and one #pool-request
-                for both the hero button and the mobile CTA to scroll to. */}
-            <div
-              {...(isPool ? { id: "pool-request" } : {})}
-              className={isPool ? "scroll-mt-24" : "hidden lg:block"}
-            >
-              <div className="lg:sticky lg:top-24">
-                {isPool ? (
-                  <PoolRequestForm locale={locale} />
-                ) : (
+            {/* Right column — the sticky booking panel, stays only. The pool's
+                form used to live here and was strangled by the 380px track:
+                truncated placeholders, tariff labels wrapping onto two lines.
+                It has its own full-width section above now. */}
+            {!isPool && (
+              <div className="hidden lg:block">
+                <div className="sticky top-24">
                   <BookingDrawer
                     locale={locale}
                     roomTitle={text(room.title, locale)}
                     roomSlug={room.slug}
                     priceFrom={text(room.priceFrom, locale)}
                   />
-                )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </section>

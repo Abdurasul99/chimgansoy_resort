@@ -100,7 +100,7 @@ function money(n: number): string {
 }
 
 const field =
-  "w-full rounded-xl border border-[color:var(--line)] bg-[var(--paper)] px-4 py-3 text-sm text-[var(--ink)] outline-none transition-colors placeholder:text-[var(--muted)]/60 focus:border-[var(--accent)]";
+  "w-full min-h-14 rounded-xl border border-[color:var(--line)] bg-[var(--paper)] px-4 py-3 text-base text-[var(--ink)] outline-none transition-colors placeholder:text-[var(--muted)]/60 focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15";
 const labelCls =
   "mb-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]";
 
@@ -134,34 +134,44 @@ export function PoolRequestForm({ locale }: { locale: Locale }) {
   }
 
   return (
-    <div className="rounded-3xl border border-[color:var(--line)] bg-[var(--surface-warm)] p-6 sm:p-8">
+    <div className="rounded-3xl border border-[color:var(--line)] bg-[var(--surface-warm)] p-6 shadow-[var(--shadow-card)] sm:p-9">
       <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--accent-strong)]">{t.eyebrow}</p>
-      <h3 className="mt-3 font-serif text-2xl font-semibold text-[var(--ink)] sm:text-3xl">{t.title}</h3>
-      <p className="mt-3 text-sm leading-6 text-[var(--muted)]">{t.lead}</p>
+      <h3 className="mt-3 font-serif text-3xl font-semibold leading-tight text-[var(--ink)] sm:text-4xl">{t.title}</h3>
+      <p className="mt-3 max-w-xl text-sm leading-6 text-[var(--muted)] sm:text-base sm:leading-7">{t.lead}</p>
 
-      {/* The tariff, stated before the guest fills anything in */}
-      <div className="mt-6 rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] p-4">
+      {/* Tariff as two cards. The dotted-leader list this replaced was built for
+          a 380px sidebar and wrapped its labels onto two lines. */}
+      <div className="mt-7">
         <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]">{t.priceTitle}</p>
-        <dl className="mt-3 space-y-2">
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
           {[
-            [poolPricing.weekdayLabel, poolPricing.weekday] as const,
-            [poolPricing.weekendLabel, poolPricing.weekend] as const,
-          ].map(([label, value]) => (
-            <div key={value} className="flex items-baseline gap-3">
-              <dt className="text-sm text-[var(--ink)]">{text(label, locale)}</dt>
-              <span aria-hidden className="flex-1 border-b border-dotted border-[color:var(--line-strong)]" />
-              <dd className="whitespace-nowrap font-serif text-lg font-semibold text-[var(--ink)]">
-                {money(value)}{" "}
-                <span className="text-xs font-bold uppercase tracking-wider text-[var(--muted)]">
-                  сум {poolPricing.perPerson ? text(poolPricing.perPersonLabel, locale) : ""}
-                </span>
-              </dd>
+            [poolPricing.weekdayLabel, poolPricing.weekday, false] as const,
+            [poolPricing.weekendLabel, poolPricing.weekend, true] as const,
+          ].map(([label, value, isWeekend]) => (
+            <div
+              key={value}
+              className={`rounded-2xl border p-4 ${
+                isWeekend
+                  ? "border-[var(--accent)]/35 bg-[var(--accent)]/[0.07]"
+                  : "border-[color:var(--line)] bg-[var(--paper)]"
+              }`}
+            >
+              <p className="text-xs font-semibold text-[var(--muted)]">{text(label, locale)}</p>
+              <p className="mt-1.5 font-serif text-2xl font-bold leading-none text-[var(--ink)]">
+                {money(value)}
+                <span className="ml-1.5 text-sm font-bold text-[var(--muted)]">сум</span>
+              </p>
+              {poolPricing.perPerson && (
+                <p className="mt-1 text-[11px] font-semibold uppercase tracking-wider text-[var(--muted)]">
+                  {text(poolPricing.perPersonLabel, locale)}
+                </p>
+              )}
             </div>
           ))}
-        </dl>
+        </div>
       </div>
 
-      <form action={action} className="mt-6 space-y-4">
+      <form action={action} className="mt-7 space-y-4">
         <input type="hidden" name="locale" value={locale} />
         {/* Honeypot — invisible to humans, filled only by bots */}
         <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
@@ -229,15 +239,18 @@ export function PoolRequestForm({ locale }: { locale: Locale }) {
           </p>
         )}
 
-        <button
-          type="submit"
-          disabled={pending}
-          className="btn-press w-full rounded-xl bg-gradient-to-b from-[var(--sun)] to-[var(--sun-dark)] px-5 py-3.5 text-sm font-bold text-[var(--on-accent)] shadow-[0_8px_22px_-6px_rgba(220,140,0,0.55)] transition-all hover:brightness-[1.03] disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {pending ? t.sending : t.send}
-        </button>
-
-        <p className="text-center text-xs leading-5 text-[var(--muted)]">{t.note}</p>
+        {/* Note sits under the button, not beside it: the floating concierge
+            bubble lives in the bottom-right corner and was covering it. */}
+        <div className="pt-1">
+          <button
+            type="submit"
+            disabled={pending}
+            className="btn-press w-full rounded-2xl bg-gradient-to-b from-[var(--sun)] to-[var(--sun-dark)] px-8 py-4.5 text-base font-extrabold text-[var(--on-accent)] shadow-[0_12px_30px_-8px_rgba(220,140,0,0.6)] transition-all hover:brightness-[1.04] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:text-lg"
+          >
+            {pending ? t.sending : t.send}
+          </button>
+          <p className="mt-3 max-w-md text-xs leading-5 text-[var(--muted)]">{t.note}</p>
+        </div>
       </form>
     </div>
   );

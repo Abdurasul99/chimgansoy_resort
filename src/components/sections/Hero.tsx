@@ -5,6 +5,7 @@ import { HeroSlideshow } from "@/components/sections/HeroSlideshow";
 import { BookingWidget } from "@/components/sections/BookingWidget";
 import { SnowParticles } from "@/components/effects/SnowParticles";
 import { HeroScrollCue } from "@/components/ui/HeroScrollCue";
+import { Icon } from "@/components/ui/Icon";
 
 type HeroProps = {
   locale: Locale;
@@ -12,9 +13,9 @@ type HeroProps = {
 
 /** Second line of the pool CTA — the terms that make it worth a tap. */
 const poolHint: Record<Locale, string> = {
-  ru: "Без ночёвки · до 4 гостей · заявка за минуту",
-  uz: "Tunamasdan · 4 mehmongacha · bir daqiqada ariza",
-  en: "No overnight stay · up to 4 guests · one-minute request",
+  ru: "Без ночёвки · от 100 000 сум · заявка за минуту",
+  uz: "Tunamasdan · 100 000 so'mdan · bir daqiqada ariza",
+  en: "No overnight stay · from 100 000 UZS · a one-minute request",
 };
 
 export function Hero({ locale }: HeroProps) {
@@ -240,21 +241,33 @@ export function Hero({ locale }: HeroProps) {
                 engine is deliberate: Exely holds room inventory, the pool lead
                 goes to the operator's bot. Sized to hold its own next to the
                 search widget — this was a text link nobody was going to see. */}
-            <a href={localizePath(locale, "/nomera/pool#pool-request")} className="hero-pool-cta group mt-3">
-              <span className="hero-pool-cta__icon" aria-hidden>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M2 16c1.5 0 1.5 1.2 3 1.2S6.5 16 8 16s1.5 1.2 3 1.2S12.5 16 14 16s1.5 1.2 3 1.2S18.5 16 20 16M2 20c1.5 0 1.5 1.2 3 1.2S6.5 20 8 20s1.5 1.2 3 1.2S12.5 20 14 20s1.5 1.2 3 1.2S18.5 20 20 20M8 14V5a2 2 0 1 1 4 0M16 14V5a2 2 0 1 1 4 0" />
-                </svg>
+            {/* Was styled with hero-pool-cta / __icon / __arrow — none of which
+                exist in globals.css. With no rule to size it, the inline SVG
+                fell back to its intrinsic size and covered a third of the hero.
+                Plain utilities now, and the shared <Icon name="pool"> (three
+                waves, drawn to stay readable at 14px) instead of a second
+                hand-rolled path. */}
+            <a
+              href={localizePath(locale, "/nomera/pool#pool-request")}
+              className="group mt-3 flex w-full items-center gap-3.5 rounded-2xl border border-white/20 bg-white/10 px-4 py-3.5 text-white backdrop-blur-md transition-all duration-300 hover:border-white/35 hover:bg-white/[0.18]"
+            >
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--sun)] text-[var(--on-accent)]">
+                <Icon name="pool" className="h-5 w-5" />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block text-[1.05rem] font-extrabold leading-tight sm:text-[1.15rem]">
+                <span className="block text-[0.98rem] font-bold leading-tight sm:text-[1.05rem]">
                   {dict.home.heroPoolCta}
                 </span>
-                <span className="mt-0.5 block text-[0.78rem] font-semibold leading-snug opacity-70">
+                <span className="mt-0.5 block truncate text-[0.75rem] font-medium leading-snug text-white/60">
                   {poolHint[locale]}
                 </span>
               </span>
-              <span aria-hidden className="hero-pool-cta__arrow">→</span>
+              <span
+                aria-hidden
+                className="shrink-0 text-lg text-white/50 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-white"
+              >
+                →
+              </span>
             </a>
           </div>
         </div>
