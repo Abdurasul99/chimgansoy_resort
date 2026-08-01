@@ -257,24 +257,27 @@ export function Hero({ locale }: HeroProps) {
                 Plain utilities now, and the shared <Icon name="pool"> (three
                 waves, drawn to stay readable at 14px) instead of a second
                 hand-rolled path. */}
+            {/* Solid gold, not the glass pill it started as: the pool is the
+                product the homepage now leads on, and a translucent card on a
+                photo of water is the one thing guaranteed not to be noticed. */}
             <a
               href={localizePath(locale, "/nomera/pool#pool-request")}
-              className="group mt-3 flex w-full items-center gap-3.5 rounded-2xl border border-white/20 bg-white/10 px-4 py-3.5 text-white backdrop-blur-md transition-all duration-300 hover:border-white/35 hover:bg-white/[0.18]"
+              className="btn-press group mt-3 flex w-full items-center gap-3.5 rounded-2xl bg-gradient-to-b from-[var(--sun)] to-[var(--sun-dark)] px-4 py-4 text-[var(--on-accent)] shadow-[0_14px_34px_-10px_rgba(220,140,0,0.8)] transition-all duration-300 hover:brightness-[1.05]"
             >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--sun)] text-[var(--on-accent)]">
-                <Icon name="pool" className="h-5 w-5" />
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--on-accent)]/12">
+                <Icon name="pool" className="h-6 w-6" />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block text-[0.98rem] font-bold leading-tight sm:text-[1.05rem]">
+                <span className="block text-[1.05rem] font-extrabold leading-tight sm:text-[1.15rem]">
                   {dict.home.heroPoolCta}
                 </span>
-                <span className="mt-0.5 block truncate text-[0.75rem] font-medium leading-snug text-white/60">
+                <span className="mt-0.5 block truncate text-[0.78rem] font-semibold leading-snug opacity-70">
                   {poolHint[locale]}
                 </span>
               </span>
               <span
                 aria-hidden
-                className="shrink-0 text-lg text-white/50 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-white"
+                className="shrink-0 text-xl font-bold transition-transform duration-300 group-hover:translate-x-0.5"
               >
                 →
               </span>

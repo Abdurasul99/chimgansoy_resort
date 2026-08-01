@@ -96,7 +96,7 @@ export default async function HomePage({ params }: PageProps) {
       <link
         rel="preload"
         as="image"
-        href="/images/resort/hero/hero-aframe-interior.jpg"
+        href="/images/resort/16-pool-day-lifestyle.jpg"
         fetchPriority="high"
       />
 

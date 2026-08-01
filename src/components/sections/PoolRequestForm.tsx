@@ -32,7 +32,7 @@ const COPY: Record<
   }
 > = {
   ru: {
-    eyebrow: "Бассейн · без ночёвки",
+    eyebrow: "Бассейн · летний сезон",
     title: "Оставить заявку",
     lead: "Выберите дату и число гостей — администратор перезвонит, подтвердит свободное время и забронирует место.",
     date: "Дата визита",
@@ -50,7 +50,7 @@ const COPY: Record<
     priceTitle: "Стоимость",
   },
   uz: {
-    eyebrow: "Basseyn · tunamasdan",
+    eyebrow: "Basseyn · yozgi mavsum",
     title: "Ariza qoldiring",
     lead: "Sana va mehmonlar sonini tanlang — administrator qo'ng'iroq qilib, bo'sh vaqtni tasdiqlaydi va joy band qiladi.",
     date: "Tashrif sanasi",
@@ -68,7 +68,7 @@ const COPY: Record<
     priceTitle: "Narxi",
   },
   en: {
-    eyebrow: "Pool · no overnight stay",
+    eyebrow: "The pool · summer season",
     title: "Send a request",
     lead: "Pick a date and the number of guests — our administrator will call back, confirm availability and hold your place.",
     date: "Visit date",

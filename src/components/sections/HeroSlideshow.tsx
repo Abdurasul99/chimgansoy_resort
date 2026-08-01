@@ -25,12 +25,25 @@ import { useEffect, useState } from "react";
 // of the pylons. Both are clean at full size. A retouch of the crane was tried
 // and thrown away — it smeared roof texture across the sky.
 // A proper wide exterior, shot after the cranes leave, would beat both.
+// Pool only, per the operator: the pool is the product they want the homepage
+// to lead on.
+//
+// All three are CGI — there is no photograph of the pool anywhere in the repo —
+// so the hero carries a "Визуализация" mark. That mark is not optional: this is
+// the first and largest image a guest sees, and everything else in the hero
+// rotation until now was real photography.
+// These files are 1280×720, against 2400px for the frames they replaced, so
+// they upscale on wide screens. A real photo shoot of the finished pool would
+// fix both problems at once.
 const SUMMER_SLIDES = [
-  "/images/resort/hero/hero-aframe-interior.jpg",
-  "/images/resort/hero/hero-ridge-clean.jpg",
+  "/images/resort/16-pool-day-lifestyle.jpg", // lagoon pool from above
+  "/images/resort/17-workout-padel-zone.jpg", // pool by day, loungers and palms
+  "/images/resort/07-aframe-glamping-evening.jpg", // pool in the evening
 ];
 
 const WINTER_PHOTO = "/images/resort/winter-google-aframe.jpg";
+
+const RENDER_NOTE = "Визуализация";
 
 const INTERVAL_MS = 5500;
 
@@ -87,6 +100,11 @@ export function HeroSlideshow() {
 
   return (
     <>
+      {/* Honest label — every hero slide is a rendering, not a photograph. */}
+      <span className="pointer-events-none absolute left-4 top-24 z-[4] rounded-full border border-white/25 bg-black/40 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white/85 backdrop-blur-sm sm:left-6 sm:top-28">
+        {RENDER_NOTE}
+      </span>
+
       <div className="hero-fx-media absolute inset-0 -z-20 overflow-hidden">
         {SUMMER_SLIDES.map((src, i) => (
           <div
