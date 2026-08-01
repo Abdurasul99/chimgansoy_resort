@@ -15,7 +15,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { AnimatedStat } from "@/components/ui/AnimatedStat";
 import { resortImages } from "@/content/images";
-import { EXELY_ROOM_TYPE } from "@/content/rooms";
+import { poolPricing } from "@/content/pricing";
 import { homeShowcase } from "@/content/home-showcase";
 import { dictionaries } from "@/content/translations";
 import { pageSeo } from "@/content/seo";
@@ -44,6 +44,14 @@ const stats = [
   { value: "45", label: { ru: "мин от Ташкента", uz: "min Toshkentdan", en: "min from Tashkent" } },
 ] as const;
 
+/** Tariff line under the pool CTA, built from the single source in pricing.ts. */
+const fmt = (n: number) => n.toLocaleString("ru-RU").replaceAll(",", " ");
+const poolPriceLine: Record<string, string> = {
+  ru: `Будни ${fmt(poolPricing.weekday)} сум · выходные ${fmt(poolPricing.weekend)} сум с человека`,
+  uz: `Ish kunlari ${fmt(poolPricing.weekday)} so'm · dam olish ${fmt(poolPricing.weekend)} so'm bir kishidan`,
+  en: `Weekdays ${fmt(poolPricing.weekday)} UZS · weekends ${fmt(poolPricing.weekend)} UZS per person`,
+};
+
 /** Band under the two stay cards. It ran photo-free at first because the pool
  *  frames were assumed to be a render of something unbuilt; they are in fact
  *  the operator's own visualisations of the pool that is sold today, so the
@@ -55,7 +63,7 @@ const poolBand = {
     title: "Включён в проживание",
     copy: "Гостям шале и глэмпинга бассейн входит в стоимость. Можно забронировать и отдельно — на день, без ночёвки, до 4 гостей.",
     book: "Забронировать бассейн",
-    cta: "О бассейне",
+    cta: "Подробнее",
     renderNote: "Визуализация",
   },
   uz: {
@@ -169,19 +177,32 @@ export default async function HomePage({ params }: PageProps) {
                   Exely's loader mounts on /bron and reads room-type from the
                   query — that is where the guest enters their details and gets
                   the confirmation e-mail. */}
-              <div className="mt-6 flex flex-wrap gap-3">
-                <ButtonLink
-                  href={localizePath(locale, `/bron?room-type=${EXELY_ROOM_TYPE.pool}`)}
-                  variant="primary"
-                  reload
-                  className="btn-press"
+              {/* Oversized on purpose. The pool is the only thing on this page
+                  a guest can buy without booking a night, and it was previously
+                  represented by a button the same size as everything else. */}
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <a
+                  href={localizePath(locale, "/nomera/pool#pool-request")}
+                  className="btn-press inline-flex items-center justify-center gap-2.5 rounded-full bg-gradient-to-b from-[var(--sun)] to-[var(--sun-dark)] px-8 py-5 text-lg font-extrabold text-[var(--on-accent)] shadow-[0_14px_34px_-10px_rgba(220,140,0,0.75)] transition-all duration-300 hover:brightness-[1.04] sm:text-xl"
                 >
+                  <svg aria-hidden className="h-6 w-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M2 16c1.5 0 1.5 1.2 3 1.2S6.5 16 8 16s1.5 1.2 3 1.2S12.5 16 14 16s1.5 1.2 3 1.2S18.5 16 20 16M2 20c1.5 0 1.5 1.2 3 1.2S6.5 20 8 20s1.5 1.2 3 1.2S12.5 20 14 20s1.5 1.2 3 1.2S18.5 20 20 20M8 14V5a2 2 0 1 1 4 0M16 14V5a2 2 0 1 1 4 0" />
+                  </svg>
                   {poolBand[locale].book}
-                </ButtonLink>
-                <ButtonLink href={localizePath(locale, "/nomera/pool")} variant="light" className="btn-press">
+                  <span aria-hidden className="text-2xl leading-none">→</span>
+                </a>
+                <a
+                  href={localizePath(locale, "/nomera/pool")}
+                  className="inline-flex items-center justify-center gap-1.5 rounded-full px-5 py-3 text-sm font-bold text-white/75 underline-offset-4 transition-colors hover:text-white hover:underline"
+                >
                   {poolBand[locale].cta}
-                </ButtonLink>
+                </a>
               </div>
+
+              {/* The tariff, so the button isn't a leap of faith */}
+              <p className="mt-4 text-sm font-semibold text-white/60">
+                {poolPriceLine[locale]}
+              </p>
             </div>
           </div>
         </div>

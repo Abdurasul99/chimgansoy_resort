@@ -119,9 +119,9 @@ export const knowledge: KnowledgeEntry[] = [
     answer: {
       // This used to answer "we don't have a pool" — while the pool was a
       // bookable Exely room type, had its own page, and sat in the footer nav.
-      ru: "🏊 Открытый бассейн с видом на горы, работает в летний сезон. Можно забронировать отдельно на день, без ночёвки — одно бронирование до 4 гостей. А гостям глэмпинга и шале бассейн уже включён в стоимость проживания, отдельно бронировать не нужно.",
-      uz: "🏊 Tog' manzarali ochiq basseyn, yozgi mavsumda ishlaydi. Uni tunamasdan, bir kunga alohida bron qilish mumkin — bitta bron 4 mehmongacha. Glemping va shale mehmonlari uchun esa basseyn yashash narxiga allaqachon kiritilgan, alohida bron qilish shart emas.",
-      en: "🏊 An outdoor pool with mountain views, open in the summer season. You can book it on its own for the day, no overnight stay — one booking covers up to 4 guests. For glamping and chalet guests the pool is already included in the room rate, with no separate booking needed.",
+      ru: "🏊 Открытый бассейн с видом на горы, работает в летний сезон. Без ночёвки — на день, гостей сколько угодно: будни (Пн–Пт) 100 000 сум, выходные (Сб–Вс) 200 000 сум с человека. Заявка оставляется формой на странице бассейна. А гостям глэмпинга и шале бассейн уже включён в стоимость проживания, отдельно бронировать не нужно.",
+      uz: "🏊 Tog' manzarali ochiq basseyn, yozgi mavsumda ishlaydi. Tunamasdan — bir kunga, mehmonlar soni cheklanmagan: ish kunlari (Du–Ju) 100 000 so'm, dam olish kunlari (Sha–Yak) 200 000 so'm bir kishidan. Ariza basseyn sahifasidagi shakl orqali. Glemping va shale mehmonlari uchun esa basseyn yashash narxiga allaqachon kiritilgan, alohida bron qilish shart emas.",
+      en: "🏊 An outdoor pool with mountain views, open in the summer season. Without a stay you can book it for the day, any group size: 100 000 UZS per person on weekdays (Mon–Fri) and 200 000 UZS at weekends (Sat–Sun). Requests go through the form on the pool page. For glamping and chalet guests the pool is already included in the room rate, with no separate booking needed.",
     },
   },
 
@@ -196,9 +196,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "dayvisit",
     keywords: ["днем", "дневной", "на день", "без ночевки", "без проживания", "kunduzi", "kunlik", "yashamasdan", "day visit", "without stay", "without overnight", "just visit"],
     answer: {
-      ru: "☀️ Дневной отдых с арендой топчана мы больше не проводим — комплекс работает как курорт с проживанием: глэмпинг A-frame и шале. Без ночёвки можно забронировать только бассейн на день (летний сезон, до 4 гостей на бронирование, цена за человека). Всё остальное на территории — для гостей, которые остановились у нас.",
-      uz: "☀️ Topchan ijarasi bilan kunlik dam olishni endi o'tkazmaymiz — majmua yashash bilan kurort sifatida ishlaydi: A-frame glemping va shale. Tunamasdan faqat basseynni bir kunga bron qilish mumkin (yozgi mavsum, bronga 4 mehmongacha, narx bir kishi uchun). Hududdagi qolgani — bizda to'xtagan mehmonlar uchun.",
-      en: "☀️ We no longer run day visits with topchan rental — the property operates as a resort with overnight stays: A-frame glamping and chalets. The only thing bookable without staying over is the pool for a day (summer season, up to 4 guests per booking, priced per person). Everything else on the grounds is for guests staying with us.",
+      ru: "☀️ Дневной отдых с арендой топчана мы больше не проводим — комплекс работает как курорт с проживанием: глэмпинг A-frame и шале. Без ночёвки можно только бассейн на день (летний сезон, без лимита гостей): будни 100 000 сум, выходные 200 000 сум с человека. Заявка — формой на странице бассейна. Всё остальное на территории — для гостей, которые остановились у нас.",
+      uz: "☀️ Topchan ijarasi bilan kunlik dam olishni endi o'tkazmaymiz — majmua yashash bilan kurort sifatida ishlaydi: A-frame glemping va shale. Tunamasdan faqat basseyn — bir kunga (yozgi mavsum, mehmonlar soni cheklanmagan): ish kunlari 100 000 so'm, dam olish kunlari 200 000 so'm bir kishidan. Hududdagi qolgani — bizda to'xtagan mehmonlar uchun.",
+      en: "☀️ We no longer run day visits with topchan rental — the property operates as a resort with overnight stays: A-frame glamping and chalets. The only thing bookable without staying over is the pool for a day (summer season, any group size): 100 000 UZS per person on weekdays, 200 000 UZS at weekends. Everything else on the grounds is for guests staying with us.",
     },
   },
 

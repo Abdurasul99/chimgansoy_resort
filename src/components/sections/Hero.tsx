@@ -1,5 +1,4 @@
 import { dictionaries } from "@/content/translations";
-import { EXELY_ROOM_TYPE } from "@/content/rooms";
 import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
 import { HeroSlideshow } from "@/components/sections/HeroSlideshow";
@@ -9,6 +8,13 @@ import { HeroScrollCue } from "@/components/ui/HeroScrollCue";
 
 type HeroProps = {
   locale: Locale;
+};
+
+/** Second line of the pool CTA — the terms that make it worth a tap. */
+const poolHint: Record<Locale, string> = {
+  ru: "Без ночёвки · до 4 гостей · заявка за минуту",
+  uz: "Tunamasdan · 4 mehmongacha · bir daqiqada ariza",
+  en: "No overnight stay · up to 4 guests · one-minute request",
 };
 
 export function Hero({ locale }: HeroProps) {
@@ -228,15 +234,27 @@ export function Hero({ locale }: HeroProps) {
           <div className="motion-rise w-full max-w-xl lg:max-w-none" style={{ animationDelay: "240ms" }}>
             <BookingWidget locale={locale} variant="hero" />
 
-            <a
-              href={localizePath(locale, `/bron?room-type=${EXELY_ROOM_TYPE.pool}`)}
-              className="group mt-3 inline-flex items-center gap-2 text-sm font-semibold text-white/75 transition-colors hover:text-white"
-            >
-              <svg aria-hidden className="h-4 w-4 shrink-0 text-[var(--sun)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round">
-                <path d="M2 16c1.5 0 1.5 1.2 3 1.2S6.5 16 8 16s1.5 1.2 3 1.2S12.5 16 14 16s1.5 1.2 3 1.2S18.5 16 20 16M2 20c1.5 0 1.5 1.2 3 1.2S6.5 20 8 20s1.5 1.2 3 1.2S12.5 20 14 20s1.5 1.2 3 1.2S18.5 20 20 20M8 14V5a2 2 0 1 1 4 0M16 14V5a2 2 0 1 1 4 0" />
-              </svg>
-              {dict.home.heroPoolCta}
-              <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+            {/* The pool is the only thing here you can buy without booking a
+                night, and it now has its own request form that lands straight
+                in Telegram. Sending it to /nomera/pool rather than the Exely
+                engine is deliberate: Exely holds room inventory, the pool lead
+                goes to the operator's bot. Sized to hold its own next to the
+                search widget — this was a text link nobody was going to see. */}
+            <a href={localizePath(locale, "/nomera/pool#pool-request")} className="hero-pool-cta group mt-3">
+              <span className="hero-pool-cta__icon" aria-hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M2 16c1.5 0 1.5 1.2 3 1.2S6.5 16 8 16s1.5 1.2 3 1.2S12.5 16 14 16s1.5 1.2 3 1.2S18.5 16 20 16M2 20c1.5 0 1.5 1.2 3 1.2S6.5 20 8 20s1.5 1.2 3 1.2S12.5 20 14 20s1.5 1.2 3 1.2S18.5 20 20 20M8 14V5a2 2 0 1 1 4 0M16 14V5a2 2 0 1 1 4 0" />
+                </svg>
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[1.05rem] font-extrabold leading-tight sm:text-[1.15rem]">
+                  {dict.home.heroPoolCta}
+                </span>
+                <span className="mt-0.5 block text-[0.78rem] font-semibold leading-snug opacity-70">
+                  {poolHint[locale]}
+                </span>
+              </span>
+              <span aria-hidden className="hero-pool-cta__arrow">→</span>
             </a>
           </div>
         </div>

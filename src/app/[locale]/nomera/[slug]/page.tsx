@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
 import { BookingDrawer } from "@/components/sections/BookingDrawer";
+import { PoolRequestForm } from "@/components/sections/PoolRequestForm";
 import { Icon } from "@/components/ui/Icon";
 import { rooms, EXELY_ROOM_TYPE, INCLUDED_LABEL } from "@/content/rooms";
 import { resortImages } from "@/content/images";
@@ -13,6 +14,21 @@ import { localizePath } from "@/i18n/routing";
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string }>;
+};
+
+const poolCta: Record<string, string> = {
+  ru: "Забронировать бассейн",
+  uz: "Basseynni bron qilish",
+  en: "Book the pool",
+};
+
+/** rooms.ts still says "цена при бронировании" for the pool, which was true
+ *  while the engine priced it. It has a fixed tariff now, so the hero chip
+ *  shows the real number. */
+const poolPriceChip: Record<string, string> = {
+  ru: "от 100 000 сум с человека",
+  uz: "100 000 so'mdan bir kishidan",
+  en: "from 100 000 UZS per person",
 };
 
 // Only built, bookable rooms get a detail page; not-yet-built rooms (cottage)
@@ -49,12 +65,21 @@ export default async function RoomDetailPage({ params }: PageProps) {
   const locale = await getLocaleParam(params);
   const room = getRoom(slug);
   const dict = dictionaries[locale];
+  // The pool is booked by request form, not through the booking engine.
+  const isPool = room.slug === "pool";
 
   return (
     <>
       {/* ── Cinematic full-viewport hero ──────────────── */}
+      {/* Shorter on the pool page: its request form sits in the next section
+          and an 80vh hero pushed the form a full screen below the fold, so a
+          guest opening the page saw a photo and nothing to act on. */}
       <section
-        className="relative isolate flex min-h-[65vh] items-end overflow-hidden bg-[var(--ink)] -mt-[4.5rem] sm:min-h-[75vh] lg:min-h-[80vh]"
+        className={`relative isolate flex items-end overflow-hidden bg-[var(--ink)] -mt-[4.5rem] ${
+          isPool
+            ? "min-h-[52vh] sm:min-h-[54vh] lg:min-h-[56vh]"
+            : "min-h-[65vh] sm:min-h-[75vh] lg:min-h-[80vh]"
+        }`}
         aria-label={text(room.title, locale)}
       >
         <div
@@ -86,9 +111,25 @@ export default async function RoomDetailPage({ params }: PageProps) {
                 {text(room.size, locale)}
               </span>
               <span className="rounded-full border border-[var(--accent)]/30 bg-[var(--accent)]/12 px-4 py-2 text-sm font-semibold text-[var(--accent)] backdrop-blur-sm">
-                {text(room.priceFrom, locale)}
+                {isPool ? poolPriceChip[locale] : text(room.priceFrom, locale)}
               </span>
             </div>
+
+            {/* The pool's form sits in the next section, which is just past the
+                fold on a laptop. This puts the action itself in the first
+                screen and scrolls to the form. */}
+            {isPool && (
+              <a
+                href="#pool-request"
+                className="btn-press mt-8 inline-flex items-center gap-3 rounded-full bg-gradient-to-b from-[var(--sun)] to-[var(--sun-dark)] px-8 py-5 text-lg font-extrabold text-[var(--on-accent)] shadow-[0_14px_34px_-10px_rgba(0,0,0,0.6)] transition-all duration-300 hover:brightness-[1.04] sm:text-xl"
+              >
+                <svg aria-hidden className="h-6 w-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M2 16c1.5 0 1.5 1.2 3 1.2S6.5 16 8 16s1.5 1.2 3 1.2S12.5 16 14 16s1.5 1.2 3 1.2S18.5 16 20 16M2 20c1.5 0 1.5 1.2 3 1.2S6.5 20 8 20s1.5 1.2 3 1.2S12.5 20 14 20s1.5 1.2 3 1.2S18.5 20 20 20M8 14V5a2 2 0 1 1 4 0M16 14V5a2 2 0 1 1 4 0" />
+                </svg>
+                {poolCta[locale]}
+                <span aria-hidden className="text-2xl leading-none">↓</span>
+              </a>
+            )}
           </div>
         </div>
       </section>
@@ -180,35 +221,52 @@ export default async function RoomDetailPage({ params }: PageProps) {
                 </div>
               </div>
 
-              {/* Mobile CTA — full navigation to /bron with the room-type so the
-                  Exely engine opens straight on this room. */}
+              {/* Mobile CTA. Stays go to the Exely engine; the pool jumps to
+                  its own request form further down this page. */}
               <div className="mt-10 lg:hidden">
                 <a
-                  href={localizePath(locale, `/bron?room-type=${EXELY_ROOM_TYPE[room.slug] ?? ""}`)}
-                  className="btn-press flex items-center justify-center rounded-full bg-[var(--accent)] py-4 text-base font-bold text-[var(--on-accent)] transition-all duration-300 hover:bg-[var(--accent-strong)]"
+                  href={
+                    isPool
+                      ? "#pool-request"
+                      : localizePath(locale, `/bron?room-type=${EXELY_ROOM_TYPE[room.slug] ?? ""}`)
+                  }
+                  className="btn-press flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] py-5 text-lg font-bold text-[var(--on-accent)] shadow-[0_10px_30px_-8px_rgba(220,140,0,0.7)] transition-all duration-300 hover:bg-[var(--accent-strong)]"
                 >
-                  {dict.bookNow}
+                  {isPool ? poolCta[locale] : dict.bookNow}
+                  <span aria-hidden>→</span>
                 </a>
               </div>
             </div>
 
-            {/* Right — sticky booking panel (desktop) */}
-            <div className="hidden lg:block">
-              <div className="sticky top-24">
-                <BookingDrawer
-                  locale={locale}
-                  roomTitle={text(room.title, locale)}
-                  roomSlug={room.slug}
-                  priceFrom={text(room.priceFrom, locale)}
-                />
+            {/* Right column. For stays this is the desktop-only sticky booking
+                panel. For the pool it holds the request form and is shown at
+                every width — the single-column stack puts it right under the
+                description, so there is one form in the DOM and one #pool-request
+                for both the hero button and the mobile CTA to scroll to. */}
+            <div
+              {...(isPool ? { id: "pool-request" } : {})}
+              className={isPool ? "scroll-mt-24" : "hidden lg:block"}
+            >
+              <div className="lg:sticky lg:top-24">
+                {isPool ? (
+                  <PoolRequestForm locale={locale} />
+                ) : (
+                  <BookingDrawer
+                    locale={locale}
+                    roomTitle={text(room.title, locale)}
+                    roomSlug={room.slug}
+                    priceFrom={text(room.priceFrom, locale)}
+                  />
+                )}
               </div>
             </div>
           </div>
         </div>
       </section>
 
+
       {/* ── Related services ──────────────────────────── */}
-      <section className="bg-[var(--surface)] px-4 py-16 sm:px-6 lg:px-8">
+      <section className="bg-[var(--paper)] px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-10 motion-reveal">
             <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGAN DARBAZA</p>

@@ -164,12 +164,13 @@ export const rooms: Room[] = [
       en: "An outdoor pool with mountain views — bookable separately, no overnight stay needed.",
     },
     description: {
-      ru: "Гостям глэмпинга и шале бассейн включён в стоимость проживания — отдельно бронировать не нужно. Приехать только на бассейн, без ночёвки, тоже можно: это отдельное бронирование до 4 гостей, цена за человека и зависит от даты. Рядом кухня и зона мангала.",
-      uz: "Glemping va shale mehmonlari uchun basseyn yashash narxiga kiritilgan — alohida bron qilish shart emas. Faqat basseynga, tunamasdan kelish ham mumkin: bu alohida bron, 4 mehmongacha, narx bir kishi uchun va sanaga bog'liq. Yaqinida oshxona va mangal zonasi.",
-      en: "For glamping and chalet guests the pool is included in the room rate — no separate booking needed. Coming just for the pool, without an overnight stay, also works: that's a separate booking for up to 4 guests, priced per person and depending on the date. The kitchen and BBQ area are nearby.",
+      ru: "Гостям глэмпинга и шале бассейн включён в стоимость проживания — отдельно бронировать не нужно. Приехать только на бассейн, без ночёвки, тоже можно: сколько угодно гостей: 100 000 сум с человека в будни (Пн–Пт) и 200 000 сум в выходные (Сб–Вс). Оставьте заявку ниже — администратор перезвонит и подтвердит время. Рядом кухня и зона мангала.",
+      uz: "Glemping va shale mehmonlari uchun basseyn yashash narxiga kiritilgan — alohida bron qilish shart emas. Faqat basseynga, tunamasdan kelish ham mumkin: mehmonlar soni cheklanmagan: ish kunlari (Du–Ju) bir kishidan 100 000 so'm, dam olish kunlari (Sha–Yak) 200 000 so'm. Quyida ariza qoldiring — administrator qo'ng'iroq qilib, vaqtni tasdiqlaydi. Yaqinida oshxona va mangal zonasi.",
+      en: "For glamping and chalet guests the pool is included in the room rate — no separate booking needed. Coming just for the pool, without an overnight stay, also works: any group size: 100 000 UZS per person on weekdays (Mon–Fri) and 200 000 UZS at weekends (Sat–Sun). Send a request below and our administrator will call back to confirm the time. The kitchen and BBQ area are nearby.",
     },
-    priceFrom: { ru: "Цена при бронировании", uz: "Bron qilishda narx", en: "Price at booking" },
-    capacity: { ru: "до 4 гостей", uz: "4 mehmongacha", en: "up to 4 guests" },
+    // Fixed tariff now — the engine no longer prices this one.
+    priceFrom: { ru: "от 100 000 сум с человека", uz: "100 000 so'mdan bir kishidan", en: "from 100 000 UZS per person" },
+    capacity: { ru: "без ограничения по гостям", uz: "mehmonlar soni cheklanmagan", en: "any group size" },
     size: { ru: "Открытый бассейн", uz: "Ochiq basseyn", en: "Outdoor pool" },
     amenities: {
       ru: ["Открытый летний бассейн", "Панорама гор", "Включён в проживание", "Или отдельное бронирование"],
@@ -177,9 +178,9 @@ export const rooms: Room[] = [
       en: ["Outdoor summer pool", "Mountain panorama", "Day-lounge area nearby", "Booked separately"],
     },
     features: {
-      ru: ["Включён в проживание в шале и глэмпинге", "Или бронь на день, до 4 гостей", "Работает в летний сезон", "Рядом мангал и кухня"],
-      uz: ["Shale va glempingda yashashga kiritilgan", "Yoki bir kunlik bron, 4 mehmongacha", "Yozgi mavsumda ishlaydi", "Yaqinida mangal va oshxona"],
-      en: ["Included with chalet and glamping stays", "Or a day booking for up to 4 guests", "Open in the summer season", "BBQ and kitchen nearby"],
+      ru: ["Включён в проживание в шале и глэмпинге", "Или бронь на день, гостей без лимита", "Работает в летний сезон", "Рядом мангал и кухня"],
+      uz: ["Shale va glempingda yashashga kiritilgan", "Yoki bir kunlik bron, mehmonlar soni cheklanmagan", "Yozgi mavsumda ishlaydi", "Yaqinida mangal va oshxona"],
+      en: ["Included with chalet and glamping stays", "Or a day booking, any group size", "Open in the summer season", "BBQ and kitchen nearby"],
     },
     relatedServices: ["outdoor-cooking", "restaurant", "picnic-zone"],
   },
@@ -195,9 +196,13 @@ export const EXELY_ROOM_TYPE: Record<string, string> = {
   // visits are closed, so nothing on the site should be able to open the engine
   // on it. NOTE: the tariff itself still exists inside Exely — it has to be
   // switched off in the Exely extranet, which can't be done from here.
+  // The pool is deliberately absent. It is no longer sold through the booking
+  // engine: it has a fixed weekday/weekend tariff and is handled as a request
+  // form on /nomera/pool that reaches the operator through @chimgandarbaza_bot.
+  // Anything linking the pool to /bron would drop the guest into an engine that
+  // no longer offers it.
   glamping: "5075760",
   cottage: "5075761",
-  pool: "5076232",
 };
 
 export const roomCategories = [

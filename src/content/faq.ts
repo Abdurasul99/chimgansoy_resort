@@ -35,9 +35,9 @@ export const faqItems: FaqItem[] = [
       en: "Is the pool included in the room rate?",
     },
     answer: {
-      ru: "Да. Гостям шале и глэмпинга бассейн включён в стоимость — отдельно бронировать не нужно. Без проживания бассейн бронируется отдельно, на день: одно бронирование до 4 гостей, цена указана за человека и зависит от даты. Работает в летний сезон.",
-      uz: "Ha. Shale va glemping mehmonlari uchun basseyn narxga kiritilgan — alohida bron qilish shart emas. Yashashsiz basseyn alohida, bir kunga bron qilinadi: bitta bron 4 mehmongacha, narx bir kishi uchun va sanaga bog'liq. Yozgi mavsumda ishlaydi.",
-      en: "Yes. For chalet and glamping guests the pool is included in the rate — no separate booking needed. Without a stay, the pool is booked on its own for the day: one booking covers up to 4 guests, priced per person and depending on the date. Open in the summer season.",
+      ru: "Да. Гостям шале и глэмпинга бассейн включён в стоимость — отдельно бронировать не нужно. Без проживания — на день, без ограничения по числу гостей: 100 000 сум с человека в будни (Пн–Пт) и 200 000 сум в выходные (Сб–Вс). Заявка оставляется формой на странице бассейна, администратор перезвонит и подтвердит время. Работает в летний сезон.",
+      uz: "Ha. Shale va glemping mehmonlari uchun basseyn narxga kiritilgan — alohida bron qilish shart emas. Yashashsiz — bir kunga, mehmonlar soni cheklanmagan: ish kunlari (Du–Ju) bir kishidan 100 000 so'm, dam olish kunlari (Sha–Yak) 200 000 so'm. Ariza basseyn sahifasidagi shakl orqali qoldiriladi, administrator qo'ng'iroq qilib vaqtni tasdiqlaydi. Yozgi mavsumda ishlaydi.",
+      en: "Yes. For chalet and glamping guests the pool is included in the rate — no separate booking needed. Without a stay — for the day, any group size: 100 000 UZS per person on weekdays (Mon–Fri) and 200 000 UZS at weekends (Sat–Sun). Requests go through the form on the pool page and the administrator calls back to confirm the time. Open in the summer season.",
     },
   },
   {
@@ -83,9 +83,9 @@ export const faqItems: FaqItem[] = [
       en: "Can we come for the day, without staying over?",
     },
     answer: {
-      ru: "Дневной отдых с арендой топчана мы больше не проводим — комплекс работает как курорт с проживанием. Единственный вариант без ночёвки — бронирование бассейна на день в летний сезон: до 4 гостей на одно бронирование, цена за человека. Всё остальное на территории доступно гостям, которые останавливаются в шале или глэмпинге.",
-      uz: "Topchan ijarasi bilan kunlik dam olishni biz endi o'tkazmaymiz — majmua yashash bilan kurort sifatida ishlaydi. Tunamasdan yagona variant — yozgi mavsumda basseynni bir kunga bron qilish: bitta bronga 4 mehmongacha, narx bir kishi uchun. Hududdagi qolgan hamma narsa shale yoki glempingda to'xtagan mehmonlar uchun.",
-      en: "We no longer run day visits with topchan rental — the property operates as a resort with overnight stays. The one option without staying over is a day booking for the pool in the summer season: up to 4 guests per booking, priced per person. Everything else on the grounds is for guests staying in a chalet or a glamping cabin.",
+      ru: "Дневной отдых с арендой топчана мы больше не проводим — комплекс работает как курорт с проживанием. Единственный вариант без ночёвки — бассейн на день в летний сезон, без ограничения по числу гостей: 100 000 сум с человека в будни (Пн–Пт) и 200 000 сум в выходные (Сб–Вс). Заявка оставляется формой на странице бассейна. Всё остальное на территории доступно гостям, которые останавливаются в шале или глэмпинге.",
+      uz: "Topchan ijarasi bilan kunlik dam olishni biz endi o'tkazmaymiz — majmua yashash bilan kurort sifatida ishlaydi. Tunamasdan yagona variant — yozgi mavsumda bir kunga basseyn, mehmonlar soni cheklanmagan: ish kunlari (Du–Ju) bir kishidan 100 000 so'm, dam olish kunlari (Sha–Yak) 200 000 so'm. Ariza basseyn sahifasidagi shakl orqali. Hududdagi qolgan hamma narsa shale yoki glempingda to'xtagan mehmonlar uchun.",
+      en: "We no longer run day visits with topchan rental — the property operates as a resort with overnight stays. The one option without staying over is the pool for a day in the summer season, any group size: 100 000 UZS per person on weekdays (Mon–Fri) and 200 000 UZS at weekends (Sat–Sun), requested through the form on the pool page. Everything else on the grounds is for guests staying in a chalet or a glamping cabin.",
     },
   },
 ];

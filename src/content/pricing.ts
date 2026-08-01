@@ -84,6 +84,28 @@ export const priceList: PriceItem[] = [
  * hours 08:00–18:00). Removed rather than left as dead exports; `git show
  * HEAD~1:src/content/pricing.ts` has them if the format reopens.
  */
+/**
+ * Pool day pass — fixed, unlike the stay rates, which the booking engine sets
+ * per date.
+ *
+ * ASSUMPTION worth confirming: these are per person. venue-facts.ts already
+ * says the pool is priced per person, and the
+ * form says «с человека» on the strength of that. If the figure is per booking
+ * instead, change `perPerson` here and the form, the FAQ and the AI knowledge
+ * base all follow.
+ */
+export const poolPricing = {
+  weekday: 100_000,
+  weekend: 200_000,
+  perPerson: true,
+  // No party-size cap: the operator takes groups of any size for the pool.
+  // The weekend tariff is Sat–Sun only — narrower than the Пт–Вс split the
+  // retired day-use list used, so don't copy that one.
+  weekdayLabel: { ru: "Будни (Пн–Пт)", uz: "Ish kunlari (Du–Ju)", en: "Weekdays (Mon–Fri)" } satisfies LocalizedString,
+  weekendLabel: { ru: "Выходные (Сб–Вс)", uz: "Dam olish (Sha–Yak)", en: "Weekends (Sat–Sun)" } satisfies LocalizedString,
+  perPersonLabel: { ru: "с человека", uz: "bir kishidan", en: "per person" } satisfies LocalizedString,
+};
+
 export const priceLabels = {
   weekdaysLabel: { ru: "Пн–Чт", uz: "Du–Pay", en: "Mon–Thu" } satisfies LocalizedString,
   weekendLabel: { ru: "Пт–Вс", uz: "Ju–Yak", en: "Fri–Sun" } satisfies LocalizedString,

@@ -146,10 +146,17 @@ export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
                   <ButtonLink href={localizePath(locale, `/nomera/${room.slug}`)} variant="secondary" className="btn-press">
                     {dict.details}
                   </ButtonLink>
+                  {/* The pool isn't in the booking engine — its request form
+                      lives on its own page, so send the guest there instead of
+                      to /bron with an empty room-type. */}
                   <ButtonLink
-                    href={localizePath(locale, `/bron?room-type=${EXELY_ROOM_TYPE[room.slug] ?? ""}`)}
+                    href={
+                      room.slug === "pool"
+                        ? localizePath(locale, "/nomera/pool#pool-request")
+                        : localizePath(locale, `/bron?room-type=${EXELY_ROOM_TYPE[room.slug] ?? ""}`)
+                    }
                     variant="ghost"
-                    reload
+                    reload={room.slug !== "pool"}
                     className="btn-press"
                   >
                     {dict.book}
