@@ -13,15 +13,8 @@ type Cell = {
   caption: { ru: string; uz: string; en: string };
   /** tailwind col/row span classes for the desktop grid */
   span: string;
-  /**
-   * CGI, not photography. The section is headed "Фотогалерея", and the caption
-   * only appears on hover — which is no disclosure at all on touch — so these
-   * carry a badge that is always visible.
-   */
-  render?: boolean;
 };
 
-const RENDER_LABEL = { ru: "Визуализация", uz: "Vizualizatsiya", en: "Rendering" };
 
 /**
  * Curation follows the site's product: the hero cell and the tall cell are the
@@ -58,13 +51,11 @@ const CELLS: Cell[] = [
     image: "poolAerial",
     caption: { ru: "Бассейн с высоты", uz: "Basseyn yuqoridan", en: "The pool from above" },
     span: "",
-    render: true,
   },
   {
     image: "poolLifestyle",
     caption: { ru: "Бассейн днём", uz: "Kunduzgi basseyn", en: "The pool by day" },
     span: "md:col-span-2",
-    render: true,
   },
 ];
 
@@ -83,11 +74,6 @@ export function BentoGallery({ locale }: { locale: Locale }) {
               decoding="async"
               className="h-full w-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-[1.07]"
             />
-            {cell.render && (
-              <span className="pointer-events-none absolute left-3 top-3 z-10 rounded-full border border-white/25 bg-black/45 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.1em] text-white/90 backdrop-blur-sm">
-                {text(RENDER_LABEL, locale)}
-              </span>
-            )}
             <figcaption className="bento-caption">
               {text(cell.caption, locale)}
             </figcaption>

@@ -55,8 +55,7 @@ const poolPriceLine: Record<string, string> = {
 /** Band under the two stay cards. It ran photo-free at first because the pool
  *  frames were assumed to be a render of something unbuilt; they are in fact
  *  the operator's own visualisations of the pool that is sold today, so the
- *  band leads with one — carrying a "визуализация" mark, since every pool image
- *  in the repo is CGI and it sits directly under real interior photography. */
+ *  band leads with one. Every pool image in the repo is CGI; the operator asked for the visible mark to come off. */
 const poolBand = {
   ru: {
     label: "Бассейн",
@@ -64,7 +63,6 @@ const poolBand = {
     copy: "Гостям шале и глэмпинга бассейн входит в стоимость. Можно забронировать и отдельно — на день, без ночёвки, до 4 гостей.",
     book: "Забронировать бассейн",
     cta: "Подробнее",
-    renderNote: "Визуализация",
   },
   uz: {
     label: "Basseyn",
@@ -72,7 +70,6 @@ const poolBand = {
     copy: "Shale va glemping mehmonlari uchun basseyn narxga kiritilgan. Alohida ham bron qilish mumkin — bir kunga, tunamasdan, 4 mehmongacha.",
     book: "Basseynni bron qilish",
     cta: "Basseyn haqida",
-    renderNote: "Vizualizatsiya",
   },
   en: {
     label: "The pool",
@@ -80,7 +77,6 @@ const poolBand = {
     copy: "Chalet and glamping guests get the pool as part of the rate. It can also be booked on its own — for the day, no overnight stay, up to 4 guests.",
     book: "Book the pool",
     cta: "About the pool",
-    renderNote: "Rendering",
   },
 } as const;
 
@@ -156,11 +152,6 @@ export default async function HomePage({ params }: PageProps) {
                 role="img"
                 aria-label={text(resortImages.poolAerial.alt, locale)}
               />
-              {/* Every pool frame we hold is CGI — say so rather than let it
-                  pass as photography next to the real room shoots above. */}
-              <figcaption className="absolute left-4 top-4 rounded-full border border-white/25 bg-black/40 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-white/85 backdrop-blur-sm">
-                {poolBand[locale].renderNote}
-              </figcaption>
             </figure>
 
             <div className="p-7 sm:p-9 lg:self-center">

@@ -9,7 +9,8 @@ import { ButtonLink } from "@/components/ui/ButtonLink";
  * MasterPlan — honestly-framed "what we're building" section. It's the ONLY
  * place the CGI renders (aerial master plan, cottages, lagoon pool, padel/sport)
  * are allowed to appear, so they never masquerade as real photography elsewhere.
- * Every card carries a "rendering · coming soon" badge and the sole CTA is a soft
+ * The per-card badge came off at the operator's request; the section lead still
+ * states in prose that these are renderings. The sole CTA is a soft
  * "get notified" to /contact — deliberately NOT an Exely booking link, since these
  * amenities aren't built yet.
  */
@@ -20,26 +21,23 @@ type Item = {
   desc: { ru: string; uz: string; en: string };
 };
 
-const COPY: Record<Locale, { eyebrow: string; title: string; lead: string; badge: string; cta: string }> = {
+const COPY: Record<Locale, { eyebrow: string; title: string; lead: string; cta: string }> = {
   ru: {
     eyebrow: "Мастер-план развития",
     title: "Что мы строим",
     lead: "Курорт растёт. Эти объекты пока в проекте — изображения ниже это визуализации, а не фотографии. Оставьте заявку, и мы сообщим, как только они откроются.",
-    badge: "Визуализация · скоро",
     cta: "Оставить заявку",
   },
   uz: {
     eyebrow: "Rivojlanish master-rejasi",
     title: "Biz nima quramiz",
     lead: "Kurort o'smoqda. Bu obyektlar hozircha loyihada — quyidagi tasvirlar vizualizatsiya, foto emas. So'rov qoldiring, ochilishi bilan xabar beramiz.",
-    badge: "Vizualizatsiya · tez orada",
     cta: "So'rov qoldirish",
   },
   en: {
     eyebrow: "Development master plan",
     title: "What we're building",
     lead: "The resort is growing. These are planned amenities — the images below are renderings, not photos. Leave a request and we'll let you know the moment they open.",
-    badge: "Rendering · coming soon",
     cta: "Get notified",
   },
 };
@@ -93,10 +91,6 @@ export function MasterPlan({ locale }: { locale: Locale }) {
                   aria-label={text(img.alt, locale)}
                 />
                 <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,18,14,0.94)_0%,rgba(12,18,14,0.28)_55%,transparent_100%)]" />
-                {/* Honest rendering badge — this is a visualization, not a photo */}
-                <span className="absolute left-4 top-4 rounded-full border border-white/25 bg-black/40 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-white/85 backdrop-blur-sm">
-                  {t.badge}
-                </span>
                 <figcaption className="absolute inset-x-0 bottom-0 p-5">
                   <h3 className="font-serif text-2xl font-semibold leading-tight">{text(item.title, locale)}</h3>
                   <p className="mt-1.5 text-sm leading-6 text-white/70">{text(item.desc, locale)}</p>
