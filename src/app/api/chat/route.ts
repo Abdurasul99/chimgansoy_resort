@@ -128,6 +128,27 @@ async function callWithFallback(
 }
 
 /**
+ * The "I may be wrong — the administrator will confirm" line belongs on prices
+ * and availability, where a human really does decide. On a weather answer it
+ * reads as nonsense: the temperature comes from open-meteo, not from the front
+ * desk. The prompt says so, but a 20–120B model still tacks it on maybe a third
+ * of the time, so this enforces it.
+ *
+ * Only fires when the turn used the weather tool and did NOT touch availability
+ * — a mixed answer ("it's 22° and the chalet costs …") keeps the line.
+ */
+function stripDisclaimer(reply: string, toolsUsed: Set<string>): string {
+  if (!toolsUsed.has("get_weather") || toolsUsed.has("check_availability")) return reply;
+  // Cut from the disclaimer to the end rather than dropping whole lines: the
+  // model often puts it in the same paragraph as the forecast, so a line filter
+  // would either miss it or take the weather with it. The prompt always places
+  // it last, so everything after the opening words is safe to drop.
+  return reply
+    .replace(/\s*[«"]?\s*(я\s+могу\s+ошибаться|i\s+may\s+be\s+wrong|men\s+xato\s+qilishim)[\s\S]*$/i, "")
+    .trim();
+}
+
+/**
  * AI concierge endpoint (Groq, OpenAI-compatible). Grounded in the resort's
  * facts via buildSystemPrompt(), and able to read live availability/prices
  * from Exely via the check_availability tool. Best-effort: returns a clear
@@ -177,7 +198,9 @@ export async function POST(req: NextRequest) {
     let data = (await res.json()) as GroqResponse;
     let msg = data.choices?.[0]?.message;
 
+    const toolsUsed = new Set<string>();
     if (msg?.tool_calls?.length) {
+      msg.tool_calls.forEach((tc) => tc.function?.name && toolsUsed.add(tc.function.name));
       messages.push(msg);
       for (const tc of msg.tool_calls) {
         let args: { checkin?: string; checkout?: string; adults?: number } = {};
@@ -212,7 +235,7 @@ export async function POST(req: NextRequest) {
       msg = data.choices?.[0]?.message;
     }
 
-    const reply = msg?.content?.trim() ?? "";
+    const reply = stripDisclaimer(msg?.content?.trim() ?? "", toolsUsed);
     if (!reply) return Response.json({ error: "ai_failed" }, { status: 502 });
 
     return Response.json({ reply });
