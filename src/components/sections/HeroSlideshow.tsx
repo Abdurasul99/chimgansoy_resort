@@ -28,10 +28,11 @@ import { useEffect, useState } from "react";
 // Pool only, per the operator: the pool is the product they want the homepage
 // to lead on.
 //
-// All three are CGI — there is no photograph of the pool anywhere in the repo —
-// so the hero carries a "Визуализация" mark. That mark is not optional: this is
-// the first and largest image a guest sees, and everything else in the hero
-// rotation until now was real photography.
+// All three are CGI — there is no photograph of the pool anywhere in the repo.
+// A visible "Визуализация" mark sat on the hero for a while; the operator asked
+// for it to go, which is their call to make. Worth knowing if you touch this:
+// these frames are renderings, the rest of the site's photography is real, and
+// a guest who books off this hero is booking off a drawing.
 // These files are 1280×720, against 2400px for the frames they replaced, so
 // they upscale on wide screens. A real photo shoot of the finished pool would
 // fix both problems at once.
@@ -42,8 +43,6 @@ const SUMMER_SLIDES = [
 ];
 
 const WINTER_PHOTO = "/images/resort/winter-google-aframe.jpg";
-
-const RENDER_NOTE = "Визуализация";
 
 const INTERVAL_MS = 5500;
 
@@ -100,11 +99,6 @@ export function HeroSlideshow() {
 
   return (
     <>
-      {/* Honest label — every hero slide is a rendering, not a photograph. */}
-      <span className="pointer-events-none absolute left-4 top-24 z-[4] rounded-full border border-white/25 bg-black/40 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white/85 backdrop-blur-sm sm:left-6 sm:top-28">
-        {RENDER_NOTE}
-      </span>
-
       <div className="hero-fx-media absolute inset-0 -z-20 overflow-hidden">
         {SUMMER_SLIDES.map((src, i) => (
           <div
