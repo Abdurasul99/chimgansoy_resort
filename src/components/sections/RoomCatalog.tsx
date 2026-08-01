@@ -10,6 +10,7 @@ import { imageStyle } from "@/lib/images";
 import { list, text } from "@/lib/localize";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Icon } from "@/components/ui/Icon";
+import { Lightbox } from "@/components/ui/Lightbox";
 
 type RoomCatalogProps = {
   locale: Locale;
@@ -18,8 +19,16 @@ type RoomCatalogProps = {
 
 type Filter = "all" | RoomCategory;
 
+/** Card image first, then the rest of the shoot — no duplicates. */
+function roomGalleryOf(room: (typeof rooms)[number]) {
+  const keys = [room.image, ...room.gallery];
+  return [...new Set(keys)].map((k) => resortImages[k]);
+}
+
 export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
   const [filter, setFilter] = useState<Filter>("all");
+  // Which room the viewer is showing, by slug — null when closed.
+  const [gallery, setGallery] = useState<string | null>(null);
   const dict = dictionaries[locale];
   // Only truly-built rooms are bookable here; the rest live in <MasterPlan>.
   const bookableRooms = useMemo(() => rooms.filter((room) => room.available !== false), []);
@@ -67,12 +76,15 @@ export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
               key={room.slug}
               className="editorial-card group relative overflow-hidden rounded-3xl bg-[var(--ink)] shadow-[var(--shadow-card)]"
             >
-              {/* Full-bleed image with paper-overlay reveal */}
-              <div
-                className="img-reveal-wrapper relative h-[65vw] max-h-[500px] min-h-[260px] sm:min-h-[320px] bg-cover bg-center transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]"
+              {/* Full-bleed image — now a button that opens the room's whole
+                  shoot. It used to be inert, so the only way to see more than
+                  one photo of a room was to open its page. */}
+              <button
+                type="button"
+                onClick={() => setGallery(room.slug)}
+                aria-label={`${text(room.title, locale)} — ${roomGalleryOf(room).length} фото`}
+                className="img-reveal-wrapper relative block h-[65vw] max-h-[500px] min-h-[260px] w-full cursor-zoom-in bg-cover bg-center text-left transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04] sm:min-h-[320px]"
                 style={imageStyle(image)}
-                role="img"
-                aria-label={text(image.alt, locale)}
               >
                 {/* Gradient overlay */}
                 <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,18,14,1.0)_0%,rgba(12,18,14,0.55)_45%,rgba(12,18,14,0.08)_100%)]" />
@@ -82,12 +94,21 @@ export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
                   <p className="text-xs font-bold text-white/80">{text(room.priceFrom, locale)}</p>
                 </div>
 
+                {/* Photo count — tells the guest there is something behind the click */}
+                <span className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-black/45 px-3 py-1.5 text-[11px] font-bold text-white/90 backdrop-blur-sm transition-colors group-hover:bg-black/65">
+                  <svg aria-hidden className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="5" width="14" height="14" rx="2" />
+                    <path d="M21 7v10a2 2 0 0 1-2 2M7 13l2.5-2.5 3 3L15 11" />
+                  </svg>
+                  {roomGalleryOf(room).length}
+                </span>
+
                 {/* Room title overlay */}
                 <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50">{text(room.eyebrow, locale)}</p>
                   <h3 className="mt-2 font-serif text-4xl font-bold leading-tight sm:text-5xl">{text(room.title, locale)}</h3>
                 </div>
-              </div>
+              </button>
 
               {/* Info block */}
               <div className="room-info-block bg-[var(--paper)] px-6 pb-6 pt-5 sm:px-8 sm:pb-8">
@@ -167,6 +188,18 @@ export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
           );
         })}
       </div>
+
+      {/* One viewer for the whole grid — mounted once, fed by whichever
+          card was clicked. */}
+      {gallery && (
+        <Lightbox
+          key={gallery}
+          images={roomGalleryOf(bookableRooms.find((r) => r.slug === gallery)!)}
+          locale={locale}
+          open
+          onClose={() => setGallery(null)}
+        />
+      )}
     </div>
   );
 }

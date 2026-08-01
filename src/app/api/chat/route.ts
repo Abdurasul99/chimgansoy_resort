@@ -1,6 +1,26 @@
 import type { NextRequest } from "next/server";
 import { buildSystemPrompt } from "@/lib/ai-context";
 import { checkAvailability } from "@/lib/exely";
+import { getChimganWeather, weatherInfo } from "@/lib/bot-weather";
+
+/**
+ * Live weather for the concierge, shaped for a model rather than a chat card.
+ * Same open-meteo source and 10-minute cache the Telegram bot uses, so the two
+ * assistants can't quote different temperatures for the same afternoon.
+ */
+async function weatherForConcierge() {
+  const res = await getChimganWeather();
+  if (!res.ok) return { ok: false, error: "weather_unavailable" };
+  const w = res.data;
+  const { desc } = weatherInfo(w.code);
+  return {
+    ok: true,
+    place: "Chimgan Darbaza, 1700 м",
+    now: { tempC: w.tempC, feelsLikeC: w.feelsC, windKmh: w.windKmh, description: desc },
+    today: { minC: w.todayMin, maxC: w.todayMax },
+    tomorrow: { minC: w.tomorrowMin, maxC: w.tomorrowMax },
+  };
+}
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -51,6 +71,15 @@ const TOOLS = [
         },
         required: ["checkin"],
       },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "get_weather",
+      description:
+        "Живая погода в Чимгане на территории курорта (1700 м): сейчас, минимум/максимум сегодня и завтра. Вызывай ВСЕГДА, когда гость спрашивает про погоду, температуру, холодно ли, что надеть, стоит ли ехать. Без вызова температуру не называй.",
+      parameters: { type: "object", properties: {} },
     },
   },
 ];
@@ -157,10 +186,13 @@ export async function POST(req: NextRequest) {
         } catch {
           /* leave empty */
         }
+        const name = tc.function?.name;
         const result =
-          tc.function?.name === "check_availability"
+          name === "check_availability"
             ? await checkAvailability(args)
-            : { ok: false, error: "unknown_tool" };
+            : name === "get_weather"
+              ? await weatherForConcierge()
+              : { ok: false, error: "unknown_tool" };
         messages.push({ role: "tool", tool_call_id: tc.id, content: JSON.stringify(result) });
       }
       // Second pass — model turns the tool result into a natural answer. Stay

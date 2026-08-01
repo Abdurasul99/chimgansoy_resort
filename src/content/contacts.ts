@@ -7,6 +7,10 @@ export const contacts = {
   telegram: "https://t.me/+998701760011",
   instagram: "https://www.instagram.com/chimgandarbaza/",
   googleMapsUrl: "https://maps.app.goo.gl/x2WWhzho3Pob6oD46",
+  // Yandex is the default navigator for most guests arriving from Tashkent, so
+  // the concierge offers both. Built from mapCoordinates below — Yandex takes
+  // longitude first, which is the easy thing to get backwards here.
+  yandexMapsUrl: "https://yandex.uz/maps/?pt=69.9904599,41.5193897&z=17&l=map",
   address: {
     ru: "Chimgan Darbaza, Бостанлыкский район, Ташкентская область",
     uz: "Chimgan Darbaza, Bo'stonliq tumani, Toshkent viloyati",

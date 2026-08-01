@@ -8,6 +8,7 @@
  */
 
 import { checkAvailability } from "./exely";
+import { getChimganWeather, weatherInfo } from "./bot-weather";
 import { venueFacts } from "./venue-facts";
 import { contacts } from "@/content/contacts";
 
@@ -44,6 +45,15 @@ const TOOLS = [
       },
     },
   },
+  {
+    type: "function",
+    function: {
+      name: "get_weather",
+      description:
+        "Живая погода на территории курорта (1700 м): сейчас, минимум/максимум сегодня и завтра. Вызывай, когда спрашивают про погоду, температуру, холодно ли, что надеть. Без вызова температуру не называй.",
+      parameters: { type: "object", properties: {} },
+    },
+  },
 ];
 
 async function runTool(name: string, rawArgs: string): Promise<unknown> {
@@ -64,6 +74,18 @@ async function runTool(name: string, rawArgs: string): Promise<unknown> {
         checkout: str("checkout") || undefined,
         adults: typeof a.adults === "number" ? (a.adults as number) : undefined,
       });
+    case "get_weather": {
+      const r = await getChimganWeather();
+      if (!r.ok) return { ok: false, error: "weather_unavailable" };
+      const w = r.data;
+      return {
+        ok: true,
+        place: "Chimgan Darbaza, 1700 м",
+        now: { tempC: w.tempC, feelsLikeC: w.feelsC, windKmh: w.windKmh, description: weatherInfo(w.code).desc },
+        today: { minC: w.todayMin, maxC: w.todayMax },
+        tomorrow: { minC: w.tomorrowMin, maxC: w.tomorrowMax },
+      };
+    }
     default:
       return { ok: false, error: "unknown_tool" };
   }
@@ -99,16 +121,18 @@ function systemPrompt(): string {
     venueFacts(),
     "═══════════════════════════════════════════════════════════════════",
     "",
-    "ЖИВЫЕ ДАННЫЕ: единственный инструмент public_prices — реальные цены и доступность ПРОЖИВАНИЯ",
-    "(Глэмпинг/Шале) и бассейна на конкретные даты из системы бронирования. Цены доп. услуг",
-    "(мангал, казан, дрова, уголь) — фиксированные, бери из знаний выше без инструмента.",
+    "ЖИВЫЕ ДАННЫЕ: public_prices — реальные цены и доступность ПРОЖИВАНИЯ (Глэмпинг/Шале) на",
+    "конкретные даты из системы бронирования. get_weather — живая погода.",
+    "ФИКСИРОВАННЫЕ цены, бери их из знаний выше БЕЗ инструмента: бассейн (будни Пн–Пт 100 000,",
+    "выходные Сб–Вс 200 000 с человека) и доп. услуги (мангал, казан, дрова, уголь).",
     "Дневной отдых (топчан, въезд) ЗАКРЫТ — не называй эти цены и не предлагай формат.",
     "Валюта — UZS, суммы пиши с разделителями (1 200 000 UZS).",
     "",
     "ПРАВИЛА ТОЧНОСТИ (важнее всего):",
     "1. Дату и день недели сверяй по календарю выше. «Суббота» = ближайшая суббота из календаря.",
-    "2. Цены проживания и бассейна зависят от даты. НИКОГДА не называй их без вызова public_prices",
-    "   на эту КОНКРЕТНУЮ дату. Спросили про несколько дат — отдельный вызов на каждую ночь.",
+    "2. Цены ПРОЖИВАНИЯ зависят от даты. НИКОГДА не называй их без вызова public_prices на эту",
+    "   КОНКРЕТНУЮ дату. Спросили про несколько дат — отдельный вызов на каждую ночь.",
+    "   Цена БАССЕЙНА фиксированная — называй её сразу, инструмент для неё не нужен.",
     "3. Не обобщай («цены не меняются») — говори только про даты, которые проверил.",
     "4. Рядом с ценой указывай тип и дату с днём недели: «сб 25.07 — Глэмпинг 1 600 000 UZS».",
     "5. Если options пусто — на эти даты свободных номеров нет: честно скажи и предложи другие даты.",
