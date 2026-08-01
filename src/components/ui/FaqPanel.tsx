@@ -69,6 +69,26 @@ export function FaqPanel({ locale: rawLocale }: { locale: string }) {
     return () => window.clearTimeout(t);
   }, [star]);
 
+  /**
+   * On phones the launcher sits exactly where the hero's booking widget puts
+   * its submit button, and covers it. The hero content is taller than the
+   * viewport there, so padding can't lift the button out of the way — the
+   * launcher has to yield instead. It steps aside while the hero is on screen
+   * and returns as soon as the guest scrolls past it. Desktop is unaffected:
+   * there the widget sits in the right column, well clear of the corner.
+   */
+  const [overHero, setOverHero] = useState(false);
+  useEffect(() => {
+    const hero = document.querySelector("[data-hero-fx]");
+    if (!hero || !("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver(
+      ([e]) => setOverHero(e.isIntersecting && e.intersectionRatio > 0.35),
+      { threshold: [0, 0.35, 0.6] },
+    );
+    io.observe(hero);
+    return () => io.disconnect();
+  }, []);
+
   // Held back until the arrival has resolved one way or the other.
   const hideLauncher = mode === "pending" || (mode === "star" && !landed);
 
@@ -249,7 +269,11 @@ export function FaqPanel({ locale: rawLocale }: { locale: string }) {
       </AnimatePresence>
 
       {/* Launcher cluster (hint + button) */}
-      <div className="fixed bottom-[4.5rem] right-4 z-40 flex items-center gap-2.5 sm:bottom-6 sm:right-6">
+      <div
+        className={`fixed bottom-[4.5rem] right-4 z-40 flex items-center gap-2.5 transition-opacity duration-300 sm:bottom-6 sm:right-6 sm:!opacity-100 ${
+          overHero && !open ? "pointer-events-none opacity-0 sm:pointer-events-auto" : "opacity-100"
+        }`}
+      >
         <AnimatePresence>
           {showHint && !open && (
             <motion.button
@@ -259,7 +283,11 @@ export function FaqPanel({ locale: rawLocale }: { locale: string }) {
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: 14, scale: 0.85 }}
               transition={{ type: "spring", stiffness: 300, damping: 22 }}
-              className="max-w-[210px] rounded-2xl rounded-br-sm bg-[var(--ink)] px-3.5 py-2.5 text-left text-xs font-medium leading-snug text-[var(--paper)] shadow-[0_10px_30px_rgba(21,29,24,0.28)]"
+              // Hidden on phones: at 390px this bubble is ~210px wide and sits
+              // mid-screen over the page, covering the hero's submit button and
+              // the pool form's intro. The launcher alone is invitation enough
+              // on a small screen.
+              className="hidden max-w-[210px] rounded-2xl rounded-br-sm bg-[var(--ink)] px-3.5 py-2.5 text-left text-xs font-medium leading-snug text-[var(--paper)] shadow-[0_10px_30px_rgba(21,29,24,0.28)] sm:block"
             >
               {HINT[locale]}
             </motion.button>

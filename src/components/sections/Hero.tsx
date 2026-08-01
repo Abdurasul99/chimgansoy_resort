@@ -188,7 +188,11 @@ export function Hero({ locale }: HeroProps) {
         </svg>
       </div>
 
-      <div className="hero-fx-content relative mx-auto w-full max-w-7xl px-4 pb-16 pt-36 sm:px-6 lg:pb-24 lg:px-8">
+      {/* pb-36 on phones. The concierge launcher is fixed at bottom-[4.5rem]
+          (72px) and stands ~56px tall, so it occupies the last ~128px of the
+          viewport; anything less than that here leaves it sitting on top of the
+          widget's submit button. */}
+      <div className="hero-fx-content relative mx-auto w-full max-w-7xl px-4 pb-36 pt-36 sm:px-6 sm:pb-16 lg:pb-24 lg:px-8">
 
         {/* Heading — split display: last word in italic gold, oversized */}
         <h1
@@ -220,9 +224,15 @@ export function Hero({ locale }: HeroProps) {
         {/* Lead + booking: quiet one-line lead on the LEFT, booking box on the
             RIGHT (desktop). Stacks to one column on phones/tablets. */}
         <div className="mt-7 grid items-end gap-8 lg:mt-9 lg:grid-cols-[1fr_minmax(0,26rem)] lg:gap-12">
-          {/* LEFT — one-line lead, lots of breathing room */}
+          {/* LEFT — one-line lead, lots of breathing room.
+              min-w-0 on both columns: a grid item defaults to min-width:auto and
+              refuses to shrink below its content, so on a 390px phone the
+              booking card was rendering 389px wide inside a 358px track and its
+              right edge was being clipped by the hero's overflow-hidden. The
+              desktop template guards this with minmax(0,…); the mobile
+              single-column fallback did not. */}
           <p
-            className="motion-rise max-w-md text-[1.1rem] leading-[1.7] text-white/85"
+            className="motion-rise min-w-0 max-w-md text-[1.1rem] leading-[1.7] text-white/85"
             style={{ animationDelay: "200ms" }}
           >
             {dict.home.lead}
@@ -232,7 +242,7 @@ export function Hero({ locale }: HeroProps) {
               stays; the pool is the one thing sold without a night, and it had
               no route out of the first screen. Plain <a>, not the router link,
               so /bron loads fresh and Exely's embed script runs. */}
-          <div className="motion-rise w-full max-w-xl lg:max-w-none" style={{ animationDelay: "240ms" }}>
+          <div className="motion-rise w-full min-w-0 max-w-xl lg:max-w-none" style={{ animationDelay: "240ms" }}>
             <BookingWidget locale={locale} variant="hero" />
 
             {/* The pool is the only thing here you can buy without booking a

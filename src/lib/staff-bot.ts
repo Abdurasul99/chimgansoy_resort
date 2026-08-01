@@ -378,6 +378,13 @@ function commandToAction(text: string): string | null {
     case "/ceny":
     case "/prices":
       return "prices";
+    // Self-service for wiring up who receives pool requests. A bot cannot look
+    // up a chat id on its own, and getUpdates is unavailable while the webhook
+    // is set — so the chat tells us its own id, and that value goes into
+    // TELEGRAM_ADMIN_CHAT_ID (comma-separated for several recipients).
+    case "/id":
+    case "/chatid":
+      return "chatid";
     case "/contacts":
     case "/kontakty":
       return "contacts";
@@ -435,6 +442,24 @@ export async function handleGuestUpdate(update: TgUpdate): Promise<void> {
 
     if (action === "photos") {
       await sendPhotoAlbum(chatId);
+      return;
+    }
+    // Handled here rather than in viewFor(), which never sees the chat id.
+    // Works in a group too — add the bot, send /id, and the group's own id
+    // (negative number) comes back, so a whole duty team can be notified.
+    if (action === "chatid") {
+      await sendMessage(
+        chatId,
+        [
+          "<b>🆔 ID этого чата</b>",
+          "",
+          `<code>${chatId}</code>`,
+          "",
+          "Передайте это значение администратору сайта — его нужно добавить в",
+          "<code>TELEGRAM_ADMIN_CHAT_ID</code>, чтобы заявки с бассейна приходили сюда.",
+          "Несколько получателей перечисляются через запятую.",
+        ].join("\n"),
+      );
       return;
     }
     if (action === "menu") {
