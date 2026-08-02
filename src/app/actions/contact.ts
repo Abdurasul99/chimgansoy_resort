@@ -1,5 +1,7 @@
 "use server";
 
+import { saveRequest } from "@/lib/requests-store";
+
 export type ContactResult = { ok: true } | { ok: false; error: string };
 
 type DeliveryStatus = "sent" | "skipped" | "failed";
@@ -169,7 +171,45 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
     .filter(Boolean)
     .join(" ");
 
-  const emailStatus = await sendEmail(subjectParts, emailHtml, emailTo, email || undefined);
+  /**
+   * Archive alongside the send, not after it.
+   *
+   * This form has no Telegram channel — e-mail is the only way the lead reaches
+   * anyone, so if Resend is misconfigured the request would otherwise vanish
+   * without trace. The archive means it can still be recovered from the bot.
+   *
+   * A booking is filed under check-in, because that is the day someone will ask
+   * about. An inquiry has no visit date, so it is filed under the day it came
+   * in — otherwise it would have no home in a date-keyed archive at all.
+   */
+  const archived = saveRequest({
+    service: formType,
+    date:
+      formType === "booking" && /^\d{4}-\d{2}-\d{2}$/.test(checkin)
+        ? checkin
+        : new Date(Date.now() + 5 * 3600_000).toISOString().slice(0, 10),
+    name,
+    phone,
+    email: email || undefined,
+    adults: Math.max(parseInt(guests, 10) || 0, 0),
+    kids: 0,
+    toddlers: 0,
+    extras: [],
+    // The nightly rate comes from the PMS after the administrator confirms, so
+    // there is no total to record at request time.
+    total: 0,
+    tariff: "",
+    message: message || undefined,
+    locale: lang,
+    checkin: checkin || undefined,
+    checkout: checkout || undefined,
+    room: room || undefined,
+  });
+
+  const [emailStatus] = await Promise.all([
+    sendEmail(subjectParts, emailHtml, emailTo, email || undefined),
+    archived,
+  ]);
 
   const delivered = emailStatus === "sent";
 

@@ -112,7 +112,11 @@ describe("renderRequests", () => {
     const view = await renderRequests("2026-08-09");
     expect(view.text.length).toBeLessThan(4096);
     expect(view.text).toContain("список обрезан");
+    // Unbalanced HTML makes Telegram reject the whole message, so the trim has
+    // to fall on a block boundary rather than mid-tag.
     expect(tagsBalanced(view.text)).toBe(true);
+    // The count in the header still reflects the real total, not what fitted.
+    expect(view.text).toContain("200 заявк");
   });
 
   it("falls back to recent requests without a date", async () => {
@@ -125,6 +129,39 @@ describe("renderRequests", () => {
     const view = await renderRequests("9 августа");
     expect(store.requestsByDate).not.toHaveBeenCalled();
     expect(view.text).toContain("/zayavki");
+  });
+
+  it("labels each service and never prints a price nobody has quoted", async () => {
+    store.requestsByDate.mockResolvedValue([
+      rows[0],
+      {
+        id: "c",
+        service: "booking",
+        date: "2026-08-09",
+        createdAt: "2026-08-02T12:00:00+05:00",
+        name: "Гость",
+        phone: "+998901112233",
+        adults: 2,
+        kids: 0,
+        toddlers: 0,
+        extras: [],
+        total: 0, // the PMS quotes accommodation later
+        tariff: "",
+        locale: "ru",
+        checkin: "2026-08-09",
+        checkout: "2026-08-11",
+        room: "A-frame",
+      } satisfies StoredRequest,
+    ]);
+    const view = await renderRequests("2026-08-09");
+    expect(view.text).toContain("🏊");
+    expect(view.text).toContain("🏡");
+    expect(view.text).toContain("2026-08-09 → 2026-08-11");
+    expect(view.text).toContain("A-frame");
+    // A price next to the accommodation guest would read as a quote nobody gave.
+    const bookingBlock = view.text.slice(view.text.indexOf("🏡"));
+    expect(bookingBlock).not.toContain("сум");
+    expect(tagsBalanced(view.text)).toBe(true);
   });
 
   it("says an empty date is empty, not that history is off", async () => {

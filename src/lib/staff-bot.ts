@@ -100,7 +100,7 @@ function menuKeyboard(): InlineKeyboard {
     ],
     // Open to everyone, by the operator's explicit decision. Anyone who opens
     // the bot can read the request log, guests' names and phones included.
-    [{ text: "📋 Заявки на бассейн", callback_data: "reqs" }],
+    [{ text: "📋 Заявки и история", callback_data: "reqs" }],
   ];
 }
 
@@ -370,12 +370,20 @@ function requestsKeyboard(current?: string | null): InlineKeyboard {
   ];
 }
 
+/** One glance tells the operator which form a row came from. */
+const SERVICE_LABEL: Record<string, string> = {
+  pool: "🏊",
+  tubing: "🛷",
+  booking: "🏡",
+  inquiry: "💬",
+};
+
 /**
  * Who is booked in, and for how much.
  *
- * Two shapes: a specific visit date, or the last few submissions regardless of
- * date. Deliberately shows the phone as a bare +998… so a tap dials, same as
- * the request messages themselves.
+ * Two shapes: a specific date, which spans the pool, tubing and accommodation
+ * requests filed against it, or the last few submissions of any kind. The phone
+ * is deliberately a bare +998… so a tap dials, same as the request messages.
  */
 export async function renderRequests(arg?: string): Promise<View> {
   if (!storeConfigured()) {
@@ -415,26 +423,64 @@ export async function renderRequests(arg?: string): Promise<View> {
   }
 
   const people = rows.reduce((n, r) => n + r.adults + r.kids + r.toddlers, 0);
+  // Only the day-visit forms carry a price. An accommodation request is quoted
+  // by the PMS after the administrator confirms, so counting its zero into the
+  // day's takings would understate nothing — but showing "0 сум" on its line
+  // would read as free, hence the per-row check below.
   const sum = rows.reduce((n, r) => n + r.total, 0);
 
-  const lines = [
+  const header = [
     head,
-    `<i>${rows.length} заявк(и) · ${people} гост(ей) · ${money(sum)} сум</i>`,
+    `<i>${rows.length} заявк(и) · ${people} гост(ей)${sum ? ` · ${money(sum)} сум` : ""}</i>`,
     "",
-    ...rows.flatMap((r) => [
-      `${date ? "" : "🗓 " + fmtDay(r.date) + " · "}<b>${esc(r.name)}</b>`,
-      `${esc(r.phone)}`,
-      `${r.adults} взр.${r.kids ? " + " + r.kids + " дет." : ""}${r.toddlers ? " + " + r.toddlers + " до 5" : ""} · <b>${money(r.total)} сум</b>${r.extras.length ? " · " + esc(r.extras.join(", ")) : ""}`,
-      ...(r.message ? [`<i>${esc(r.message)}</i>`] : []),
-      "",
-    ]),
   ];
-  // Telegram rejects a message over 4096 characters, so a busy day gets
-  // truncated rather than failing to send at all.
-  let text = lines.join("\n").trim();
-  if (text.length > 3900) {
-    text = `${text.slice(0, 3800).trimEnd()}\n\n<i>…список обрезан, показаны не все заявки.</i>`;
+
+  const blocks = rows.map((r) => {
+      const guests = [
+        `${r.adults} взр.`,
+        ...(r.kids ? [`${r.kids} дет.`] : []),
+        ...(r.toddlers ? [`${r.toddlers} до 5`] : []),
+      ].join(" + ");
+      const detail = [
+        ...(r.adults ? [guests] : []),
+        ...(r.total ? [`<b>${money(r.total)} сум</b>`] : []),
+        ...(r.extras.length ? [esc(r.extras.join(", "))] : []),
+        // Accommodation: the nights matter more than a price nobody has yet.
+        ...(r.checkin && r.checkout ? [`${esc(r.checkin)} → ${esc(r.checkout)}`] : []),
+        ...(r.room ? [esc(r.room)] : []),
+      ].join(" · ");
+      return [
+        `${SERVICE_LABEL[r.service] ?? "📄"} ${date ? "" : fmtDay(r.date) + " · "}<b>${esc(r.name)}</b>`,
+        `${esc(r.phone)}`,
+        ...(detail ? [detail] : []),
+        ...(r.message ? [`<i>${esc(r.message)}</i>`] : []),
+        "",
+      ].join("\n");
+  });
+
+  /**
+   * Telegram rejects a message over 4096 characters, so a busy day has to be
+   * trimmed. Whole request blocks only: slicing at a character offset can cut
+   * through a tag, and unbalanced HTML makes Telegram reject the entire
+   * message — a busy day would get no reply at all.
+   */
+  const LIMIT = 3900;
+  const kept: string[] = [];
+  let size = header.join("\n").length;
+  for (const block of blocks) {
+    if (size + block.length > LIMIT) break;
+    kept.push(block);
+    size += block.length + 1;
   }
+  const dropped = blocks.length - kept.length;
+  const text = [
+    ...header,
+    ...kept,
+    ...(dropped ? [`<i>…и ещё ${dropped} — список обрезан, не поместился в сообщение.</i>`] : []),
+  ]
+    .join("\n")
+    .trim();
+
   return { text, keyboard: requestsKeyboard(date) };
 }
 
