@@ -3,6 +3,7 @@
 import { contacts } from "@/content/contacts";
 import { poolPricing } from "@/content/pricing";
 import { esc, sendMessage } from "@/lib/telegram";
+import { saveRequest } from "@/lib/requests-store";
 
 export type PoolResult = { ok: true } | { ok: false; error: string };
 
@@ -174,6 +175,29 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
 
   const tel = telLink(phone);
 
+  // Archiving runs alongside delivery rather than before it, so the guest never
+  // waits on the store. It is awaited before the action returns, so the write
+  // can't be cut short by the function ending. Failures are swallowed inside
+  // the store — an unarchived request that still reaches the operator beats a
+  // failed submission.
+  const archived = saveRequest({
+    service: "pool",
+    date,
+    name,
+    phone: tel.display,
+    adults,
+    kids,
+    toddlers,
+    extras: [
+      ...(towels ? [`полотенца ×${towels}`] : []),
+      ...(bungalowLabel ? [bungalowLabel] : []),
+    ],
+    total,
+    tariff,
+    message: message || undefined,
+    locale: lang,
+  });
+
   const lines = [
     "<b>🏊 Заявка на бассейн</b>",
     "",
@@ -207,7 +231,10 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
   if (chatIds.length === 0) {
     console.error("[pool] no TELEGRAM_ADMIN_CHAT_ID / TELEGRAM_STAFF_IDS set — Telegram skipped");
   }
-  const results = await Promise.all(chatIds.map((id) => sendMessage(id, lines)));
+  const [results] = await Promise.all([
+    Promise.all(chatIds.map((id) => sendMessage(id, lines))),
+    archived,
+  ]);
   const telegramOk = results.some((r) => r !== null);
 
   const emailOk = await sendEmailCopy(

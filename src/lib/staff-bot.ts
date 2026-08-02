@@ -30,6 +30,7 @@ import { checkAvailability } from "./exely";
 import { contacts } from "@/content/contacts";
 import { priceList } from "@/content/pricing";
 import { money } from "./venue-facts";
+import { recentRequests, requestsByDate, storeConfigured, type StoredRequest } from "./requests-store";
 
 const SITE = "https://chimgandarbaza.uz";
 const BOOK_URL = `${SITE}/ru/bron`;
@@ -97,6 +98,9 @@ function menuKeyboard(): InlineKeyboard {
       { text: "📸 Фото", callback_data: "photos" },
       { text: "📞 Контакты", callback_data: "contacts" },
     ],
+    // Open to everyone, by the operator's explicit decision. Anyone who opens
+    // the bot can read the request log, guests' names and phones included.
+    [{ text: "📋 Заявки на бассейн", callback_data: "reqs" }],
   ];
 }
 
@@ -334,6 +338,106 @@ async function sendPhotoAlbum(chatId: number): Promise<void> {
   );
 }
 
+/**
+ * Date shortcuts for the request log. Typing "/zayavki 2026-08-09" on a phone
+ * is painful, and the dates anyone actually asks about are today, tomorrow and
+ * the coming weekend — the same picks the price view offers.
+ */
+function requestsKeyboard(current?: string | null): InlineKeyboard {
+  const today = todayISO();
+  const picks: { label: string; date: string }[] = [];
+  const seen = new Set<string>();
+  const push = (label: string, date: string) => {
+    if (seen.has(date)) return;
+    seen.add(date);
+    picks.push({ label, date });
+  };
+  push("Сегодня", today);
+  push("Завтра", addDays(today, 1));
+  push(`Сб ${fmtDate(nextDow(today, 6))}`, nextDow(today, 6));
+  push(`Вс ${fmtDate(nextDow(today, 0))}`, nextDow(today, 0));
+
+  const dateRow = picks.map((p) => ({
+    // A checkmark marks the day being shown, so tapping around stays oriented.
+    text: p.date === current ? `✅ ${p.label}` : p.label,
+    callback_data: `reqs:${p.date}`,
+  }));
+  return [
+    dateRow.slice(0, 2),
+    dateRow.slice(2),
+    [{ text: current ? "🕘 Последние заявки" : "✅ Последние заявки", callback_data: "reqs" }],
+    ...backRow(),
+  ];
+}
+
+/**
+ * Who is booked in, and for how much.
+ *
+ * Two shapes: a specific visit date, or the last few submissions regardless of
+ * date. Deliberately shows the phone as a bare +998… so a tap dials, same as
+ * the request messages themselves.
+ */
+async function renderRequests(arg?: string): Promise<View> {
+  if (!storeConfigured()) {
+    return {
+      text: [
+        "<b>📋 История заявок</b>",
+        "",
+        "Хранилище не подключено, поэтому история пока не ведётся.",
+        "Заявки продолжают приходить сюда сообщениями — теряются только архив и поиск по датам.",
+      ].join("\n"),
+      keyboard: backRow(),
+    };
+  }
+
+  const wantsRecent = !arg || arg === "recent";
+  const date = wantsRecent ? null : arg;
+  if (date && !ISO_RE.test(date)) {
+    return {
+      text: [
+        "<b>📋 История заявок</b>",
+        "",
+        "Дату пишите как <code>/zayavki 2026-08-09</code>.",
+        "Без даты — последние заявки.",
+      ].join("\n"),
+      keyboard: backRow(),
+    };
+  }
+
+  const rows: StoredRequest[] = date ? await requestsByDate(date) : await recentRequests(10);
+  const head = date ? `<b>📋 Заявки на ${fmtDay(date)}</b>` : "<b>📋 Последние заявки</b>";
+
+  if (rows.length === 0) {
+    return {
+      text: [head, "", date ? "На эту дату заявок нет." : "Заявок пока нет."].join("\n"),
+      keyboard: requestsKeyboard(date),
+    };
+  }
+
+  const people = rows.reduce((n, r) => n + r.adults + r.kids + r.toddlers, 0);
+  const sum = rows.reduce((n, r) => n + r.total, 0);
+
+  const lines = [
+    head,
+    `<i>${rows.length} заявк(и) · ${people} гост(ей) · ${money(sum)} сум</i>`,
+    "",
+    ...rows.flatMap((r) => [
+      `${date ? "" : "🗓 " + fmtDay(r.date) + " · "}<b>${esc(r.name)}</b>`,
+      `${esc(r.phone)}`,
+      `${r.adults} взр.${r.kids ? " + " + r.kids + " дет." : ""}${r.toddlers ? " + " + r.toddlers + " до 5" : ""} · <b>${money(r.total)} сум</b>${r.extras.length ? " · " + esc(r.extras.join(", ")) : ""}`,
+      ...(r.message ? [`<i>${esc(r.message)}</i>`] : []),
+      "",
+    ]),
+  ];
+  // Telegram rejects a message over 4096 characters, so a busy day gets
+  // truncated rather than failing to send at all.
+  let text = lines.join("\n").trim();
+  if (text.length > 3900) {
+    text = `${text.slice(0, 3800).trimEnd()}\n\n<i>…список обрезан, показаны не все заявки.</i>`;
+  }
+  return { text, keyboard: requestsKeyboard(date) };
+}
+
 // ── dispatch ──────────────────────────────────────────────────────────────────
 
 async function viewFor(action: string): Promise<View> {
@@ -353,6 +457,8 @@ async function viewFor(action: string): Promise<View> {
       return renderContacts();
     case "book":
       return renderBook();
+    case "reqs":
+      return renderRequests(arg);
     case "menu":
     default:
       return { text: menuText(), keyboard: menuKeyboard() };
@@ -385,6 +491,13 @@ function commandToAction(text: string): string | null {
     case "/id":
     case "/chatid":
       return "chatid";
+    case "/zayavki":
+    case "/requests":
+    case "/istoriya": {
+      // "/zayavki 2026-08-09" → reqs:2026-08-09, bare command → recent
+      const arg = text.trim().split(/\s+/)[1];
+      return arg ? `reqs:${arg}` : "reqs";
+    }
     case "/contacts":
     case "/kontakty":
       return "contacts";
