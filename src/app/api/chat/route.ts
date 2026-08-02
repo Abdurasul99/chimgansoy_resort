@@ -60,8 +60,13 @@ const TOOLS = [
     type: "function",
     function: {
       name: "check_availability",
+      // The description used to end "...стоимость услуг/бассейна", which sent
+      // the model to Exely for the pool — and a tool description outweighs a
+      // prose rule, so it went there despite three separate instructions not
+      // to. Exely returns one per-person figure the operator does not maintain
+      // for day passes, quietly replacing the four-band tariff.
       description:
-        "Проверить РЕАЛЬНУЮ доступность номеров, цены проживания и платные доп. услуги (бассейн) на конкретные даты в системе бронирования (Exely). Вызывай всегда, когда гость спрашивает про свободные номера, цену проживания (Шале/Глэмпинг), стоимость услуг/бассейна или бронь на конкретную дату/период. Даты — в формате YYYY-MM-DD.",
+        "Проверить РЕАЛЬНУЮ доступность и цены ПРОЖИВАНИЯ (Шале / Глэмпинг) на конкретные даты в системе бронирования (Exely). Вызывай, когда гость спрашивает про свободные номера, цену ночёвки или бронь на конкретную дату/период. НЕ вызывай для дневных услуг — бассейн, топчан, тюбинг, въезд и аренда имеют фиксированный прайс, он есть в знаниях выше. Даты — в формате YYYY-MM-DD.",
       parameters: {
         type: "object",
         properties: {

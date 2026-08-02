@@ -36,11 +36,19 @@ describe("isWeekendISO", () => {
 });
 
 describe("money", () => {
-  it("groups thousands with a space, as every price on the site does", () => {
-    expect(money(50_000)).toBe("50 000");
-    expect(money(150_000)).toBe("150 000");
-    expect(money(1_400_000)).toBe("1 400 000");
+  // The separator must be U+00A0, not a plain space: in the tariff tables a
+  // breakable space let "100 000" wrap to "100" / "000" on a phone.
+  it("groups thousands with a non-breaking space", () => {
+    expect(money(50_000)).toBe("50 000");
+    expect(money(150_000)).toBe("150 000");
+    expect(money(1_400_000)).toBe("1 400 000");
     expect(money(0)).toBe("0");
+  });
+
+  it("never emits a breakable space, at any magnitude", () => {
+    for (const n of [1_000, 30_000, 680_000, 12_345_678]) {
+      expect(money(n), String(n)).not.toContain(" ");
+    }
   });
 });
 

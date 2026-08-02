@@ -21,7 +21,15 @@ export function isWeekendISO(iso: string): boolean {
   return day === 0 || day === 5 || day === 6;
 }
 
-/** 150000 -> "150 000" */
+/**
+ * 150000 -> "150 000", with a NON-BREAKING space between the groups.
+ *
+ * A plain space is a line-break opportunity, and the price columns in the
+ * tariff tables are narrow enough on a phone that the browser takes it: at
+ * 320–412 px the figures wrapped as "100" / "000", so a guest read the weekend
+ * entry fee as 100 and the topchan as 300. The tables are overflow-hidden, so
+ * there was not even a scrollbar to hint otherwise.
+ */
 export function money(n: number): string {
-  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }

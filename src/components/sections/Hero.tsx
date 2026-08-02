@@ -167,9 +167,16 @@ export function Hero({ locale }: HeroProps) {
         </div>
       </div>
 
-      {/* Christmas tree — right side, raised above assistant btn, CSS-hidden in summer */}
+      {/* Christmas tree — CSS-hidden in summer.
+          z-0, not z-[3]: the booking column now carries three CTAs and the
+          date widget down the right-hand side, and at 390 px and again from
+          1024 to 1440 the tree painted straight over them — hiding the tubing
+          card's price in the one season tubing actually sells. It is
+          pointer-events:none, so it was decoration a guest could tap through
+          but not read. Behind the cards it still reads as a tree; over them it
+          cost a booking. */}
       <div
-        className="hero-xmas-tree absolute bottom-20 right-[2%] z-[3] sm:bottom-24 lg:right-[5%]"
+        className="hero-xmas-tree absolute bottom-20 right-[2%] z-0 sm:bottom-24 lg:right-[5%]"
         aria-hidden="true"
       >
         <svg
@@ -223,7 +230,7 @@ export function Hero({ locale }: HeroProps) {
           (72px) and stands ~56px tall, so it occupies the last ~128px of the
           viewport; anything less than that here leaves it sitting on top of the
           widget's submit button. */}
-      <div className="hero-fx-content relative mx-auto w-full max-w-7xl px-4 pb-36 pt-36 sm:px-6 sm:pb-16 lg:pb-24 lg:px-8">
+      <div className="hero-fx-content relative z-[4] mx-auto w-full max-w-7xl px-4 pb-36 pt-36 sm:px-6 sm:pb-16 lg:pb-24 lg:px-8">
 
         {/* Heading — split display: last word in italic gold, oversized */}
         <h1
