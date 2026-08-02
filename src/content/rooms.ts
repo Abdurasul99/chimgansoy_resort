@@ -74,10 +74,12 @@ export const rooms: Room[] = [
     priceFrom: { ru: "Цена при бронировании", uz: "Bron qilishda narx", en: "Price at booking" },
     capacity: { ru: "до 3 гостей", uz: "3 mehmongacha", en: "up to 3 guests" },
     size: { ru: "28 м² + терраса 15 м²", uz: "28 m² + terrasa 15 m²", en: "28 m² + 15 m² terrace" },
+    // No bath anywhere on the property — every unit has a shower. Stated
+    // explicitly so nobody books expecting one.
     amenities: {
-      ru: ["Двуспальная кровать 180×200", "Собственная терраса", "Санузел с душем", "Кондиционер", "Wi-Fi"],
-      uz: ["Ikki kishilik karavot 180×200", "Xususiy terrasa", "Dushli sanuzel", "Konditsioner", "Wi-Fi"],
-      en: ["Double bed 180×200", "Private terrace", "Ensuite shower room", "Air conditioning", "Wi-Fi"],
+      ru: ["Двуспальная кровать 180×200", "Собственная терраса", "Санузел с душем", "Кондиционер", "Тёплый пол", "Телевизор", "Wi-Fi", "Бесплатная парковка"],
+      uz: ["Ikki kishilik karavot 180×200", "Xususiy terrasa", "Dushli sanuzel", "Konditsioner", "Issiq pol", "Televizor", "Wi-Fi", "Bepul parking"],
+      en: ["Double bed 180×200", "Private terrace", "Shower room", "Air conditioning", "Heated floor", "TV", "Wi-Fi", "Free parking"],
     },
     features: {
       ru: ["1 спальная комната, 28 м²", "Собственный санузел 3,6 м²", "Терраса 15 м²", "Заезд с 14:00, выезд до 12:00"],
@@ -101,9 +103,11 @@ export const rooms: Room[] = [
         highlight: true,
       },
       { label: { ru: "Собственная терраса", uz: "Xususiy terrasa", en: "Private terrace" } },
-      { label: { ru: "Кондиционер с обогревом", uz: "Isitishli konditsioner", en: "Air conditioning with heating" } },
-      { label: { ru: "Собственный санузел с душем", uz: "Dushli xususiy sanuzel", en: "Private bathroom with shower" } },
-      { label: { ru: "Парковка у домика", uz: "Uycha yonida parking", en: "Parking by the cabin" } },
+      { label: { ru: "Кондиционер", uz: "Konditsioner", en: "Air conditioning" } },
+      { label: { ru: "Тёплый пол", uz: "Issiq pol", en: "Heated floor" } },
+      { label: { ru: "Телевизор", uz: "Televizor", en: "TV" } },
+      { label: { ru: "Санузел с душем", uz: "Dushli sanuzel", en: "Shower room" } },
+      { label: { ru: "Бесплатная парковка", uz: "Bepul parking", en: "Free parking" } },
       { label: { ru: "Wi-Fi", uz: "Wi-Fi", en: "Wi-Fi" } },
     ],
     relatedServices: ["restaurant", "picnic-zone", "experience"],
@@ -129,17 +133,19 @@ export const rooms: Room[] = [
       en: "A spacious chalet with two bedrooms and a kitchen-lounge — for family stays, weekends with friends, and longer visits.",
     },
     description: {
-      ru: "Шале подходит гостям, которым нужен полноценный приватный формат: две отдельные спальни со своими санузлами, кухня-зал и собственная терраса для вечернего отдыха.",
-      uz: "Shale to'liq xususiy formatni istagan mehmonlar uchun: o'z sanuzeliga ega ikkita alohida yotoqxona, oshxona-zal va kechki dam olish uchun shaxsiy terrasa.",
-      en: "The chalet is for guests who need a fully private format: two separate bedrooms each with its own bathroom, a kitchen-lounge, and a private terrace for the evenings.",
+      ru: "Шале подходит гостям, которым нужен полноценный приватный формат. Две отдельные спальни: в одной двуспальная кровать, в другой две раздельные. К каждой спальне — свой туалет и душ. Плюс кухня-зал и собственная терраса для вечернего отдыха. Всё, что есть в глэмпинге — кондиционер, тёплый пол, телевизор, Wi-Fi и бесплатная парковка, — есть и здесь.",
+      uz: "Shale to'liq xususiy formatni istagan mehmonlar uchun. Ikkita alohida yotoqxona: birida ikki kishilik karavot, ikkinchisida ikkita alohida karavot. Har bir yotoqxonaga o'z hojatxonasi va dushi. Ustiga oshxona-zal va kechki dam olish uchun shaxsiy terrasa. Glempingdagi hamma narsa — konditsioner, issiq pol, televizor, Wi-Fi va bepul parking — bu yerda ham bor.",
+      en: "The chalet is for guests who need a fully private format. Two separate bedrooms: a double bed in one, two single beds in the other, each bedroom with its own toilet and shower. Plus a kitchen-lounge and a private terrace for the evenings. Everything the glamping cabin has — air conditioning, heated floors, a TV, Wi-Fi and free parking — is here too.",
     },
     priceFrom: { ru: "Цена при бронировании", uz: "Bron qilishda narx", en: "Price at booking" },
     capacity: { ru: "до 5 гостей", uz: "5 mehmongacha", en: "up to 5 guests" },
     size: { ru: "3 комнаты + терраса 35 м²", uz: "3 xona + terrasa 35 m²", en: "3 rooms + 35 m² terrace" },
     amenities: {
-      ru: ["Душевая комната", "Кондиционер", "Тёплый пол", "Wi-Fi", "Телевизор", "Холодильник", "Электрическая плита", "Микроволновка", "Полный кухонный набор", "Минибар"],
-      uz: ["Dush xonasi", "Konditsioner", "Issiq pol", "Wi-Fi", "Televizor", "Muzlatkich", "Elektr plita", "Mikroto'lqinli pech", "To'liq oshxona to'plami", "Minibar"],
-      en: ["Shower room", "Air conditioning", "Heated floor", "Wi-Fi", "TV", "Fridge", "Electric stove", "Microwave", "Full kitchen set", "Minibar"],
+      // Two ensuites, both with a shower — there is no bath anywhere on the
+      // property, in any unit.
+      ru: ["Туалет и душ в каждой спальне", "Собственная терраса", "Кондиционер", "Тёплый пол", "Телевизор", "Wi-Fi", "Бесплатная парковка", "Холодильник", "Электрическая плита", "Микроволновка", "Полный кухонный набор", "Минибар"],
+      uz: ["Har bir yotoqxonada hojatxona va dush", "Xususiy terrasa", "Konditsioner", "Issiq pol", "Televizor", "Wi-Fi", "Bepul parking", "Muzlatkich", "Elektr plita", "Mikroto'lqinli pech", "To'liq oshxona to'plami", "Minibar"],
+      en: ["Toilet and shower in each bedroom", "Private terrace", "Air conditioning", "Heated floor", "TV", "Wi-Fi", "Free parking", "Fridge", "Electric stove", "Microwave", "Full kitchen set", "Minibar"],
     },
     features: {
       ru: ["Спальня 1 (15.9 м²): двуспальная кровать 180×200", "Спальня 2 (15.6 м²): две односпальные 90×200", "Кухня-зал с диваном", "Отдельный санузел в каждой спальне (4.7 м²)", "Заезд с 14:00, выезд до 12:00"],
@@ -199,16 +205,20 @@ export const rooms: Room[] = [
     // Fixed tariff now — the engine no longer prices this one.
     priceFrom: { ru: "от 100 000 сум с человека", uz: "100 000 so'mdan bir kishidan", en: "from 100 000 UZS per person" },
     capacity: { ru: "без ограничения по гостям", uz: "mehmonlar soni cheklanmagan", en: "any group size" },
-    size: { ru: "Открытый бассейн", uz: "Ochiq basseyn", en: "Outdoor pool" },
+    size: { ru: "Открытый бассейн 380 м²", uz: "380 m² ochiq basseyn", en: "380 m² outdoor pool" },
     amenities: {
-      ru: ["Открытый летний бассейн", "Панорама гор", "Включён в проживание", "Или отдельное бронирование"],
-      uz: ["Ochiq yozgi basseyn", "Tog' panoramasi", "Yashashga kiritilgan", "Yoki alohida bron"],
-      en: ["Outdoor summer pool", "Mountain panorama", "Day-lounge area nearby", "Booked separately"],
+      ru: ["Открытый бассейн 380 м²", "Детский бассейн", "Пул-бар с посадочными местами", "Бунгало у воды", "Панорама гор"],
+      uz: ["380 m² ochiq basseyn", "Bolalar basseyni", "O'tirish joylari bilan pul-bar", "Suv bo'yida bungalolar", "Tog' panoramasi"],
+      en: ["380 m² outdoor pool", "Children's pool", "Pool bar with seating", "Bungalows by the water", "Mountain panorama"],
     },
     features: {
-      ru: ["Включён в проживание в шале и глэмпинге", "Или бронь на день, гостей без лимита", "Работает в летний сезон", "Рядом мангал и кухня"],
-      uz: ["Shale va glempingda yashashga kiritilgan", "Yoki bir kunlik bron, mehmonlar soni cheklanmagan", "Yozgi mavsumda ishlaydi", "Yaqinida mangal va oshxona"],
-      en: ["Included with chalet and glamping stays", "Or a day booking, any group size", "Open in the summer season", "BBQ and kitchen nearby"],
+      // 8 small bungalows seat up to 4, 4 large seat up to 10 — see poolFacts.
+      // The VIP/DJ deck above the bar is NOT built yet and is deliberately
+      // absent from this list: a guest paying for a day pass on the strength of
+      // it would arrive to scaffolding.
+      ru: ["Включён в проживание в шале и глэмпинге", "Или бронь на день, гостей без лимита", "8 малых бунгало до 4 человек и 4 больших до 10", "Работает ежедневно 08:00–20:00"],
+      uz: ["Shale va glempingda yashashga kiritilgan", "Yoki bir kunlik bron, mehmonlar soni cheklanmagan", "4 kishilik 8 ta kichik va 10 kishilik 4 ta katta bungalo", "Har kuni 08:00–20:00"],
+      en: ["Included with chalet and glamping stays", "Or a day booking, any group size", "8 small bungalows for up to 4 and 4 large for up to 10", "Open daily 08:00–20:00"],
     },
     relatedServices: ["outdoor-cooking", "restaurant", "picnic-zone"],
   },

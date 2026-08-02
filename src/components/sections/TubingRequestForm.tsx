@@ -61,7 +61,7 @@ const COPY: Record<
     entry: "Въезд, 1 автомобиль",
     total: "Предварительно к оплате",
     seasonNote:
-      "Цена одинаковая в будни и выходные. Тюбинг зависит от снега — состояние трассы на вашу дату подтвердит администратор.",
+      "Цена пакетов одинаковая в будни и выходные; въезд считается по дню недели. Трасса всесезонная, 150 м, с автоматическим подъёмом — одновременно спускаются до 5 человек.",
   },
   uz: {
     eyebrow: "Tubing gorkasi",
@@ -86,7 +86,7 @@ const COPY: Record<
     entry: "Kirish, 1 avtomobil",
     total: "Taxminiy to'lov",
     seasonNote:
-      "Narx ish kunlari va dam olish kunlarida bir xil. Tubing qorga bog'liq — trassa holatini administrator tasdiqlaydi.",
+      "Paket narxi ish kunlari va dam olish kunlarida bir xil; kirish hafta kuniga qarab hisoblanadi. Trassa butun mavsumga mo'ljallangan, 150 m, avtomatik ko'targich bilan — bir vaqtda 5 kishigacha tushadi.",
   },
   en: {
     eyebrow: "Tubing hill",
@@ -111,7 +111,7 @@ const COPY: Record<
     entry: "Entry, 1 car",
     total: "Estimated total",
     seasonNote:
-      "The same price on weekdays and weekends. Tubing depends on snow — the administrator confirms the track conditions for your date.",
+      "Package prices are the same all week; entry follows the day band. The track is all-season, 150 m, with a powered lift — up to 5 people descend at once.",
   },
 };
 

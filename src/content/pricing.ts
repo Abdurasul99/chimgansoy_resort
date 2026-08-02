@@ -76,11 +76,30 @@ export const tubingPricing = {
     { rides: 4, price: 100_000 },
   ],
   /**
-   * No published season yet. Tubing needs snow, and the operator has not said
-   * which months it runs, so nothing on the site promises a date — the
-   * administrator confirms conditions when they call back.
+   * ALL-SEASON, not a winter product. An earlier revision here promised only
+   * "runs on snow, dates confirmed by the administrator" — the operator has
+   * since confirmed the track works year-round, which is the whole point of
+   * building it with a powered lift rather than relying on a slope.
    */
-  season: null as null | string,
+  allSeason: true,
+  /** Track dimensions, metres. */
+  length: 150,
+  width: 6,
+  /** How many can descend at once. */
+  simultaneous: 5,
+};
+
+/**
+ * The pool complex.
+ *
+ * NOTE the area: the operator first said 680 m² and corrected it to 380 m²
+ * within the hour. 380 is the later figure and the one used everywhere; worth
+ * one confirmation before it goes into an advert.
+ */
+export const poolFacts = {
+  areaSqm: 380,
+  /** 8 small (up to 4 people) and 4 large (up to 10) — see poolPricing.extras. */
+  bungalows: { small: { count: 8, capacity: 4 }, large: { count: 4, capacity: 10 } },
 };
 
 export const priceList: PriceItem[] = [

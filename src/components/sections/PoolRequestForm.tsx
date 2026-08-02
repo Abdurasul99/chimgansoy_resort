@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useState } from "react";
 import { submitPoolRequest } from "@/app/actions/pool";
-import { poolPricing, priceLabels } from "@/content/pricing";
+import { parkingPricing, poolPricing, priceLabels } from "@/content/pricing";
 import { contacts } from "@/content/contacts";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Icon } from "@/components/ui/Icon";
@@ -35,6 +35,7 @@ const COPY: Record<
     kids: string;
     toddlers: string;
     towels: string;
+    cars: string;
     bungalow: string;
     bungalowNone: string;
     bungalow4: string;
@@ -65,6 +66,7 @@ const COPY: Record<
     kids: "Дети 5–15 лет",
     toddlers: "Дети до 5 лет",
     towels: "Полотенца (30 000)",
+    cars: "Автомобилей",
     bungalow: "Бунгало",
     bungalowNone: "Не нужно",
     bungalow4: "До 4 человек — 300 000",
@@ -94,6 +96,7 @@ const COPY: Record<
     kids: "5–15 yoshli bolalar",
     toddlers: "5 yoshgacha bolalar",
     towels: "Sochiq (30 000)",
+    cars: "Avtomobillar",
     bungalow: "Bungalo",
     bungalowNone: "Kerak emas",
     bungalow4: "4 kishigacha — 300 000",
@@ -123,6 +126,7 @@ const COPY: Record<
     kids: "Children 5–15",
     toddlers: "Children under 5",
     towels: "Towels (30 000)",
+    cars: "Cars",
     bungalow: "Bungalow",
     bungalowNone: "Not needed",
     bungalow4: "Up to 4 people — 300 000",
@@ -162,6 +166,7 @@ export function PoolRequestForm({ locale }: { locale: Locale }) {
   const [kids, setKids] = useState(0);
   const [toddlers, setToddlers] = useState(0);
   const [towels, setTowels] = useState(0);
+  const [cars, setCars] = useState(1);
   const [bungalow, setBungalow] = useState("none");
   const [weekend, setWeekend] = useState(false);
 
@@ -172,7 +177,11 @@ export function PoolRequestForm({ locale }: { locale: Locale }) {
     : bungalow === "b10" ? poolPricing.extras.bungalow10
     : 0;
   const total =
-    adults * adultRate + kids * childRate + towels * poolPricing.extras.towel + bungalowPrice;
+    adults * adultRate +
+    kids * childRate +
+    towels * poolPricing.extras.towel +
+    cars * (weekend ? parkingPricing.weekend : parkingPricing.weekday) +
+    bungalowPrice;
 
   useEffect(() => {
     if (state.status === "ok") trackEvent("pool_request_submitted", { form: "pool" });
@@ -277,11 +286,23 @@ export function PoolRequestForm({ locale }: { locale: Locale }) {
           </label>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-3">
           <label className="block">
             <span className={labelCls}>{t.towels}</span>
             <input name="towels" type="number" min={0} max={50} step={1}
               inputMode="numeric" value={towels} onChange={(e) => setTowels(+e.target.value || 0)}
+              className={field} />
+          </label>
+          {/* Entry is charged per car to anyone not staying overnight, which a
+              pool day-pass guest is. The topchan and tubing forms already
+              counted it; without it here the quoted total was short by the
+              entry fee and the guest found out at the gate. */}
+          <label className="block">
+            <span className={labelCls}>
+              {t.cars} ({money(weekend ? parkingPricing.weekend : parkingPricing.weekday)})
+            </span>
+            <input name="cars" type="number" min={0} max={60} step={1}
+              inputMode="numeric" value={cars} onChange={(e) => setCars(+e.target.value || 0)}
               className={field} />
           </label>
           <label className="block">
