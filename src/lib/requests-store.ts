@@ -69,6 +69,23 @@ function nowTashkent(): string {
 }
 
 /**
+ * Flattens whatever the guest typed into a number Telegram will offer to dial.
+ *
+ * Telegram only turns a phone into a tappable call when it reads as one
+ * international number, so "90 555 44 33" and "+998 90 555-44-33" both have to
+ * become +998905554433. Uzbek numbers arrive with +998, with a bare 998, or as
+ * the nine national digits. Anything unrecognisable is kept exactly as typed
+ * rather than guessed at — a wrong number is worse than an unlinked one.
+ */
+function dialable(raw: string): string {
+  const digits = raw.replace(/\D/g, "");
+  if (digits.length === 12 && digits.startsWith("998")) return `+${digits}`;
+  if (digits.length === 9) return `+998${digits}`;
+  if (digits.length > 9 && digits.length <= 15) return `+${digits}`;
+  return raw;
+}
+
+/**
  * Archives a request. Never throws and never blocks delivery: if the store is
  * down or unconfigured the request has already gone out, and losing the archive
  * copy is not a reason to fail the submission.
@@ -81,7 +98,7 @@ export async function saveRequest(
   // pathname, so the log reads chronologically without a separate sort key.
   const stamp = Date.now();
   const id = `${stamp.toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
-  const record: StoredRequest = { ...input, id, createdAt };
+  const record: StoredRequest = { ...input, phone: dialable(input.phone), id, createdAt };
   if (!storeConfigured()) {
     console.warn("[store] BLOB_READ_WRITE_TOKEN missing — request not archived");
     return record;
