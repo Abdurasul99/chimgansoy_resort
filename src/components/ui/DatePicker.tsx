@@ -86,12 +86,20 @@ export function DatePicker({ name, label, defaultValue = "", locale, minToday = 
   });
   const wrapperRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
-  // Derived once. The cells that use `today` only render inside the portal
-  // (client-only, after a click), so there's no SSR hydration mismatch.
-  const [today] = useState<string>(() => {
-    const now = new Date();
-    return toISO(now.getFullYear(), now.getMonth(), now.getDate());
-  });
+  /**
+   * "Today" in Tashkent, not in the browser's timezone.
+   *
+   * The server actions reject a date before today-in-Tashkent (UTC+5). Using
+   * the visitor's local date meant a guest in Moscow at 22:30 saw their own
+   * date offered and highlighted, picked it, and got «Дата уже прошла» back —
+   * refused on the exact day the calendar had just handed them.
+   *
+   * Derived once. The cells that use `today` only render inside the portal
+   * (client-only, after a click), so there's no SSR hydration mismatch.
+   */
+  const [today] = useState<string>(() =>
+    new Date(Date.now() + 5 * 3600_000).toISOString().slice(0, 10),
+  );
 
   // Compute the popover's fixed-viewport coords. Flips above the field when there's
   // no room below; clamps into the viewport. Called on open and on scroll/resize.

@@ -67,13 +67,20 @@ export function MediaArchive({ locale, images, videos = [] }: Props) {
               </button>
             ))}
           </div>
-          <Lightbox
-            images={assets}
-            locale={locale}
-            startIndex={index}
-            open={open}
-            onClose={() => setOpen(false)}
-          />
+          {/* Mounted only while open and keyed by the tile that opened it.
+              Lightbox seeds its own index from startIndex on mount and ignores
+              later prop changes, so a permanently-mounted instance would open
+              on photo 1 no matter which tile was clicked. */}
+          {open && (
+            <Lightbox
+              key={index}
+              images={assets}
+              locale={locale}
+              startIndex={index}
+              open
+              onClose={() => setOpen(false)}
+            />
+          )}
         </>
       )}
 

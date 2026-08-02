@@ -434,12 +434,13 @@ export async function renderRequests(arg?: string): Promise<View> {
 
   const people = rows.reduce((n, r) => n + r.adults + r.kids + r.toddlers, 0);
   /**
-   * Topchan occupancy for the day.
+   * Topchan occupancy for the day — how many are BOOKED, never how many exist.
    *
-   * The operator asked to track how many of the thirty are taken, not to
-   * advertise the number — so it appears here, in the staff-facing log, and
-   * nowhere a guest browsing the site can see it. Only shown on a date view:
-   * "свободно 23 из 30" across a mixed recent list would mean nothing.
+   * This bot is public and the request log was deliberately left open, so
+   * anything printed here is printed to strangers. The operator's instruction
+   * was explicit: track the thirty, don't advertise them. "Занято 27 из 30"
+   * would hand a competitor the property's capacity and a guest a false
+   * urgency nobody asked for, so only the booked figure appears.
    */
   const topchansTaken = rows
     .filter((r) => r.service === "topchan")
@@ -453,14 +454,7 @@ export async function renderRequests(arg?: string): Promise<View> {
   const header = [
     head,
     `<i>${rows.length} заявк(и) · ${people} гост(ей)${sum ? ` · ${money(sum)} сум` : ""}</i>`,
-    ...(date && topchansTaken
-      ? [
-          `🛖 <b>Топчаны:</b> занято ${topchansTaken} из ${topchanPricing.inventory} · свободно ${Math.max(
-            topchanPricing.inventory - topchansTaken,
-            0,
-          )}`,
-        ]
-      : []),
+    ...(date && topchansTaken ? [`🛖 <b>Топчанов забронировано:</b> ${topchansTaken}`] : []),
     "",
   ];
 

@@ -117,6 +117,10 @@ export async function saveRequest(
       // Blob URLs are readable by anyone holding them, so the random suffix
       // keeps a guest's name and phone off a guessable address.
       addRandomSuffix: true,
+      // The submission waits on this write, so a hanging store would hold the
+      // guest's request open until the function is killed — turning a lead the
+      // operator has already received into a visible failure.
+      abortSignal: AbortSignal.timeout(8_000),
     });
   } catch (e) {
     console.error("[store] failed to archive request:", e);

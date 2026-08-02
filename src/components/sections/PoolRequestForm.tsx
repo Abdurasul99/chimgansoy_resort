@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useState } from "react";
 import { submitPoolRequest } from "@/app/actions/pool";
-import { poolPricing } from "@/content/pricing";
+import { poolPricing, priceLabels } from "@/content/pricing";
 import { contacts } from "@/content/contacts";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Icon } from "@/components/ui/Icon";
@@ -29,6 +29,7 @@ const COPY: Record<
     successTitle: string;
     successText: string;
     note: string;
+    failed: string;
     priceTitle: string;
     adults: string;
     kids: string;
@@ -58,6 +59,7 @@ const COPY: Record<
     successTitle: "Заявка принята",
     successText: "Администратор свяжется с вами в ближайшее время и подтвердит бронь.",
     note: "Заявка — это ещё не оплата. Бронь подтверждает администратор.",
+    failed: `Не удалось отправить заявку. Позвоните нам: ${contacts.phone}`,
     priceTitle: "Стоимость",
     adults: "Взрослые и дети 15+",
     kids: "Дети 5–15 лет",
@@ -86,6 +88,7 @@ const COPY: Record<
     successTitle: "Ariza qabul qilindi",
     successText: "Administrator tez orada bog'lanib, bronni tasdiqlaydi.",
     note: "Ariza — bu hali to'lov emas. Bronni administrator tasdiqlaydi.",
+    failed: `Arizani yuborib bo'lmadi. Bizga qo'ng'iroq qiling: ${contacts.phone}`,
     priceTitle: "Narxi",
     adults: "Kattalar va 15+ bolalar",
     kids: "5–15 yoshli bolalar",
@@ -114,6 +117,7 @@ const COPY: Record<
     successTitle: "Request received",
     successText: "Our administrator will contact you shortly to confirm the booking.",
     note: "A request is not a payment. The administrator confirms the booking.",
+    failed: `We couldn't send your request. Please call us: ${contacts.phone}`,
     priceTitle: "Price",
     adults: "Adults and ages 15+",
     kids: "Children 5–15",
@@ -131,9 +135,16 @@ const COPY: Record<
 type State = { status: "idle" | "ok" | "error"; message?: string };
 const initialState: State = { status: "idle" };
 
+/** See the note in TopchanRequestForm — an uncaught rejection loses the form. */
 async function formAction(_prev: State, formData: FormData): Promise<State> {
-  const res = await submitPoolRequest(formData);
-  return res.ok ? { status: "ok" } : { status: "error", message: res.error };
+  try {
+    const res = await submitPoolRequest(formData);
+    return res.ok ? { status: "ok" } : { status: "error", message: res.error };
+  } catch (e) {
+    console.error("[pool] submit failed:", e);
+    const locale = (formData.get("locale") as string | null) ?? "ru";
+    return { status: "error", message: (COPY[locale as Locale] ?? COPY.ru).failed };
+  }
 }
 
 const field =
@@ -246,19 +257,21 @@ export function PoolRequestForm({ locale }: { locale: Locale }) {
         <div className="grid gap-3 sm:grid-cols-3">
           <label className="block">
             <span className={labelCls}>{t.adults}</span>
-            <input name="guests" type="number" min={1} max={200} step={1} defaultValue={2}
+            {/* No defaultValue beside a controlled value — React ignores it and
+                warns; the initial number comes from useState above. */}
+            <input name="guests" type="number" min={1} max={200} step={1}
               inputMode="numeric" value={adults} onChange={(e) => setAdults(+e.target.value || 0)}
               className={field} />
           </label>
           <label className="block">
             <span className={labelCls}>{t.kids}</span>
-            <input name="kids" type="number" min={0} max={200} step={1} defaultValue={0}
+            <input name="kids" type="number" min={0} max={200} step={1}
               inputMode="numeric" value={kids} onChange={(e) => setKids(+e.target.value || 0)}
               className={field} />
           </label>
           <label className="block">
             <span className={labelCls}>{t.toddlers}</span>
-            <input name="toddlers" type="number" min={0} max={50} step={1} defaultValue={0}
+            <input name="toddlers" type="number" min={0} max={50} step={1}
               inputMode="numeric" value={toddlers} onChange={(e) => setToddlers(+e.target.value || 0)}
               className={field} />
           </label>
@@ -267,7 +280,7 @@ export function PoolRequestForm({ locale }: { locale: Locale }) {
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block">
             <span className={labelCls}>{t.towels}</span>
-            <input name="towels" type="number" min={0} max={50} step={1} defaultValue={0}
+            <input name="towels" type="number" min={0} max={50} step={1}
               inputMode="numeric" value={towels} onChange={(e) => setTowels(+e.target.value || 0)}
               className={field} />
           </label>
@@ -286,7 +299,10 @@ export function PoolRequestForm({ locale }: { locale: Locale }) {
         <div className="flex items-baseline justify-between rounded-2xl bg-[var(--accent)]/[0.08] px-4 py-3.5">
           <span className="text-sm font-semibold text-[var(--ink)]">{t.total}</span>
           <span className="font-serif text-2xl font-bold text-[var(--ink)]">
-            {money(total)} <span className="text-sm font-bold text-[var(--muted)]">сум</span>
+            {money(total)}{" "}
+            <span className="text-sm font-bold text-[var(--muted)]">
+              {text(priceLabels.currencyShort, locale)}
+            </span>
           </span>
         </div>
 

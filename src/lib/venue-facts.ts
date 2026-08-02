@@ -26,8 +26,8 @@ export function venueFacts(): string {
 - Формат: ПРОЖИВАНИЕ (глэмпинг A-frame и шале) И ОТДЫХ НА ДЕНЬ без ночёвки. Работаем круглый год.
 
 ОТДЫХ НА ДЕНЬ, БЕЗ НОЧЁВКИ — три отдельных продукта, у каждого своя форма заявки:
-- ТОПЧАН: ${money(topchanPricing.rent.weekday)} сум Пн–Чт и ${money(topchanPricing.rent.weekend)} сум Пт–Вс за топчан (НЕ с человека). Один топчан — до ${topchanPricing.capacity} гостей; если гостей больше, берут несколько топчанов. Работает ${topchanPricing.hours}. Заявка: /<локаль>/nomera/topchan
-- ТЮБИНГ (горка): ${tubingPricing.packages.map((p) => `${p.rides} прокатки — ${money(p.price)} сум`).join("; ")}. Цена одинаковая в будни и выходные. Заявка: /<локаль>/nomera/tubing
+- ТОПЧАН: ${money(topchanPricing.rent.weekday)} сум Пн–Чт и ${money(topchanPricing.rent.weekend)} сум Пт–Вс за топчан (НЕ с человека). Один топчан — до ${topchanPricing.capacity} гостей; если гостей больше, берут несколько топчанов. Работает ${topchanPricing.hours}. Заявка: /<локаль>/topchan
+- ТЮБИНГ (горка): ${tubingPricing.packages.map((p) => `${p.rides} прокатки — ${money(p.price)} сум`).join("; ")}. Цена одинаковая в будни и выходные. Заявка: /<локаль>/tubing
 - БАССЕЙН на день: см. полный тариф ниже. Заявка: /<локаль>/nomera/pool
 - Въезд на территорию оплачивается отдельно, за автомобиль: 50 000 сум Пн–Чт, 100 000 сум Пт–Вс. Гостям с проживанием парковка бесплатна.
 

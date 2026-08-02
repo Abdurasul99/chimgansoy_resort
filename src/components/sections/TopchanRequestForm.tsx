@@ -2,11 +2,12 @@
 
 import { useActionState, useEffect, useState } from "react";
 import { submitTopchanRequest } from "@/app/actions/topchan";
-import { parkingPricing, poolPricing, priceList, topchanPricing } from "@/content/pricing";
+import { parkingPricing, poolPricing, priceLabels, priceList, topchanPricing } from "@/content/pricing";
 import { contacts } from "@/content/contacts";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Icon } from "@/components/ui/Icon";
 import { trackEvent } from "@/lib/analytics";
+import { text } from "@/lib/localize";
 import { isWeekendISO, money } from "@/lib/tariff";
 import type { Locale } from "@/i18n/config";
 
@@ -30,6 +31,7 @@ const COPY: Record<
     successTitle: string;
     successText: string;
     note: string;
+    failed: string;
     priceTitle: string;
     topchan: string;
     entry: string;
@@ -61,6 +63,7 @@ const COPY: Record<
     successTitle: "Заявка принята",
     successText: "Администратор свяжется с вами в ближайшее время и подтвердит бронь.",
     note: "Заявка — это ещё не оплата. Бронь подтверждает администратор.",
+    failed: `Не удалось отправить заявку. Позвоните нам: ${contacts.phone}`,
     priceTitle: "Стоимость",
     topchan: `Топчан (до ${topchanPricing.capacity} чел.)`,
     entry: "Въезд, 1 автомобиль",
@@ -91,6 +94,7 @@ const COPY: Record<
     successTitle: "Ariza qabul qilindi",
     successText: "Administrator tez orada bog'lanib, bronni tasdiqlaydi.",
     note: "Ariza — bu hali to'lov emas. Bronni administrator tasdiqlaydi.",
+    failed: `Arizani yuborib bo'lmadi. Bizga qo'ng'iroq qiling: ${contacts.phone}`,
     priceTitle: "Narxi",
     topchan: `Topchan (${topchanPricing.capacity} kishigacha)`,
     entry: "Kirish, 1 avtomobil",
@@ -121,6 +125,7 @@ const COPY: Record<
     successTitle: "Request received",
     successText: "Our administrator will contact you shortly to confirm the booking.",
     note: "A request is not a payment. The administrator confirms the booking.",
+    failed: `We couldn't send your request. Please call us: ${contacts.phone}`,
     priceTitle: "Price",
     topchan: `Topchan (up to ${topchanPricing.capacity} people)`,
     entry: "Entry, 1 car",
@@ -138,9 +143,22 @@ const COPY: Record<
 type State = { status: "idle" | "ok" | "error"; message?: string };
 const initialState: State = { status: "idle" };
 
+/**
+ * A rejection here — a dropped connection on a mountain road, a redeploy while
+ * the page was open — would propagate out of useActionState and be re-thrown
+ * during render, handing the whole page to the error boundary and taking the
+ * guest's name, phone and date with it. Caught, it becomes a message beside a
+ * form that still holds everything they typed.
+ */
 async function formAction(_prev: State, formData: FormData): Promise<State> {
-  const res = await submitTopchanRequest(formData);
-  return res.ok ? { status: "ok" } : { status: "error", message: res.error };
+  try {
+    const res = await submitTopchanRequest(formData);
+    return res.ok ? { status: "ok" } : { status: "error", message: res.error };
+  } catch (e) {
+    console.error("[topchan] submit failed:", e);
+    const locale = (formData.get("locale") as string | null) ?? "ru";
+    return { status: "error", message: (COPY[locale as Locale] ?? COPY.ru).failed };
+  }
 }
 
 const field =
@@ -223,8 +241,8 @@ export function TopchanRequestForm({ locale }: { locale: Locale }) {
         <div className="mt-3 overflow-hidden rounded-2xl border border-[color:var(--line)] bg-[var(--paper)]">
           <div className="grid grid-cols-[1fr_auto_auto] items-center gap-x-3 border-b border-[color:var(--line)] px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-[var(--muted)]">
             <span />
-            <span className="text-right">Пн–Чт</span>
-            <span className="text-right text-[var(--accent-strong)]">Пт–Вс</span>
+            <span className="text-right">{text(priceLabels.weekdaysLabel, locale)}</span>
+            <span className="text-right text-[var(--accent-strong)]">{text(priceLabels.weekendLabel, locale)}</span>
           </div>
           {[
             [t.topchan, topchanPricing.rent] as const,
@@ -358,7 +376,10 @@ export function TopchanRequestForm({ locale }: { locale: Locale }) {
         <div className="flex items-baseline justify-between rounded-2xl bg-[var(--accent)]/[0.08] px-4 py-3.5">
           <span className="text-sm font-semibold text-[var(--ink)]">{t.total}</span>
           <span className="font-serif text-2xl font-bold text-[var(--ink)]">
-            {money(total)} <span className="text-sm font-bold text-[var(--muted)]">сум</span>
+            {money(total)}{" "}
+            <span className="text-sm font-bold text-[var(--muted)]">
+              {text(priceLabels.currencyShort, locale)}
+            </span>
           </span>
         </div>
 

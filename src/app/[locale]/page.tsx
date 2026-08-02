@@ -72,21 +72,23 @@ const poolBand = {
   ru: {
     label: "Бассейн",
     title: "Включён в проживание",
-    copy: "Гостям шале и глэмпинга бассейн входит в стоимость. Можно забронировать и отдельно — на день, без ночёвки, до 4 гостей.",
+    // "до 4 гостей" was the bungalow's capacity leaking into the pool pitch.
+    // The pool itself has no cap — rooms.ts, the form and both AIs all say so.
+    copy: "Гостям шале и глэмпинга бассейн входит в стоимость. Можно забронировать и отдельно — тариф на целый день, гостей без ограничения.",
     book: "Забронировать бассейн",
     cta: "Подробнее",
   },
   uz: {
     label: "Basseyn",
     title: "Yashash narxiga kiritilgan",
-    copy: "Shale va glemping mehmonlari uchun basseyn narxga kiritilgan. Alohida ham bron qilish mumkin — bir kunga, tunamasdan, 4 mehmongacha.",
+    copy: "Shale va glemping mehmonlari uchun basseyn narxga kiritilgan. Alohida ham bron qilish mumkin — kun bo'yi tarif, mehmonlar soni cheklanmagan.",
     book: "Basseynni bron qilish",
     cta: "Basseyn haqida",
   },
   en: {
     label: "The pool",
     title: "Included with every stay",
-    copy: "Chalet and glamping guests get the pool as part of the rate. It can also be booked on its own — for the day, no overnight stay, up to 4 guests.",
+    copy: "Chalet and glamping guests get the pool as part of the rate. It can also be booked on its own — a full-day pass, with no cap on group size.",
     book: "Book the pool",
     cta: "About the pool",
   },

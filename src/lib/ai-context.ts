@@ -24,6 +24,9 @@ ${venueFacts()}
 
 ССЫЛКИ (вставляй их СТРОГО в формате Markdown [текст](URL); других ссылок не выдумывай):
 - Онлайн-бронирование: [страница бронирования](/${locale}/bron)
+- Заявка на топчан: [топчан](/${locale}/topchan)
+- Заявка на тюбинг: [тюбинг-горка](/${locale}/tubing)
+- Заявка на бассейн: [бассейн](/${locale}/nomera/pool)
 - Контакты и форма заявки: [контакты](/${locale}/contact)
 - Позвонить: [${contacts.phone}](${phoneHref})
 - Мессенджеры: [WhatsApp](${contacts.whatsapp}) · [Telegram](${contacts.telegram}) · [Instagram](${contacts.instagram})

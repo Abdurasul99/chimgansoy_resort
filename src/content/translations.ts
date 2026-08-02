@@ -42,7 +42,11 @@ export const dictionaries = {
       eyebrow: "CHIMGANDARBAZA.UZ / CHIMGANDARBAZA.COM",
       title: "CHIMGAN DARBAZA",
       lead: "Шале и A-frame глэмпинг на высоте 1700 м, в 45 минутах от Ташкента. Бассейн включён в проживание, горы Чимгана — сразу за террасой.",
-      heroChips: ["Шале до 5 гостей", "Глэмпинг A-frame", "Бассейн включён"],
+      // No guest count here on purpose. The operator's new copy says the chalet
+      // takes 6 while rooms.ts, Booking.com and Exely all say 5; until they
+      // confirm which is right, the homepage should not print either number
+      // twice with different answers.
+      heroChips: ["Шале с двумя спальнями", "Глэмпинг A-frame", "Бассейн включён"],
       heroOffer: "Бронируйте шале и глэмпинг заранее",
       // "Только бассейн" asserted the pool was the sole day product. The
       // topchan and the tubing hill are sold alongside it now, each with its
@@ -151,7 +155,7 @@ export const dictionaries = {
       eyebrow: "CHIMGANDARBAZA.UZ / CHIMGANDARBAZA.COM",
       title: "CHIMGAN DARBAZA",
       lead: "1700 m balandlikda, Toshkentdan 45 daqiqada shale va A-frame glemping. Basseyn yashash narxiga kiritilgan, Chimgon tog'lari — terrasangiz ortida.",
-      heroChips: ["5 mehmongacha shale", "A-frame glemping", "Basseyn kiritilgan"],
+      heroChips: ["Ikki yotoqxonali shale", "A-frame glemping", "Basseyn kiritilgan"],
       heroOffer: "Shale va glempingni oldindan bron qiling",
       heroPoolCta: "Basseyn DAY PASS",
       newsTitle: "Hududdagi yangiliklar",
@@ -254,7 +258,7 @@ export const dictionaries = {
       eyebrow: "CHIMGANDARBAZA.UZ / CHIMGANDARBAZA.COM",
       title: "CHIMGAN DARBAZA",
       lead: "Chalets and A-frame glamping at 1,700 m, 45 minutes from Tashkent. The pool comes with every stay, and the Chimgan range starts right off your terrace.",
-      heroChips: ["Chalet for up to 5", "A-frame glamping", "Pool included"],
+      heroChips: ["Two-bedroom chalet", "A-frame glamping", "Pool included"],
       heroOffer: "Reserve a chalet or glamping cabin early",
       heroPoolCta: "Pool DAY PASS",
       newsTitle: "Latest updates",

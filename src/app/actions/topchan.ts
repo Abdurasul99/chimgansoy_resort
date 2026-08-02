@@ -81,15 +81,18 @@ export async function submitTopchanRequest(formData: FormData): Promise<TopchanR
   const num = (v: string, max = 240) => Math.min(Math.max(parseInt(v, 10) || 0, 0), max);
   const guests = Math.max(num(((formData.get("guests") as string | null) ?? "").trim()), 1);
   const cars = num(((formData.get("cars") as string | null) ?? "").trim(), 60);
-  const kazan = num(((formData.get("kazan") as string | null) ?? "").trim(), 30);
-  const mangal = num(((formData.get("mangal") as string | null) ?? "").trim(), 30);
+  // These caps must match the form's max= exactly. A lower one here silently
+  // truncates the quantity: the guest sees a total for 40 kazans and the
+  // operator is sent an invoice for 30.
+  const kazan = num(((formData.get("kazan") as string | null) ?? "").trim(), 50);
+  const mangal = num(((formData.get("mangal") as string | null) ?? "").trim(), 50);
   const firewood = num(((formData.get("firewood") as string | null) ?? "").trim(), 50);
   const charcoal = num(((formData.get("charcoal") as string | null) ?? "").trim(), 50);
   const towels = num(((formData.get("towels") as string | null) ?? "").trim(), 50);
   // Pool upsell — the CMO's «Добавить доступ в бассейн». Charged per head at the
   // published pool tariff, so it has to know the age split.
-  const poolAdults = num(((formData.get("poolAdults") as string | null) ?? "").trim());
-  const poolKids = num(((formData.get("poolKids") as string | null) ?? "").trim());
+  const poolAdults = num(((formData.get("poolAdults") as string | null) ?? "").trim(), 200);
+  const poolKids = num(((formData.get("poolKids") as string | null) ?? "").trim(), 200);
 
   const weekend = isWeekend(date);
   const tariff = weekend ? "Пт–Вс" : "Пн–Чт";

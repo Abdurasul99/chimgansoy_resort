@@ -2,11 +2,12 @@
 
 import { useActionState, useEffect, useState } from "react";
 import { submitTubingRequest } from "@/app/actions/tubing";
-import { parkingPricing, tubingPricing } from "@/content/pricing";
+import { parkingPricing, priceLabels, tubingPricing } from "@/content/pricing";
 import { contacts } from "@/content/contacts";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Icon } from "@/components/ui/Icon";
 import { trackEvent } from "@/lib/analytics";
+import { text } from "@/lib/localize";
 import { isWeekendISO, money } from "@/lib/tariff";
 import type { Locale } from "@/i18n/config";
 
@@ -29,6 +30,7 @@ const COPY: Record<
     successTitle: string;
     successText: string;
     note: string;
+    failed: string;
     priceTitle: string;
     packLabel: (rides: number) => string;
     entry: string;
@@ -53,6 +55,7 @@ const COPY: Record<
     successTitle: "Заявка принята",
     successText: "Администратор свяжется с вами в ближайшее время и подтвердит бронь.",
     note: "Заявка — это ещё не оплата. Бронь подтверждает администратор.",
+    failed: `Не удалось отправить заявку. Позвоните нам: ${contacts.phone}`,
     priceTitle: "Тариф",
     packLabel: (r) => `${r} прокатки`,
     entry: "Въезд, 1 автомобиль",
@@ -77,6 +80,7 @@ const COPY: Record<
     successTitle: "Ariza qabul qilindi",
     successText: "Administrator tez orada bog'lanib, bronni tasdiqlaydi.",
     note: "Ariza — bu hali to'lov emas. Bronni administrator tasdiqlaydi.",
+    failed: `Arizani yuborib bo'lmadi. Bizga qo'ng'iroq qiling: ${contacts.phone}`,
     priceTitle: "Tarif",
     packLabel: (r) => `${r} marta uchish`,
     entry: "Kirish, 1 avtomobil",
@@ -101,6 +105,7 @@ const COPY: Record<
     successTitle: "Request received",
     successText: "Our administrator will contact you shortly to confirm the booking.",
     note: "A request is not a payment. The administrator confirms the booking.",
+    failed: `We couldn't send your request. Please call us: ${contacts.phone}`,
     priceTitle: "Tariff",
     packLabel: (r) => `${r} rides`,
     entry: "Entry, 1 car",
@@ -113,9 +118,16 @@ const COPY: Record<
 type State = { status: "idle" | "ok" | "error"; message?: string };
 const initialState: State = { status: "idle" };
 
+/** See the note in TopchanRequestForm — an uncaught rejection loses the form. */
 async function formAction(_prev: State, formData: FormData): Promise<State> {
-  const res = await submitTubingRequest(formData);
-  return res.ok ? { status: "ok" } : { status: "error", message: res.error };
+  try {
+    const res = await submitTubingRequest(formData);
+    return res.ok ? { status: "ok" } : { status: "error", message: res.error };
+  } catch (e) {
+    console.error("[tubing] submit failed:", e);
+    const locale = (formData.get("locale") as string | null) ?? "ru";
+    return { status: "error", message: (COPY[locale as Locale] ?? COPY.ru).failed };
+  }
 }
 
 const field =
@@ -183,10 +195,22 @@ export function TubingRequestForm({ locale }: { locale: Locale }) {
               <span className="font-serif text-lg font-bold text-[var(--ink)]">{money(p.price)}</span>
             </div>
           ))}
-          <div className="flex items-baseline justify-between border-b border-[color:var(--line)] px-4 py-3">
+          {/* The entry fee DOES follow the day band even though the ride
+              packages do not, so its two numbers have to be labelled — an
+              unlabelled "50 000 / 100 000" under a heading that says "one
+              price all week" reads as the weekday figure being the price. */}
+          <div className="flex items-baseline justify-between gap-3 border-b border-[color:var(--line)] px-4 py-3">
             <span className="text-sm text-[var(--ink)]">{t.entry}</span>
-            <span className="font-serif text-lg font-bold text-[var(--ink)]">
-              {money(parkingPricing.weekday)} / <span className="text-[var(--accent-strong)]">{money(parkingPricing.weekend)}</span>
+            <span className="text-right">
+              <span className="font-serif text-lg font-bold text-[var(--ink)]">{money(parkingPricing.weekday)}</span>
+              <span className="ml-1 text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">
+                {text(priceLabels.weekdaysLabel, locale)}
+              </span>
+              <span className="mx-1.5 text-[var(--muted)]">·</span>
+              <span className="font-serif text-lg font-bold text-[var(--accent-strong)]">{money(parkingPricing.weekend)}</span>
+              <span className="ml-1 text-[10px] font-bold uppercase tracking-wider text-[var(--accent-strong)]">
+                {text(priceLabels.weekendLabel, locale)}
+              </span>
             </span>
           </div>
           <div className="px-4 py-3 text-xs leading-5 text-[var(--muted)]">{t.seasonNote}</div>
@@ -251,10 +275,17 @@ export function TubingRequestForm({ locale }: { locale: Locale }) {
         <div className="flex items-baseline justify-between rounded-2xl bg-[var(--accent)]/[0.08] px-4 py-3.5">
           <span className="text-sm font-semibold text-[var(--ink)]">
             {t.total}
-            {rides > 0 && <span className="ml-2 text-xs font-normal text-[var(--muted)]">· {rides}</span>}
+            {rides > 0 && (
+              <span className="ml-2 text-xs font-normal text-[var(--muted)]">
+                · {t.packLabel(rides)}
+              </span>
+            )}
           </span>
           <span className="font-serif text-2xl font-bold text-[var(--ink)]">
-            {money(total)} <span className="text-sm font-bold text-[var(--muted)]">сум</span>
+            {money(total)}{" "}
+            <span className="text-sm font-bold text-[var(--muted)]">
+              {text(priceLabels.currencyShort, locale)}
+            </span>
           </span>
         </div>
 
