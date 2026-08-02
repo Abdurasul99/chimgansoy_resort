@@ -138,9 +138,14 @@ export function Header({ locale }: HeaderProps) {
                     <span className={`text-[10px] ${isHeaderOnHero ? "text-white/50" : "text-[var(--muted)]/40"}`}>{"\u00B7"}</span>
                   )}
                   {/* Full navigation — the Exely widget must reload in the new language */}
+                  {/* min-h-11 + px: the label is 19×20 px of text, which is
+                      well under the ~44 px a thumb needs. Padding grows the tap
+                      target without moving the type, so RU/UZ/EN stop being a
+                      three-way coin toss on a phone. */}
                   <a
                     href={switchLocalePath(pathname, item)}
-                    className={`text-[11px] font-bold uppercase tracking-widest transition-colors duration-300 ${
+                    aria-current={item === locale ? "true" : undefined}
+                    className={`inline-flex min-h-11 items-center px-1.5 text-[11px] font-bold uppercase tracking-widest transition-colors duration-300 ${
                       item === locale
                         ? isHeaderOnHero ? "text-white" : "text-[var(--ink)]"
                         : isHeaderOnHero ? "text-white/75 hover:text-white" : "text-[var(--muted)] hover:text-[var(--ink)]"
@@ -263,7 +268,8 @@ export function Header({ locale }: HeaderProps) {
                 <a
                   key={item}
                   href={switchLocalePath(pathname, item)}
-                  className={`text-sm font-bold uppercase transition-colors ${
+                  aria-current={item === locale ? "true" : undefined}
+                  className={`inline-flex min-h-11 min-w-11 items-center justify-center text-sm font-bold uppercase transition-colors ${
                     item === locale ? "text-[var(--ink)]" : "text-[var(--muted)] hover:text-[var(--ink)]"
                   }`}
                   onClick={() => setIsOpen(false)}
