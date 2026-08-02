@@ -84,13 +84,26 @@ export const rooms: Room[] = [
       uz: ["1 yotoq xonasi, 28 m²", "Xususiy sanuzel 3,6 m²", "Terrasa 15 m²", "Kirish 14:00 dan, chiqish 12:00 gacha"],
       en: ["1 bedroom, 28 m²", "Private bathroom 3.6 m²", "Terrace 15 m²", "Check-in from 14:00, check-out by 12:00"],
     },
+    // The tubing allowance differs by unit — 2 rides with a glamping cabin, 4
+    // with a chalet — which is why it is stated here per room rather than as a
+    // single site-wide perk.
     included: [
       {
         label: { ru: "Бассейн", uz: "Basseyn", en: "Pool" },
         highlight: true,
       },
+      {
+        label: {
+          ru: "Тюбинг-горка: 2 прокатки",
+          uz: "Tubing gorkasi: 2 marta uchish",
+          en: "Tubing hill: 2 rides",
+        },
+        highlight: true,
+      },
       { label: { ru: "Собственная терраса", uz: "Xususiy terrasa", en: "Private terrace" } },
-      { label: { ru: "Кондиционер", uz: "Konditsioner", en: "Air conditioning" } },
+      { label: { ru: "Кондиционер с обогревом", uz: "Isitishli konditsioner", en: "Air conditioning with heating" } },
+      { label: { ru: "Собственный санузел с душем", uz: "Dushli xususiy sanuzel", en: "Private bathroom with shower" } },
+      { label: { ru: "Парковка у домика", uz: "Uycha yonida parking", en: "Parking by the cabin" } },
       { label: { ru: "Wi-Fi", uz: "Wi-Fi", en: "Wi-Fi" } },
     ],
     relatedServices: ["restaurant", "picnic-zone", "experience"],
@@ -138,8 +151,19 @@ export const rooms: Room[] = [
         label: { ru: "Бассейн", uz: "Basseyn", en: "Pool" },
         highlight: true,
       },
+      {
+        label: {
+          ru: "Тюбинг-горка: 4 прокатки",
+          uz: "Tubing gorkasi: 4 marta uchish",
+          en: "Tubing hill: 4 rides",
+        },
+        highlight: true,
+      },
       { label: { ru: "Тёплый пол", uz: "Issiq pol", en: "Heated floor" } },
       { label: { ru: "Полная кухня", uz: "To'liq oshxona", en: "Full kitchen" } },
+      { label: { ru: "Терраса 35 м²", uz: "35 m² terrasa", en: "35 m² terrace" } },
+      { label: { ru: "Санузел в каждой спальне", uz: "Har bir yotoqxonada sanuzel", en: "Ensuite in every bedroom" } },
+      { label: { ru: "Парковка у домика", uz: "Uycha yonida parking", en: "Parking by the cabin" } },
       { label: { ru: "Wi-Fi", uz: "Wi-Fi", en: "Wi-Fi" } },
     ],
     relatedServices: ["kids-playground", "outdoor-cooking", "mini-football"],
@@ -164,9 +188,13 @@ export const rooms: Room[] = [
       en: "An outdoor pool with mountain views — bookable separately, no overnight stay needed.",
     },
     description: {
-      ru: "Гостям глэмпинга и шале бассейн включён в стоимость проживания — отдельно бронировать не нужно. Приехать только на бассейн, без ночёвки, тоже можно: сколько угодно гостей: 100 000 сум с человека в будни (Пн–Пт) и 200 000 сум в выходные (Сб–Вс). Оставьте заявку ниже — администратор перезвонит и подтвердит время. Рядом кухня и зона мангала.",
-      uz: "Glemping va shale mehmonlari uchun basseyn yashash narxiga kiritilgan — alohida bron qilish shart emas. Faqat basseynga, tunamasdan kelish ham mumkin: mehmonlar soni cheklanmagan: ish kunlari (Du–Ju) bir kishidan 100 000 so'm, dam olish kunlari (Sha–Yak) 200 000 so'm. Quyida ariza qoldiring — administrator qo'ng'iroq qilib, vaqtni tasdiqlaydi. Yaqinida oshxona va mangal zonasi.",
-      en: "For glamping and chalet guests the pool is included in the room rate — no separate booking needed. Coming just for the pool, without an overnight stay, also works: any group size: 100 000 UZS per person on weekdays (Mon–Fri) and 200 000 UZS at weekends (Sat–Sun). Send a request below and our administrator will call back to confirm the time. The kitchen and BBQ area are nearby.",
+      // The bands here used to read Пн–Пт / Сб–Вс, which put Friday on the
+      // cheap tariff — the poster and the booking form both charge Friday at
+      // the weekend rate, so the page was quoting a price the form would not
+      // honour.
+      ru: "Гостям глэмпинга и шале бассейн включён в стоимость проживания — отдельно бронировать не нужно. Приехать только на бассейн, без ночёвки, тоже можно, гостей без ограничения: 100 000 сум с человека в будни (Пн–Чт) и 200 000 сум в выходные (Пт–Вс), дети 5–15 лет вдвое дешевле, до 5 лет бесплатно. Оставьте заявку ниже — администратор перезвонит и подтвердит время. Рядом кухня и зона мангала.",
+      uz: "Glemping va shale mehmonlari uchun basseyn yashash narxiga kiritilgan — alohida bron qilish shart emas. Faqat basseynga, tunamasdan kelish ham mumkin, mehmonlar soni cheklanmagan: ish kunlari (Du–Pay) bir kishidan 100 000 so'm, dam olish kunlari (Ju–Yak) 200 000 so'm, 5–15 yoshli bolalar ikki barobar arzon, 5 yoshgacha bepul. Quyida ariza qoldiring — administrator qo'ng'iroq qilib, vaqtni tasdiqlaydi. Yaqinida oshxona va mangal zonasi.",
+      en: "For glamping and chalet guests the pool is included in the room rate — no separate booking needed. Coming just for the pool, without an overnight stay, also works, with no cap on group size: 100 000 UZS per person Mon–Thu and 200 000 UZS Fri–Sun, half price for children 5–15 and free under five. Send a request below and our administrator will call back to confirm the time. The kitchen and BBQ area are nearby.",
     },
     // Fixed tariff now — the engine no longer prices this one.
     priceFrom: { ru: "от 100 000 сум с человека", uz: "100 000 so'mdan bir kishidan", en: "from 100 000 UZS per person" },

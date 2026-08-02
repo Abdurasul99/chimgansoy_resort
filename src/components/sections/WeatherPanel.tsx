@@ -205,7 +205,7 @@ export function WeatherPanel({ locale }: { locale: string }) {
               {[ 
                 {label:l.openedYear, val:RESORT_OPENED_YEAR},
                 {label:l.formats, val:"2"},
-                {label:l.territory, val:"6 га"},
+                {label:l.territory, val:"9 га"},
               ].map(s=>(
                 <div key={s.label}>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">{s.label}</p>

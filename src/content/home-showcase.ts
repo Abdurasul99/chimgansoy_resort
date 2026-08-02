@@ -18,14 +18,14 @@ export const homeShowcase: HomeShowcaseItem[] = [
   {
     image: "aframeLawnBanner",
     title: {
-      ru: "Двадцать домиков на шести гектарах в горах",
-      uz: "Tog'larda olti gektarda yigirma uycha",
-      en: "Twenty cabins on six hectares in the mountains",
+      ru: "20 домиков на 9 гектарах в горах",
+      uz: "Tog'larda 9 gektarda 20 uycha",
+      en: "20 cabins on nine hectares in the mountains",
     },
     copy: {
-      ru: "Десять A-frame для двоих-троих и десять шале с двумя спальнями. Каждый домик — отдельный, со своей террасой и видом на хребет. Бассейн включён в проживание.",
-      uz: "Ikki-uch kishilik o'nta A-frame va ikki yotoqxonali o'nta shale. Har bir uycha alohida — o'z terrasasi va tizma manzarasi bilan. Basseyn narxga kiritilgan.",
-      en: "Ten A-frames for two or three, and ten two-bedroom chalets. Each cabin stands alone, with its own terrace and a view of the ridge. The pool comes with the stay.",
+      ru: "Десять глэмпингов A-frame и десять шале с двумя спальнями. На территории — бассейн 680 м², летний ресторан, пикник-зона и тюбинг-горка. Бассейн включён в проживание, тюбинг — 2 прокатки гостям глэмпинга и 4 гостям шале.",
+      uz: "O'nta A-frame glemping va ikki yotoqxonali o'nta shale. Hududda — 680 m² basseyn, yozgi restoran, piknik zonasi va tubing gorkasi. Basseyn yashash narxiga kiritilgan, tubing — glemping mehmonlariga 2, shale mehmonlariga 4 marta uchish.",
+      en: "Ten A-frame glamping cabins and ten two-bedroom chalets. On the grounds: a 680 m² pool, a summer restaurant, a picnic area and the tubing hill. The pool comes with every stay, and tubing is included — 2 rides with glamping, 4 with a chalet.",
     },
   },
   {

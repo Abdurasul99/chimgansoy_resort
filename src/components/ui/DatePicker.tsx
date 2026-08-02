@@ -12,6 +12,16 @@ type DatePickerProps = {
   defaultValue?: string;
   locale: Locale;
   minToday?: boolean;
+  /**
+   * Fires with the ISO date whenever the selection changes ("" when cleared).
+   *
+   * The value lives in a React-controlled hidden input, and React does not
+   * dispatch a DOM change event when it writes that value itself — so a parent
+   * listening with `onChange` on a wrapping element never hears anything. The
+   * request forms need the day of the week to pick the weekday or weekend
+   * tariff, so they need to be told explicitly.
+   */
+  onChange?: (iso: string) => void;
 };
 
 const monthNames: Record<Locale, string[]> = {
@@ -61,7 +71,7 @@ function displayValue(iso: string, locale: Locale): string {
   return `${p.d} ${monthShort[locale][p.m]} ${p.y}`;
 }
 
-export function DatePicker({ name, label, defaultValue = "", locale, minToday = false }: DatePickerProps) {
+export function DatePicker({ name, label, defaultValue = "", locale, minToday = false, onChange }: DatePickerProps) {
   const [value, setValue] = useState(defaultValue);
   const [open, setOpen] = useState(false);
   // The calendar renders in a portal (document.body) with fixed positioning, so an
@@ -144,18 +154,22 @@ export function DatePicker({ name, label, defaultValue = "", locale, minToday = 
   function navNext() {
     setView((v) => (v.m === 11 ? { y: v.y + 1, m: 0 } : { y: v.y, m: v.m + 1 }));
   }
-  function select(iso: string) {
+  function commit(iso: string) {
     setValue(iso);
+    onChange?.(iso);
+  }
+  function select(iso: string) {
+    commit(iso);
     setOpen(false);
   }
   function clear() {
-    setValue("");
+    commit("");
   }
   function goToday() {
     if (!today) return;
     const t = fromISO(today)!;
     setView({ y: t.y, m: t.m });
-    setValue(today);
+    commit(today);
     setOpen(false);
   }
 

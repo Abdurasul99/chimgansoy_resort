@@ -17,30 +17,22 @@ type Cell = {
 
 
 /**
- * Curation follows the site's product: the hero cell and the tall cell are the
- * two rooms a guest books, the rest is the grounds and the day around them.
- * The mosaic used to open on a topchan and give two cells to the day-use kit.
+ * Curated for impact, not for inventory.
+ *
+ * The mosaic used to spend three of its seven cells on interior close-ups — a
+ * bedroom, a kitchen-lounge — which are the room pages' job. At gallery size
+ * they read as detail shots of a rental listing rather than a reason to come.
+ * What is left is the wide, bright frames: water, lawn, ridge, and one interior
+ * that earns its place because the A-frame silhouette IS the product.
+ *
+ * Fewer cells, bigger cells. Seven small tiles competed with each other; five
+ * with a dominant hero gives the eye somewhere to land.
  */
 const CELLS: Cell[] = [
   {
-    image: "chaletLounge",
-    caption: { ru: "Кухня-зал в шале", uz: "Shaledagi oshxona-zal", en: "The chalet kitchen-lounge" },
+    image: "poolLifestyle",
+    caption: { ru: "Бассейн днём", uz: "Kunduzgi basseyn", en: "The pool by day" },
     span: "md:col-span-2 md:row-span-2",
-  },
-  {
-    image: "aframeRoom",
-    caption: { ru: "Глэмпинг A-frame", uz: "A-frame glemping", en: "A-frame glamping" },
-    span: "",
-  },
-  {
-    image: "aframeTerraceView",
-    caption: { ru: "Вид с террасы", uz: "Terrasadan manzara", en: "The view from the terrace" },
-    span: "",
-  },
-  {
-    image: "chaletBedroomDouble",
-    caption: { ru: "Спальня шале", uz: "Shale yotoqxonasi", en: "Chalet bedroom" },
-    span: "md:row-span-2",
   },
   {
     image: "aframeLawnWide",
@@ -53,8 +45,18 @@ const CELLS: Cell[] = [
     span: "",
   },
   {
-    image: "poolLifestyle",
-    caption: { ru: "Бассейн днём", uz: "Kunduzgi basseyn", en: "The pool by day" },
+    image: "aframeTerraceView",
+    caption: { ru: "Вид с террасы", uz: "Terrasadan manzara", en: "The view from the terrace" },
+    span: "",
+  },
+  {
+    image: "aframeRoom",
+    caption: { ru: "Глэмпинг A-frame", uz: "A-frame glemping", en: "A-frame glamping" },
+    span: "md:col-span-2",
+  },
+  {
+    image: "mountainRidge",
+    caption: { ru: "Хребет Чимгана", uz: "Chimgon tizmasi", en: "The Chimgan ridge" },
     span: "md:col-span-2",
   },
 ];

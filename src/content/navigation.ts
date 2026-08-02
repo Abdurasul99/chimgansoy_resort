@@ -38,9 +38,18 @@ export const footerNavigation = [
       { href: "/bron", label: { ru: "Забронировать", uz: "Bron qilish", en: "Book now" } },
     ],
   },
-  // The "Дневной визит" group (topchan + BBQ) is gone — day visits are closed.
-  // BBQ and kazan rental survives as a service for staying guests, so it moved
-  // into "Территория" rather than disappearing with the group.
+  // Day products are sold again, each with its own request form. They get their
+  // own group rather than sitting under "Размещение": a topchan and a tubing
+  // pass are not places to sleep, and filing them there is what made the
+  // catalogue read as a day-use price list the last time round.
+  {
+    title: { ru: "Отдых на день", uz: "Bir kunlik dam", en: "Day visit" },
+    links: [
+      { href: "/topchan", label: { ru: "Топчан", uz: "Topchan", en: "Topchan" } },
+      { href: "/nomera/pool", label: { ru: "Бассейн", uz: "Basseyn", en: "Pool" } },
+      { href: "/tubing", label: { ru: "Тюбинг-горка", uz: "Tubing gorkasi", en: "Tubing hill" } },
+    ],
+  },
   {
     title: { ru: "Территория", uz: "Hudud", en: "Territory" },
     links: [

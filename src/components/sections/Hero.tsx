@@ -13,10 +13,41 @@ type HeroProps = {
 
 /** Second line of the pool CTA — the terms that make it worth a tap. */
 const poolHint: Record<Locale, string> = {
-  ru: "Без ночёвки · от 100 000 сум · заявка за минуту",
-  uz: "Tunamasdan · 100 000 so'mdan · bir daqiqada ariza",
-  en: "No overnight stay · from 100 000 UZS · a one-minute request",
+  ru: "Тариф на целый день · от 100 000 сум · заявка за минуту",
+  uz: "Kun bo'yi tarif · 100 000 so'mdan · bir daqiqada ariza",
+  en: "Full-day pass · from 100 000 UZS · a one-minute request",
 };
+
+/**
+ * The two day products sold beside the pool.
+ *
+ * Smaller than the pool button and side by side, because the pool is what the
+ * homepage leads on — but each has its own page and its own request form, so
+ * each needs its own way out of the first screen rather than being buried in
+ * the navigation.
+ */
+const dayCtas: { href: string; icon: "topchan" | "snowflake"; label: Record<Locale, string>; hint: Record<Locale, string> }[] = [
+  {
+    href: "/topchan#request",
+    icon: "topchan",
+    label: { ru: "Топчан", uz: "Topchan", en: "Topchan" },
+    hint: {
+      ru: "до 8 гостей · от 150 000 сум",
+      uz: "8 kishigacha · 150 000 so'mdan",
+      en: "up to 8 guests · from 150 000 UZS",
+    },
+  },
+  {
+    href: "/tubing#request",
+    icon: "snowflake",
+    label: { ru: "Тюбинг горка", uz: "Tubing gorkasi", en: "Tubing hill" },
+    hint: {
+      ru: "2 или 4 прокатки · от 50 000 сум",
+      uz: "2 yoki 4 marta · 50 000 so'mdan",
+      en: "2 or 4 rides · from 50 000 UZS",
+    },
+  },
+];
 
 export function Hero({ locale }: HeroProps) {
   const dict = dictionaries[locale];
@@ -259,7 +290,7 @@ export function Hero({ locale }: HeroProps) {
                 <span className="block text-[1.2rem] font-extrabold leading-tight sm:text-[1.4rem]">
                   {dict.home.heroPoolCta}
                 </span>
-                <span className="mt-1 block truncate text-[0.82rem] font-semibold leading-snug opacity-75 sm:text-[0.88rem]">
+                <span className="mt-1 block text-[0.8rem] font-semibold leading-snug opacity-75 sm:text-[0.88rem]">
                   {poolHint[locale]}
                 </span>
               </span>
@@ -270,6 +301,40 @@ export function Hero({ locale }: HeroProps) {
                 →
               </span>
             </a>
+
+            {/* Topchan and tubing, side by side under the pool. Glass over the
+                photograph rather than gold: three solid gold blocks would fight
+                each other and the pool would stop reading as the lead. */}
+            <div className="mb-3 grid grid-cols-2 gap-2 sm:gap-3">
+              {dayCtas.map((cta) => (
+                <a
+                  key={cta.href}
+                  href={localizePath(locale, cta.href)}
+                  className="btn-press group flex items-center gap-2.5 rounded-2xl border border-white/20 bg-white/12 px-3.5 py-3.5 text-white backdrop-blur-md transition-all duration-300 hover:border-white/35 hover:bg-white/20 sm:gap-3 sm:px-5 sm:py-4"
+                >
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/15 sm:h-11 sm:w-11">
+                    <Icon name={cta.icon} className="h-[1.15rem] w-[1.15rem] sm:h-6 sm:w-6" />
+                  </span>
+                  {/* Wrapping, not truncating. At 360px "Тюбинг горка" and
+                      "2 или 4 прокатки" both hit the ellipsis, and a CTA that
+                      ends in "Тюбин…" tells a guest nothing. */}
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[0.9rem] font-extrabold leading-tight sm:text-[1.05rem]">
+                      {cta.label[locale]}
+                    </span>
+                    <span className="mt-0.5 block text-[0.7rem] font-semibold leading-snug text-white/70 sm:text-[0.78rem]">
+                      {cta.hint[locale]}
+                    </span>
+                  </span>
+                  <span
+                    aria-hidden
+                    className="hidden shrink-0 text-lg font-bold transition-transform duration-300 group-hover:translate-x-1 sm:block"
+                  >
+                    →
+                  </span>
+                </a>
+              ))}
+            </div>
 
             <BookingWidget locale={locale} variant="hero" />
           </div>

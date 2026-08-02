@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Hero } from "@/components/sections/Hero";
 import { LeisureShowcase } from "@/components/sections/LeisureShowcase";
 import { MasterPlan } from "@/components/sections/MasterPlan";
@@ -40,9 +41,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 const stats = [
   { value: "1700", label: { ru: "м над уровнем моря", uz: "m balandlikda", en: "m above sea level" } },
   { value: "20", label: { ru: "домиков на территории", uz: "hududdagi uychalar", en: "cabins on the grounds" } },
-  { value: "6", label: { ru: "гектаров территории", uz: "gektar hudud", en: "hectares of grounds" } },
+  // 9, not 6 — corrected by the operator 2026-08-02 along with the pool area.
+  { value: "9", label: { ru: "гектаров территории", uz: "gektar hudud", en: "hectares of grounds" } },
   { value: "45", label: { ru: "мин от Ташкента", uz: "min Toshkentdan", en: "min from Tashkent" } },
 ] as const;
+
+/** Everything a guest can book or visit, each on its own page. */
+const STAY_CATEGORIES: { href: string; label: Record<string, string> }[] = [
+  { href: "/nomera/glamping", label: { ru: "Глэмпинг", uz: "Glemping", en: "Glamping" } },
+  { href: "/nomera/cottage", label: { ru: "Шале", uz: "Shale", en: "Chalet" } },
+  { href: "/nomera/pool", label: { ru: "Бассейн", uz: "Basseyn", en: "Pool" } },
+  { href: "/tubing", label: { ru: "Тюбинг-горка", uz: "Tubing gorkasi", en: "Tubing hill" } },
+  { href: "/topchan", label: { ru: "Топчан", uz: "Topchan", en: "Topchan" } },
+  { href: "/services/picnic-zone", label: { ru: "Пикник-зона", uz: "Piknik zonasi", en: "Picnic area" } },
+];
 
 /** Tariff line under the pool CTA, built from the single source in pricing.ts. */
 const fmt = (n: number) => n.toLocaleString("ru-RU").replaceAll(",", " ");
@@ -127,6 +139,22 @@ export default async function HomePage({ params }: PageProps) {
                 {dict.home.roomsTitle}
               </h2>
               <p className="mt-5 text-base leading-7 text-[var(--muted)]">{dict.home.roomsText}</p>
+              {/* Category chips. "Смотреть все" alone landed everyone on the
+                  room catalogue, which does not hold the pool, the tubing hill
+                  or the picnic area — each of those has its own page now, so
+                  each gets its own way in. */}
+              <ul className="mt-6 flex flex-wrap gap-2">
+                {STAY_CATEGORIES.map((c) => (
+                  <li key={c.href}>
+                    <Link
+                      href={localizePath(locale, c.href)}
+                      className="inline-flex min-h-9 items-center rounded-full border border-[color:var(--line-strong)] bg-[var(--surface-warm)] px-4 py-1.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-strong)]"
+                    >
+                      {c.label[locale]}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
             <ButtonLink
               href={localizePath(locale, "/nomera")}
@@ -352,10 +380,11 @@ export default async function HomePage({ params }: PageProps) {
       {/* ── Master plan — honest renders of what's being built (not bookable) ─── */}
       <MasterPlan locale={locale} />
 
-      {/* The day-use price list used to sit here (and before that, second on the
-          page). Day visits are closed now, so the section and its component are
-          gone; the retired topchan/entry prices are parked in
-          content/pricing.ts as `retiredDayUse` if the format ever comes back. */}
+      {/* The day-use price list used to sit here. Day products are sold again,
+          but each now has its own page with a booking form that prices the
+          whole visit, so a bare price table on the homepage would duplicate
+          them without letting anyone act. The three day CTAs live in the hero
+          instead; the numbers are in content/pricing.ts as `dayUse`. */}
 
       {/* ── Reviews — cinematic carousel ──────────────── */}
       <TestimonialsCarousel locale={locale} />

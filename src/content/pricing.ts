@@ -10,22 +10,18 @@ export type PriceItem = {
 };
 
 /**
- * Day visits are closed, so this is no longer a day-use price list.
+ * Day products are sold again.
  *
- * `retiredDayUse` holds the two positions that only existed for day visitors —
- * the per-car entry fee and the topchan rental. They are kept, not deleted, so
- * the numbers are on hand if the format ever reopens, but nothing renders them
- * and `venueFacts()` must not quote them: an AI answer with a live topchan
- * price is a booking the venue can't honour.
+ * The topchan was withdrawn when the site was repositioned as a resort, and
+ * these two positions sat here unrendered so the numbers would survive. The
+ * operator has since put them back on the public tariff poster and asked for a
+ * booking form, so `dayUse` is live again and quoted by both assistants.
  *
- * `priceList` keeps the cooking extras, which services.ts already describes as
- * rentals available to staying guests.
- *
- * ASSUMPTION worth confirming with the operator: that these four keep the same
- * Mon–Thu / Fri–Sun prices now that they're sold to overnight guests rather
- * than as part of a day package.
+ * Every figure below is verbatim from that poster — do not "tidy" them: the
+ * mangal, firewood and charcoal genuinely cost the same seven days a week,
+ * while the topchan, entry and kazan double at the weekend.
  */
-export const retiredDayUse: PriceItem[] = [
+export const dayUse: PriceItem[] = [
   {
     key: "entry",
     icon: "car",
@@ -43,6 +39,49 @@ export const retiredDayUse: PriceItem[] = [
     weekend: 300_000,
   },
 ];
+
+/**
+ * Topchan rental — the day product the whole booking form is built around.
+ *
+ * `inventory` is deliberately NOT rendered anywhere a guest can see it. The
+ * operator's instruction was to track how many of the thirty are taken, not to
+ * advertise the number: "осталось 2 из 30" invents urgency the venue never
+ * asked for, and "осталось 29" reads as an empty resort. It exists so the
+ * Telegram bot can answer "сколько свободно на субботу" from the request log.
+ */
+export const topchanPricing = {
+  /** One topchan seats up to this many guests; bigger parties take several. */
+  capacity: 8,
+  /** How many exist on the property. Internal — see the note above. */
+  inventory: 30,
+  /**
+   * The day-visit window from the operator's poster. Distinct from the pool
+   * (08:00–20:00) and from reception, which is staffed round the clock.
+   * ASSUMPTION worth re-confirming: the poster predates the pool's later hours.
+   */
+  hours: "08:00–18:00",
+  rent: { weekday: 150_000, weekend: 300_000 },
+};
+
+/**
+ * Tubing hill — priced by rides, not by time or by day of week.
+ *
+ * The operator gave two packages and no weekday/weekend split, so there is no
+ * tariff band here: a Saturday ride costs the same as a Tuesday one. Order
+ * matters — the form renders these in sequence and the server trusts the index.
+ */
+export const tubingPricing = {
+  packages: [
+    { rides: 2, price: 50_000 },
+    { rides: 4, price: 100_000 },
+  ],
+  /**
+   * No published season yet. Tubing needs snow, and the operator has not said
+   * which months it runs, so nothing on the site promises a date — the
+   * administrator confirms conditions when they call back.
+   */
+  season: null as null | string,
+};
 
 export const priceList: PriceItem[] = [
   {

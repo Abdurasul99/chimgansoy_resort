@@ -7,7 +7,18 @@ import { services } from "@/content/services";
 export default function sitemap(): MetadataRoute.Sitemap {
   // Legal pages are intentionally excluded — they're noindex (placeholder
   // text pending lawyer approval), so they shouldn't be advertised in the sitemap.
-  const staticPaths = ["/", "/nomera", "/services", "/about", "/place", "/contact", "/bron"];
+  const staticPaths = [
+    "/",
+    "/nomera",
+    "/services",
+    "/about",
+    "/place",
+    "/contact",
+    "/bron",
+    // Day products, each with its own request form.
+    "/topchan",
+    "/tubing",
+  ];
   const roomPaths = rooms.map((room) => `/nomera/${room.slug}`);
   const servicePaths = services.map((service) => `/services/${service.slug}`);
 

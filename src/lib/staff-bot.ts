@@ -28,7 +28,7 @@ import { answerGuestQuestion } from "./staff-ai";
 import { getChimganWeather, t, weatherAdvice, weatherInfo } from "./bot-weather";
 import { checkAvailability } from "./exely";
 import { contacts } from "@/content/contacts";
-import { priceList } from "@/content/pricing";
+import { parkingPricing, priceList, topchanPricing, tubingPricing } from "@/content/pricing";
 import { money } from "./venue-facts";
 import { recentRequests, requestsByDate, storeConfigured, type StoredRequest } from "./requests-store";
 
@@ -264,16 +264,25 @@ function renderPrices(): View {
   });
   return {
     text: [
-      "<b>🏷 Доп. услуги для гостей</b>",
+      "<b>🏷 Цены на день</b>",
       "<i>будни (Пн–Чт) / выходные (Пт–Вс), в сумах</i>",
       "",
+      `🛖 <b>Топчан</b> (до ${topchanPricing.capacity} чел.) — <b>${money(topchanPricing.rent.weekday)}</b> / <b>${money(topchanPricing.rent.weekend)}</b>`,
+      `🚗 <b>Въезд</b> (1 автомобиль) — <b>${money(parkingPricing.weekday)}</b> / <b>${money(parkingPricing.weekend)}</b>`,
+      "",
+      // Tubing is priced per package of rides, so it cannot sit in the two-column
+      // weekday/weekend table above without implying a band it does not have.
+      `🛷 <b>Тюбинг-горка</b> — ${tubingPricing.packages
+        .map((p) => `${p.rides} прокатки <b>${money(p.price)}</b>`)
+        .join(" · ")} <i>(цена одна всю неделю)</i>`,
+      "",
+      "<b>Аренда и расходники:</b>",
       ...rows,
       "",
       "Каждая позиция оплачивается отдельно. Блюда кухни — по меню.",
       "",
-      "⛔️ Дневной отдых (топчан, въезд) больше не продаётся — только проживание и бассейн.",
-      "",
-      "🏕 Проживание (глэмпинг, шале) и бассейн: цены зависят от дат — смотрите «🗓 Свободные даты и цены».",
+      "🏊 <b>Бассейн</b> — тариф по возрастам, смотрите на сайте.",
+      "🏕 Проживание (глэмпинг, шале): цены зависят от дат — смотрите «🗓 Свободные даты и цены».",
     ].join("\n"),
     keyboard: [
       [
@@ -373,6 +382,7 @@ function requestsKeyboard(current?: string | null): InlineKeyboard {
 /** One glance tells the operator which form a row came from. */
 const SERVICE_LABEL: Record<string, string> = {
   pool: "🏊",
+  topchan: "🛖",
   tubing: "🛷",
   booking: "🏡",
   inquiry: "💬",
@@ -423,6 +433,17 @@ export async function renderRequests(arg?: string): Promise<View> {
   }
 
   const people = rows.reduce((n, r) => n + r.adults + r.kids + r.toddlers, 0);
+  /**
+   * Topchan occupancy for the day.
+   *
+   * The operator asked to track how many of the thirty are taken, not to
+   * advertise the number — so it appears here, in the staff-facing log, and
+   * nowhere a guest browsing the site can see it. Only shown on a date view:
+   * "свободно 23 из 30" across a mixed recent list would mean nothing.
+   */
+  const topchansTaken = rows
+    .filter((r) => r.service === "topchan")
+    .reduce((n, r) => n + (r.units ?? 0), 0);
   // Only the day-visit forms carry a price. An accommodation request is quoted
   // by the PMS after the administrator confirms, so counting its zero into the
   // day's takings would understate nothing — but showing "0 сум" on its line
@@ -432,6 +453,14 @@ export async function renderRequests(arg?: string): Promise<View> {
   const header = [
     head,
     `<i>${rows.length} заявк(и) · ${people} гост(ей)${sum ? ` · ${money(sum)} сум` : ""}</i>`,
+    ...(date && topchansTaken
+      ? [
+          `🛖 <b>Топчаны:</b> занято ${topchansTaken} из ${topchanPricing.inventory} · свободно ${Math.max(
+            topchanPricing.inventory - topchansTaken,
+            0,
+          )}`,
+        ]
+      : []),
     "",
   ];
 

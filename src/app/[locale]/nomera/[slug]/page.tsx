@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
 import { BookingDrawer } from "@/components/sections/BookingDrawer";
 import { PoolRequestForm } from "@/components/sections/PoolRequestForm";
+import { MediaArchive } from "@/components/sections/MediaArchive";
 import { Icon } from "@/components/ui/Icon";
 import { rooms, EXELY_ROOM_TYPE, INCLUDED_LABEL } from "@/content/rooms";
 import { resortImages } from "@/content/images";
@@ -30,6 +31,23 @@ const poolPriceChip: Record<string, string> = {
   uz: "100 000 so'mdan bir kishidan",
   en: "from 100 000 UZS per person",
 };
+
+/**
+ * The pool photo archive under the request form.
+ *
+ * Deliberately wider than `room.gallery`, which the page already renders lower
+ * down as a two-up grid — this is the "show me the place" set a guest wants
+ * right after seeing the price. Every frame here is a genuine pool image;
+ * see the verified content table in content/images.ts.
+ */
+const POOL_ARCHIVE = [
+  "poolAerial",
+  "poolLifestyle",
+  "poolEvening",
+  "pool",
+  "galTerritoryPanorama",
+  "mountainRidge",
+] as const;
 
 // Only built, bookable rooms get a detail page; not-yet-built rooms (cottage)
 // live in the Master Plan section, so their /nomera/<slug> URL 404s.
@@ -142,6 +160,11 @@ export default async function RoomDetailPage({ params }: PageProps) {
         <section id="pool-request" className="scroll-mt-24 bg-[var(--surface)] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <div className="mx-auto max-w-3xl">
             <PoolRequestForm locale={locale} />
+            {/* Under the form, not above it: a guest who has just read a price
+                wants to see what they are paying for. */}
+            <div className="mt-12">
+              <MediaArchive locale={locale} images={POOL_ARCHIVE} />
+            </div>
           </div>
         </section>
       )}

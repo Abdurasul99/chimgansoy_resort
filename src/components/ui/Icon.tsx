@@ -10,7 +10,9 @@ type IconProps = {
     | "phone"
     | "pool"
     | "send"
+    | "snowflake"
     | "star"
+    | "topchan"
     | "telegram"
     | "user"
     | "whatsapp"
@@ -32,6 +34,32 @@ export function Icon({ name, className = "h-5 w-5" }: IconProps) {
       return (
         <svg {...common}>
           <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      );
+    // A raised platform under a canopy — the silhouette a guest recognises as
+    // a topchan, rather than a generic bed or table.
+    case "topchan":
+      return (
+        <svg {...common}>
+          <path
+            d="M3 9.5 12 4l9 5.5M5.5 9v2M18.5 9v2M4 14h16M5 14v5M19 14v5M7.5 14v-1.5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1V14"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      );
+    case "snowflake":
+      return (
+        <svg {...common}>
+          <path
+            d="M12 2v20M12 2v20M3.4 7l17.2 10M20.6 7 3.4 17M12 6.2 9.6 4.4M12 6.2l2.4-1.8M12 17.8l-2.4 1.8M12 17.8l2.4 1.8M6.6 9.6 3.9 9.3M6.6 9.6 5.6 6.8M17.4 14.4l2.7.3M17.4 14.4l1 2.8M17.4 9.6l2.7-.3M17.4 9.6l1-2.8M6.6 14.4l-2.7.3M6.6 14.4l-1 2.8"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </svg>
       );
     case "calendar":

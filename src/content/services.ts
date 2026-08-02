@@ -82,9 +82,9 @@ export const services: Service[] = [
     image: "aframeLawnWide",
     title: { ru: "Территория и зоны отдыха", uz: "Hudud va dam olish zonalari", en: "The grounds & lounge areas" },
     shortDescription: {
-      ru: "Шесть гектаров среди сосен: прогулочные дорожки, открытые площадки и детская зона.",
-      uz: "Qarag'aylar orasida olti gektar: sayr yo'lakchalari, ochiq maydonlar va bolalar zonasi.",
-      en: "Six hectares among the pines: walking paths, open lawns, and a kids area.",
+      ru: "Девять гектаров среди сосен: прогулочные дорожки, открытые площадки и детская зона.",
+      uz: "Qarag'aylar orasida to'qqiz gektar: sayr yo'lakchalari, ochiq maydonlar va bolalar zonasi.",
+      en: "Nine hectares among the pines: walking paths, open lawns, and a kids area.",
     },
     description: {
       ru: "Территория открыта для гостей на всё время проживания: прогулочные дорожки между домиками, открытые площадки с панорамой на Чимган, детская площадка и места для встреч на воздухе. Парковка — рядом с домиком, зона мангала — в нескольких шагах.",
@@ -92,9 +92,9 @@ export const services: Service[] = [
       en: "The grounds are open to guests for the whole stay: walking paths between the cabins, open lawns with a view of the Chimgan range, a kids playground, and spots to gather outdoors. Parking sits by your cabin, the BBQ area a few steps away.",
     },
     highlights: {
-      ru: ["6 гектаров территории", "Сосны и панорама гор", "Детская площадка", "Парковка у домика"],
-      uz: ["6 gektar hudud", "Qarag'aylar va tog' panoramasi", "Bolalar maydonchasi", "Uycha yonida parking"],
-      en: ["Six hectares of grounds", "Pines and mountain views", "Kids playground", "Parking by your cabin"],
+      ru: ["9 гектаров территории", "Сосны и панорама гор", "Детская площадка", "Парковка у домика"],
+      uz: ["9 gektar hudud", "Qarag'aylar va tog' panoramasi", "Bolalar maydonchasi", "Uycha yonida parking"],
+      en: ["Nine hectares of grounds", "Pines and mountain views", "Kids playground", "Parking by your cabin"],
     },
     bestFor: { ru: "Спокойный день на территории", uz: "Hududda sokin kun", en: "A slow day on the grounds" },
   },

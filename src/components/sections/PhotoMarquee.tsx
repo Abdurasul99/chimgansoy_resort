@@ -19,22 +19,28 @@ import { text } from "@/lib/localize";
  * the landscaping was finished (nothing from the construction-era set, where
  * the ground is still geotextile and sand).
  */
+/**
+ * Row B used to be six interior close-ups in a row — a minibar, a made bed, a
+ * kitchen worktop. At marquee size, moving, those are unreadable: the eye gets
+ * a blur of beige and learns nothing about the place. Both rows now alternate
+ * a wide frame with an interior, so something legible passes every second card.
+ */
 const ROW_A = [
   "aframeLawnWide",
   "chaletLounge",
-  "aframeRoom",
+  "poolLifestyle",
   "aframeTerraceView",
-  "chaletBedroomDouble",
-  "aframeLounge",
+  "aframeRoom",
+  "mountainRidge",
 ] as const;
 
 const ROW_B = [
+  "poolAerial",
   "chaletDining",
-  "aframeBed",
-  "chaletKitchen",
-  "aframeMinibar",
-  "chaletBedroomTwin",
-  "aframeLawn",
+  "aframeLawnTall",
+  "chaletBedroomDouble",
+  "galTerritoryPanorama",
+  "aframeLounge",
 ] as const;
 
 function Strip({ keys, reverse, locale }: { keys: readonly (keyof typeof resortImages)[]; reverse?: boolean; locale: Locale }) {

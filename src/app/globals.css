@@ -559,21 +559,38 @@ textarea {
   overflow: hidden;
   border-radius: 18px;
   box-shadow: var(--shadow-card);
-  transition: box-shadow 0.5s var(--ease-premium);
+  transition: box-shadow 0.5s var(--ease-premium), transform 0.5s var(--ease-premium);
 }
 .bento-cell:hover {
   box-shadow: var(--shadow-card-hover);
+  transform: translateY(-3px);
+}
+/* A permanent foot-of-frame vignette. Photographs shot at midday go flat when
+   tiled edge to edge; this keeps each cell reading as a separate frame and
+   gives the caption something to sit on instead of dropping onto bare sky. */
+.bento-cell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(0deg, rgba(12, 18, 14, 0.34) 0%, rgba(12, 18, 14, 0.06) 34%, transparent 62%);
+  transition: opacity 0.5s var(--ease-premium);
+}
+.bento-cell:hover::after {
+  opacity: 0.55;
 }
 .bento-caption {
   position: absolute;
   inset-inline: 0;
   bottom: 0;
-  padding: 2rem 1.1rem 0.9rem;
+  z-index: 1; /* above the ::after vignette */
+  padding: 2rem 1.1rem 0.95rem;
   background: linear-gradient(0deg, rgba(18, 29, 37, 0.82), transparent);
   color: white;
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.02em;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.45);
   transform: translateY(30%);
   opacity: 0;
   transition: transform 0.45s var(--ease-premium), opacity 0.45s var(--ease-premium);

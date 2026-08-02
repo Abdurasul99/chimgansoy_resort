@@ -25,10 +25,10 @@ import { list, put } from "@vercel/blob";
  *   booking       — an accommodation request; the price comes from the PMS later
  *   inquiry       — the footer question form; no visit date at all
  */
-export type RequestService = "pool" | "tubing" | "booking" | "inquiry";
+export type RequestService = "pool" | "topchan" | "tubing" | "booking" | "inquiry";
 
 /** The services that represent a booking for a particular day. */
-export const DATED_SERVICES: RequestService[] = ["pool", "tubing", "booking"];
+export const DATED_SERVICES: RequestService[] = ["pool", "topchan", "tubing", "booking"];
 
 export type StoredRequest = {
   id: string;
@@ -57,6 +57,12 @@ export type StoredRequest = {
   checkin?: string;
   checkout?: string;
   room?: string;
+  /**
+   * How many units the request takes: topchans booked, tubing packages sold.
+   * The topchan count is what lets the bot answer "сколько свободно на
+   * субботу" — guests are not one-to-one with topchans, since one seats eight.
+   */
+  units?: number;
 };
 
 export function storeConfigured(): boolean {

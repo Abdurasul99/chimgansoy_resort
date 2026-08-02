@@ -46,7 +46,7 @@ const ITEMS: Item[] = [
   {
     image: "territoryAerial", // 02 — the actual full master-plan aerial
     title: { ru: "Полный мастер-план", uz: "To'liq master-reja", en: "Full master plan" },
-    desc: { ru: "6 гектаров: шале, глэмпинг, бассейн, спорт и парковка.", uz: "6 gektar: shale, glemping, basseyn, sport va parking.", en: "Six hectares: chalets, glamping, pool, sport and parking." },
+    desc: { ru: "9 гектаров: шале, глэмпинг, бассейн, спорт и парковка.", uz: "9 gektar: shale, glemping, basseyn, sport va parking.", en: "Nine hectares: chalets, glamping, pool, sport and parking." },
   },
   {
     // Was "workoutPadel", which resolved to a photo of the swimming pool — the
