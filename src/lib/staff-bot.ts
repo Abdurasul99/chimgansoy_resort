@@ -377,7 +377,7 @@ function requestsKeyboard(current?: string | null): InlineKeyboard {
  * date. Deliberately shows the phone as a bare +998… so a tap dials, same as
  * the request messages themselves.
  */
-async function renderRequests(arg?: string): Promise<View> {
+export async function renderRequests(arg?: string): Promise<View> {
   if (!storeConfigured()) {
     return {
       text: [

@@ -12,8 +12,9 @@ describe("ButtonLink", () => {
   it("renders the primary variant with sun token bg", () => {
     render(<ButtonLink href="/x">click</ButtonLink>);
     const link = screen.getByRole("link");
-    // Primary variant uses --sun token
-    expect(link.className).toContain("bg-[var(--sun)]");
+    // Primary is a --sun → --sun-dark gradient, not a flat fill.
+    expect(link.className).toContain("from-[var(--sun)]");
+    expect(link.className).toContain("to-[var(--sun-dark)]");
   });
 
   it("renders the ghost variant with bordered transparent bg", () => {
