@@ -92,12 +92,11 @@ export const tubingPricing = {
 /**
  * The pool complex.
  *
- * NOTE the area: the operator first said 680 m² and corrected it to 380 m²
- * within the hour. 380 is the later figure and the one used everywhere; worth
- * one confirmation before it goes into an advert.
+ * The area bounced between 680 and 380 m² while the operator was compiling the
+ * specs; they confirmed 680 on 2026-08-02 and that is what the site states.
  */
 export const poolFacts = {
-  areaSqm: 380,
+  areaSqm: 680,
   /** 8 small (up to 4 people) and 4 large (up to 10) — see poolPricing.extras. */
   bungalows: { small: { count: 8, capacity: 4 }, large: { count: 4, capacity: 10 } },
 };

@@ -124,6 +124,22 @@ async function callWithFallback(
   if (res.status !== 429) return { res, model: MODEL_PRIMARY };
 
   console.warn("[chat] primary model rate-limited, falling back to", MODEL_FALLBACK);
+  const fb = await callGroq(apiKey, messages, withTools, MODEL_FALLBACK);
+  if (fb.status !== 429) return { res: fb, model: MODEL_FALLBACK };
+
+  /**
+   * Both models over the per-minute allowance.
+   *
+   * The system prompt is around 6 000 tokens of Russian, so on the free tier a
+   * single question very nearly is the minute's budget — two guests a minute
+   * apart is enough to land here. Groq says how long to wait in Retry-After;
+   * honouring it once turns a visible failure into a slower answer, which is
+   * what a guest waiting on a price would choose. Capped so nobody stares at a
+   * spinner: past that, the caller shows the "call us" fallback.
+   */
+  const wait = Math.min((Number(fb.headers.get("retry-after")) || 4) * 1000, 6_000);
+  console.warn(`[chat] both models rate-limited, retrying in ${wait}ms`);
+  await new Promise((r) => setTimeout(r, wait));
   return { res: await callGroq(apiKey, messages, withTools, MODEL_FALLBACK), model: MODEL_FALLBACK };
 }
 

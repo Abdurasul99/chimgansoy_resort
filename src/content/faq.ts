@@ -23,9 +23,9 @@ export const faqItems: FaqItem[] = [
       en: "What stay formats do you have?",
     },
     answer: {
-      ru: "Два формата. Глэмпинг A-frame — до 3 гостей, 28 м² плюс терраса 15 м², двуспальная кровать 180×200, собственный санузел с душем, кондиционер и Wi-Fi. Шале — до 5 гостей, две спальни (двуспальная 180×200 и две односпальные 90×200), кухня-зал с диваном, отдельный санузел у каждой спальни, тёплый пол и терраса 35 м². Заезд с 14:00, выезд до 12:00.",
-      uz: "Ikki format. A-frame glemping — 3 mehmongacha, 28 m² va 15 m² terrasa, 180×200 ikki kishilik karavot, dushli xususiy sanuzel, konditsioner va Wi-Fi. Shale — 5 mehmongacha, ikkita yotoqxona (180×200 ikki kishilik va ikkita 90×200 bir kishilik), divanli oshxona-zal, har bir yotoqxonada alohida sanuzel, issiq pol va 35 m² terrasa. Kirish 14:00 dan, chiqish 12:00 gacha.",
-      en: "Two formats. A-frame glamping — up to 3 guests, 28 m² plus a 15 m² terrace, a 180×200 double bed, an ensuite shower room, air conditioning, and Wi-Fi. The chalet — up to 5 guests, two bedrooms (one 180×200 double, one with two 90×200 singles), a kitchen-lounge with a sofa, an ensuite bathroom per bedroom, heated floors, and a 35 m² terrace. Check-in from 14:00, check-out by 12:00.",
+      ru: "Два формата. Глэмпинг A-frame — до 3 гостей, 28 м² плюс терраса 15 м², двуспальная кровать 180×200, собственный санузел с душем, кондиционер, тёплый пол, телевизор и Wi-Fi. Шале — до 6 гостей, две спальни (двуспальная 180×200 и две односпальные 90×200), туалет и душ в каждой спальне, кухня-зал с диваном, тёплый пол и терраса 35 м². Ванн нет нигде — везде душ. Заезд с 14:00, выезд до 12:00.",
+      uz: "Ikki format. A-frame glemping — 3 mehmongacha, 28 m² va 15 m² terrasa, 180×200 ikki kishilik karavot, dushli xususiy sanuzel, konditsioner, issiq pol, televizor va Wi-Fi. Shale — 6 mehmongacha, ikkita yotoqxona (180×200 ikki kishilik va ikkita 90×200 bir kishilik), har bir yotoqxonada hojatxona va dush, divanli oshxona-zal, issiq pol va 35 m² terrasa. Hech qayerda vanna yo'q — hamma joyda dush. Kirish 14:00 dan, chiqish 12:00 gacha.",
+      en: "Two formats. A-frame glamping — up to 3 guests, 28 m² plus a 15 m² terrace, a 180×200 double bed, an ensuite shower room, air conditioning, a heated floor, a TV and Wi-Fi. The chalet — up to 6 guests, two bedrooms (one 180×200 double, one with two 90×200 singles), a toilet and shower in each bedroom, a kitchen-lounge with a sofa, heated floors and a 35 m² terrace. There are no baths anywhere — every unit has a shower. Check-in from 14:00, check-out by 12:00.",
     },
   },
   {
@@ -59,9 +59,9 @@ export const faqItems: FaqItem[] = [
       en: "Is it suitable for families and groups?",
     },
     answer: {
-      ru: "Да. Шале рассчитано на 5 гостей: две отдельные спальни и кухня-зал — удобно с детьми или с друзьями. На 6 гектарах есть детская площадка, прогулочные зоны и кухня с готовым меню. Для компании можно взять несколько домиков — напишите администратору, поможем собрать бронь. Питомцев, к сожалению, на территорию не допускаем.",
-      uz: "Ha. Shale 5 mehmonga mo'ljallangan: ikkita alohida yotoqxona va oshxona-zal — bolalar yoki do'stlar bilan qulay. 6 gektar hududda bolalar maydonchasi, sayr zonalari va tayyor menyuli oshxona bor. Katta guruh uchun bir nechta uycha olish mumkin — administratorga yozing, bronni yig'ishga yordam beramiz. Afsuski, hayvonlarni hududga kirita olmaymiz.",
-      en: "Yes. The chalet sleeps five in two separate bedrooms plus a kitchen-lounge — comfortable with kids or with friends. The six hectares include a kids playground, walking areas, and a kitchen with a ready-made menu. For a larger group you can take several cabins — message the administrator and we'll put the booking together. Pets, unfortunately, are not allowed on the grounds.",
+      ru: "Да. Шале рассчитано на 6 гостей: две отдельные спальни и кухня-зал — удобно с детьми или с друзьями. На 9 гектарах есть детская площадка, прогулочные зоны, бассейн с детской чашей и кухня с готовым меню. Для компании можно взять несколько домиков — напишите администратору, поможем собрать бронь. Питомцев, к сожалению, на территорию не допускаем.",
+      uz: "Ha. Shale 6 mehmonga mo'ljallangan: ikkita alohida yotoqxona va oshxona-zal — bolalar yoki do'stlar bilan qulay. 9 gektar hududda bolalar maydonchasi, sayr zonalari, bolalar basseyni bilan basseyn va tayyor menyuli oshxona bor. Katta guruh uchun bir nechta uycha olish mumkin — administratorga yozing, bronni yig'ishga yordam beramiz. Afsuski, hayvonlarni hududga kirita olmaymiz.",
+      en: "Yes. The chalet sleeps six in two separate bedrooms plus a kitchen-lounge — comfortable with kids or with friends. The nine hectares include a kids playground, walking areas, a pool with a children's pool, and a kitchen with a ready-made menu. For a larger group you can take several cabins — message the administrator and we'll put the booking together. Pets, unfortunately, are not allowed on the grounds.",
     },
   },
   {

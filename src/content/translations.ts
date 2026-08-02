@@ -42,11 +42,7 @@ export const dictionaries = {
       eyebrow: "CHIMGANDARBAZA.UZ / CHIMGANDARBAZA.COM",
       title: "CHIMGAN DARBAZA",
       lead: "Шале и A-frame глэмпинг на высоте 1700 м, в 45 минутах от Ташкента. Бассейн включён в проживание, горы Чимгана — сразу за террасой.",
-      // No guest count here on purpose. The operator's new copy says the chalet
-      // takes 6 while rooms.ts, Booking.com and Exely all say 5; until they
-      // confirm which is right, the homepage should not print either number
-      // twice with different answers.
-      heroChips: ["Шале с двумя спальнями", "Глэмпинг A-frame", "Бассейн включён"],
+      heroChips: ["Шале до 6 гостей", "Глэмпинг A-frame", "Бассейн включён"],
       heroOffer: "Бронируйте шале и глэмпинг заранее",
       // "Только бассейн" asserted the pool was the sole day product. The
       // topchan and the tubing hill are sold alongside it now, each with its
@@ -64,7 +60,7 @@ export const dictionaries = {
       thingsTitle: "Чем заняться на курорте",
       thingsText: "Утро у бассейна, ужин на террасе, мангал и казан на территории, а рядом — горные маршруты, конные прогулки и канатные дороги Чимгана.",
       territoryTitle: "Природа, воздух и приватность",
-      territoryText: "9 гектаров среди гор Чимгана: сосны, чистый воздух и тишина в 45 минутах от Ташкента. На территории бассейн 380 м², летний ресторан, пикник-зона и тюбинг-горка. Каждый домик стоит отдельно — со своей террасой и видом на хребет.",
+      territoryText: "9 гектаров среди гор Чимгана: сосны, чистый воздух и тишина в 45 минутах от Ташкента. На территории бассейн 680 м², летний ресторан, пикник-зона и тюбинг-горка. Каждый домик стоит отдельно — со своей террасой и видом на хребет.",
       territoryPills: ["Шале", "Глэмпинг", "Бассейн", "Ресторан"],
       yearRoundTitle: "Круглый год в горах",
       yearRoundText: "Летом — бассейн, терраса и ужин на воздухе. Осенью и зимой — тёплый пол в шале, горный воздух и снежные вершины в панорамном окне. Заезд с 14:00, выезд до 12:00.",
@@ -155,7 +151,7 @@ export const dictionaries = {
       eyebrow: "CHIMGANDARBAZA.UZ / CHIMGANDARBAZA.COM",
       title: "CHIMGAN DARBAZA",
       lead: "1700 m balandlikda, Toshkentdan 45 daqiqada shale va A-frame glemping. Basseyn yashash narxiga kiritilgan, Chimgon tog'lari — terrasangiz ortida.",
-      heroChips: ["Ikki yotoqxonali shale", "A-frame glemping", "Basseyn kiritilgan"],
+      heroChips: ["6 mehmongacha shale", "A-frame glemping", "Basseyn kiritilgan"],
       heroOffer: "Shale va glempingni oldindan bron qiling",
       heroPoolCta: "Basseyn DAY PASS",
       newsTitle: "Hududdagi yangiliklar",
@@ -167,7 +163,7 @@ export const dictionaries = {
       thingsTitle: "Kurortda nima qilish",
       thingsText: "Ertalab basseyn, kechqurun terrasada ovqat, hududda mangal va qozon, yaqinida esa tog' marshrutlari, ot minish va Chimgon kanat yo'llari.",
       territoryTitle: "Tabiat, havo va xususiylik",
-      territoryText: "Chimgon tog'lari orasida 9 gektar: qarag'aylar, toza havo va Toshkentdan 45 daqiqalik osoyishtalik. Hududda 380 m² basseyn, yozgi restoran, piknik zonasi va tubing gorkasi bor. Har bir uycha alohida turadi — o'z terrasasi va tizma manzarasi bilan.",
+      territoryText: "Chimgon tog'lari orasida 9 gektar: qarag'aylar, toza havo va Toshkentdan 45 daqiqalik osoyishtalik. Hududda 680 m² basseyn, yozgi restoran, piknik zonasi va tubing gorkasi bor. Har bir uycha alohida turadi — o'z terrasasi va tizma manzarasi bilan.",
       territoryPills: ["Shale", "Glemping", "Basseyn", "Restoran"],
       yearRoundTitle: "Yil davomida tog'larda",
       yearRoundText: "Yozda — basseyn, terrasa va ochiq havoda kechki ovqat. Kuz va qishda — shaledagi issiq pol, tog' havosi va panoramali derazadagi qorli cho'qqilar. Kirish 14:00 dan, chiqish 12:00 gacha.",
@@ -258,7 +254,7 @@ export const dictionaries = {
       eyebrow: "CHIMGANDARBAZA.UZ / CHIMGANDARBAZA.COM",
       title: "CHIMGAN DARBAZA",
       lead: "Chalets and A-frame glamping at 1,700 m, 45 minutes from Tashkent. The pool comes with every stay, and the Chimgan range starts right off your terrace.",
-      heroChips: ["Two-bedroom chalet", "A-frame glamping", "Pool included"],
+      heroChips: ["Chalet for up to 6", "A-frame glamping", "Pool included"],
       heroOffer: "Reserve a chalet or glamping cabin early",
       heroPoolCta: "Pool DAY PASS",
       newsTitle: "Latest updates",
@@ -270,7 +266,7 @@ export const dictionaries = {
       thingsTitle: "What to do at the resort",
       thingsText: "Mornings by the pool, dinner on the terrace, BBQ and kazan on the grounds — and mountain trails, horse rides, and the Chimgan cable cars close by.",
       territoryTitle: "Nature, air, and privacy",
-      territoryText: "Nine hectares among the Chimgan mountains: pines, clean air, and quiet 45 minutes from Tashkent. On the grounds: a 380 m² pool, a summer restaurant, a picnic area and the tubing hill. Every cabin stands on its own — with its own terrace and a view of the ridge.",
+      territoryText: "Nine hectares among the Chimgan mountains: pines, clean air, and quiet 45 minutes from Tashkent. On the grounds: a 680 m² pool, a summer restaurant, a picnic area and the tubing hill. Every cabin stands on its own — with its own terrace and a view of the ridge.",
       territoryPills: ["Chalets", "Glamping", "Pool", "Restaurant"],
       yearRoundTitle: "Year-round in the mountains",
       yearRoundText: "In summer — the pool, the terrace, and dinner in the open air. In autumn and winter — heated floors in the chalet, mountain air, and snowy peaks through the panoramic window. Check-in from 14:00, check-out by 12:00.",

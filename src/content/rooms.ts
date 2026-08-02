@@ -138,7 +138,10 @@ export const rooms: Room[] = [
       en: "The chalet is for guests who need a fully private format. Two separate bedrooms: a double bed in one, two single beds in the other, each bedroom with its own toilet and shower. Plus a kitchen-lounge and a private terrace for the evenings. Everything the glamping cabin has — air conditioning, heated floors, a TV, Wi-Fi and free parking — is here too.",
     },
     priceFrom: { ru: "Цена при бронировании", uz: "Bron qilishda narx", en: "Price at booking" },
-    capacity: { ru: "до 5 гостей", uz: "5 mehmongacha", en: "up to 5 guests" },
+    // 6, confirmed by the operator 2026-08-02. Booking.com and Exely still hold
+    // 5 for this unit — they have to be raised there too or the channels will
+    // reject the sixth guest the site just accepted.
+    capacity: { ru: "до 6 гостей", uz: "6 mehmongacha", en: "up to 6 guests" },
     size: { ru: "3 комнаты + терраса 35 м²", uz: "3 xona + terrasa 35 m²", en: "3 rooms + 35 m² terrace" },
     amenities: {
       // Two ensuites, both with a shower — there is no bath anywhere on the
@@ -205,11 +208,11 @@ export const rooms: Room[] = [
     // Fixed tariff now — the engine no longer prices this one.
     priceFrom: { ru: "от 100 000 сум с человека", uz: "100 000 so'mdan bir kishidan", en: "from 100 000 UZS per person" },
     capacity: { ru: "без ограничения по гостям", uz: "mehmonlar soni cheklanmagan", en: "any group size" },
-    size: { ru: "Открытый бассейн 380 м²", uz: "380 m² ochiq basseyn", en: "380 m² outdoor pool" },
+    size: { ru: "Открытый бассейн 680 м²", uz: "680 m² ochiq basseyn", en: "680 m² outdoor pool" },
     amenities: {
-      ru: ["Открытый бассейн 380 м²", "Детский бассейн", "Пул-бар с посадочными местами", "Бунгало у воды", "Панорама гор"],
-      uz: ["380 m² ochiq basseyn", "Bolalar basseyni", "O'tirish joylari bilan pul-bar", "Suv bo'yida bungalolar", "Tog' panoramasi"],
-      en: ["380 m² outdoor pool", "Children's pool", "Pool bar with seating", "Bungalows by the water", "Mountain panorama"],
+      ru: ["Открытый бассейн 680 м²", "Детский бассейн", "Пул-бар с посадочными местами", "Бунгало у воды", "Панорама гор"],
+      uz: ["680 m² ochiq basseyn", "Bolalar basseyni", "O'tirish joylari bilan pul-bar", "Suv bo'yida bungalolar", "Tog' panoramasi"],
+      en: ["680 m² outdoor pool", "Children's pool", "Pool bar with seating", "Bungalows by the water", "Mountain panorama"],
     },
     features: {
       // 8 small bungalows seat up to 4, 4 large seat up to 10 — see poolFacts.
