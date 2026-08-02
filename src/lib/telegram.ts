@@ -20,6 +20,12 @@ type SendOpts = {
   parse_mode?: "HTML" | "MarkdownV2";
   reply_markup?: { inline_keyboard: InlineKeyboard };
   disable_web_page_preview?: boolean;
+  /**
+   * Telegram Business. Present only when replying inside a chat the bot handles
+   * on the hotel account's behalf — without it Telegram has no idea whose voice
+   * to speak in and rejects the send.
+   */
+  business_connection_id?: string;
 };
 
 async function call<T = unknown>(method: string, body: Record<string, unknown>): Promise<T | null> {
@@ -54,6 +60,7 @@ export function sendMessage(chatId: number | string, text: string, opts: SendOpt
     parse_mode: opts.parse_mode ?? "HTML",
     disable_web_page_preview: opts.disable_web_page_preview ?? true,
     ...(opts.reply_markup ? { reply_markup: opts.reply_markup } : {}),
+    ...(opts.business_connection_id ? { business_connection_id: opts.business_connection_id } : {}),
   });
 }
 
@@ -78,8 +85,12 @@ export function answerCallbackQuery(id: string, text?: string) {
 }
 
 /** Show "typing…" while the AI thinks (auto-expires after ~5s on Telegram's side). */
-export function sendChatAction(chatId: number | string, action = "typing") {
-  return call("sendChatAction", { chat_id: chatId, action });
+export function sendChatAction(chatId: number | string, action = "typing", businessConnectionId?: string) {
+  return call("sendChatAction", {
+    chat_id: chatId,
+    action,
+    ...(businessConnectionId ? { business_connection_id: businessConnectionId } : {}),
+  });
 }
 
 /** Photo card by public URL, with an HTML caption and optional buttons. */

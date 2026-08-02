@@ -402,6 +402,15 @@ function commandToAction(text: string): string | null {
 // ── Telegram update entry point ───────────────────────────────────────────────
 
 type TgUpdate = {
+  /** Telegram Business: a message in a chat the bot handles for the hotel account. */
+  business_message?: {
+    chat: { id: number; type?: string };
+    from?: { id: number; is_bot?: boolean };
+    text?: string;
+    business_connection_id?: string;
+  };
+  /** Sent when the account owner connects or revokes the bot. */
+  business_connection?: { id: string; user?: { id: number }; is_enabled?: boolean };
   message?: {
     chat: { id: number; type?: string };
     from?: { id: number };
@@ -417,7 +426,54 @@ type TgUpdate = {
 };
 
 /** Handle one Telegram update. The bot is public — no allowlist. */
+/**
+ * Telegram Business: the bot answering in the hotel account's own DMs.
+ *
+ * A guest who taps "Telegram" on the site lands on t.me/+998701760011 — the
+ * hotel's personal account, not this bot — and until now nothing answered
+ * there. With Business mode connected, those messages arrive here as
+ * `business_message` instead of `message`, and replies must carry the
+ * connection id or Telegram doesn't know whose voice to use.
+ *
+ * Deliberately different from the bot's own chat: no menu, no buttons, no
+ * commands. The guest believes they are writing to the hotel, and a bot menu
+ * unfolding in that conversation would be jarring. Straight to the concierge,
+ * and — unlike the bot chat — without the 🤖 prefix, since the account is
+ * answering as itself.
+ */
+async function handleBusinessMessage(update: TgUpdate): Promise<void> {
+  const m = update.business_message;
+  if (!m?.text || !m.business_connection_id) return;
+  const chatId = m.chat.id;
+  const connection = m.business_connection_id;
+  const text = m.text.trim();
+
+  console.log(`[bot] business chat ${chatId}: ${text.slice(0, 40)}`);
+
+  // Never answer the account owner's own outgoing messages — the hotel replying
+  // by hand would otherwise trigger the AI on its own words.
+  if (m.from?.id && m.chat.id === m.from.id && m.from.is_bot) return;
+
+  await sendChatAction(chatId, "typing", connection);
+  const ai = await answerGuestQuestion(text, { chatId });
+  const reply = ai.ok
+    ? ai.text
+    : [
+        "Извините, сейчас не могу ответить автоматически.",
+        `Позвоните нам: ${contacts.phone}`,
+      ].join("\n");
+  await sendMessage(chatId, esc(reply), { business_connection_id: connection });
+}
+
 export async function handleGuestUpdate(update: TgUpdate): Promise<void> {
+  // Business-account chats take a different path entirely.
+  if (update.business_message) return handleBusinessMessage(update);
+  if (update.business_connection) {
+    const c = update.business_connection;
+    console.log(`[bot] business connection ${c.id} with user ${c.user?.id} — enabled: ${c.is_enabled}`);
+    return;
+  }
+
   // Callback (button taps) — edit the message in place (photos are special).
   if (update.callback_query) {
     const cq = update.callback_query;
