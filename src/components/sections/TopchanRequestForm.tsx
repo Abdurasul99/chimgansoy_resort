@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { Fragment, useActionState, useEffect, useState } from "react";
 import { submitTopchanRequest } from "@/app/actions/topchan";
 import { parkingPricing, poolPricing, priceLabels, priceList, topchanPricing } from "@/content/pricing";
 import { contacts } from "@/content/contacts";
@@ -238,46 +238,66 @@ export function TopchanRequestForm({ locale }: { locale: Locale }) {
           one number labelled "all week". */}
       <div className="mt-7">
         <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]">{t.priceTitle}</p>
+        {/* One grid for the whole table — see the note in PoolRequestForm: a
+            per-row grid sizes its `auto` tracks from that row alone, so the
+            column headings drifted away from the numbers beneath them. */}
         <div className="mt-3 overflow-hidden rounded-2xl border border-[color:var(--line)] bg-[var(--paper)]">
-          <div className="grid grid-cols-[1fr_auto_auto] items-center gap-x-3 border-b border-[color:var(--line)] px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-[var(--muted)]">
-            <span />
-            <span className="text-right">{text(priceLabels.weekdaysLabel, locale)}</span>
-            <span className="text-right text-[var(--accent-strong)]">{text(priceLabels.weekendLabel, locale)}</span>
-          </div>
-          {[
-            [t.topchan, topchanPricing.rent] as const,
-            [t.entry, parkingPricing] as const,
-          ].map(([label, rate]) => (
-            <div key={label} className="grid grid-cols-[1fr_auto_auto] items-baseline gap-x-3 border-b border-[color:var(--line)] px-4 py-3">
-              <span className="text-sm text-[var(--ink)]">{label}</span>
-              <span className="text-right font-serif text-lg font-bold text-[var(--ink)]">{money(rate.weekday)}</span>
-              <span className="text-right font-serif text-lg font-bold text-[var(--accent-strong)]">{money(rate.weekend)}</span>
-            </div>
-          ))}
-          {EXTRA_KEYS.map((key) => {
-            const item = priceList.find((p) => p.key === key);
-            if (!item) return null;
-            const flat = item.weekday === item.weekend;
-            return (
-              <div key={key} className="grid grid-cols-[1fr_auto_auto] items-baseline gap-x-3 border-b border-[color:var(--line)] px-4 py-3">
-                <span className="text-sm text-[var(--ink)]">
-                  {item.title[locale]}
-                  {item.subtitle ? <span className="text-[var(--muted)]"> · {item.subtitle[locale]}</span> : null}
+          <div className="grid grid-cols-[1fr_auto_auto] px-4">
+            <span className="border-b border-[color:var(--line)] py-2.5" />
+            <span className="border-b border-[color:var(--line)] py-2.5 pl-4 text-right text-[11px] font-bold uppercase leading-tight tracking-wider text-[var(--muted)]">
+              {text(priceLabels.weekdaysLabel, locale)}
+            </span>
+            <span className="border-b border-[color:var(--line)] py-2.5 pl-4 text-right text-[11px] font-bold uppercase leading-tight tracking-wider text-[var(--accent-strong)]">
+              {text(priceLabels.weekendLabel, locale)}
+            </span>
+
+            {[
+              [t.topchan, topchanPricing.rent] as const,
+              [t.entry, parkingPricing] as const,
+            ].map(([label, rate]) => (
+              <Fragment key={label}>
+                <span className="border-b border-[color:var(--line)] py-3 pr-2 text-sm text-[var(--ink)]">{label}</span>
+                <span className="border-b border-[color:var(--line)] py-3 pl-4 text-right font-serif text-lg font-bold text-[var(--ink)]">
+                  {money(rate.weekday)}
                 </span>
-                {flat ? (
-                  <span className="col-span-2 text-right font-serif text-lg font-bold text-[var(--ink)]">
-                    {money(item.weekday)}{" "}
-                    <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">{t.allWeek}</span>
+                <span className="border-b border-[color:var(--line)] py-3 pl-4 text-right font-serif text-lg font-bold text-[var(--accent-strong)]">
+                  {money(rate.weekend)}
+                </span>
+              </Fragment>
+            ))}
+
+            {EXTRA_KEYS.map((key) => {
+              const item = priceList.find((p) => p.key === key);
+              if (!item) return null;
+              // The grill, the firewood and the charcoal cost the same seven
+              // days a week; two identical columns would read as a bug.
+              const flat = item.weekday === item.weekend;
+              const cell = "border-b border-[color:var(--line)] py-3";
+              return (
+                <Fragment key={key}>
+                  <span className={`${cell} pr-2 text-sm text-[var(--ink)]`}>
+                    {item.title[locale]}
+                    {item.subtitle ? <span className="text-[var(--muted)]"> · {item.subtitle[locale]}</span> : null}
                   </span>
-                ) : (
-                  <>
-                    <span className="text-right font-serif text-lg font-bold text-[var(--ink)]">{money(item.weekday)}</span>
-                    <span className="text-right font-serif text-lg font-bold text-[var(--accent-strong)]">{money(item.weekend)}</span>
-                  </>
-                )}
-              </div>
-            );
-          })}
+                  {flat ? (
+                    <span className={`${cell} col-span-2 pl-4 text-right font-serif text-lg font-bold text-[var(--ink)]`}>
+                      {money(item.weekday)}{" "}
+                      <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">{t.allWeek}</span>
+                    </span>
+                  ) : (
+                    <>
+                      <span className={`${cell} pl-4 text-right font-serif text-lg font-bold text-[var(--ink)]`}>
+                        {money(item.weekday)}
+                      </span>
+                      <span className={`${cell} pl-4 text-right font-serif text-lg font-bold text-[var(--accent-strong)]`}>
+                        {money(item.weekend)}
+                      </span>
+                    </>
+                  )}
+                </Fragment>
+              );
+            })}
+          </div>
           <div className="px-4 py-3 text-xs leading-5 text-[var(--muted)]">{t.freeNote}</div>
         </div>
       </div>

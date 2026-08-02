@@ -51,11 +51,11 @@ export const dictionaries = {
       newsTitle: "Актуально на территории",
       stayEyebrow: "Проживание",
       aboutTitle: "Горный курорт в 45 минутах от Ташкента",
-      aboutText: "CHIMGAN DARBAZA — курорт на 6 гектарах на высоте 1700 м. Двадцать отдельных домиков: A-frame глэмпинг для двоих-троих и шале с двумя спальнями и кухней-залом для семьи или компании. Бассейн включён в проживание, кухня работает на территории, горные маршруты Чимгана начинаются сразу за оградой.",
+      aboutText: "CHIMGAN DARBAZA — курорт на 9 гектарах на высоте 1700 м. Двадцать отдельных домиков: A-frame глэмпинг для двоих-троих и шале с двумя спальнями и кухней-залом для семьи или компании. Бассейн включён в проживание, кухня работает на территории, горные маршруты Чимгана начинаются сразу за оградой.",
       roomsTitle: "Где вы будете жить",
-      // Operator's own wording, 2026-08-02. NOTE the capacity it states for the
-      // chalet (6) is higher than rooms.ts and the Booking.com listing (5) —
-      // flagged for the operator, not silently reconciled here.
+      // Operator's own wording, 2026-08-02. The chalet capacity of 6 is now
+      // confirmed and carried through rooms.ts and the AI facts; Booking.com
+      // and Exely still say 5 and have to be raised there too.
       roomsText: "Глэмпинг A-frame на двоих, шале с двумя спальнями для компании до 6 человек — выберите формат и забронируйте.",
       thingsTitle: "Чем заняться на курорте",
       thingsText: "Утро у бассейна, ужин на террасе, мангал и казан на территории, а рядом — горные маршруты, конные прогулки и канатные дороги Чимгана.",
@@ -72,9 +72,9 @@ export const dictionaries = {
       finalOfferText: "Выберите даты онлайн или напишите в WhatsApp — поможем выбрать между шале и глэмпингом и подтвердим бронь.",
     },
     pages: {
-      rooms: { title: "Проживание: шале и глэмпинг", lead: "Двадцать отдельных домиков на 6 гектарах. Выберите формат и забронируйте — бассейн включён в проживание." },
+      rooms: { title: "Проживание: шале и глэмпинг", lead: "Двадцать отдельных домиков на 9 гектарах. Выберите формат и забронируйте — бассейн включён в проживание." },
       services: { title: "Сервисы и инфраструктура", lead: "Зоны отдыха, еда, спорт и активности для полноценного дня на территории." },
-      about: { title: "О курорте", lead: "Горный курорт на высоте 1700 м в 45 минутах от Ташкента — шале, глэмпинг, бассейн и 6 гектаров тишины." },
+      about: { title: "О курорте", lead: "Горный курорт на высоте 1700 м в 45 минутах от Ташкента — шале, глэмпинг, бассейн и 9 гектаров тишины." },
       place: { title: "Места и впечатления рядом", lead: "Горы, прогулки и сезонные маршруты вокруг курорта." },
       contact: { title: "Контакты", lead: "Свяжитесь с администратором, чтобы уточнить даты, формат отдыха и дорогу." },
       booking: { title: "Забронировать отдых", lead: "Выберите даты и забронируйте — подтвердим бронь и ответим на все вопросы." },
@@ -157,7 +157,7 @@ export const dictionaries = {
       newsTitle: "Hududdagi yangiliklar",
       stayEyebrow: "Yashash",
       aboutTitle: "Toshkentdan 45 daqiqadagi tog' kurorti",
-      aboutText: "CHIMGAN DARBAZA — 1700 m balandlikda, 6 gektar hududdagi kurort. Yigirma alohida uycha: ikki-uch kishilik A-frame glemping va oila yoki do'stlar uchun ikkita yotoqxona hamda oshxona-zalga ega shale. Basseyn yashash narxiga kiritilgan, oshxona hududda ishlaydi, Chimgon tog' marshrutlari darvoza ortidan boshlanadi.",
+      aboutText: "CHIMGAN DARBAZA — 1700 m balandlikda, 9 gektar hududdagi kurort. Yigirma alohida uycha: ikki-uch kishilik A-frame glemping va oila yoki do'stlar uchun ikkita yotoqxona hamda oshxona-zalga ega shale. Basseyn yashash narxiga kiritilgan, oshxona hududda ishlaydi, Chimgon tog' marshrutlari darvoza ortidan boshlanadi.",
       roomsTitle: "Qayerda yashaysiz",
       roomsText: "Ikki kishilik A-frame glemping, 6 kishigacha davra uchun ikki yotoqxonali shale — formatni tanlang va bron qiling.",
       thingsTitle: "Kurortda nima qilish",
@@ -175,9 +175,9 @@ export const dictionaries = {
       finalOfferText: "Sanalarni onlayn tanlang yoki WhatsApp'ga yozing — shale va glemping o'rtasida tanlashga yordam beramiz va bronni tasdiqlaymiz.",
     },
     pages: {
-      rooms: { title: "Yashash: shale va glemping", lead: "6 gektarda yigirma alohida uycha. Formatni tanlang va bron qiling — basseyn yashash narxiga kiritilgan." },
+      rooms: { title: "Yashash: shale va glemping", lead: "9 gektarda yigirma alohida uycha. Formatni tanlang va bron qiling — basseyn yashash narxiga kiritilgan." },
       services: { title: "Xizmatlar va infratuzilma", lead: "Hududda to'liq kun uchun dam olish, taom, sport va faoliyatlar." },
-      about: { title: "Kurort haqida", lead: "Toshkentdan 45 daqiqada, 1700 m balandlikdagi tog' kurorti — shale, glemping, basseyn va 6 gektar osoyishtalik." },
+      about: { title: "Kurort haqida", lead: "Toshkentdan 45 daqiqada, 1700 m balandlikdagi tog' kurorti — shale, glemping, basseyn va 9 gektar osoyishtalik." },
       place: { title: "Yaqindagi joylar va taassurotlar", lead: "Kurort atrofidagi tog'lar, sayrlar va mavsumiy marshrutlar." },
       contact: { title: "Aloqa", lead: "Sana, dam olish formati va yo'l bo'yicha administrator bilan bog'laning." },
       booking: { title: "Dam olishni bron qilish", lead: "Sanalarni tanlang va bron qiling — bronni tasdiqlaymiz va barcha savollarga javob beramiz." },
@@ -260,7 +260,7 @@ export const dictionaries = {
       newsTitle: "Latest updates",
       stayEyebrow: "Stays",
       aboutTitle: "A mountain resort 45 minutes from Tashkent",
-      aboutText: "CHIMGAN DARBAZA is a resort on six hectares at 1,700 m. Twenty standalone cabins: A-frame glamping for two or three, and chalets with two bedrooms and a kitchen-lounge for a family or a group. The pool is included in every stay, the kitchen works on site, and the Chimgan trails begin just beyond the gate.",
+      aboutText: "CHIMGAN DARBAZA is a resort on nine hectares at 1,700 m. Twenty standalone cabins: A-frame glamping for two or three, and chalets with two bedrooms and a kitchen-lounge for a family or a group. The pool is included in every stay, the kitchen works on site, and the Chimgan trails begin just beyond the gate.",
       roomsTitle: "Where you'll stay",
       roomsText: "A-frame glamping for two, a two-bedroom chalet for a group of up to 6 — pick a format and book it.",
       thingsTitle: "What to do at the resort",
@@ -278,9 +278,9 @@ export const dictionaries = {
       finalOfferText: "Pick your dates online or message us on WhatsApp — we'll help you choose between a chalet and a glamping cabin and confirm the booking.",
     },
     pages: {
-      rooms: { title: "Stays: chalets and glamping", lead: "Twenty standalone cabins on six hectares. Pick a format and book it — the pool comes with every stay." },
+      rooms: { title: "Stays: chalets and glamping", lead: "Twenty standalone cabins on nine hectares. Pick a format and book it — the pool comes with every stay." },
       services: { title: "Services and infrastructure", lead: "Rest zones, food, sport, and activities for a complete resort day." },
-      about: { title: "About the resort", lead: "A mountain resort at 1,700 m, 45 minutes from Tashkent — chalets, glamping, a pool, and six hectares of quiet." },
+      about: { title: "About the resort", lead: "A mountain resort at 1,700 m, 45 minutes from Tashkent — chalets, glamping, a pool, and nine hectares of quiet." },
       place: { title: "Nearby attractions", lead: "Mountains, walks, and seasonal routes around the resort." },
       contact: { title: "Contacts", lead: "Contact the administrator to confirm dates, trip format, and directions." },
       booking: { title: "Book your stay", lead: "Pick your dates and book — we'll confirm your reservation and answer any questions." },

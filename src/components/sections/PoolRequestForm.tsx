@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { Fragment, useActionState, useEffect, useState } from "react";
 import { submitPoolRequest } from "@/app/actions/pool";
 import { parkingPricing, poolPricing, priceLabels } from "@/content/pricing";
 import { contacts } from "@/content/contacts";
@@ -69,8 +69,11 @@ const COPY: Record<
     cars: "Автомобилей",
     bungalow: "Бунгало",
     bungalowNone: "Не нужно",
-    bungalow4: "До 4 человек — 300 000",
-    bungalow10: "До 10 человек — 500 000",
+    // Kept short on purpose: the select is the third cell of a three-column
+    // row inside a max-w-3xl card, so it never gets more than ~170 px of text
+    // room — the old labels had their price cut off at every screen width.
+    bungalow4: "4 чел. · 300 000",
+    bungalow10: "10 чел. · 500 000",
     total: "Предварительно к оплате",
     freeNote: "Гостям, проживающим в шале и глэмпинге, вход бесплатный. Дети до 5 лет — бесплатно в сопровождении взрослых. Аренда бунгало не включает входные билеты. Бассейн работает ежедневно 08:00–20:00.",
   },
@@ -99,8 +102,8 @@ const COPY: Record<
     cars: "Avtomobillar",
     bungalow: "Bungalo",
     bungalowNone: "Kerak emas",
-    bungalow4: "4 kishigacha — 300 000",
-    bungalow10: "10 kishigacha — 500 000",
+    bungalow4: "4 kishi · 300 000",
+    bungalow10: "10 kishi · 500 000",
     total: "Taxminiy to'lov",
     freeNote: "Shale va glempingda turuvchilar uchun kirish bepul. 5 yoshgacha bolalar — kattalar bilan bepul. Bungalo ijarasi kirish chiptalarini o'z ichiga olmaydi. Basseyn har kuni 08:00–20:00.",
   },
@@ -129,8 +132,8 @@ const COPY: Record<
     cars: "Cars",
     bungalow: "Bungalow",
     bungalowNone: "Not needed",
-    bungalow4: "Up to 4 people — 300 000",
-    bungalow10: "Up to 10 people — 500 000",
+    bungalow4: "4 people · 300 000",
+    bungalow10: "10 people · 500 000",
     total: "Estimated total",
     freeNote: "Free entry for chalet and glamping guests. Under-fives free with an adult. Bungalow rental does not include entry tickets. The pool is open daily 08:00–20:00.",
   },
@@ -219,22 +222,36 @@ export function PoolRequestForm({ locale }: { locale: Locale }) {
           under them, because those are the two things guests ask about most. */}
       <div className="mt-7">
         <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]">{t.priceTitle}</p>
+        {/* ONE grid for the header and every price row.
+            Each row used to be its own grid, and an `auto` track sizes to that
+            row's own content — so the header's tracks were sized by
+            "Пт–Вс и праздники" and the price tracks by "200 000", and the
+            column headings could never sit above their own numbers. */}
         <div className="mt-3 overflow-hidden rounded-2xl border border-[color:var(--line)] bg-[var(--paper)]">
-          <div className="grid grid-cols-[1fr_auto_auto] items-center gap-x-3 border-b border-[color:var(--line)] px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-[var(--muted)]">
-            <span />
-            <span className="text-right">{text(poolPricing.weekdayLabel, locale)}</span>
-            <span className="text-right text-[var(--accent-strong)]">{text(poolPricing.weekendLabel, locale)}</span>
+          <div className="grid grid-cols-[1fr_auto_auto] px-4">
+            <span className="border-b border-[color:var(--line)] py-2.5" />
+            <span className="border-b border-[color:var(--line)] py-2.5 pl-4 text-right text-[11px] font-bold uppercase leading-tight tracking-wider text-[var(--muted)]">
+              {text(poolPricing.weekdayLabel, locale)}
+            </span>
+            <span className="border-b border-[color:var(--line)] py-2.5 pl-4 text-right text-[11px] font-bold uppercase leading-tight tracking-wider text-[var(--accent-strong)]">
+              {text(poolPricing.weekendLabel, locale)}
+            </span>
+
+            {[
+              [t.adults, poolPricing.adult] as const,
+              [t.kids, poolPricing.child] as const,
+            ].map(([label, band]) => (
+              <Fragment key={label}>
+                <span className="border-b border-[color:var(--line)] py-3 pr-2 text-sm text-[var(--ink)]">{label}</span>
+                <span className="border-b border-[color:var(--line)] py-3 pl-4 text-right font-serif text-lg font-bold text-[var(--ink)]">
+                  {money(band.weekday)}
+                </span>
+                <span className="border-b border-[color:var(--line)] py-3 pl-4 text-right font-serif text-lg font-bold text-[var(--accent-strong)]">
+                  {money(band.weekend)}
+                </span>
+              </Fragment>
+            ))}
           </div>
-          {[
-            [t.adults, poolPricing.adult] as const,
-            [t.kids, poolPricing.child] as const,
-          ].map(([label, band]) => (
-            <div key={label} className="grid grid-cols-[1fr_auto_auto] items-baseline gap-x-3 border-b border-[color:var(--line)] px-4 py-3 last:border-0">
-              <span className="text-sm text-[var(--ink)]">{label}</span>
-              <span className="text-right font-serif text-lg font-bold text-[var(--ink)]">{money(band.weekday)}</span>
-              <span className="text-right font-serif text-lg font-bold text-[var(--accent-strong)]">{money(band.weekend)}</span>
-            </div>
-          ))}
           <div className="px-4 py-3 text-xs leading-5 text-[var(--muted)]">
             {t.freeNote}
           </div>
