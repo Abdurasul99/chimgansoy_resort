@@ -94,16 +94,50 @@ export const priceList: PriceItem[] = [
  * instead, change `perPerson` here and the form, the FAQ and the AI knowledge
  * base all follow.
  */
+/**
+ * Pool day pass, from the operator's own tariff poster.
+ *
+ * Two age bands and two day bands. The weekend band is Пт–Вс — Friday counts
+ * as a weekend day here, which is what the poster says and what the retired
+ * day-use list also used. (An earlier revision had it as Сб–Вс on a verbal
+ * correction; the poster overrides that.)
+ *
+ * `holidaysAsWeekend` is documented rather than implemented: the poster prices
+ * public holidays at the weekend rate, but there is no holiday calendar in the
+ * codebase, so the site quotes the weekday rate on a weekday holiday and the
+ * administrator corrects it at confirmation.
+ */
 export const poolPricing = {
-  weekday: 100_000,
-  weekend: 200_000,
-  perPerson: true,
-  // No party-size cap: the operator takes groups of any size for the pool.
-  // The weekend tariff is Sat–Sun only — narrower than the Пт–Вс split the
-  // retired day-use list used, so don't copy that one.
-  weekdayLabel: { ru: "Будни (Пн–Пт)", uz: "Ish kunlari (Du–Ju)", en: "Weekdays (Mon–Fri)" } satisfies LocalizedString,
-  weekendLabel: { ru: "Выходные (Сб–Вс)", uz: "Dam olish (Sha–Yak)", en: "Weekends (Sat–Sun)" } satisfies LocalizedString,
+  hours: "08:00–20:00",
+  freeForStayingGuests: true,
+  holidaysAsWeekend: true,
+
+  /** Adults and children 15 and over. */
+  adult: { weekday: 100_000, weekend: 200_000 },
+  /** Children 5–15. Under 5 are free when accompanied by an adult. */
+  child: { weekday: 50_000, weekend: 100_000 },
+  freeChildUnder: 5,
+
+  /** Paid extras. Bungalow rental does NOT include entry tickets. */
+  extras: {
+    towel: 30_000,
+    bungalow4: 300_000,
+    bungalow10: 500_000,
+  },
+
+  weekdayLabel: { ru: "Пн–Чт", uz: "Du–Pay", en: "Mon–Thu" } satisfies LocalizedString,
+  weekendLabel: { ru: "Пт–Вс и праздники", uz: "Ju–Yak va bayramlar", en: "Fri–Sun & holidays" } satisfies LocalizedString,
   perPersonLabel: { ru: "с человека", uz: "bir kishidan", en: "per person" } satisfies LocalizedString,
+};
+
+/**
+ * Entry / parking for one car — the fee the day-use poster calls «Въезд» and
+ * the newer one calls «Парковка». Charged to visitors who are not staying;
+ * guests park free by their cabin.
+ */
+export const parkingPricing = {
+  weekday: 50_000,
+  weekend: 100_000,
 };
 
 export const priceLabels = {

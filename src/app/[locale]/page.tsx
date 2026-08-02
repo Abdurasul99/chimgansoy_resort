@@ -47,9 +47,9 @@ const stats = [
 /** Tariff line under the pool CTA, built from the single source in pricing.ts. */
 const fmt = (n: number) => n.toLocaleString("ru-RU").replaceAll(",", " ");
 const poolPriceLine: Record<string, string> = {
-  ru: `Будни ${fmt(poolPricing.weekday)} сум · выходные ${fmt(poolPricing.weekend)} сум с человека`,
-  uz: `Ish kunlari ${fmt(poolPricing.weekday)} so'm · dam olish ${fmt(poolPricing.weekend)} so'm bir kishidan`,
-  en: `Weekdays ${fmt(poolPricing.weekday)} UZS · weekends ${fmt(poolPricing.weekend)} UZS per person`,
+  ru: `Пн–Чт ${fmt(poolPricing.adult.weekday)} · Пт–Вс ${fmt(poolPricing.adult.weekend)} сум со взрослого · дети 5–15 вдвое дешевле`,
+  uz: `Du–Pay ${fmt(poolPricing.adult.weekday)} · Ju–Yak ${fmt(poolPricing.adult.weekend)} so'm kattalar uchun · 5–15 yosh ikki barobar arzon`,
+  en: `Mon–Thu ${fmt(poolPricing.adult.weekday)} · Fri–Sun ${fmt(poolPricing.adult.weekend)} UZS per adult · ages 5–15 half price`,
 };
 
 /** Band under the two stay cards. It ran photo-free at first because the pool

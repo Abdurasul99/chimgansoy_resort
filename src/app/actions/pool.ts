@@ -40,10 +40,15 @@ function todayTashkent(): string {
   return new Date(Date.now() + 5 * 3600_000).toISOString().slice(0, 10);
 }
 
-/** Saturday and Sunday only. Friday is a weekday tariff for the pool. */
+/**
+ * Friday, Saturday and Sunday carry the weekend tariff — the operator's poster
+ * reads ПЯТНИЦА–ВОСКРЕСЕНЬЕ. Public holidays are weekend-priced too, but there
+ * is no holiday calendar here, so a weekday holiday quotes low and the
+ * administrator corrects it when confirming.
+ */
 function isWeekend(iso: string): boolean {
   const day = new Date(`${iso}T00:00:00Z`).getUTCDay(); // 0 Sun … 6 Sat
-  return day === 0 || day === 6;
+  return day === 0 || day === 5 || day === 6;
 }
 
 function money(n: number): string {
@@ -143,10 +148,29 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
 
   // No upper cap — the pool takes groups of any size; 200 is only a sanity
   // bound so a typo can't produce a nonsense total.
-  const guests = Math.min(Math.max(parseInt(guestsRaw, 10) || 1, 1), 200);
-  const rate = isWeekend(date) ? poolPricing.weekend : poolPricing.weekday;
-  const tariff = isWeekend(date) ? "выходной" : "будний";
-  const total = poolPricing.perPerson ? rate * guests : rate;
+  const num = (v: string, max = 200) => Math.min(Math.max(parseInt(v, 10) || 0, 0), max);
+  const adults = Math.max(num(guestsRaw), 1);
+  const kids = num(((formData.get("kids") as string | null) ?? "").trim());
+  const toddlers = num(((formData.get("toddlers") as string | null) ?? "").trim());
+  const towels = num(((formData.get("towels") as string | null) ?? "").trim(), 50);
+  const bungalowRaw = ((formData.get("bungalow") as string | null) ?? "none").trim();
+
+  const weekend = isWeekend(date);
+  const tariff = weekend ? "Пт–Вс" : "Пн–Чт";
+  const adultRate = weekend ? poolPricing.adult.weekend : poolPricing.adult.weekday;
+  const childRate = weekend ? poolPricing.child.weekend : poolPricing.child.weekday;
+
+  const bungalowPrice =
+    bungalowRaw === "b4" ? poolPricing.extras.bungalow4
+    : bungalowRaw === "b10" ? poolPricing.extras.bungalow10
+    : 0;
+  const bungalowLabel =
+    bungalowRaw === "b4" ? "Бунгало до 4 чел."
+    : bungalowRaw === "b10" ? "Бунгало до 10 чел."
+    : null;
+
+  const towelsPrice = towels * poolPricing.extras.towel;
+  const total = adults * adultRate + kids * childRate + towelsPrice + bungalowPrice;
 
   const tel = telLink(phone);
 
@@ -164,9 +188,15 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
     // menu. Anything appended to that line (a dash, a note) can break the
     // detection, so the line ends with the number.
     `📞 <b>Телефон:</b> ${esc(tel.display)}`,
-    `<b>Дата:</b> ${esc(date)} (${tariff} тариф)`,
-    `<b>Гостей:</b> ${guests}`,
-    `<b>К оплате:</b> ${money(rate)} сум${poolPricing.perPerson ? " × " + guests : ""} = <b>${money(total)} сум</b>`,
+    `<b>Дата:</b> ${esc(date)} · тариф ${tariff}`,
+    "",
+    `<b>Взрослые и дети 15+:</b> ${adults} × ${money(adultRate)} = ${money(adults * adultRate)} сум`,
+    ...(kids ? [`<b>Дети 5–15:</b> ${kids} × ${money(childRate)} = ${money(kids * childRate)} сум`] : []),
+    ...(toddlers ? [`<b>Дети до 5:</b> ${toddlers} — бесплатно`] : []),
+    ...(towels ? [`<b>Полотенца:</b> ${towels} × ${money(poolPricing.extras.towel)} = ${money(towelsPrice)} сум`] : []),
+    ...(bungalowLabel ? [`<b>${bungalowLabel}:</b> ${money(bungalowPrice)} сум`] : []),
+    "",
+    `<b>ИТОГО: ${money(total)} сум</b>`,
     ...(message ? ["", `<b>Комментарий:</b> ${esc(message)}`] : []),
     "",
     `<i>Заявка с сайта chimgandarbaza.uz · язык гостя: ${lang}</i>`,
@@ -181,13 +211,14 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
   const telegramOk = results.some((r) => r !== null);
 
   const emailOk = await sendEmailCopy(
-    `Бассейн · ${name} · ${date} · ${guests} гост.`,
+    `Бассейн · ${name} · ${date} · ${adults + kids} гост.`,
     `<div style="font-family:system-ui,sans-serif;max-width:520px">
       <h2 style="color:#1a4d2e">🏊 Заявка на бассейн</h2>
       <p><b>Имя:</b> ${esc(name)}<br>
          <b>Телефон:</b> <a href="tel:${esc(tel.display)}">${esc(tel.display)}</a><br>
-         <b>Дата:</b> ${esc(date)} (${tariff} тариф)<br>
-         <b>Гостей:</b> ${guests}<br>
+         <b>Дата:</b> ${esc(date)} · тариф ${tariff}<br>
+         <b>Гостей:</b> ${adults} взр.${kids ? " + " + kids + " дет. 5–15" : ""}${toddlers ? " + " + toddlers + " до 5" : ""}<br>
+         ${towels ? "<b>Полотенца:</b> " + towels + "<br>" : ""}${bungalowLabel ? "<b>" + bungalowLabel + "</b><br>" : ""}
          <b>К оплате:</b> ${money(total)} сум</p>
       ${message ? `<p><b>Комментарий:</b> ${esc(message)}</p>` : ""}
       <p style="color:#7a7a73;font-size:12px">Отправлено с chimgandarbaza.uz</p>
@@ -195,7 +226,7 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
   );
 
   console.log(
-    `[pool] telegram=${telegramOk ? "sent" : "failed"} (${chatIds.length} chat(s)) email=${emailOk ? "sent" : "skipped/failed"} | ${name}, ${phone}, ${date}, ${guests} guests`,
+    `[pool] telegram=${telegramOk ? "sent" : "failed"} (${chatIds.length} chat(s)) email=${emailOk ? "sent" : "skipped/failed"} | ${name}, ${phone}, ${date}, ${adults}+${kids} guests, total ${total}`,
   );
 
   // Never show a fake success: if nothing left the building, tell them to call.

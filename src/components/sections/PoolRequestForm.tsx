@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { submitPoolRequest } from "@/app/actions/pool";
 import { poolPricing } from "@/content/pricing";
 import { contacts } from "@/content/contacts";
@@ -29,6 +29,16 @@ const COPY: Record<
     successText: string;
     note: string;
     priceTitle: string;
+    adults: string;
+    kids: string;
+    toddlers: string;
+    towels: string;
+    bungalow: string;
+    bungalowNone: string;
+    bungalow4: string;
+    bungalow10: string;
+    total: string;
+    freeNote: string;
   }
 > = {
   ru: {
@@ -48,6 +58,16 @@ const COPY: Record<
     successText: "Администратор свяжется с вами в ближайшее время и подтвердит бронь.",
     note: "Заявка — это ещё не оплата. Бронь подтверждает администратор.",
     priceTitle: "Стоимость",
+    adults: "Взрослые и дети 15+",
+    kids: "Дети 5–15 лет",
+    toddlers: "Дети до 5 лет",
+    towels: "Полотенца (30 000)",
+    bungalow: "Бунгало",
+    bungalowNone: "Не нужно",
+    bungalow4: "До 4 человек — 300 000",
+    bungalow10: "До 10 человек — 500 000",
+    total: "Предварительно к оплате",
+    freeNote: "Гостям, проживающим в шале и глэмпинге, вход бесплатный. Дети до 5 лет — бесплатно в сопровождении взрослых. Аренда бунгало не включает входные билеты. Бассейн работает ежедневно 08:00–20:00.",
   },
   uz: {
     eyebrow: "Basseyn · yozgi mavsum",
@@ -66,6 +86,16 @@ const COPY: Record<
     successText: "Administrator tez orada bog'lanib, bronni tasdiqlaydi.",
     note: "Ariza — bu hali to'lov emas. Bronni administrator tasdiqlaydi.",
     priceTitle: "Narxi",
+    adults: "Kattalar va 15+ bolalar",
+    kids: "5–15 yoshli bolalar",
+    toddlers: "5 yoshgacha bolalar",
+    towels: "Sochiq (30 000)",
+    bungalow: "Bungalo",
+    bungalowNone: "Kerak emas",
+    bungalow4: "4 kishigacha — 300 000",
+    bungalow10: "10 kishigacha — 500 000",
+    total: "Taxminiy to'lov",
+    freeNote: "Shale va glempingda turuvchilar uchun kirish bepul. 5 yoshgacha bolalar — kattalar bilan bepul. Bungalo ijarasi kirish chiptalarini o'z ichiga olmaydi. Basseyn har kuni 08:00–20:00.",
   },
   en: {
     eyebrow: "The pool · summer season",
@@ -84,6 +114,16 @@ const COPY: Record<
     successText: "Our administrator will contact you shortly to confirm the booking.",
     note: "A request is not a payment. The administrator confirms the booking.",
     priceTitle: "Price",
+    adults: "Adults and ages 15+",
+    kids: "Children 5–15",
+    toddlers: "Children under 5",
+    towels: "Towels (30 000)",
+    bungalow: "Bungalow",
+    bungalowNone: "Not needed",
+    bungalow4: "Up to 4 people — 300 000",
+    bungalow10: "Up to 10 people — 500 000",
+    total: "Estimated total",
+    freeNote: "Free entry for chalet and glamping guests. Under-fives free with an adult. Bungalow rental does not include entry tickets. The pool is open daily 08:00–20:00.",
   },
 };
 
@@ -107,6 +147,24 @@ const labelCls =
 export function PoolRequestForm({ locale }: { locale: Locale }) {
   const t = COPY[locale] ?? COPY.ru;
   const [state, action, pending] = useActionState(formAction, initialState);
+
+  // Mirrored in the server action, which recomputes everything from the posted
+  // fields — this copy exists only so the guest sees the number before sending.
+  const [adults, setAdults] = useState(2);
+  const [kids, setKids] = useState(0);
+  const [toddlers, setToddlers] = useState(0);
+  const [towels, setTowels] = useState(0);
+  const [bungalow, setBungalow] = useState("none");
+  const [weekend, setWeekend] = useState(false);
+
+  const adultRate = weekend ? poolPricing.adult.weekend : poolPricing.adult.weekday;
+  const childRate = weekend ? poolPricing.child.weekend : poolPricing.child.weekday;
+  const bungalowPrice =
+    bungalow === "b4" ? poolPricing.extras.bungalow4
+    : bungalow === "b10" ? poolPricing.extras.bungalow10
+    : 0;
+  const total =
+    adults * adultRate + kids * childRate + towels * poolPricing.extras.towel + bungalowPrice;
 
   useEffect(() => {
     if (state.status === "ok") trackEvent("pool_request_submitted", { form: "pool" });
@@ -139,35 +197,30 @@ export function PoolRequestForm({ locale }: { locale: Locale }) {
       <h3 className="mt-3 font-serif text-3xl font-semibold leading-tight text-[var(--ink)] sm:text-4xl">{t.title}</h3>
       <p className="mt-3 max-w-xl text-sm leading-6 text-[var(--muted)] sm:text-base sm:leading-7">{t.lead}</p>
 
-      {/* Tariff as two cards. The dotted-leader list this replaced was built for
-          a 380px sidebar and wrapped its labels onto two lines. */}
+      {/* Four rates: two age bands × two day bands, straight off the operator's
+          tariff poster. Free entry for staying guests and under-fives is stated
+          under them, because those are the two things guests ask about most. */}
       <div className="mt-7">
         <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]">{t.priceTitle}</p>
-        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        <div className="mt-3 overflow-hidden rounded-2xl border border-[color:var(--line)] bg-[var(--paper)]">
+          <div className="grid grid-cols-[1fr_auto_auto] items-center gap-x-3 border-b border-[color:var(--line)] px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-[var(--muted)]">
+            <span />
+            <span className="text-right">{text(poolPricing.weekdayLabel, locale)}</span>
+            <span className="text-right text-[var(--accent-strong)]">{text(poolPricing.weekendLabel, locale)}</span>
+          </div>
           {[
-            [poolPricing.weekdayLabel, poolPricing.weekday, false] as const,
-            [poolPricing.weekendLabel, poolPricing.weekend, true] as const,
-          ].map(([label, value, isWeekend]) => (
-            <div
-              key={value}
-              className={`rounded-2xl border p-4 ${
-                isWeekend
-                  ? "border-[var(--accent)]/35 bg-[var(--accent)]/[0.07]"
-                  : "border-[color:var(--line)] bg-[var(--paper)]"
-              }`}
-            >
-              <p className="text-xs font-semibold text-[var(--muted)]">{text(label, locale)}</p>
-              <p className="mt-1.5 font-serif text-2xl font-bold leading-none text-[var(--ink)]">
-                {money(value)}
-                <span className="ml-1.5 text-sm font-bold text-[var(--muted)]">сум</span>
-              </p>
-              {poolPricing.perPerson && (
-                <p className="mt-1 text-[11px] font-semibold uppercase tracking-wider text-[var(--muted)]">
-                  {text(poolPricing.perPersonLabel, locale)}
-                </p>
-              )}
+            [t.adults, poolPricing.adult] as const,
+            [t.kids, poolPricing.child] as const,
+          ].map(([label, band]) => (
+            <div key={label} className="grid grid-cols-[1fr_auto_auto] items-baseline gap-x-3 border-b border-[color:var(--line)] px-4 py-3 last:border-0">
+              <span className="text-sm text-[var(--ink)]">{label}</span>
+              <span className="text-right font-serif text-lg font-bold text-[var(--ink)]">{money(band.weekday)}</span>
+              <span className="text-right font-serif text-lg font-bold text-[var(--accent-strong)]">{money(band.weekend)}</span>
             </div>
           ))}
+          <div className="px-4 py-3 text-xs leading-5 text-[var(--muted)]">
+            {t.freeNote}
+          </div>
         </div>
       </div>
 
@@ -181,26 +234,65 @@ export function PoolRequestForm({ locale }: { locale: Locale }) {
           </label>
         </div>
 
-        {/* A plain number field, not the GuestSelect dropdown used for rooms:
-            that one stops at 8, and the pool has no party-size limit. */}
-        <div className="grid gap-3 sm:grid-cols-2">
+        {/* Plain number fields, not the GuestSelect dropdown used for rooms:
+            that one stops at 8 and knows nothing about age bands. */}
+        {/* onChange keeps the running total on the right tariff band; the
+            server decides the real one from the posted date either way. */}
+        <div onChange={(e) => {
+          const v = (e.target as HTMLInputElement).value;
+          if (/^d{4}-d{2}-d{2}$/.test(v)) {
+            const d = new Date(v + "T00:00:00Z").getUTCDay();
+            setWeekend(d === 0 || d === 5 || d === 6);
+          }
+        }}>
           <DatePicker name="date" label={t.date} locale={locale} minToday />
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-3">
           <label className="block">
-            <span className={labelCls}>
-              <Icon name="user" className="h-3 w-3" />
-              {t.guests}
-            </span>
-            <input
-              name="guests"
-              type="number"
-              min={1}
-              max={200}
-              step={1}
-              defaultValue={2}
-              inputMode="numeric"
-              className={`${field} min-h-14`}
-            />
+            <span className={labelCls}>{t.adults}</span>
+            <input name="guests" type="number" min={1} max={200} step={1} defaultValue={2}
+              inputMode="numeric" value={adults} onChange={(e) => setAdults(+e.target.value || 0)}
+              className={field} />
           </label>
+          <label className="block">
+            <span className={labelCls}>{t.kids}</span>
+            <input name="kids" type="number" min={0} max={200} step={1} defaultValue={0}
+              inputMode="numeric" value={kids} onChange={(e) => setKids(+e.target.value || 0)}
+              className={field} />
+          </label>
+          <label className="block">
+            <span className={labelCls}>{t.toddlers}</span>
+            <input name="toddlers" type="number" min={0} max={50} step={1} defaultValue={0}
+              inputMode="numeric" value={toddlers} onChange={(e) => setToddlers(+e.target.value || 0)}
+              className={field} />
+          </label>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <label className="block">
+            <span className={labelCls}>{t.towels}</span>
+            <input name="towels" type="number" min={0} max={50} step={1} defaultValue={0}
+              inputMode="numeric" value={towels} onChange={(e) => setTowels(+e.target.value || 0)}
+              className={field} />
+          </label>
+          <label className="block">
+            <span className={labelCls}>{t.bungalow}</span>
+            <select name="bungalow" value={bungalow} onChange={(e) => setBungalow(e.target.value)} className={field}>
+              <option value="none">{t.bungalowNone}</option>
+              <option value="b4">{t.bungalow4}</option>
+              <option value="b10">{t.bungalow10}</option>
+            </select>
+          </label>
+        </div>
+
+        {/* Running total. The administrator confirms it, but a guest should not
+            have to do this arithmetic in their head before pressing send. */}
+        <div className="flex items-baseline justify-between rounded-2xl bg-[var(--accent)]/[0.08] px-4 py-3.5">
+          <span className="text-sm font-semibold text-[var(--ink)]">{t.total}</span>
+          <span className="font-serif text-2xl font-bold text-[var(--ink)]">
+            {money(total)} <span className="text-sm font-bold text-[var(--muted)]">сум</span>
+          </span>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
