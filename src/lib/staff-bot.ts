@@ -268,7 +268,7 @@ function renderPrices(): View {
       "<i>будни (Пн–Чт) / выходные (Пт–Вс), в сумах</i>",
       "",
       `🛖 <b>Топчан</b> (до ${topchanPricing.capacity} чел.) — <b>${money(topchanPricing.rent.weekday)}</b> / <b>${money(topchanPricing.rent.weekend)}</b>`,
-      `🚗 <b>Въезд</b> (1 автомобиль) — <b>${money(parkingPricing.weekday)}</b> / <b>${money(parkingPricing.weekend)}</b>`,
+      `🚗 <b>Парковочное место</b> (1 авто) — <b>${money(parkingPricing.weekday)}</b> / <b>${money(parkingPricing.weekend)}</b>`,
       "",
       // Tubing is priced per package of rides, so it cannot sit in the two-column
       // weekday/weekend table above without implying a band it does not have.

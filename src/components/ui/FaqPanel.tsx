@@ -348,7 +348,7 @@ export function FaqPanel({ locale: rawLocale }: { locale: string }) {
             }
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.93 }}
-            className={`cg-btn relative flex h-14 items-center gap-2.5 rounded-full bg-gradient-to-b from-[var(--sun)] to-[var(--sun-dark)] pl-4 pr-5 text-[var(--on-accent)] shadow-[0_14px_36px_rgba(220,140,0,0.42)] transition-shadow duration-300 hover:shadow-[0_18px_46px_rgba(220,140,0,0.5)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sun)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--paper)] ${open ? "cg-quiet" : ""}`}
+            className={`cg-btn relative flex h-14 items-center justify-center gap-2.5 rounded-full bg-gradient-to-b from-[var(--sun)] to-[var(--sun-dark)] px-2.5 text-[var(--on-accent)] shadow-[0_14px_36px_rgba(220,140,0,0.42)] transition-shadow duration-300 hover:shadow-[0_18px_46px_rgba(220,140,0,0.5)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sun)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--paper)] sm:pl-4 sm:pr-5 ${open ? "cg-quiet" : ""}`}
           >
             <span
               className={`flex h-9 w-9 items-center justify-center overflow-hidden rounded-full ${
@@ -433,7 +433,13 @@ export function FaqPanel({ locale: rawLocale }: { locale: string }) {
                 )}
               </AnimatePresence>
             </span>
-            <span className="text-sm font-semibold">{TOGGLE_LABEL[locale]}</span>
+            {/* Label on tablets and up only. With it, the launcher is a ~175 px
+                pill parked in the corner of a 360 px screen — it landed on the
+                hero's tubing card, on the booking widget's submit button and on
+                the room cards further down, and a floating element cannot be
+                scrolled out from under a thumb. Without it the launcher is a
+                56 px circle: still obvious, roughly a third of the footprint. */}
+            <span className="hidden text-sm font-semibold sm:inline">{TOGGLE_LABEL[locale]}</span>
           </motion.button>
         </div>
       </div>

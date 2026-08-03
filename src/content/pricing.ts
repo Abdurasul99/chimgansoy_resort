@@ -25,7 +25,7 @@ export const dayUse: PriceItem[] = [
   {
     key: "entry",
     icon: "car",
-    title: { ru: "Въезд", uz: "Kirish", en: "Entry fee" },
+    title: { ru: "Парковочное место", uz: "Parkovka joyi", en: "Parking space" },
     subtitle: { ru: "1 автомобиль", uz: "1 avtomobil", en: "per car" },
     weekday: 50_000,
     weekend: 100_000,

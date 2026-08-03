@@ -51,9 +51,10 @@ const STAY_CATEGORIES: { href: string; label: Record<string, string> }[] = [
   { href: "/nomera/glamping", label: { ru: "Глэмпинг", uz: "Glemping", en: "Glamping" } },
   { href: "/nomera/cottage", label: { ru: "Шале", uz: "Shale", en: "Chalet" } },
   { href: "/nomera/pool", label: { ru: "Бассейн", uz: "Basseyn", en: "Pool" } },
+  // No separate "Пикник-зона" chip: the tubing hill IS the picnic zone, so
+  // listing both invited a guest to look for a second place that doesn't exist.
   { href: "/tubing", label: { ru: "Тюбинг-горка", uz: "Tubing gorkasi", en: "Tubing hill" } },
   { href: "/topchan", label: { ru: "Топчан", uz: "Topchan", en: "Topchan" } },
-  { href: "/services/picnic-zone", label: { ru: "Пикник-зона", uz: "Piknik zonasi", en: "Picnic area" } },
 ];
 
 /** Tariff line under the pool CTA, built from the single source in pricing.ts. */
