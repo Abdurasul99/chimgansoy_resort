@@ -13,9 +13,9 @@ type HeroProps = {
 
 /** Second line of the pool CTA — the terms that make it worth a tap. */
 const poolHint: Record<Locale, string> = {
-  ru: "Тариф на целый день · от 100 000 сум · заявка за минуту",
-  uz: "Kun bo'yi tarif · 100 000 so'mdan · bir daqiqada ariza",
-  en: "Full-day pass · from 100 000 UZS · a one-minute request",
+  ru: "Тариф на целый день · от 100 000 сум · заявка за минуту",
+  uz: "Kun bo'yi tarif · 100 000 so'mdan · bir daqiqada ariza",
+  en: "Full-day pass · from 100 000 UZS · a one-minute request",
 };
 
 /**
@@ -32,9 +32,9 @@ const dayCtas: { href: string; icon: "topchan" | "snowflake"; label: Record<Loca
     icon: "topchan",
     label: { ru: "Топчан", uz: "Topchan", en: "Topchan" },
     hint: {
-      ru: "до 8 гостей · от 150 000 сум",
-      uz: "8 kishigacha · 150 000 so'mdan",
-      en: "up to 8 guests · from 150 000 UZS",
+      ru: "до 8 гостей · от 150 000 сум",
+      uz: "8 kishigacha · 150 000 so'mdan",
+      en: "up to 8 guests · from 150 000 UZS",
     },
   },
   {
@@ -42,9 +42,9 @@ const dayCtas: { href: string; icon: "topchan" | "snowflake"; label: Record<Loca
     icon: "snowflake",
     label: { ru: "Тюбинг горка", uz: "Tubing gorkasi", en: "Tubing hill" },
     hint: {
-      ru: "2 или 4 прокатки · от 50 000 сум",
-      uz: "2 yoki 4 marta · 50 000 so'mdan",
-      en: "2 or 4 rides · from 50 000 UZS",
+      ru: "2 или 4 прокатки · от 50 000 сум",
+      uz: "2 yoki 4 marta · 50 000 so'mdan",
+      en: "2 or 4 rides · from 50 000 UZS",
     },
   },
 ];

@@ -58,7 +58,9 @@ const STAY_CATEGORIES: { href: string; label: Record<string, string> }[] = [
 ];
 
 /** Tariff line under the pool CTA, built from the single source in pricing.ts. */
-const fmt = (n: number) => n.toLocaleString("ru-RU").replaceAll(",", " ");
+// Non-breaking, like lib/tariff.ts money(): a plain space let the
+// figure wrap as "100" / "000" inside the narrow hero card.
+const fmt = (n: number) => n.toLocaleString("ru-RU").replaceAll(",", " ");
 const poolPriceLine: Record<string, string> = {
   ru: `Пн–Чт ${fmt(poolPricing.adult.weekday)} · Пт–Вс ${fmt(poolPricing.adult.weekend)} сум со взрослого · дети 5–15 вдвое дешевле`,
   uz: `Du–Pay ${fmt(poolPricing.adult.weekday)} · Ju–Yak ${fmt(poolPricing.adult.weekend)} so'm kattalar uchun · 5–15 yosh ikki barobar arzon`,
