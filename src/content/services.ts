@@ -80,21 +80,21 @@ export const services: Service[] = [
     // hillside with nothing of the resort in it. The grounds card now shows the
     // grounds: cabins along the finished lawn and walkway.
     image: "aframeLawnWide",
-    title: { ru: "Территория и зоны отдыха", uz: "Hudud va dam olish zonalari", en: "The grounds & lounge areas" },
+    title: { ru: "Пикник-зона и территория", uz: "Piknik zonasi va hudud", en: "Picnic area & grounds" },
     shortDescription: {
-      ru: "Девять гектаров среди сосен: прогулочные дорожки, открытые площадки и детская зона.",
-      uz: "Qarag'aylar orasida to'qqiz gektar: sayr yo'lakchalari, ochiq maydonlar va bolalar zonasi.",
-      en: "Nine hectares among the pines: walking paths, open lawns, and a kids area.",
+      ru: "Пикник-зона у тюбинг-горки и девять гектаров среди сосен: дорожки, открытые площадки и детская зона.",
+      uz: "Tubing gorkasi yonidagi piknik zonasi va qarag'aylar orasida to'qqiz gektar: yo'lakchalar, ochiq maydonlar va bolalar zonasi.",
+      en: "The picnic area by the tubing hill, and nine hectares among the pines: walking paths, open lawns and a kids area.",
     },
     description: {
-      ru: "Территория открыта для гостей на всё время проживания: прогулочные дорожки между домиками, открытые площадки с панорамой на Чимган, детская площадка и места для встреч на воздухе. Парковка — рядом с домиком, зона мангала — в нескольких шагах.",
-      uz: "Hudud yashash davomida mehmonlar uchun ochiq: uychalar orasidagi sayr yo'lakchalari, Chimgon panoramasi bilan ochiq maydonlar, bolalar maydonchasi va ochiq havoda uchrashuv joylari. Parking — uycha yonida, mangal zonasi — bir necha qadamda.",
-      en: "The grounds are open to guests for the whole stay: walking paths between the cabins, open lawns with a view of the Chimgan range, a kids playground, and spots to gather outdoors. Parking sits by your cabin, the BBQ area a few steps away.",
+      ru: "Пикник-зона находится у тюбинг-горки — это одно и то же место. Территория открыта для гостей на всё время проживания: прогулочные дорожки между домиками, открытые площадки с панорамой на Чимган, детская площадка и места для встреч на воздухе. Парковка — рядом с домиком, зона мангала — в нескольких шагах.",
+      uz: "Piknik zonasi tubing gorkasi yonida — bu bir joy. Hudud yashash davomida mehmonlar uchun ochiq: uychalar orasidagi sayr yo'lakchalari, Chimgon panoramasi bilan ochiq maydonlar, bolalar maydonchasi va ochiq havoda uchrashuv joylari. Parking — uycha yonida, mangal zonasi — bir necha qadamda.",
+      en: "The picnic area is by the tubing hill — they are the same place. The grounds are open to guests for the whole stay: walking paths between the cabins, open lawns with a view of the Chimgan range, a kids playground, and spots to gather outdoors. Parking sits by your cabin, the BBQ area a few steps away.",
     },
     highlights: {
-      ru: ["9 гектаров территории", "Сосны и панорама гор", "Детская площадка", "Парковка у домика"],
-      uz: ["9 gektar hudud", "Qarag'aylar va tog' panoramasi", "Bolalar maydonchasi", "Uycha yonida parking"],
-      en: ["Nine hectares of grounds", "Pines and mountain views", "Kids playground", "Parking by your cabin"],
+      ru: ["Пикник-зона у горки", "9 гектаров территории", "Сосны и панорама гор", "Детская площадка", "Парковка у домика"],
+      uz: ["Gorka yonida piknik zonasi", "9 gektar hudud", "Qarag'aylar va tog' panoramasi", "Bolalar maydonchasi", "Uycha yonida parking"],
+      en: ["Picnic area by the hill", "Nine hectares of grounds", "Pines and mountain views", "Kids playground", "Parking by your cabin"],
     },
     bestFor: { ru: "Спокойный день на территории", uz: "Hududda sokin kun", en: "A slow day on the grounds" },
   },

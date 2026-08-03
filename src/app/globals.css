@@ -451,14 +451,21 @@ textarea {
   letter-spacing: -0.035em;
 }
 
-/* A laptop is wide and SHORT — 1920×770 once the browser chrome is off — and
-   13vw sizes the display type off the width alone, so the title grew to 176px
-   on the one axis that had no room to spare. Below a tall-enough viewport it
-   scales off the height instead, and the hero stops overflowing. */
-@media (max-height: 860px) and (min-width: 1024px) {
-  .display-xl {
-    font-size: clamp(3.25rem, 13vh, 8rem);
-  }
+/* The hero title sizes off its OWN COLUMN, not the viewport.
+   `13vw` measured the whole window while the title lives in a column roughly
+   750px wide beside the booking card, so from 1200px up on any viewport taller
+   than 800px the word ran 50px past its track and under the gold card — 33 of
+   66 measured viewports. A container query ties the type to the space it
+   actually has; the vh term keeps a tall word off the fold on a short laptop.
+   19cqi is the safe coefficient: "DARBAZA" is seven Cormorant capitals, about
+   4.3em wide, which leaves a comfortable margin inside 100cqi. */
+.hero-title-col {
+  container-type: inline-size;
+}
+.hero-title {
+  font-size: clamp(2.5rem, min(19cqi, 14vh), 8.5rem);
+  line-height: 0.88;
+  letter-spacing: -0.035em;
 }
 
 /* Shorter still — a 600px-tall netbook or a window dragged down to half the

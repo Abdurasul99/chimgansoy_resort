@@ -126,9 +126,17 @@ export function Header({ locale }: HeaderProps) {
           </nav>
 
           {/* Desktop controls */}
-          <div className="hidden items-center gap-3 lg:flex">
-            {/* Season toggle */}
-            <SeasonToggle onDark={isHeaderOnHero} locale={locale} />
+          <div className="hidden items-center gap-2 lg:flex xl:gap-3">
+            {/* Season toggle.
+                Hidden between 1024 and 1279px. At exactly 1024 — iPad
+                landscape — this cluster came to 390px against a 1024px
+                viewport and pushed the page 18px wide, in Russian only, where
+                «Забронировать» is the longest of the three labels. The toggle
+                is the one decorative item here; the language switcher and the
+                booking button both have to stay. */}
+            <div className="hidden xl:block">
+              <SeasonToggle onDark={isHeaderOnHero} locale={locale} />
+            </div>
 
             {/* Language switcher */}
             <div className="flex items-center gap-1" aria-label="Language switcher">

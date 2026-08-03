@@ -124,7 +124,9 @@ export const rooms: Room[] = [
     // chalet at all, so anyone booking a Шале was looking at another building.
     // gallery[0] spans both columns, so the wide lounge shot leads.
     image: "chaletLounge",
-    gallery: ["chaletDining", "chaletBedroomDouble", "chaletBedroomTwin", "chaletBathroom", "chaletKitchen"],
+    // The exterior leads: gallery[0] spans both columns on /nomera/[slug], and
+    // a guest choosing a chalet wants to see the building before the sofa.
+    gallery: ["chaletExterior", "chaletDining", "chaletBedroomDouble", "chaletBedroomTwin", "chaletBathroom", "chaletKitchen"],
     title: { ru: "Шале", uz: "Shale", en: "Chalet" },
     eyebrow: {
       ru: "Для семьи и компании",

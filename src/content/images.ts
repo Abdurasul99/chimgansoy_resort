@@ -146,6 +146,19 @@ export const resortImages = {
      each frame checked at the room-gallery ratio AND at the ~2:1 the room
      hero crops it to. Chosen to mirror the published spec — two bedrooms
      (one double, one twin), an ensuite per bedroom, kitchen-lounge with sofa. */
+  // The chalet's only exterior. Every other chalet frame is an interior, so
+  // the room page could show what the inside looks like but never the building
+  // a guest is actually booking.
+  chaletExterior: {
+    src: "/images/resort/rooms/chalet-exterior.jpg",
+    localSrc: "/images/resort/rooms/chalet-exterior.jpg",
+    position: "center",
+    alt: {
+      ru: "Шале снаружи: деревянный фасад, терраса с перилами и сосны на газоне",
+      uz: "Shale tashqaridan: yog'och fasad, panjarali terrasa va maysazordagi qarag'aylar",
+      en: "The chalet from outside: timber façade, railed terrace and pines on the lawn",
+    },
+  },
   chaletLounge: {
     src: "/images/resort/rooms/chalet-lounge.jpg",
     localSrc: "/images/resort/rooms/chalet-lounge.jpg",

@@ -168,7 +168,7 @@ function renderDates(): View {
     text: [
       "<b>🗓 Свободные даты и цены</b>",
       "",
-      "Выберите дату — покажу живые цены проживания и бассейна из системы бронирования:",
+      "Выберите дату — покажу живые цены проживания из системы бронирования:",
       "",
       "<i>Другая дата, несколько ночей или больше гостей? Просто напишите ИИ-помощнику, например: «глэмпинг с 1 по 3 августа на четверых».</i>",
     ].join("\n"),
@@ -217,13 +217,20 @@ async function renderPriceFor(date: string): Promise<View> {
       lines.push(`${icon(o.name)} ${esc(o.name)} — <b>${money(o.price)} UZS</b>`);
     }
   }
-  if (res.services.length) {
-    lines.push("");
-    for (const s of res.services) {
-      lines.push(
-        `${icon(s.name)} ${esc(s.name)} — <b>${money(s.price)} UZS</b>${s.perPerson ? " <i>с человека</i>" : ""}`,
-      );
-    }
+  /**
+   * Exely's services are NOT quoted here.
+   *
+   * The engine returns one flat figure for the pool — 200 000 per person on
+   * every date, including Пн–Чт — because the operator does not maintain a day
+   * pass there. Printing it doubled the weekday adult price and erased the
+   * child band entirely: a family of four read 800 000 where the tariff is
+   * 400 000. The site concierge was fixed for exactly this; the bot was
+   * printing it deterministically, with no AI involved. The real four-band
+   * tariff lives on the pool page and in the «🏷 Цены на день» screen.
+   */
+  const poolNote = res.services.some((s) => /бассейн|basseyn|pool/i.test(s.name));
+  if (poolNote) {
+    lines.push("", "🏊 <b>Бассейн</b> — тариф зависит от возраста и дня недели, смотрите на сайте.");
   }
   lines.push("", `<i>Точную информацию подтвердит администратор: ${esc(contacts.phone)}</i>`);
   return { text: lines.join("\n"), keyboard };

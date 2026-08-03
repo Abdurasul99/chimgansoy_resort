@@ -246,10 +246,10 @@ export function Hero({ locale }: HeroProps) {
               right edge was being clipped by the hero's overflow-hidden. The
               desktop template guards this with minmax(0,…); the mobile
               single-column fallback did not. */}
-          <div className="min-w-0">
+          <div className="hero-title-col min-w-0">
             {/* Heading — split display: last word in italic gold, oversized */}
             <h1
-              className="display-xl motion-rise font-serif font-bold text-white"
+              className="hero-title motion-rise font-serif font-bold text-white"
               style={{ animationDelay: "80ms", textShadow: "0 2px 30px rgba(0,0,0,0.35)" }}
             >
               {dict.home.title.split(" ").slice(0, -1).join(" ")}

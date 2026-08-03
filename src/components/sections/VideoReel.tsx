@@ -46,6 +46,67 @@ export function VideoReel({ locale, clips }: { locale: Locale; clips: VideoClip[
   const t = COPY[locale] ?? COPY.ru;
   const [open, setOpen] = useState<VideoClip | null>(null);
 
+  /**
+   * One observer for the whole rail, playing only the most-visible clip.
+   *
+   * Kept in a ref rather than state so a scroll never triggers a React render:
+   * the DOM is the only thing that has to change here.
+   */
+  const ratios = useRef(new Map<HTMLVideoElement, number>());
+  const io = useRef<IntersectionObserver | null>(null);
+
+  const apply = useCallback(() => {
+    let best: HTMLVideoElement | null = null;
+    let bestRatio = 0.35; // below this nothing plays — the rail is off screen
+    for (const [el, r] of ratios.current) {
+      if (r > bestRatio) {
+        bestRatio = r;
+        best = el;
+      }
+    }
+    for (const el of ratios.current.keys()) {
+      if (el === best) {
+        // play() rejects when the browser declines autoplay; that is a normal
+        // outcome, not an error — the poster stays and the tap still works.
+        void el.play().catch(() => {});
+      } else if (!el.paused) {
+        el.pause();
+      }
+    }
+  }, []);
+
+  const observer = useCallback(() => {
+    if (io.current) return io.current;
+    io.current = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          ratios.current.set(e.target as HTMLVideoElement, e.isIntersecting ? e.intersectionRatio : 0);
+        }
+        apply();
+      },
+      // A spread of thresholds so "most visible" is meaningful, not binary.
+      { threshold: [0, 0.2, 0.4, 0.6, 0.8, 1] },
+    );
+    return io.current;
+  }, [apply]);
+
+  const register = useCallback(
+    (el: HTMLVideoElement) => {
+      if (typeof window === "undefined" || !("IntersectionObserver" in window)) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      ratios.current.set(el, 0);
+      observer().observe(el);
+    },
+    [observer],
+  );
+
+  const unregister = useCallback((el: HTMLVideoElement) => {
+    ratios.current.delete(el);
+    io.current?.unobserve(el);
+  }, []);
+
+  useEffect(() => () => io.current?.disconnect(), []);
+
   return (
     <section className="overflow-hidden bg-[var(--ink)] px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
@@ -62,7 +123,15 @@ export function VideoReel({ locale, clips }: { locale: Locale; clips: VideoClip[
             first and last card bleed to the screen edge. */}
         <div className="-mx-4 mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {clips.map((clip, i) => (
-            <ReelCard key={clip.key} clip={clip} locale={locale} index={i} onOpen={() => setOpen(clip)} />
+            <ReelCard
+              key={clip.key}
+              clip={clip}
+              locale={locale}
+              index={i}
+              onOpen={() => setOpen(clip)}
+              register={register}
+              unregister={unregister}
+            />
           ))}
         </div>
       </div>
@@ -77,35 +146,33 @@ function ReelCard({
   locale,
   index,
   onOpen,
+  register,
+  unregister,
 }: {
   clip: VideoClip;
   locale: Locale;
   index: number;
   onOpen: () => void;
+  register: (el: HTMLVideoElement) => void;
+  unregister: (el: HTMLVideoElement) => void;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
 
+  /**
+   * Only ONE clip plays at a time, whichever is most centred.
+   *
+   * A per-card observer looked right on a phone, where one card fills the rail
+   * — but from 1024px up all five sit in a visible row, so all five crossed the
+   * threshold together and the page fetched 37 MB in five parallel downloads
+   * with five H.264 decoders running, next to the booking form. The shared
+   * controller in VideoReel decides; the card just registers itself.
+   */
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (!("IntersectionObserver" in window)) return;
-
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) {
-          // play() rejects when the browser declines autoplay; that is a normal
-          // outcome, not an error — the poster stays and the tap still works.
-          void el.play().catch(() => {});
-        } else {
-          el.pause();
-        }
-      },
-      { threshold: 0.45 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+    register(el);
+    return () => unregister(el);
+  }, [register, unregister]);
 
   return (
     <button
