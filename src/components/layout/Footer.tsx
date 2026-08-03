@@ -11,6 +11,22 @@ type FooterProps = {
   locale: Locale;
 };
 
+/**
+ * The services site — a separate deployment with its own admin panel, so the
+ * operator changes prices, photos and news there without touching this code.
+ */
+const SERVICES_SITE = "https://chimgan-uslugi.vercel.app";
+const SERVICES_LABEL = {
+  ru: "Услуги на территории",
+  uz: "Hududdagi xizmatlar",
+  en: "Services on the grounds",
+};
+const SERVICES_HINT = {
+  ru: "Аренда, активности и сервисы — цены и заявка",
+  uz: "Ijara, faoliyatlar va xizmatlar — narxlar va ariza",
+  en: "Rentals, activities and services — prices and requests",
+};
+
 export function Footer({ locale }: FooterProps) {
   const dict = dictionaries[locale];
 
@@ -123,6 +139,27 @@ export function Footer({ locale }: FooterProps) {
                 </div>
               ))}
             </div>
+
+            {/* The services site is a separate deployment with its own admin
+                panel, so the operator can change prices, photos and news there
+                without a code change. A plain <a>, not <Link> — the router
+                would try to resolve it as an internal route. */}
+            <a
+              href={SERVICES_SITE}
+              className="mt-8 flex items-center justify-between gap-4 rounded-2xl border border-[var(--sun)]/30 bg-[var(--sun)]/10 px-5 py-4 transition-colors hover:border-[var(--sun)]/60 hover:bg-[var(--sun)]/15"
+            >
+              <span className="min-w-0">
+                <span className="block text-sm font-bold text-[var(--paper)]">
+                  {text(SERVICES_LABEL, locale)}
+                </span>
+                <span className="mt-0.5 block text-xs text-[var(--muted)]">
+                  {text(SERVICES_HINT, locale)}
+                </span>
+              </span>
+              <span aria-hidden className="shrink-0 text-lg text-[var(--sun)]">
+                →
+              </span>
+            </a>
           </div>
 
           <div>

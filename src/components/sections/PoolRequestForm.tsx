@@ -73,7 +73,7 @@ const COPY: Record<
     bungalow4: "4 чел. · 300 000",
     bungalow10: "10 чел. · 500 000",
     total: "Предварительно к оплате",
-    freeNote: "Вход и парковка для посетителей бассейна БЕСПЛАТНЫ. Гостям, проживающим в шале и глэмпинге, вход тоже бесплатный. Дети до 5 лет — бесплатно в сопровождении взрослых. Аренда бунгало не включает входные билеты. Бассейн работает ежедневно 08:00–20:00.",
+    freeNote: "Вход и парковка для посетителей бассейна БЕСПЛАТНЫ. Гостям, проживающим в шале и глэмпинге, вход тоже бесплатный. Дети до 5 лет — бесплатно в сопровождении взрослых. Аренда бунгало не включает входные билеты. Бассейн работает ежедневно 08:00–20:00. Со своей едой и напитками в зону бассейна нельзя — на территории работают пул-бар и ресторан.",
   },
   uz: {
     eyebrow: "Basseyn · yozgi mavsum",
@@ -102,7 +102,7 @@ const COPY: Record<
     bungalow4: "4 kishi · 300 000",
     bungalow10: "10 kishi · 500 000",
     total: "Taxminiy to'lov",
-    freeNote: "Basseyn mehmonlari uchun kirish va parkovka BEPUL. Shale va glempingda turuvchilar uchun kirish ham bepul. 5 yoshgacha bolalar — kattalar bilan bepul. Bungalo ijarasi kirish chiptalarini o'z ichiga olmaydi. Basseyn har kuni 08:00–20:00.",
+    freeNote: "Basseyn mehmonlari uchun kirish va parkovka BEPUL. Shale va glempingda turuvchilar uchun kirish ham bepul. 5 yoshgacha bolalar — kattalar bilan bepul. Bungalo ijarasi kirish chiptalarini o'z ichiga olmaydi. Basseyn har kuni 08:00–20:00. Basseyn hududiga o'z ovqatingiz va ichimliklaringiz bilan kirish mumkin emas — hududda pul-bar va restoran ishlaydi.",
   },
   en: {
     eyebrow: "The pool · summer season",
@@ -131,7 +131,7 @@ const COPY: Record<
     bungalow4: "4 people · 300 000",
     bungalow10: "10 people · 500 000",
     total: "Estimated total",
-    freeNote: "Entry and parking are FREE for pool visitors. Chalet and glamping guests get in free too. Under-fives free with an adult. Bungalow rental does not include entry tickets. The pool is open daily 08:00–20:00.",
+    freeNote: "Entry and parking are FREE for pool visitors. Chalet and glamping guests get in free too. Under-fives free with an adult. Bungalow rental does not include entry tickets. The pool is open daily 08:00–20:00. Outside food and drink are not allowed in the pool area — the pool bar and the restaurant are on site.",
   },
 };
 

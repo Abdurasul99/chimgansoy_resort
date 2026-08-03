@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { BookingWidget } from "@/components/sections/BookingWidget";
+import { MenuBoard } from "@/components/sections/MenuBoard";
 import { PageHero } from "@/components/sections/PageHero";
 import { RoomCatalog } from "@/components/sections/RoomCatalog";
 import { ButtonLink } from "@/components/ui/ButtonLink";
@@ -63,6 +64,9 @@ export default async function ServiceDetailPage({ params }: PageProps) {
         eyebrow={text(service.bestFor, locale)}
       />
       <BookingWidget locale={locale} />
+
+      {/* The kitchen page is the one place a full menu belongs. */}
+      {service.slug === "restaurant" && <MenuBoard locale={locale} />}
 
       <section className="px-4 py-14 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
