@@ -188,9 +188,12 @@ export const poolPricing = {
 };
 
 /**
- * Entry / parking for one car — the fee the day-use poster calls «Въезд» and
- * the newer one calls «Парковка». Charged to visitors who are not staying;
- * guests park free by their cabin.
+ * Parking for one car — charged to TUBING visitors only.
+ *
+ * Entry to the grounds is free for everyone, and parking is free for staying
+ * guests, for pool bookings and for topchan visitors. This briefly appeared on
+ * the pool and topchan forms and overstated both totals by the day band; those
+ * forms have no car field now, and only TubingRequestForm reads this.
  */
 export const parkingPricing = {
   weekday: 50_000,

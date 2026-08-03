@@ -1,7 +1,7 @@
 "use server";
 
 import { contacts } from "@/content/contacts";
-import { parkingPricing, poolPricing, priceList, topchanPricing } from "@/content/pricing";
+import { poolPricing, priceList, topchanPricing } from "@/content/pricing";
 import { esc } from "@/lib/telegram";
 import {
   deliverRequest,
@@ -80,7 +80,6 @@ export async function submitTopchanRequest(formData: FormData): Promise<TopchanR
   // a typo can't produce a nonsense total, not a booking limit anyone will hit.
   const num = (v: string, max = 240) => Math.min(Math.max(parseInt(v, 10) || 0, 0), max);
   const guests = Math.max(num(((formData.get("guests") as string | null) ?? "").trim()), 1);
-  const cars = num(((formData.get("cars") as string | null) ?? "").trim(), 60);
   // These caps must match the form's max= exactly. A lower one here silently
   // truncates the quantity: the guest sees a total for 40 kazans and the
   // operator is sent an invoice for 30.
@@ -99,7 +98,6 @@ export async function submitTopchanRequest(formData: FormData): Promise<TopchanR
 
   const topchans = Math.max(Math.ceil(guests / topchanPricing.capacity), 1);
   const rent = weekend ? topchanPricing.rent.weekend : topchanPricing.rent.weekday;
-  const carRate = weekend ? parkingPricing.weekend : parkingPricing.weekday;
 
   const kazanRate = extraRate("kazan", weekend);
   const mangalRate = extraRate("mangal", weekend);
@@ -110,7 +108,6 @@ export async function submitTopchanRequest(formData: FormData): Promise<TopchanR
 
   const lines: { label: string; qty: number; rate: number }[] = [
     { label: `Топчан (до ${topchanPricing.capacity} чел.)`, qty: topchans, rate: rent },
-    { label: "Въезд, 1 автомобиль", qty: cars, rate: carRate },
     { label: "Бассейн, взрослые и 15+", qty: poolAdults, rate: poolAdultRate },
     { label: "Бассейн, дети 5–15", qty: poolKids, rate: poolKidRate },
     { label: "Аренда казана", qty: kazan, rate: kazanRate },

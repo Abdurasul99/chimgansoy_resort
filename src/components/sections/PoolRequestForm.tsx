@@ -2,7 +2,7 @@
 
 import { Fragment, useActionState, useEffect, useState } from "react";
 import { submitPoolRequest } from "@/app/actions/pool";
-import { parkingPricing, poolPricing, priceLabels } from "@/content/pricing";
+import { poolPricing, priceLabels } from "@/content/pricing";
 import { contacts } from "@/content/contacts";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Icon } from "@/components/ui/Icon";
@@ -35,7 +35,6 @@ const COPY: Record<
     kids: string;
     toddlers: string;
     towels: string;
-    cars: string;
     bungalow: string;
     bungalowNone: string;
     bungalow4: string;
@@ -66,7 +65,6 @@ const COPY: Record<
     kids: "Дети 5–15 лет",
     toddlers: "Дети до 5 лет",
     towels: "Полотенца (30 000)",
-    cars: "Парковочное место",
     bungalow: "Бунгало",
     bungalowNone: "Не нужно",
     // Kept short on purpose: the select is the third cell of a three-column
@@ -75,7 +73,7 @@ const COPY: Record<
     bungalow4: "4 чел. · 300 000",
     bungalow10: "10 чел. · 500 000",
     total: "Предварительно к оплате",
-    freeNote: "Вход на территорию для посетителей бассейна БЕСПЛАТНЫЙ — оплачивается только парковочное место. Гостям, проживающим в шале и глэмпинге, бесплатно и то и другое. Дети до 5 лет — бесплатно в сопровождении взрослых. Аренда бунгало не включает входные билеты. Бассейн работает ежедневно 08:00–20:00.",
+    freeNote: "Вход и парковка для посетителей бассейна БЕСПЛАТНЫ. Гостям, проживающим в шале и глэмпинге, вход тоже бесплатный. Дети до 5 лет — бесплатно в сопровождении взрослых. Аренда бунгало не включает входные билеты. Бассейн работает ежедневно 08:00–20:00.",
   },
   uz: {
     eyebrow: "Basseyn · yozgi mavsum",
@@ -99,13 +97,12 @@ const COPY: Record<
     kids: "5–15 yoshli bolalar",
     toddlers: "5 yoshgacha bolalar",
     towels: "Sochiq (30 000)",
-    cars: "Parkovka joyi",
     bungalow: "Bungalo",
     bungalowNone: "Kerak emas",
     bungalow4: "4 kishi · 300 000",
     bungalow10: "10 kishi · 500 000",
     total: "Taxminiy to'lov",
-    freeNote: "Basseyn mehmonlari uchun hududga kirish BEPUL — faqat parkovka joyi to'lanadi. Shale va glempingda turuvchilar uchun ikkalasi ham bepul. 5 yoshgacha bolalar — kattalar bilan bepul. Bungalo ijarasi kirish chiptalarini o'z ichiga olmaydi. Basseyn har kuni 08:00–20:00.",
+    freeNote: "Basseyn mehmonlari uchun kirish va parkovka BEPUL. Shale va glempingda turuvchilar uchun kirish ham bepul. 5 yoshgacha bolalar — kattalar bilan bepul. Bungalo ijarasi kirish chiptalarini o'z ichiga olmaydi. Basseyn har kuni 08:00–20:00.",
   },
   en: {
     eyebrow: "The pool · summer season",
@@ -129,13 +126,12 @@ const COPY: Record<
     kids: "Children 5–15",
     toddlers: "Children under 5",
     towels: "Towels (30 000)",
-    cars: "Parking space",
     bungalow: "Bungalow",
     bungalowNone: "Not needed",
     bungalow4: "4 people · 300 000",
     bungalow10: "10 people · 500 000",
     total: "Estimated total",
-    freeNote: "Entry to the grounds is FREE for pool visitors — only the parking space is charged. Chalet and glamping guests pay for neither. Under-fives free with an adult. Bungalow rental does not include entry tickets. The pool is open daily 08:00–20:00.",
+    freeNote: "Entry and parking are FREE for pool visitors. Chalet and glamping guests get in free too. Under-fives free with an adult. Bungalow rental does not include entry tickets. The pool is open daily 08:00–20:00.",
   },
 };
 
@@ -169,7 +165,6 @@ export function PoolRequestForm({ locale }: { locale: Locale }) {
   const [kids, setKids] = useState(0);
   const [toddlers, setToddlers] = useState(0);
   const [towels, setTowels] = useState(0);
-  const [cars, setCars] = useState(1);
   const [bungalow, setBungalow] = useState("none");
   const [weekend, setWeekend] = useState(false);
 
@@ -183,7 +178,6 @@ export function PoolRequestForm({ locale }: { locale: Locale }) {
     adults * adultRate +
     kids * childRate +
     towels * poolPricing.extras.towel +
-    cars * (weekend ? parkingPricing.weekend : parkingPricing.weekday) +
     bungalowPrice;
 
   useEffect(() => {
@@ -303,23 +297,14 @@ export function PoolRequestForm({ locale }: { locale: Locale }) {
           </label>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-3">
+        {/* No parking field: parking is free for pool bookings, for staying
+            guests and for topchan visitors — only tubing pays for it. It was
+            briefly charged here, which overstated the total by the day band. */}
+        <div className="grid gap-3 sm:grid-cols-2">
           <label className="block">
             <span className={labelCls}>{t.towels}</span>
             <input name="towels" type="number" min={0} max={50} step={1}
               inputMode="numeric" value={towels} onChange={(e) => setTowels(+e.target.value || 0)}
-              className={field} />
-          </label>
-          {/* Entry is charged per car to anyone not staying overnight, which a
-              pool day-pass guest is. The topchan and tubing forms already
-              counted it; without it here the quoted total was short by the
-              entry fee and the guest found out at the gate. */}
-          <label className="block">
-            <span className={labelCls}>
-              {t.cars} ({money(weekend ? parkingPricing.weekend : parkingPricing.weekday)})
-            </span>
-            <input name="cars" type="number" min={0} max={60} step={1}
-              inputMode="numeric" value={cars} onChange={(e) => setCars(+e.target.value || 0)}
               className={field} />
           </label>
           <label className="block">

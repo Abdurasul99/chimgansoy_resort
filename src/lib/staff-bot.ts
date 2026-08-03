@@ -268,13 +268,16 @@ function renderPrices(): View {
       "<i>будни (Пн–Чт) / выходные (Пт–Вс), в сумах</i>",
       "",
       `🛖 <b>Топчан</b> (до ${topchanPricing.capacity} чел.) — <b>${money(topchanPricing.rent.weekday)}</b> / <b>${money(topchanPricing.rent.weekend)}</b>`,
-      `🚗 <b>Парковочное место</b> (1 авто) — <b>${money(parkingPricing.weekday)}</b> / <b>${money(parkingPricing.weekend)}</b>`,
       "",
       // Tubing is priced per package of rides, so it cannot sit in the two-column
       // weekday/weekend table above without implying a band it does not have.
       `🛷 <b>Тюбинг-горка</b> — ${tubingPricing.packages
         .map((p) => `${p.rides} прокатки <b>${money(p.price)}</b>`)
         .join(" · ")} <i>(цена одна всю неделю)</i>`,
+      // Parking is charged to tubing visitors only, so it is stated beside
+      // tubing rather than as a line everyone reads as applying to them.
+      `🚗 <b>Парковка</b> (1 авто, только для тюбинга) — <b>${money(parkingPricing.weekday)}</b> / <b>${money(parkingPricing.weekend)}</b>`,
+      "<i>Проживающим, гостям бассейна и топчана парковка бесплатна.</i>",
       "",
       "<b>Аренда и расходники:</b>",
       ...rows,

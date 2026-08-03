@@ -1,7 +1,7 @@
 "use server";
 
 import { contacts } from "@/content/contacts";
-import { parkingPricing, poolPricing } from "@/content/pricing";
+import { poolPricing } from "@/content/pricing";
 import { esc } from "@/lib/telegram";
 import {
   deliverRequest,
@@ -76,9 +76,6 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
   const kids = num(((formData.get("kids") as string | null) ?? "").trim());
   const toddlers = num(((formData.get("toddlers") as string | null) ?? "").trim());
   const towels = num(((formData.get("towels") as string | null) ?? "").trim(), 50);
-  // Caps must match the form's max= exactly, or the guest is quoted a total
-  // for a quantity the operator is never invoiced.
-  const cars = num(((formData.get("cars") as string | null) ?? "").trim(), 60);
   const bungalowRaw = ((formData.get("bungalow") as string | null) ?? "none").trim();
 
   const weekend = isWeekend(date);
@@ -96,9 +93,7 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
     : null;
 
   const towelsPrice = towels * poolPricing.extras.towel;
-  const carRate = weekend ? parkingPricing.weekend : parkingPricing.weekday;
-  const carsPrice = cars * carRate;
-  const total = adults * adultRate + kids * childRate + towelsPrice + carsPrice + bungalowPrice;
+  const total = adults * adultRate + kids * childRate + towelsPrice + bungalowPrice;
   const tel = dialable(phone);
 
   const telegramHtml = [
@@ -120,7 +115,6 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
     ...(kids ? [`<b>Дети 5–15:</b> ${kids} × ${money(childRate)} = ${money(kids * childRate)} сум`] : []),
     ...(toddlers ? [`<b>Дети до 5:</b> ${toddlers} — бесплатно`] : []),
     ...(towels ? [`<b>Полотенца:</b> ${towels} × ${money(poolPricing.extras.towel)} = ${money(towelsPrice)} сум`] : []),
-    ...(cars ? [`<b>Въезд:</b> ${cars} авто × ${money(carRate)} = ${money(carsPrice)} сум`] : []),
     ...(bungalowLabel ? [`<b>${bungalowLabel}:</b> ${money(bungalowPrice)} сум`] : []),
     "",
     `<b>ИТОГО: ${money(total)} сум</b>`,
@@ -155,7 +149,6 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
       toddlers,
       extras: [
         ...(towels ? [`полотенца ×${towels}`] : []),
-        ...(cars ? [`въезд ×${cars}`] : []),
         ...(bungalowLabel ? [bungalowLabel] : []),
       ],
       total,

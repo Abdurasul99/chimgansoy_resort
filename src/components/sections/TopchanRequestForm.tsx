@@ -2,7 +2,7 @@
 
 import { Fragment, useActionState, useEffect, useState } from "react";
 import { submitTopchanRequest } from "@/app/actions/topchan";
-import { parkingPricing, poolPricing, priceLabels, priceList, topchanPricing } from "@/content/pricing";
+import { poolPricing, priceLabels, priceList, topchanPricing } from "@/content/pricing";
 import { contacts } from "@/content/contacts";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Icon } from "@/components/ui/Icon";
@@ -20,7 +20,6 @@ const COPY: Record<
     date: string;
     guests: string;
     guestsHint: (n: number) => string;
-    cars: string;
     name: string;
     namePh: string;
     phone: string;
@@ -34,7 +33,6 @@ const COPY: Record<
     failed: string;
     priceTitle: string;
     topchan: string;
-    entry: string;
     allWeek: string;
     extrasTitle: string;
     poolTitle: string;
@@ -52,7 +50,6 @@ const COPY: Record<
     date: "Дата визита",
     guests: "Гостей",
     guestsHint: (n) => `Понадобится топчанов: ${n}`,
-    cars: "Парковочное место",
     name: "Ваше имя",
     namePh: "Как к вам обращаться",
     phone: "Телефон",
@@ -66,7 +63,6 @@ const COPY: Record<
     failed: `Не удалось отправить заявку. Позвоните нам: ${contacts.phone}`,
     priceTitle: "Стоимость",
     topchan: `Топчан (до ${topchanPricing.capacity} чел.)`,
-    entry: "Парковочное место, 1 авто",
     allWeek: "всю неделю",
     extrasTitle: "Добавить к отдыху",
     poolTitle: "Доступ в бассейн",
@@ -83,7 +79,6 @@ const COPY: Record<
     date: "Tashrif sanasi",
     guests: "Mehmonlar",
     guestsHint: (n) => `Kerakli topchanlar: ${n}`,
-    cars: "Parkovka joyi",
     name: "Ismingiz",
     namePh: "Sizga qanday murojaat qilaylik",
     phone: "Telefon",
@@ -97,7 +92,6 @@ const COPY: Record<
     failed: `Arizani yuborib bo'lmadi. Bizga qo'ng'iroq qiling: ${contacts.phone}`,
     priceTitle: "Narxi",
     topchan: `Topchan (${topchanPricing.capacity} kishigacha)`,
-    entry: "Parkovka joyi, 1 avto",
     allWeek: "butun hafta",
     extrasTitle: "Dam olishga qo'shish",
     poolTitle: "Basseynga kirish",
@@ -114,7 +108,6 @@ const COPY: Record<
     date: "Visit date",
     guests: "Guests",
     guestsHint: (n) => `Topchans needed: ${n}`,
-    cars: "Parking space",
     name: "Your name",
     namePh: "What should we call you",
     phone: "Phone",
@@ -128,7 +121,6 @@ const COPY: Record<
     failed: `We couldn't send your request. Please call us: ${contacts.phone}`,
     priceTitle: "Price",
     topchan: `Topchan (up to ${topchanPricing.capacity} people)`,
-    entry: "Parking space, 1 car",
     allWeek: "all week",
     extrasTitle: "Add to your day",
     poolTitle: "Pool access",
@@ -176,7 +168,6 @@ export function TopchanRequestForm({ locale }: { locale: Locale }) {
   // Mirrored in the server action, which recomputes everything from the posted
   // fields — this copy exists only so the guest sees the number before sending.
   const [guests, setGuests] = useState(8);
-  const [cars, setCars] = useState(1);
   const [weekend, setWeekend] = useState(false);
   const [extras, setExtras] = useState<Record<string, number>>({});
   const [poolAdults, setPoolAdults] = useState(0);
@@ -192,7 +183,6 @@ export function TopchanRequestForm({ locale }: { locale: Locale }) {
 
   const total =
     topchans * band(topchanPricing.rent) +
-    cars * band(parkingPricing) +
     poolAdults * band(poolPricing.adult) +
     poolKids * band(poolPricing.child) +
     towels * poolPricing.extras.towel +
@@ -253,7 +243,6 @@ export function TopchanRequestForm({ locale }: { locale: Locale }) {
 
             {[
               [t.topchan, topchanPricing.rent] as const,
-              [t.entry, parkingPricing] as const,
             ].map(([label, rate]) => (
               <Fragment key={label}>
                 <span className="border-b border-[color:var(--line)] py-3 pr-2 text-sm text-[var(--ink)]">{label}</span>
@@ -320,7 +309,8 @@ export function TopchanRequestForm({ locale }: { locale: Locale }) {
           onChange={(iso) => setWeekend(isWeekendISO(iso))}
         />
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        {/* Parking is free for topchan visitors — only tubing pays for it. */}
+        <div className="grid gap-3">
           <label className="block">
             <span className={labelCls}>{t.guests}</span>
             <input name="guests" type="number" min={1} max={240} step={1}
@@ -329,12 +319,6 @@ export function TopchanRequestForm({ locale }: { locale: Locale }) {
             <span className="mt-1.5 block text-xs font-semibold text-[var(--accent-strong)]">
               {t.guestsHint(topchans)}
             </span>
-          </label>
-          <label className="block">
-            <span className={labelCls}>{t.cars}</span>
-            <input name="cars" type="number" min={0} max={60} step={1}
-              inputMode="numeric" value={cars} onChange={(e) => setCars(+e.target.value || 0)}
-              className={field} />
           </label>
         </div>
 
