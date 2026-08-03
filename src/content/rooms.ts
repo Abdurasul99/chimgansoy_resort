@@ -95,6 +95,10 @@ export const rooms: Room[] = [
         highlight: true,
       },
       {
+        label: { ru: "Завтрак", uz: "Nonushta", en: "Breakfast" },
+        highlight: true,
+      },
+      {
         label: {
           ru: "Тюбинг-горка: 2 прокатки",
           uz: "Tubing gorkasi: 2 marta uchish",
@@ -158,6 +162,10 @@ export const rooms: Room[] = [
     included: [
       {
         label: { ru: "Бассейн", uz: "Basseyn", en: "Pool" },
+        highlight: true,
+      },
+      {
+        label: { ru: "Завтрак", uz: "Nonushta", en: "Breakfast" },
         highlight: true,
       },
       {
