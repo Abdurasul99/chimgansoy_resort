@@ -451,6 +451,27 @@ textarea {
   letter-spacing: -0.035em;
 }
 
+/* A laptop is wide and SHORT — 1920×770 once the browser chrome is off — and
+   13vw sizes the display type off the width alone, so the title grew to 176px
+   on the one axis that had no room to spare. Below a tall-enough viewport it
+   scales off the height instead, and the hero stops overflowing. */
+@media (max-height: 860px) and (min-width: 1024px) {
+  .display-xl {
+    font-size: clamp(3.25rem, 13vh, 8rem);
+  }
+}
+
+/* Shorter still — a 600px-tall netbook or a window dragged down to half the
+   screen. The hero's own 96px of vertical padding is then a sixth of the
+   viewport, so it gives most of it back rather than pushing the booking card
+   past the fold. */
+@media (max-height: 700px) and (min-width: 1024px) {
+  [data-hero-fx] > .hero-fx-content {
+    padding-top: 3.5rem;
+    padding-bottom: 3rem;
+  }
+}
+
 /* ── Kicker rule — section label with a long hairline ── */
 .kicker-rule {
   display: flex;

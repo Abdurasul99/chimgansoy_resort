@@ -230,51 +230,58 @@ export function Hero({ locale }: HeroProps) {
           (72px) and stands ~56px tall, so it occupies the last ~128px of the
           viewport; anything less than that here leaves it sitting on top of the
           widget's submit button. */}
-      <div className="hero-fx-content relative z-[4] mx-auto w-full max-w-7xl px-4 pb-36 pt-36 sm:px-6 sm:pb-16 lg:pb-24 lg:px-8">
+      <div className="hero-fx-content relative z-[4] mx-auto w-full max-w-7xl px-4 pb-36 pt-28 sm:px-6 sm:pb-16 sm:pt-32 lg:pb-24 lg:pt-24 lg:px-8">
 
-        {/* Heading — split display: last word in italic gold, oversized */}
-        <h1
-          className="display-xl motion-rise font-serif font-bold text-white"
-          style={{ animationDelay: "80ms", textShadow: "0 2px 30px rgba(0,0,0,0.35)" }}
-        >
-          {dict.home.title.split(" ").slice(0, -1).join(" ")}
-          <br />
-          <em className="text-[var(--sun)]">{dict.home.title.split(" ").at(-1)}</em>
-        </h1>
-
-        {/* What you actually book here, in three words each. The hero used to
-            say "day visit, topchans" — this is the stay-led replacement, and it
-            sits above the lead so the format registers before the prose does. */}
-        <ul
-          className="motion-rise mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 sm:gap-x-4"
-          style={{ animationDelay: "160ms" }}
-        >
-          {dict.home.heroChips.map((chip, i) => (
-            <li key={chip} className="flex items-center gap-3 sm:gap-4">
-              {i > 0 && <span aria-hidden className="h-1 w-1 rounded-full bg-[var(--sun)]/70" />}
-              <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/75 sm:text-xs">
-                {chip}
-              </span>
-            </li>
-          ))}
-        </ul>
-
-        {/* Lead + booking: quiet one-line lead on the LEFT, booking box on the
-            RIGHT (desktop). Stacks to one column on phones/tablets. */}
-        <div className="mt-7 grid items-end gap-8 lg:mt-9 lg:grid-cols-[1fr_minmax(0,26rem)] lg:gap-12">
-          {/* LEFT — one-line lead, lots of breathing room.
-              min-w-0 on both columns: a grid item defaults to min-width:auto and
+        {/* Title, chips and lead form ONE column beside the booking stack.
+            The title used to span the full width above this grid, so the hero
+            was h1 + max(lead, booking) tall — 1095px against a 770px laptop
+            viewport, with a 455px void between the title and the lead because
+            the short lead was bottom-aligned to the tall booking column. Beside
+            it instead, the hero is max(left, right) and the title sits with the
+            text it belongs to. */}
+        <div className="grid items-end gap-8 lg:grid-cols-[1fr_minmax(0,26rem)] lg:gap-12">
+          {/* min-w-0 on both columns: a grid item defaults to min-width:auto and
               refuses to shrink below its content, so on a 390px phone the
               booking card was rendering 389px wide inside a 358px track and its
               right edge was being clipped by the hero's overflow-hidden. The
               desktop template guards this with minmax(0,…); the mobile
               single-column fallback did not. */}
-          <p
-            className="motion-rise min-w-0 max-w-md text-[1.1rem] leading-[1.7] text-white/85"
-            style={{ animationDelay: "200ms" }}
-          >
-            {dict.home.lead}
-          </p>
+          <div className="min-w-0">
+            {/* Heading — split display: last word in italic gold, oversized */}
+            <h1
+              className="display-xl motion-rise font-serif font-bold text-white"
+              style={{ animationDelay: "80ms", textShadow: "0 2px 30px rgba(0,0,0,0.35)" }}
+            >
+              {dict.home.title.split(" ").slice(0, -1).join(" ")}
+              <br />
+              <em className="text-[var(--sun)]">{dict.home.title.split(" ").at(-1)}</em>
+            </h1>
+
+            {/* What you actually book here, in three words each. The hero used
+                to say "day visit, topchans" — this is the stay-led replacement,
+                and it sits above the lead so the format registers before the
+                prose does. */}
+            <ul
+              className="motion-rise mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 sm:gap-x-4"
+              style={{ animationDelay: "160ms" }}
+            >
+              {dict.home.heroChips.map((chip, i) => (
+                <li key={chip} className="flex items-center gap-3 sm:gap-4">
+                  {i > 0 && <span aria-hidden className="h-1 w-1 rounded-full bg-[var(--sun)]/70" />}
+                  <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/75 sm:text-xs">
+                    {chip}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <p
+              className="motion-rise mt-7 min-w-0 max-w-md text-[1.1rem] leading-[1.7] text-white/85"
+              style={{ animationDelay: "200ms" }}
+            >
+              {dict.home.lead}
+            </p>
+          </div>
 
           {/* RIGHT — booking search box, plus a way past it. The widget searches
               stays; the pool is the one thing sold without a night, and it had
