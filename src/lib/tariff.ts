@@ -33,3 +33,32 @@ export function isWeekendISO(iso: string): boolean {
 export function money(n: number): string {
   return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
+
+/**
+ * "спуск / спуска / спусков" for a tubing package of n rides.
+ *
+ * The operator corrected the wording on 2026-08-04: a run down the tubing hill
+ * is a "спуск", not a "прокатка". The count is interpolated in half a dozen
+ * places — the room cards, the hero, the request form, the Telegram message,
+ * the e-mail copy and both AI briefings — so the form is computed rather than
+ * written out. Today every package is 2 or 4 and a hardcoded "спуска" would
+ * read correctly; the day someone adds a 5-ride package it would read
+ * "5 спуска", which is exactly the kind of thing that gets reported back.
+ *
+ * Standard Russian rule, including the 11–14 exception that catches naive
+ * implementations: 11 is "спусков", not "спуск".
+ */
+export function ridesRu(n: number): string {
+  const abs = Math.abs(n) % 100;
+  if (abs >= 11 && abs <= 14) return "спусков";
+  switch (abs % 10) {
+    case 1:
+      return "спуск";
+    case 2:
+    case 3:
+    case 4:
+      return "спуска";
+    default:
+      return "спусков";
+  }
+}

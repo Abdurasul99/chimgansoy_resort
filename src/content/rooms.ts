@@ -133,7 +133,7 @@ export const rooms: Room[] = [
       },
       {
         label: {
-          ru: "Тюбинг-горка: 2 прокатки",
+          ru: "Тюбинг-горка: 2 спуска",
           uz: "Tubing gorkasi: 2 marta uchish",
           en: "Tubing hill: 2 rides",
         },
@@ -226,7 +226,7 @@ export const rooms: Room[] = [
       },
       {
         label: {
-          ru: "Тюбинг-горка: 4 прокатки",
+          ru: "Тюбинг-горка: 4 спуска",
           uz: "Tubing gorkasi: 4 marta uchish",
           en: "Tubing hill: 4 rides",
         },

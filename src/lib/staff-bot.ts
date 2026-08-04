@@ -30,6 +30,7 @@ import { checkAvailability } from "./exely";
 import { contacts } from "@/content/contacts";
 import { parkingPricing, priceList, topchanPricing, tubingPricing } from "@/content/pricing";
 import { money } from "./venue-facts";
+import { ridesRu } from "./tariff";
 import { recentRequests, requestsByDate, storeConfigured, type StoredRequest } from "./requests-store";
 
 const SITE = "https://chimgandarbaza.uz";
@@ -282,7 +283,7 @@ function renderPrices(): View {
       // Tubing is priced per package of rides, so it cannot sit in the two-column
       // weekday/weekend table above without implying a band it does not have.
       `🛷 <b>Тюбинг-горка</b> — ${tubingPricing.packages
-        .map((p) => `${p.rides} прокатки <b>${money(p.price)}</b>`)
+        .map((p) => `${p.rides} ${ridesRu(p.rides)} <b>${money(p.price)}</b>`)
         .join(" · ")} <i>(цена одна всю неделю)</i>`,
       // Parking is charged to tubing visitors only, so it is stated beside
       // tubing rather than as a line everyone reads as applying to them.

@@ -8,7 +8,7 @@ import { DatePicker } from "@/components/ui/DatePicker";
 import { Icon } from "@/components/ui/Icon";
 import { trackEvent } from "@/lib/analytics";
 import { text } from "@/lib/localize";
-import { isWeekendISO, money } from "@/lib/tariff";
+import { isWeekendISO, money, ridesRu } from "@/lib/tariff";
 import type { Locale } from "@/i18n/config";
 
 const COPY: Record<
@@ -41,7 +41,7 @@ const COPY: Record<
   ru: {
     eyebrow: "Тюбинг-горка",
     title: "Оставить заявку",
-    lead: "Выберите дату и количество прокаток — администратор перезвонит, подтвердит время и состояние трассы.",
+    lead: "Выберите дату и количество спусков — администратор перезвонит, подтвердит время и состояние трассы.",
     date: "Дата визита",
     guests: "Гостей",
     cars: "Парковочное место",
@@ -57,7 +57,7 @@ const COPY: Record<
     note: "Заявка — это ещё не оплата. Бронь подтверждает администратор.",
     failed: `Не удалось отправить заявку. Позвоните нам: ${contacts.phone}`,
     priceTitle: "Тариф",
-    packLabel: (r) => `${r} прокатки`,
+    packLabel: (r) => `${r} ${ridesRu(r)}`,
     entry: "Парковочное место, 1 авто",
     total: "Предварительно к оплате",
     seasonNote:

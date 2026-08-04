@@ -42,7 +42,7 @@ const dayCtas: { href: string; icon: "topchan" | "snowflake"; label: Record<Loca
     icon: "snowflake",
     label: { ru: "Тюбинг горка", uz: "Tubing gorkasi", en: "Tubing hill" },
     hint: {
-      ru: "2 или 4 прокатки · от 50 000 сум",
+      ru: "2 или 4 спуска · от 50 000 сум",
       uz: "2 yoki 4 marta · 50 000 so'mdan",
       en: "2 or 4 rides · from 50 000 UZS",
     },
@@ -341,7 +341,7 @@ export function Hero({ locale }: HeroProps) {
                     <Icon name={cta.icon} className="h-[1.15rem] w-[1.15rem] sm:h-6 sm:w-6" />
                   </span>
                   {/* Wrapping, not truncating. At 360px "Тюбинг горка" and
-                      "2 или 4 прокатки" both hit the ellipsis, and a CTA that
+                      "2 или 4 спуска" both hit the ellipsis, and a CTA that
                       ends in "Тюбин…" tells a guest nothing. */}
                   <span className="min-w-0 flex-1">
                     <span className="block text-[0.9rem] font-extrabold leading-tight sm:text-[1.05rem]">

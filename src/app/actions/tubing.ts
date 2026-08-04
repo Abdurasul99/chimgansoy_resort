@@ -3,6 +3,7 @@
 import { contacts } from "@/content/contacts";
 import { parkingPricing, tubingPricing } from "@/content/pricing";
 import { esc } from "@/lib/telegram";
+import { ridesRu } from "@/lib/tariff";
 import {
   deliverRequest,
   dialable,
@@ -87,7 +88,7 @@ export async function submitTubingRequest(formData: FormData): Promise<TubingRes
   const lines: { label: string; qty: number; rate: number }[] = [
     ...packs
       .filter((p) => p.qty > 0)
-      .map((p) => ({ label: `Пакет ${p.rides} прокатки`, qty: p.qty, rate: p.price })),
+      .map((p) => ({ label: `Пакет ${p.rides} ${ridesRu(p.rides)}`, qty: p.qty, rate: p.price })),
     { label: "Въезд, 1 автомобиль", qty: cars, rate: carRate },
   ].filter((l) => l.qty > 0);
 
@@ -102,7 +103,7 @@ export async function submitTubingRequest(formData: FormData): Promise<TubingRes
     // Bare international number on its own line — see the note in topchan.ts.
     `📞 <b>Телефон:</b> ${esc(tel)}`,
     `<b>Дата:</b> ${esc(date)} · тариф въезда ${tariff}`,
-    `<b>Гостей:</b> ${guests}${rides ? ` · <b>прокаток:</b> ${rides}` : ""}`,
+    `<b>Гостей:</b> ${guests}${rides ? ` · <b>спусков:</b> ${rides}` : ""}`,
     "",
     ...(lines.length
       ? lines.map(
@@ -121,7 +122,7 @@ export async function submitTubingRequest(formData: FormData): Promise<TubingRes
       <p><b>Имя:</b> ${esc(name)}<br>
          <b>Телефон:</b> <a href="tel:${esc(tel)}">${esc(tel)}</a><br>
          <b>Дата:</b> ${esc(date)}<br>
-         <b>Гостей:</b> ${guests}${rides ? ` · прокаток: ${rides}` : ""}</p>
+         <b>Гостей:</b> ${guests}${rides ? ` · спусков: ${rides}` : ""}</p>
       <ul>${lines
         .map((l) => `<li>${esc(l.label)}: ${l.qty} × ${money(l.rate)} = ${money(l.qty * l.rate)} сум</li>`)
         .join("")}</ul>
