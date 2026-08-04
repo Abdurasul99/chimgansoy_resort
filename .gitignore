@@ -56,3 +56,6 @@ next-env.d.ts
 # Ad-hoc verification scripts written by agents at the repo root so that
 # playwright resolves from node_modules. Never part of the app.
 /*.mjs
+
+# Scratch Next.js projects agents build to probe routing behaviour.
+/.*-probe/
