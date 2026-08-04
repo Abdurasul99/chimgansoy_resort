@@ -57,7 +57,11 @@ const CELLS: Cell[] = [
     span: "",
   },
   {
-    image: "aframeRoom",
+    // aframeRoom held this cell because no exterior frame of an A-frame was
+    // clean — every one had a tower crane in the sky. The operator's second
+    // 2026-08-04 drop finally supplied one, and the silhouette IS the product,
+    // so the mosaic can now argue the A-frame with a picture of an A-frame.
+    image: "aframeGableSky",
     caption: { ru: "Глэмпинг A-frame", uz: "A-frame glemping", en: "A-frame glamping" },
     span: "md:col-span-2",
   },

@@ -636,6 +636,65 @@ export const resortImages = {
       en: "Towels, hangers and the in-room safe in the chalet wardrobe",
     },
   },
+
+  /* ── A-frame glamping, operator drop 2026-08-04 (second batch) ────────────
+   * aframeTerraceRail and aframeGableSky are the first photographs of an
+   * A-frame from outside that carry NO construction: no tower crane in the
+   * sky, no geotextile on the ground. Every earlier wide exterior did — which
+   * is why the glamping room gallery had to open on an interior and the bento
+   * mosaic argued the A-frame with a picture of its inside. Both compromises
+   * are undone here.
+   * ────────────────────────────────────────────────────────────────────── */
+  aframeTerraceRail: {
+    src: "/images/resort/glamping-2026-08/aframe-terrace-rail.jpg",
+    localSrc: "/images/resort/glamping-2026-08/aframe-terrace-rail.jpg",
+    position: "center",
+    alt: {
+      ru: "Терраса домика A-frame с деревянными перилами и панорамной дверью",
+      uz: "A-frame uychaning yog'och panjarali va panoramali eshikli terrasasi",
+      en: "The A-frame terrace, timber railing and full-height glass doors",
+    },
+  },
+  aframeGableSky: {
+    src: "/images/resort/glamping-2026-08/aframe-gable-sky.jpg",
+    localSrc: "/images/resort/glamping-2026-08/aframe-gable-sky.jpg",
+    position: "center",
+    alt: {
+      ru: "Треугольный силуэт домика A-frame на фоне неба",
+      uz: "Osmon fonida A-frame uychaning uchburchak silueti",
+      en: "The A-frame's triangular silhouette against open sky",
+    },
+  },
+  aframeChairsWindow: {
+    src: "/images/resort/glamping-2026-08/aframe-chairs-window.jpg",
+    localSrc: "/images/resort/glamping-2026-08/aframe-chairs-window.jpg",
+    position: "center",
+    alt: {
+      ru: "Два кресла у панорамного окна в домике A-frame",
+      uz: "A-frame uychadagi panoramali deraza yonidagi ikkita kreslo",
+      en: "Two armchairs at the panoramic window inside the A-frame",
+    },
+  },
+  aframeBulbs: {
+    src: "/images/resort/glamping-2026-08/aframe-bulbs.jpg",
+    localSrc: "/images/resort/glamping-2026-08/aframe-bulbs.jpg",
+    position: "center",
+    alt: {
+      ru: "Подвесные лампы под деревянным потолком домика A-frame",
+      uz: "A-frame uychaning yog'och shifti ostidagi osma lampalar",
+      en: "Pendant bulbs under the A-frame's timber ceiling",
+    },
+  },
+  aframeRobes: {
+    src: "/images/resort/glamping-2026-08/aframe-robes.jpg",
+    localSrc: "/images/resort/glamping-2026-08/aframe-robes.jpg",
+    position: "center",
+    alt: {
+      ru: "Халаты, полотенца и пледы в шкафу домика A-frame",
+      uz: "A-frame uycha shkafida xalatlar, sochiqlar va plyadlar",
+      en: "Robes, towels and blankets in the A-frame wardrobe",
+    },
+  },
   chimganMountains: {
     src: "/images/resort/chimgan.jpg",
     localSrc: "/images/resort/chimgan.jpg",
@@ -715,14 +774,19 @@ export const resortImages = {
  * key ends up on two homepage surfaces.
  */
 export const homeGallery = [
+  "aframeTerraceRail",
   "chaletBedroomHall",
+  "aframeChairsWindow",
   "galTopchanInside",
   "chaletRobes",
+  "aframeBulbs",
   "chaletBedroomDouble",
   "aframeMinibar",
   "chaletLounge",
+  "aframeRoom",
   "galKazanStone",
   "chaletBedroomTwinHall",
+  "aframeRobes",
   "chaletBathroom",
   "chaletLinenSafe",
   "aframeBathroom",

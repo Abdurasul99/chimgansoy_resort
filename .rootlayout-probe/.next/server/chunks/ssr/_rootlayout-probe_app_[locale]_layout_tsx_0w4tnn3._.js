@@ -1,0 +1,3 @@
+module.exports=[63344,a=>{"use strict";var b=a.i(7997);async function c({children:a,params:d}){let{locale:e}=await d;return(0,b.jsx)("html",{lang:e,children:(0,b.jsx)("body",{children:a})})}a.s(["default",0,c,"generateStaticParams",0,function(){return[{locale:"ru"},{locale:"uz"},{locale:"en"}]}])},3078,a=>{a.n(a.i(63344))}];
+
+//# sourceMappingURL=_rootlayout-probe_app_%5Blocale%5D_layout_tsx_0w4tnn3._.js.map

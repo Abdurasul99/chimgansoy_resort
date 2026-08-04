@@ -70,12 +70,18 @@ export const rooms: Room[] = [
     gallery: [
       // aframeLawnWide led this gallery until 2026-08-04 — the A-frame row with
       // a tower crane in the sky. gallery[0] spans both columns on the room
-      // page, so it was the largest photo a guest saw before booking. The
-      // interior takes the lead instead; there is no clean wide exterior of the
-      // A-frames in the repo yet.
+      // page, so it was the largest photo a guest saw before booking. It went
+      // to an interior for a few hours because nothing clean existed; the
+      // operator's second drop the same day supplied a crane-free exterior,
+      // which is what the top of this gallery should have been all along.
+      "aframeTerraceRail",
+      "aframeGableSky",
       "aframeRoom",
       "aframeBed",
+      "aframeChairsWindow",
       "aframeLounge",
+      "aframeBulbs",
+      "aframeRobes",
       "aframeBathroom",
       "aframeMinibar",
       "aframeTerraceView",
