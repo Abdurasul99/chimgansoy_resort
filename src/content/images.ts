@@ -648,7 +648,12 @@ export const resortImages = {
   aframeTerraceRail: {
     src: "/images/resort/glamping-2026-08/aframe-terrace-rail.jpg",
     localSrc: "/images/resort/glamping-2026-08/aframe-terrace-rail.jpg",
-    position: "center",
+    // Anchored to the top, not centred (operator, 2026-08-04: "чтобы крыша не
+    // резалась"). These are 3:4 portrait frames dropped into landscape and 4:3
+    // card crops, and a centre crop takes the difference off BOTH edges — which
+    // on an A-frame means the apex, the one line that makes the building
+    // recognisable. Anchoring to the top spends the whole crop on the grass.
+    position: "top",
     alt: {
       ru: "Терраса домика A-frame с деревянными перилами и панорамной дверью",
       uz: "A-frame uychaning yog'och panjarali va panoramali eshikli terrasasi",
@@ -658,7 +663,10 @@ export const resortImages = {
   aframeGableSky: {
     src: "/images/resort/glamping-2026-08/aframe-gable-sky.jpg",
     localSrc: "/images/resort/glamping-2026-08/aframe-gable-sky.jpg",
-    position: "center",
+    // Top-anchored for the same reason as aframeTerraceRail: this frame IS the
+    // gable against the sky, and it sits in a bento cell twice as wide as it is
+    // tall. Centred, the crop ate the apex and left a picture of a wall.
+    position: "top",
     alt: {
       ru: "Треугольный силуэт домика A-frame на фоне неба",
       uz: "Osmon fonida A-frame uychaning uchburchak silueti",
@@ -790,7 +798,10 @@ export const homeGallery = [
   "chaletBathroom",
   "chaletLinenSafe",
   "aframeBathroom",
-  "cableCars",
+  // cableCars was here as "окрестности" filler when this list was down to seven
+  // frames. Removed at the operator's request: the cable car is not theirs, and
+  // an archive of the resort that ends on somebody else's lift reads as padding.
+  // It stays on /place, where the section is explicitly about what is nearby.
 ] as const satisfies readonly (keyof typeof resortImages)[];
 
 /*
