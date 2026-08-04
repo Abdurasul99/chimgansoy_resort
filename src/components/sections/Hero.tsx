@@ -241,7 +241,7 @@ export function Hero({ locale }: HeroProps) {
           offset that does not exist — and because a centred box splits a padding
           difference in half, it landed the block 36px low and pushed the hero
           13px past the fold at 1280x720.) */}
-      <div className="hero-fx-content relative z-[4] mx-auto w-full max-w-7xl px-4 pb-36 pt-28 sm:px-6 sm:pb-24 sm:pt-24 lg:pb-24 lg:pt-24 lg:px-8">
+      <div className="hero-content relative z-[4] mx-auto w-full max-w-7xl px-4 pb-36 pt-28 sm:px-6 sm:pb-24 sm:pt-24 lg:pb-24 lg:pt-24 lg:px-8">
 
         {/* Title, chips and lead form ONE column beside the booking stack.
             The title used to span the full width above this grid, so the hero
@@ -368,15 +368,11 @@ export function Hero({ locale }: HeroProps) {
 
       {/* Scroll cue — hairline with a light running down it, and a real
           control: clicking hands off to the smooth-scroll engine. */}
-      {/* Centred with flexbox, not -translate-x-1/2.
-          Tailwind v4 emits horizontal translate utilities on the `translate`
-          property, and `[data-hero-fx] .hero-fx-content { translate: 0 var(--hero-shift) }`
-          in globals.css is more specific — so the -50% correction was silently
-          dropped and the cue sat half its own width (~49px) right of centre on
-          every viewport. inset-x-0 + justify-center needs no transform, so the
-          scroll engine's translate and the centring stop fighting. */}
+      {/* Centred with flexbox, not -translate-x-1/2. The scroll-out rule that
+          used to override the -50% is gone now, but flex centring needs no
+          transform at all — it cannot be overridden by one either. */}
       <div
-        className="hero-fx-content absolute inset-x-0 bottom-7 flex justify-center motion-rise"
+        className="absolute inset-x-0 bottom-7 flex justify-center motion-rise"
         style={{ animationDelay: "600ms" }}
       >
         <HeroScrollCue locale={locale} />

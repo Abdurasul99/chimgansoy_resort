@@ -98,11 +98,16 @@ export default async function AboutPage({ params }: PageProps) {
               </div>
             </div>
             <div className="relative motion-reveal" data-delay="150">
+              {/* Was aframeLawn, which has a tower crane standing in the sky
+                  between the second and third cabin — on the page that explains
+                  who we are. This frame is the grounds finished: topchans, the
+                  stone paths, the pines, Chimgan behind. Portrait originally,
+                  so it fills the 4:5 crop without losing the ridge. */}
               <div
                 className="aspect-[4/5] overflow-hidden rounded-3xl bg-cover bg-center shadow-[var(--shadow-card-hover)]"
-                style={imageStyle(resortImages.aframeLawn)}
+                style={imageStyle(resortImages.galTerritoryPanorama)}
                 role="img"
-                aria-label={text(resortImages.aframeLawn.alt, locale)}
+                aria-label={text(resortImages.galTerritoryPanorama.alt, locale)}
               />
             </div>
           </div>

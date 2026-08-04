@@ -225,19 +225,23 @@ html.lenis.lenis-smooth {
   will-change: translate;
 }
 
-/* ── Hero scroll-out — content drifts up and dissolves, photo lags ──
-   No `will-change` here on purpose. These are full-viewport layers over a
-   background-image; a standing promotion hint keeps them composited for the
-   entire session, and measured ~7ms/frame even long after the hero has left
-   the screen. The engine also stops writing these vars once the hero is past.
+/* ── Hero scroll-out — REMOVED (operator request, 2026-08-04) ──────
+   The hero used to dissolve as it left: content faded to 0 while the photo
+   lagged ~0.22vh behind the section. Two problems, both reported from a
+   phone ("здесь мы видим, но когда сюда уходим, у нас всё теряется"):
+
+   • The lag translated `.hero-fx-media` (absolute inset-0) downward, so its
+     top edge left a band of the section's own `bg-[#0f1928]` exposed — and
+     the scrim div does NOT translate, so it darkened that bare base into a
+     near-black block under the header. That was the "затемнение при скролле".
+   • The fade emptied the first screen of the site while it was still half
+     on screen — title, price cards and the booking widget all going to
+     zero opacity as the guest scrolled toward them.
+
+   Nothing replaces it: a hero that simply scrolls away is the intent. The
+   `hero-fx-*` class names are gone from the markup too; `data-hero-fx`
+   stays, because HeroScrollCue uses it to find where the hero ends.
    ────────────────────────────────────────────────────────────────── */
-[data-hero-fx] .hero-fx-content {
-  translate: 0 var(--hero-shift, 0px);
-  opacity: var(--hero-fade, 1);
-}
-[data-hero-fx] .hero-fx-media {
-  translate: 0 var(--hero-media, 0px);
-}
 
 /* ── Masked headline reveal (the "Sora wipe") ──────────────────────
    A mask that grows top-down, NOT clip-path and NOT overflow:hidden:
@@ -473,7 +477,7 @@ textarea {
    viewport, so it gives most of it back rather than pushing the booking card
    past the fold. */
 @media (max-height: 700px) and (min-width: 1024px) {
-  [data-hero-fx] > .hero-fx-content {
+  [data-hero-fx] > .hero-content {
     /* Asymmetric here, and only here.
 
        Centring a block puts its top at (viewportH − contentH) / 2, and symmetric
@@ -558,6 +562,50 @@ textarea {
 }
 @media (prefers-reduced-motion: reduce) {
   .marquee-track { animation: none; }
+}
+
+/* ── Phones and tablets: nothing on the homepage moves by itself ──
+   Operator request, 2026-08-04: "сделан более статичный, чтобы постоянно
+   картинки не менялись". On a phone the drifting strip and the parallax
+   offsets fight the guest's own scrolling — the page never settles, and the
+   photo you were looking at has moved by the time you focus on it.
+
+   The strip does not simply freeze: a frozen `width: max-content` track shows
+   one and a half photos and hides the other ten. It becomes a swipeable rail
+   with snap points instead, which is also what the section already invited
+   people to do. PhotoMarquee drops its duplicate copy at this width so the
+   swipe never runs into the same photo twice.
+   ────────────────────────────────────────────────────────────────── */
+@media (max-width: 1023px) {
+  .marquee-strip {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    /* No edge mask here: on a scrollable rail it fades the first and last
+       photo of the set into nothing at exactly the moment you swipe to it. */
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+  .marquee-strip::-webkit-scrollbar { display: none; }
+
+  .marquee-track {
+    animation: none;
+    will-change: auto;
+    /* Room to swipe the last card clear of the edge. */
+    padding-inline: 1rem;
+  }
+  .marquee-card {
+    scroll-snap-align: center;
+    width: min(78vw, 320px);
+  }
+
+  /* Parallax offsets are scroll-driven movement too — same complaint. */
+  [data-parallax] {
+    translate: none !important;
+    will-change: auto;
+  }
+  .parallax-bg { transform: none; }
 }
 
 /* ── Service cards — full-bleed photo links ─────────── */
@@ -1851,9 +1899,7 @@ html { scroll-behavior: smooth; }
     transition: none;
   }
 
-  [data-parallax],
-  [data-hero-fx] .hero-fx-content,
-  [data-hero-fx] .hero-fx-media {
+  [data-parallax] {
     translate: none !important;
     opacity: 1 !important;
     will-change: auto;

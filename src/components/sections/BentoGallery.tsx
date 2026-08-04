@@ -21,23 +21,29 @@ type Cell = {
  * this mosaic on the homepage — this is the six frames that have to earn the
  * scroll, not a complete set.
  *
- * Five of the six are the August-2026 shoot: the pool, the chalets under the
- * ridge, the mosaic on the pool floor, the bungalows, the chalet terrace. The
- * sixth is the A-frame interior, which stays because the silhouette IS the
- * product and no exterior frame conveys it.
+ * Five of the six are the August-2026 shoot: the bungalows against the sky, a
+ * chalet up close, the mosaic on the pool floor, the bungalows at the water,
+ * the chalet terrace. The sixth is the A-frame interior, which stays because
+ * the silhouette IS the product and no exterior frame conveys it.
+ *
+ * None of the six appears anywhere else on the homepage (2026-08-04) — the two
+ * that did were the hero's own first slide and the chalet room card.
  *
  * Fewer cells, bigger cells. Seven small tiles competed with each other; six
  * with a dominant hero gives the eye somewhere to land.
  */
 const CELLS: Cell[] = [
   {
-    image: "poolPanorama",
-    caption: { ru: "Бассейн и горы", uz: "Basseyn va tog'lar", en: "The pool and the mountains" },
+    // Was poolPanorama, which is the hero's first slide, the pool room card and
+    // the picnic-zone service card — one photograph doing four jobs on one page.
+    image: "poolCabanasSky",
+    caption: { ru: "Бунгало и небо", uz: "Bungalolar va osmon", en: "Bungalows and sky" },
     span: "md:col-span-2 md:row-span-2",
   },
   {
-    image: "chaletPeaks",
-    caption: { ru: "Шале под гребнем", uz: "Tizma ostidagi shalelar", en: "Chalets beneath the ridge" },
+    // Was chaletPeaks — the chalet room card, three sections further down.
+    image: "chaletFront",
+    caption: { ru: "Шале крупным планом", uz: "Shale yaqindan", en: "A chalet up close" },
     span: "md:col-span-2",
   },
   {

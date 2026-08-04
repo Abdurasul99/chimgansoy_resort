@@ -17,9 +17,13 @@ export function PromoBand({ locale }: PromoBandProps) {
 
   return (
     <section className="relative isolate overflow-hidden bg-[var(--green)] px-4 py-16 text-white sm:px-6 lg:px-8">
+      {/* Texture, not a subject: 50% opacity under a 0.92→0.44 dark gradient.
+          It was aframeLawnBanner, which is the glamping room card higher up
+          the homepage — the one place a repeat costs nothing to fix, since
+          almost nothing of this frame survives the overlay anyway. */}
       <div
         className="absolute inset-0 -z-20 bg-cover opacity-50"
-        style={imageStyle(resortImages.aframeLawnBanner)}
+        style={imageStyle(resortImages.horseRiding)}
         aria-hidden="true"
       />
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(12,18,14,0.92),rgba(12,18,14,0.62),rgba(12,18,14,0.44))]" />

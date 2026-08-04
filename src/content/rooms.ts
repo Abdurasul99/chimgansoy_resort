@@ -68,7 +68,11 @@ export const rooms: Room[] = [
      */
     image: "aframeLawnBanner",
     gallery: [
-      "aframeLawnWide",
+      // aframeLawnWide led this gallery until 2026-08-04 — the A-frame row with
+      // a tower crane in the sky. gallery[0] spans both columns on the room
+      // page, so it was the largest photo a guest saw before booking. The
+      // interior takes the lead instead; there is no clean wide exterior of the
+      // A-frames in the repo yet.
       "aframeRoom",
       "aframeBed",
       "aframeLounge",
@@ -233,8 +237,13 @@ export const rooms: Room[] = [
     category: "pool",
     // Photographs of this pool, taken in August 2026. Until then every frame
     // here was a rendering — the page sold a day pass with a drawing.
-    image: "poolPanorama",
-    gallery: ["poolWideChalets", "poolCabanasValley", "poolLogoTall"],
+    //
+    // The card was poolPanorama, which is also the hero's first slide — and on
+    // a phone the hero no longer rotates, so that frame is simply the top of
+    // the page. Seeing it again a screen and a half later was the clearest of
+    // the repeats the operator flagged. The loungers say "pool" just as fast.
+    image: "poolLoungers",
+    gallery: ["poolPanorama", "poolCabanasValley", "poolLogoTall"],
     title: { ru: "Бассейн", uz: "Basseyn", en: "Pool" },
     eyebrow: {
       ru: "Летний отдых у воды",

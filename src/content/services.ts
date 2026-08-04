@@ -56,8 +56,11 @@ export const services: Service[] = [
     category: "activity",
     // Was galMountainView, which has a grey topchan tent on unlandscaped earth
     // filling the left third — the retired product, on a building site, selling
-    // mountain walks. This is the ridge seen from a cabin terrace instead.
-    image: "aframeTerraceView",
+    // mountain walks. Then aframeTerraceView, which the editorial block higher
+    // up the homepage also uses for the very same pitch ("горы начинаются за
+    // террасой") — the same photo twice for the same idea. This is the walking
+    // route itself, which is what the card is actually selling.
+    image: "mountainWalks",
     title: { ru: "Горные прогулки рядом", uz: "Atrofdagi tog' sayrlari", en: "Mountain walks nearby" },
     shortDescription: {
       ru: "Лёгкие пешие маршруты, конные прогулки и канатные дороги в районе Чимгана.",
@@ -79,14 +82,17 @@ export const services: Service[] = [
   {
     slug: "picnic-zone",
     category: "relax",
-    // The grounds card should show the grounds, and this is the only frame that
-    // shows the property as one place: the pool, the swim-up bar, the bungalows,
-    // the chalets and the ridge behind them, all in one shot from the rise.
-    // Its predecessors each showed a fragment or the wrong thing — galTopchanRow
-    // (the retired day product), galGreenHills (an empty hillside with nothing
-    // of the resort in it), then aframeLawnWide, which is the A-frame row and
-    // carries a tower crane in the sky.
-    image: "poolPanorama",
+    // The grounds card should show the grounds. poolPanorama did that best —
+    // pool, swim-up bar, bungalows, chalets and ridge in one shot — but it is
+    // also the hero, so on the homepage this card was repeating the first
+    // screen. This frame is the grounds at eye level instead: the topchans, the
+    // stone paths between them, the pines, and Chimgan behind — which is nearer
+    // to what the card promises ("дорожки, открытые площадки, детская зона")
+    // than an aerial of the pool was.
+    // Its earlier predecessors each showed a fragment or the wrong thing —
+    // galGreenHills (an empty hillside with nothing of the resort in it), then
+    // aframeLawnWide, which carries a tower crane in the sky.
+    image: "galTerritoryPanorama",
     title: { ru: "Пикник-зона и территория", uz: "Piknik zonasi va hudud", en: "Picnic area & grounds" },
     shortDescription: {
       ru: "Пикник-зона у тюбинг-горки и девять гектаров среди сосен: дорожки, открытые площадки и детская зона.",

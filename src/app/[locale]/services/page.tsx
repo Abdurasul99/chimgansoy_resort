@@ -28,7 +28,9 @@ export default async function ServicesPage({ params }: PageProps) {
         locale={locale}
         title={dict.pages.services.title}
         lead={dict.pages.services.lead}
-        image={resortImages.aframeLawnWide}
+        // Was aframeLawnWide — a tower crane stands in the sky above the third
+        // cabin's roofline, at the top of the page that lists what we offer.
+        image={resortImages.poolWideChalets}
         eyebrow="CHIMGAN DARBAZA"
       />
 

@@ -44,8 +44,25 @@ const WINTER_PHOTO = "/images/resort/winter-google-aframe.jpg";
 
 const INTERVAL_MS = 5500;
 
+/**
+ * Rotation is desktop-only.
+ *
+ * The operator asked for the phone to stand still — "чтобы постоянно картинки
+ * не менялись" — after watching the homepage swap hero photos under his thumb
+ * while he was reading the price cards on top of them.
+ *
+ * `rotating` starts false, which means the server and the first client render
+ * both emit ONE slide. That is not just a hydration-safety trick: a background
+ * image is fetched as soon as it is painted, opacity:0 or not, so the old
+ * markup pulled all three hero photos (~1.4 MB) on a phone that would only
+ * ever show the first. Desktop adds the other two after mount.
+ */
+const DESKTOP = "(min-width: 1024px)";
+const CALM = "(prefers-reduced-motion: reduce)";
+
 export function HeroSlideshow() {
   const [isWinter, setIsWinter] = useState(false);
+  const [rotating, setRotating] = useState(false);
   const [active, setActive] = useState(0);
   const [progress, setProgress] = useState(0);
 
@@ -64,7 +81,26 @@ export function HeroSlideshow() {
   }, []);
 
   useEffect(() => {
-    if (isWinter) return;
+    const wide = window.matchMedia(DESKTOP);
+    const calm = window.matchMedia(CALM);
+    const sync = () => {
+      const on = wide.matches && !calm.matches;
+      setRotating(on);
+      // Rotating → static (rotate the phone, shrink the window): park on the
+      // frame that is already on screen rather than snapping back to the first.
+      if (!on) setProgress(0);
+    };
+    sync();
+    wide.addEventListener("change", sync);
+    calm.addEventListener("change", sync);
+    return () => {
+      wide.removeEventListener("change", sync);
+      calm.removeEventListener("change", sync);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isWinter || !rotating) return;
 
     // NOTE: `active` is mutated by this effect itself via setActive((prev)=>...).
     // It must NOT be in the deps array — otherwise the effect re-runs every
@@ -82,12 +118,12 @@ export function HeroSlideshow() {
       clearInterval(progressTimer);
       clearInterval(slideTimer);
     };
-  }, [isWinter]);
+  }, [isWinter, rotating]);
 
   if (isWinter) {
     return (
       <div
-        className="hero-fx-media absolute inset-0 -z-20 bg-cover bg-center"
+        className="absolute inset-0 -z-20 bg-cover bg-center"
         style={{ backgroundImage: `url(${WINTER_PHOTO})` }}
         role="img"
         aria-label="Winter A-frame cottages in the Chimgan mountains"
@@ -95,24 +131,34 @@ export function HeroSlideshow() {
     );
   }
 
+  // Static: the one frame, no second layer to cross-fade against, and no
+  // `transition` — a slow scale on a full-viewport background is exactly the
+  // drift that was reported as the photo never sitting still.
+  const slides = rotating ? SUMMER_SLIDES : [SUMMER_SLIDES[active]];
+
   return (
     <>
-      <div className="hero-fx-media absolute inset-0 -z-20 overflow-hidden">
-        {SUMMER_SLIDES.map((src, i) => (
+      <div className="absolute inset-0 -z-20 overflow-hidden">
+        {slides.map((src, i) => (
           <div
             key={src}
             className="absolute inset-0 bg-cover bg-center"
             style={{
               backgroundImage: `url(${src})`,
-              opacity: i === active ? 1 : 0,
-              transform: i === active ? "scale(1.0)" : "scale(1.06)",
-              transition: "opacity 1400ms ease-in-out, transform 7000ms ease-out",
+              ...(rotating
+                ? {
+                    opacity: i === active ? 1 : 0,
+                    transform: i === active ? "scale(1.0)" : "scale(1.06)",
+                    transition: "opacity 1400ms ease-in-out, transform 7000ms ease-out",
+                  }
+                : null),
             }}
-            aria-hidden={i !== active}
+            aria-hidden={rotating && i !== active}
           />
         ))}
       </div>
 
+      {rotating && (
       <div
         className="absolute bottom-20 right-6 hidden flex-col items-end gap-2 sm:flex"
         aria-hidden="true"
@@ -133,6 +179,7 @@ export function HeroSlideshow() {
           <div className="h-full bg-[var(--sun)] transition-none" style={{ width: `${progress}%` }} />
         </div>
       </div>
+      )}
     </>
   );
 }

@@ -16,7 +16,11 @@ export type HomeShowcaseItem = {
  */
 export const homeShowcase: HomeShowcaseItem[] = [
   {
-    image: "aframeLawnBanner",
+    // Was aframeLawnBanner — which is also the glamping room card two sections
+    // below. This frame carries the copy better anyway: the text counts cabins
+    // AND leads with the pool, and this is the one photograph with both the
+    // pool and the chalet row in it.
+    image: "poolWideChalets",
     title: {
       ru: "20 домиков на 9 гектарах в горах",
       uz: "Tog'larda 9 gektarda 20 uycha",

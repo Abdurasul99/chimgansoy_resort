@@ -625,50 +625,55 @@ export const resortImages = {
  * from a room page.
  *
  * Order alternates subject and shape deliberately: eleven pool frames in a row
- * read as one photo repeated. The August shoot leads because it is the newest
- * and the only footage of the finished pool.
+ * read as one photo repeated.
+ *
+ * 2026-08-04 — this list is now the homepage's REMAINDER, not its superset.
+ * It used to hold 31 keys and repeated all twelve frames of the photo strip
+ * and six of the eight bento cells, so a guest scrolling the page met the same
+ * photographs three times. The operator called it: "что в этой зоне, что в
+ * этой зоне — разные фотографии, пусть чтобы дублей не было."
+ *
+ * So the rule for this file is now: a photo belongs to exactly ONE homepage
+ * surface. The premium surfaces pick first — hero, photo strip, pool band,
+ * bento mosaic, editorial frames, room and service cards, the five-frame day
+ * strip — and whatever is left lands here.
+ *
+ * Which is why this list is SEVEN photographs, and interiors at that. The
+ * homepage has 38 photo slots above this block and the repo holds 45 frames
+ * that are fit to show (54 registered, minus nine carrying a tower crane,
+ * bare geotextile, or a stranger). 45 − 38 = 7. There is no arrangement that
+ * fills a large archive AND keeps every frame unique; the shortfall is
+ * photography, not layout. A new shoot grows this block and nothing else has
+ * to move.
+ *
+ * The full split lives in `scripts/check-home-photos.js`, which fails if any
+ * key ends up on two homepage surfaces.
  */
 export const homeGallery = [
-  "poolPanorama",
-  "chaletPeaks",
-  "poolLogoTall",
-  "chaletLawn",
-  "poolCabanasValley",
-  "chaletRowTall",
-  "poolStepsTall",
-  "chaletTerrace",
-  "poolWideChalets",
-  "chaletFront",
-  "poolCurveTall",
-  "poolCabanasSky",
-  "poolLoungers",
-  "poolDeckChalets",
-  "poolWater",
-  "poolCabanas",
-  "galTerritoryPanorama",
-  "galTopchanPeaks",
-  "galTopchanRow",
-  "aframeLawnTall",
-  "aframeTerraceView",
-  "aframeRoom",
-  "aframeLawnWide",
-  "chaletLounge",
-  "chaletDining",
+  "chaletBedroomDouble",
   "galTopchanInside",
-  "galTopchanSwing",
-  "galMangalFire",
+  "aframeMinibar",
   "galKazanStone",
-  "galWaiterPlov",
-  "galPathway",
+  "chaletBathroom",
+  "aframeBathroom",
+  "cableCars",
 ] as const satisfies readonly (keyof typeof resortImages)[];
 
 /*
- * Deliberately NOT in the list above, though the files exist:
+ * Deliberately NOT in the list above, though the files exist and no homepage
+ * surface has claimed them:
  *   galMountainView — a grey topchan tent on unlandscaped earth fills the left
  *                     third; it was pulled from the /services cards for that.
  *   galGreenHills   — an empty hillside with nothing of the resort in it.
  *   galKidsSwing    — a stranger on a swing looking at his phone.
  *   galFoodServing  — a hand carrying a plate over bare ground.
- * Each was removed from a surface once already for a stated reason. Adding them
- * back here would quietly undo that, so they stay out.
+ *   galWaiterPlov   — a man carrying a lagman down a half-finished path, with
+ *                     turned earth along the right-hand side.
+ *   aframeExterior, aframeLawn, aframeLawnTall, aframeLawnWide — a tower crane
+ *                     stands in the sky above the roofline, or the ground is
+ *                     still geotextile and sand.
+ * Each was removed from a surface once already for a stated reason, or carries
+ * construction the operator has asked us to stop showing. Adding them back here
+ * would quietly undo that, so they stay out. They remain registered because the
+ * room-page galleries and /place still use some of them in context.
  */

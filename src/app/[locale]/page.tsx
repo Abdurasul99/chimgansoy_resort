@@ -179,11 +179,15 @@ export default async function HomePage({ params }: PageProps) {
             data-delay="120"
           >
             <figure className="relative order-first min-h-[240px] sm:min-h-[320px] lg:order-last lg:min-h-[380px]">
+              {/* Was poolPanorama — which is also the hero, and on a phone the
+                  hero no longer rotates, so this band was showing the top of the
+                  page again one screen later. The steps read as "pool" just as
+                  fast and belong to nothing else on this page. */}
               <div
                 className="absolute inset-0 bg-cover bg-center"
-                style={imageStyle(resortImages.poolPanorama)}
+                style={imageStyle(resortImages.poolStepsTall)}
                 role="img"
-                aria-label={text(resortImages.poolPanorama.alt, locale)}
+                aria-label={text(resortImages.poolStepsTall.alt, locale)}
               />
             </figure>
 
@@ -341,15 +345,17 @@ export default async function HomePage({ params }: PageProps) {
                 data-parallax="0.06"
                 className="img-reveal-wrapper aspect-[4/5] overflow-hidden rounded-3xl shadow-[var(--shadow-card-hover)]"
               >
-                {/* The grounds as they are today. This used to be the June
-                    A-frame shot, which had the cabins as open shells — wrong
-                    story for a section saying the place is 45 minutes away and
-                    ready for you. That photo is gone from the repo now. */}
+                {/* The drive, not the cabins. This was the June A-frame shot of
+                    open shells, then aframeLawn — which has a tower crane
+                    standing in the sky between the second and third cabin. The
+                    badge over this frame reads "45 мин от Ташкента", so the
+                    mountains you drive into say it better than a cabin does,
+                    and it is the last construction artefact left on this page. */}
                 <div
                   className="h-full w-full bg-cover bg-center transition-transform duration-[1500ms] ease-out hover:scale-110"
-                  style={imageStyle(resortImages.aframeLawn)}
+                  style={imageStyle(resortImages.chimganMountains)}
                   role="img"
-                  aria-label={text(resortImages.aframeLawn.alt, locale)}
+                  aria-label={text(resortImages.chimganMountains.alt, locale)}
                 />
               </div>
               {/* Top-right floating badge — cream surface, brand text (Stitch style) */}
@@ -409,11 +415,11 @@ export default async function HomePage({ params }: PageProps) {
             <BentoGallery locale={locale} />
           </div>
 
-          {/* The full archive under the mosaic, each frame opening in the
-              lightbox — including the six the mosaic crops and captions, which
-              belong in a complete set. Until now most of this photography was
-              reachable only from a room page. Same component the day-product
-              pages use. */}
+          {/* What the rest of the page has not already shown, each frame
+              opening in the lightbox. It used to be a complete set, mosaic
+              cells and strip frames included, which is how the same photographs
+              came round three times on one scroll. Same component the
+              day-product pages use. See the note on homeGallery for why seven. */}
           <div className="mt-12 motion-reveal" data-delay="140">
             <MediaArchive locale={locale} images={homeGallery} />
           </div>
@@ -426,14 +432,20 @@ export default async function HomePage({ params }: PageProps) {
           data-lenis-prevent-touch
           className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-none lg:grid lg:grid-cols-5 lg:overflow-visible"
         >
-          {/* An overnight in five frames: arrive, wake up, morning on the
-              terrace, evening at the grill, kids. Two topchan/serving shots
-              used to open this strip — they told a day-trip story. */}
+          {/* A day here in five frames: wake up, breakfast, the afternoon on a
+              topchan, the grill, the kids' room.
+
+              Three of the five changed on 2026-08-04. `aframeLawnTall` opened
+              the strip with a tower crane in the sky. `aframeTerraceView` and
+              `chaletLounge` are the two editorial frames higher up this same
+              page — the strip was retelling the story the reader had just been
+              told, with the same photographs. The arc is the same; only the
+              frames that were already spoken for had to move. */}
           {([
-            { image: "aframeLawnTall", caption: locale === "uz" ? "Uycha oldidagi ilk foto" : locale === "en" ? "First photo by the cabin" : "Первое фото\nу домика" },
-            { image: "chaletBedroomDouble", caption: locale === "uz" ? "Tog'larda uyg'onish" : locale === "en" ? "Waking up in the mountains" : "Просыпаться\nв горах" },
-            { image: "aframeTerraceView", caption: locale === "uz" ? "Terrasadagi tong" : locale === "en" ? "Morning on the terrace" : "Утро\nна террасе" },
-            { image: "chaletLounge", caption: locale === "uz" ? "Shaledagi kecha" : locale === "en" ? "An evening in the chalet" : "Вечер\nв шале" },
+            { image: "aframeBed", caption: locale === "uz" ? "Tog'larda\nuyg'onish" : locale === "en" ? "Waking up\nin the mountains" : "Просыпаться\nв горах" },
+            { image: "chaletKitchen", caption: locale === "uz" ? "Shalede\nnonushta" : locale === "en" ? "Breakfast\nin the chalet" : "Завтрак\nв шале" },
+            { image: "galTopchanSwing", caption: locale === "uz" ? "Topchanda\nkun" : locale === "en" ? "A day\non the topchan" : "День\nна топчане" },
+            { image: "galMangalFire", caption: locale === "uz" ? "Mangal\nyonida kecha" : locale === "en" ? "An evening\nat the grill" : "Вечер\nу мангала" },
             // Was galKidsSwing — a stranger sitting on a swing looking at his
             // phone, which is not a picture of anything we sell.
             { image: "chaletBedroomTwin", caption: locale === "uz" ? "Bolalarga —\no'z xonasi" : locale === "en" ? "A room of\ntheir own" : "Детям —\nсвоя комната" },

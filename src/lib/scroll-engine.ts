@@ -96,9 +96,7 @@ function queueScan() {
 
 /** Drops the cached style targets. Called when the page itself changes. */
 function resetTargets() {
-  heroEl = undefined;
   progressEls = undefined;
-  heroLast = "";
   lastProgress = "";
 }
 
@@ -114,6 +112,11 @@ const rectBuf: { el: HTMLElement; y: number }[] = [];
 
 function updateParallax(vh: number) {
   if (!parallaxNodes.size) return;
+  // Below 1024px globals.css pins these to `translate: none !important`, so
+  // every rect read and property write here would be work with no pixel to
+  // show for it — on the one class of device that reported the page feeling
+  // busy. Re-armed by the resize listener when a window grows past 1024.
+  if (window.innerWidth < 1024) return;
   rectBuf.length = 0;
 
   for (const el of parallaxNodes) {
@@ -136,30 +139,11 @@ function updateParallax(vh: number) {
   }
 }
 
-/** The hero fades and drifts as it leaves — the one section that reacts to raw scrollY. */
-let heroEl: HTMLElement | null | undefined;
-let heroLast = "";
-
-function updateHero(y: number, vh: number) {
-  // Cached: re-querying the DOM every animation frame is pure waste.
-  if (heroEl === undefined) heroEl = document.querySelector<HTMLElement>("[data-hero-fx]");
-  const hero = heroEl;
-  if (!hero) return;
-  // Once the hero is fully scrolled past there is nothing left to animate.
-  if (y > vh * 1.1 && heroLast === "done") return;
-
-  const p = Math.min(1, Math.max(0, y / (vh * 0.9)));
-  // Clamp the fade: a negative opacity is an invalid declaration, and the
-  // browser would drop it and snap the hero back to fully opaque.
-  const fade = Math.min(1, Math.max(0, 1 - p * 1.15));
-  const key = p >= 1 ? "done" : p.toFixed(3);
-  if (key === heroLast) return;
-  heroLast = key;
-
-  hero.style.setProperty("--hero-shift", `${Math.round(p * 90)}px`);
-  hero.style.setProperty("--hero-fade", fade.toFixed(2));
-  hero.style.setProperty("--hero-media", `${Math.round(p * vh * 0.22)}px`);
-}
+/* The hero scroll-out lived here — it wrote --hero-shift / --hero-fade /
+   --hero-media onto [data-hero-fx] so the first screen dissolved as it left.
+   Removed 2026-08-04 at the operator's request: the media lag bared the
+   section's dark base into a black band, and the fade emptied the hero while
+   it was still on screen. See the note in globals.css. */
 
 /**
  * Style targets for scroll progress: the top hairline and the tick rail.
@@ -205,7 +189,6 @@ function frame() {
 
   publish(progress);
   updateParallax(vh);
-  updateHero(y, vh);
 
   if (subscribers.size) {
     const state = { y, velocity: smoothVelocity, progress };
