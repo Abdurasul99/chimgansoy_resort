@@ -474,9 +474,23 @@ textarea {
    past the fold. */
 @media (max-height: 700px) and (min-width: 1024px) {
   [data-hero-fx] > .hero-fx-content {
-    /* Symmetric, so the block stays centred while the gutter shrinks. */
-    padding-top: 3.25rem;
-    padding-bottom: 3.25rem;
+    /* Asymmetric here, and only here.
+
+       Centring a block puts its top at (viewportH − contentH) / 2, and symmetric
+       padding cancels out of that entirely — so on a short viewport the top of
+       the gold pool CTA landed inside the header's 4.5rem bar. The bar is
+       transparent over the hero but still hit-tested (sticky, z-50), so its top
+       edge was not merely overlapped, it was unclickable: at 1280×600 the top
+       7px of the primary CTA did nothing, and at 1280×576 — a 720p laptop at
+       125% Windows scaling — a click there landed on the language switcher and
+       sent the guest to /uz.
+
+       The 4.5rem difference between these two values pushes the block down by
+       half that, which clears the bar from 573px of height up. Taller viewports
+       do not need it: above 700px the arithmetic already puts the CTA past the
+       bar, so they keep the symmetric padding and stay exactly centred. */
+    padding-top: 6rem;
+    padding-bottom: 1.5rem;
   }
 }
 

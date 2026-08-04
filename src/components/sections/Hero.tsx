@@ -368,8 +368,15 @@ export function Hero({ locale }: HeroProps) {
 
       {/* Scroll cue — hairline with a light running down it, and a real
           control: clicking hands off to the smooth-scroll engine. */}
+      {/* Centred with flexbox, not -translate-x-1/2.
+          Tailwind v4 emits horizontal translate utilities on the `translate`
+          property, and `[data-hero-fx] .hero-fx-content { translate: 0 var(--hero-shift) }`
+          in globals.css is more specific — so the -50% correction was silently
+          dropped and the cue sat half its own width (~49px) right of centre on
+          every viewport. inset-x-0 + justify-center needs no transform, so the
+          scroll engine's translate and the centring stop fighting. */}
       <div
-        className="hero-fx-content absolute bottom-7 left-1/2 -translate-x-1/2 motion-rise"
+        className="hero-fx-content absolute inset-x-0 bottom-7 flex justify-center motion-rise"
         style={{ animationDelay: "600ms" }}
       >
         <HeroScrollCue locale={locale} />
