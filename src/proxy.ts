@@ -18,8 +18,15 @@ export function proxy(request: NextRequest) {
   return NextResponse.redirect(request.nextUrl);
 }
 
+/**
+ * `admin` is excluded for the same reason as `api`: it is not a page of the
+ * public site and has no locale. Without it here, /admin is rewritten to
+ * /ru/admin and answered by the [locale] segment as though "admin" were a
+ * language — verified before the panel existed: GET /admin returned 307 to
+ * /ru/admin, exactly as GET /xx does.
+ */
 export const config = {
   matcher: [
-    "/((?!_next|api|favicon.ico|icon.svg|apple-icon.png|-/opengraph-image|opengraph-image|robots.txt|sitemap.xml|images|file.svg|globe.svg|next.svg|vercel.svg|window.svg|yandex_ba7cbd0977b91438.html).*)",
+    "/((?!_next|api|admin|favicon.ico|icon.svg|apple-icon.png|-/opengraph-image|opengraph-image|robots.txt|sitemap.xml|images|file.svg|globe.svg|next.svg|vercel.svg|window.svg|yandex_ba7cbd0977b91438.html).*)",
   ],
 };

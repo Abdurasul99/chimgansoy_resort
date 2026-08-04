@@ -12,10 +12,22 @@ type FooterProps = {
 };
 
 /**
- * The services site — a separate deployment with its own admin panel, so the
- * operator changes prices, photos and news there without touching this code.
+ * Was https://chimgan-uslugi.vercel.app — a separate deployment meant to hold
+ * the services catalogue with its own admin panel.
+ *
+ * Repointed at this site's own /services on 2026-08-04. That deployment has no
+ * database (none was ever provisioned on the team — the Vercel storage API
+ * lists exactly one store, and it is this site's blob archive), so its
+ * catalogue renders "Каталог пока недоступен", its news page renders "Пока
+ * новостей нет", and it contains no request form at all: the form lives inside
+ * a service card, and no service card ever renders. This block promised
+ * "цены и заявка" and delivered an empty page on a vercel.app address.
+ *
+ * /services here is real, populated and localised, and the admin panel is
+ * moving to /admin on this site — which is the reason the other deployment
+ * exists at all.
  */
-const SERVICES_SITE = "https://chimgan-uslugi.vercel.app";
+const SERVICES_PATH = "/services";
 const SERVICES_LABEL = {
   ru: "Услуги на территории",
   uz: "Hududdagi xizmatlar",
@@ -140,12 +152,11 @@ export function Footer({ locale }: FooterProps) {
               ))}
             </div>
 
-            {/* The services site is a separate deployment with its own admin
-                panel, so the operator can change prices, photos and news there
-                without a code change. A plain <a>, not <Link> — the router
-                would try to resolve it as an internal route. */}
-            <a
-              href={SERVICES_SITE}
+            {/* Internal now, so <Link> and not a plain <a> — see the note on
+                SERVICES_PATH for why it stopped pointing off-site. */}
+            <Link
+              href={localizePath(locale, SERVICES_PATH)}
+              prefetch={false}
               className="mt-8 flex items-center justify-between gap-4 rounded-2xl border border-[var(--sun)]/30 bg-[var(--sun)]/10 px-5 py-4 transition-colors hover:border-[var(--sun)]/60 hover:bg-[var(--sun)]/15"
             >
               <span className="min-w-0">
@@ -159,7 +170,7 @@ export function Footer({ locale }: FooterProps) {
               <span aria-hidden className="shrink-0 text-lg text-[var(--sun)]">
                 →
               </span>
-            </a>
+            </Link>
           </div>
 
           <div>
