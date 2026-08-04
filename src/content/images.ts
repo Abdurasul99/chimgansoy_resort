@@ -574,6 +574,68 @@ export const resortImages = {
       en: "Chalets beneath the Chimgan rock face",
     },
   },
+
+  /* ── Chalet interiors, operator drop 2026-08-04 ───────────────────────────
+   * The first photographs of the inside of a finished chalet that are not from
+   * the June set — where the rooms were still being fitted out. All five are
+   * portrait 3:4 from a 29-megapixel original; see
+   * scripts/import-chalet-interiors.js.
+   *
+   * They arrived at the right moment: the homepage archive had just been cut
+   * to seven frames because every wide exterior was already working somewhere
+   * further up the page (see the note on homeGallery). These are the first
+   * additions to the usable pool since that arithmetic was written.
+   * ────────────────────────────────────────────────────────────────────── */
+  chaletHallBeams: {
+    src: "/images/resort/chalet-2026-08/chalet-hall-beams.jpg",
+    localSrc: "/images/resort/chalet-2026-08/chalet-hall-beams.jpg",
+    position: "center",
+    alt: {
+      ru: "Кухня-зал шале: сводчатый потолок с балками, диван и обеденный стол",
+      uz: "Shale oshxona-zali: balkali gumbazsimon shift, divan va ovqatlanish stoli",
+      en: "The chalet kitchen-lounge: a beamed vaulted ceiling, sofa and dining table",
+    },
+  },
+  chaletBedroomHall: {
+    src: "/images/resort/chalet-2026-08/chalet-bedroom-hall.jpg",
+    localSrc: "/images/resort/chalet-2026-08/chalet-bedroom-hall.jpg",
+    position: "center",
+    alt: {
+      ru: "Коридор шале с гардеробом, ведущий в спальню с двуспальной кроватью",
+      uz: "Shalening garderobli yo'lagi, ikki kishilik yotoqxonaga olib boradi",
+      en: "The chalet hallway and wardrobe, opening onto the double bedroom",
+    },
+  },
+  chaletBedroomTwinHall: {
+    src: "/images/resort/chalet-2026-08/chalet-bedroom-twin-hall.jpg",
+    localSrc: "/images/resort/chalet-2026-08/chalet-bedroom-twin-hall.jpg",
+    position: "center",
+    alt: {
+      ru: "Вторая спальня шале с раздельными кроватями за стеной гардероба",
+      uz: "Shalening alohida karavotli ikkinchi yotoqxonasi, garderob devori ortida",
+      en: "The chalet's second bedroom with twin beds, past the wardrobe wall",
+    },
+  },
+  chaletRobes: {
+    src: "/images/resort/chalet-2026-08/chalet-robes.jpg",
+    localSrc: "/images/resort/chalet-2026-08/chalet-robes.jpg",
+    position: "center",
+    alt: {
+      ru: "Халаты и тапочки в гардеробе шале",
+      uz: "Shale garderobidagi xalatlar va shippaklar",
+      en: "Bathrobes and slippers in the chalet wardrobe",
+    },
+  },
+  chaletLinenSafe: {
+    src: "/images/resort/chalet-2026-08/chalet-linen-safe.jpg",
+    localSrc: "/images/resort/chalet-2026-08/chalet-linen-safe.jpg",
+    position: "center",
+    alt: {
+      ru: "Полотенца, вешалки и сейф в гардеробе шале",
+      uz: "Shale garderobida sochiqlar, ilgichlar va seyf",
+      en: "Towels, hangers and the in-room safe in the chalet wardrobe",
+    },
+  },
   chimganMountains: {
     src: "/images/resort/chimgan.jpg",
     localSrc: "/images/resort/chimgan.jpg",
@@ -638,23 +700,31 @@ export const resortImages = {
  * bento mosaic, editorial frames, room and service cards, the five-frame day
  * strip — and whatever is left lands here.
  *
- * Which is why this list is SEVEN photographs, and interiors at that. The
- * homepage has 38 photo slots above this block and the repo holds 45 frames
- * that are fit to show (54 registered, minus nine carrying a tower crane,
- * bare geotextile, or a stranger). 45 − 38 = 7. There is no arrangement that
- * fills a large archive AND keeps every frame unique; the shortfall is
- * photography, not layout. A new shoot grows this block and nothing else has
- * to move.
+ * Which is why this list is short, and interiors at that. The homepage has 38
+ * photo slots above this block, and the repo holds only so many frames that
+ * are fit to show — the archive gets the difference. There is no arrangement
+ * that fills a large archive AND keeps every frame unique; the shortfall is
+ * photography, not layout.
+ *
+ * That is also why it grew from 7 to 12 on the same day it was written: the
+ * operator sent five chalet interiors, one of which (chaletHallBeams) was good
+ * enough to take the editorial block off chaletLounge, freeing that frame down
+ * here as well. A shoot grows this block and nothing else has to move.
  *
  * The full split lives in `scripts/check-home-photos.js`, which fails if any
  * key ends up on two homepage surfaces.
  */
 export const homeGallery = [
-  "chaletBedroomDouble",
+  "chaletBedroomHall",
   "galTopchanInside",
+  "chaletRobes",
+  "chaletBedroomDouble",
   "aframeMinibar",
+  "chaletLounge",
   "galKazanStone",
+  "chaletBedroomTwinHall",
   "chaletBathroom",
+  "chaletLinenSafe",
   "aframeBathroom",
   "cableCars",
 ] as const satisfies readonly (keyof typeof resortImages)[];

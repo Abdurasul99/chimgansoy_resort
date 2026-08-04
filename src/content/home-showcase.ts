@@ -33,7 +33,12 @@ export const homeShowcase: HomeShowcaseItem[] = [
     },
   },
   {
-    image: "chaletLounge",
+    // The operator's 2026-08-04 interior drop. This block is headed "шале с
+    // кухней-залом" and chaletLounge showed a sofa and a television in a dark
+    // corner — it read as a living room, not as the room the sentence is
+    // about. This frame has the vaulted beam ceiling, the sofa, the kitchen
+    // and the dining table in one shot, which is the claim itself.
+    image: "chaletHallBeams",
     title: {
       ru: "Шале с кухней-залом — для семьи и компании",
       uz: "Oshxona-zalli shale — oila va do'stlar uchun",

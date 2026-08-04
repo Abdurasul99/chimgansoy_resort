@@ -160,10 +160,18 @@ export const rooms: Room[] = [
       "chaletLawn",
       "chaletExterior",
       "chaletRowTall",
+      // The 2026-08-04 interior drop. The kitchen-lounge leads the interiors
+      // because it is the room the whole page argues for — two bedrooms are a
+      // commodity, a 35 m² room with the beams open is not.
+      "chaletHallBeams",
       "chaletLounge",
       "chaletDining",
+      "chaletBedroomHall",
       "chaletBedroomDouble",
+      "chaletBedroomTwinHall",
       "chaletBedroomTwin",
+      "chaletRobes",
+      "chaletLinenSafe",
       "chaletBathroom",
       "chaletKitchen",
     ],
