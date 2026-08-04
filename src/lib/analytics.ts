@@ -23,9 +23,17 @@ const YM_ID = process.env.NEXT_PUBLIC_YANDEX_METRICA_ID;
  * break the other, and with nothing configured this is a no-op.
  *
  * In Metrica these arrive as JavaScript-event goals, so the goal identifier
- * you create in the Metrica UI must match `name` exactly. Current names:
- *   booking_cta_click · call_click · whatsapp_click · telegram_click
- *   instagram_click · map_click · inquiry_submitted · booking_submitted
+ * created in the Metrica UI must match `name` EXACTLY — a goal named anything
+ * else silently never fires, and there is nothing in either UI to say why.
+ * The complete current list, which is `grep -rho 'trackEvent("[a-z_]*'`:
+ *
+ *   clicks:  booking_cta_click · call_click · whatsapp_click ·
+ *            telegram_click · instagram_click · map_click
+ *   sent:    pool_request_submitted · topchan_request_submitted ·
+ *            tubing_request_submitted · inquiry_submitted
+ *
+ * (This list previously ended in `booking_submitted`, which no code has ever
+ * sent — the three day products each report under their own name.)
  */
 export function trackEvent(name: string, params?: Record<string, unknown>) {
   if (typeof window === "undefined") return;

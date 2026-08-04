@@ -32,6 +32,18 @@ const serif = Cormorant({
   preload: true,
 });
 
+/**
+ * GA4 measurement id.
+ *
+ * Env-first with the current property as the fallback, so it behaves like the
+ * Metrica counter: swapping properties is one variable in Vercel rather than a
+ * code change, and the site still reports if the variable is ever cleared by
+ * accident. The format is checked because the value is interpolated straight
+ * into a <script> — an id is `G-` plus uppercase alphanumerics, nothing else.
+ */
+const GA4_RAW = process.env.NEXT_PUBLIC_GA4_ID?.trim() || "G-9P44JZ0828";
+const GA4_ID = /^G-[A-Z0-9]{6,15}$/.test(GA4_RAW) ? GA4_RAW : "";
+
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
@@ -222,17 +234,27 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
             lands seconds in; every visitor who bounced before that was simply
             never counted, and bounce-heavy traffic is exactly what you need to
             see. afterInteractive still runs after hydration, so it costs no
-            LCP — gtag.js is async and off the critical path either way. */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-S7FS7C573H"
-          strategy="afterInteractive"
-        />
-        <Script id="ga4-init" strategy="afterInteractive">{`
-          window.dataLayer=window.dataLayer||[];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js',new Date());
-          gtag('config','G-S7FS7C573H',{send_page_view:true});
-        `}</Script>
+            LCP — gtag.js is async and off the critical path either way.
+
+            ONE tag per page, per Google's own instruction in the setup dialog.
+            The property moved on 2026-08-04 from G-S7FS7C573H to the operator's
+            own — the old one was created by someone else and they had no access
+            to it, which is why they could not read their own traffic. History
+            stays in the old property; it is not merged and cannot be. */}
+        {GA4_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">{`
+              window.dataLayer=window.dataLayer||[];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js',new Date());
+              gtag('config','${GA4_ID}',{send_page_view:true});
+            `}</Script>
+          </>
+        )}
         {/* Yandex.Metrica — renders nothing until the counter id is set.
             Yandex is a real share of search in Uzbekistan and GA4 alone
             leaves that half of the picture dark. */}
