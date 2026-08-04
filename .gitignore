@@ -52,3 +52,7 @@ next-env.d.ts
 .vercel
 .env*
 .env*.local
+
+# Ad-hoc verification scripts written by agents at the repo root so that
+# playwright resolves from node_modules. Never part of the app.
+/*.mjs
