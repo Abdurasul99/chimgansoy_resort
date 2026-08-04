@@ -474,8 +474,9 @@ textarea {
    past the fold. */
 @media (max-height: 700px) and (min-width: 1024px) {
   [data-hero-fx] > .hero-fx-content {
-    padding-top: 3.5rem;
-    padding-bottom: 3rem;
+    /* Symmetric, so the block stays centred while the gutter shrinks. */
+    padding-top: 3.25rem;
+    padding-bottom: 3.25rem;
   }
 }
 

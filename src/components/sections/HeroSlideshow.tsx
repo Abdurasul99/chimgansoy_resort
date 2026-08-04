@@ -28,18 +28,16 @@ import { useEffect, useState } from "react";
 // Pool only, per the operator: the pool is the product they want the homepage
 // to lead on.
 //
-// All three are CGI — there is no photograph of the pool anywhere in the repo.
-// A visible "Визуализация" mark sat on the hero for a while; the operator asked
-// for it to go, which is their call to make. Worth knowing if you touch this:
-// these frames are renderings, the rest of the site's photography is real, and
-// a guest who books off this hero is booking off a drawing.
-// These files are 1280×720, against 2400px for the frames they replaced, so
-// they upscale on wide screens. A real photo shoot of the finished pool would
-// fix both problems at once.
+// August 2026: these are photographs. The three frames that stood here were CGI
+// — there was no picture of the finished pool anywhere in the repo, and a guest
+// who booked off this hero was booking off a drawing. The shoot settled it.
+// All three are 2400px wide and 4:3, which survives both the desktop crop
+// (~1.8:1) and a portrait phone (~0.46) without losing the subject — the test
+// every hero frame on this site has to pass.
 const SUMMER_SLIDES = [
-  "/images/resort/16-pool-day-lifestyle.jpg", // lagoon pool from above
-  "/images/resort/17-workout-padel-zone.jpg", // pool by day, loungers and palms
-  "/images/resort/07-aframe-glamping-evening.jpg", // pool in the evening
+  "/images/resort/2026-08/pool-panorama.jpg", // whole pool, swim-up bar, mountains
+  "/images/resort/2026-08/pool-cabanas-valley.jpg", // cabanas above the valley
+  "/images/resort/2026-08/pool-deck-chalets.jpg", // deck and the chalet row
 ];
 
 const WINTER_PHOTO = "/images/resort/winter-google-aframe.jpg";

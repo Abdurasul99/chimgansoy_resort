@@ -30,7 +30,7 @@ export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
   // Which room the viewer is showing, by slug — null when closed.
   const [gallery, setGallery] = useState<string | null>(null);
   const dict = dictionaries[locale];
-  // Only truly-built rooms are bookable here; the rest live in <MasterPlan>.
+  // Only truly-built rooms are bookable here; `available: false` hides the rest.
   const bookableRooms = useMemo(() => rooms.filter((room) => room.available !== false), []);
   const availableCategories = useMemo(
     () => roomCategories.filter((c) => c.id === "all" || bookableRooms.some((room) => room.category === c.id)),

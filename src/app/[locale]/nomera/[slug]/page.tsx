@@ -37,20 +37,27 @@ const poolPriceChip: Record<string, string> = {
  *
  * Deliberately wider than `room.gallery`, which the page already renders lower
  * down as a two-up grid — this is the "show me the place" set a guest wants
- * right after seeing the price. Every frame here is a genuine pool image;
- * see the verified content table in content/images.ts.
+ * right after seeing the price. It now carries the whole August-2026 pool
+ * shoot: eleven photographs where there used to be four renderings.
  */
 const POOL_ARCHIVE = [
-  "poolAerial",
-  "poolLifestyle",
-  "poolEvening",
-  "pool",
+  "poolPanorama",
+  "poolLogoTall",
+  "poolCabanasValley",
+  "poolWideChalets",
+  "poolStepsTall",
+  "poolLoungers",
+  "poolCabanasSky",
+  "poolWater",
+  "poolCurveTall",
+  "poolCabanas",
+  "poolDeckChalets",
   "galTerritoryPanorama",
-  "mountainRidge",
 ] as const;
 
-// Only built, bookable rooms get a detail page; not-yet-built rooms (cottage)
-// live in the Master Plan section, so their /nomera/<slug> URL 404s.
+// Only built, bookable rooms get a detail page. Anything marked
+// `available: false` in content/rooms.ts is skipped here, so its /nomera/<slug>
+// URL 404s rather than advertising something a guest cannot book.
 export const dynamicParams = false;
 
 export function generateStaticParams() {

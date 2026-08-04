@@ -10,37 +10,34 @@ import { text } from "@/lib/localize";
 
 /**
  * The strip is the first thing under the hero, so it states what this place is:
- * twelve frames, all of them the chalet and the A-frames.
+ * twelve frames of the pool and the chalets, which are the two things sold.
  *
- * Row B used to mix in the grounds and the food — a plate of shashlik being
- * carried, coals in a mangal, a bare hillside. That was the last of the
- * day-visit pitch on the homepage, and next to the room shoots it read as a
- * different business. Every frame here is now a room a guest books, shot after
- * the landscaping was finished (nothing from the construction-era set, where
- * the ground is still geotextile and sand).
- */
-/**
- * Row B used to be six interior close-ups in a row — a minibar, a made bed, a
- * kitchen worktop. At marquee size, moving, those are unreadable: the eye gets
- * a blur of beige and learns nothing about the place. Both rows now alternate
- * a wide frame with an interior, so something legible passes every second card.
+ * Both rows alternate subject deliberately — a pool frame, then a chalet frame,
+ * then a pool frame. Six of the same in a row is unreadable at marquee size:
+ * the eye gets one long blur and learns nothing. The same rule retired an
+ * earlier Row B that was six interior close-ups (a minibar, a made bed, a
+ * kitchen worktop) passing as a blur of beige.
+ *
+ * Ten of the twelve are the August-2026 shoot. Nothing here is from the
+ * construction-era set, where the ground is still geotextile and sand, and
+ * nothing here is a rendering.
  */
 const ROW_A = [
-  "aframeLawnWide",
-  "chaletLounge",
-  "poolLifestyle",
-  "aframeTerraceView",
-  "aframeRoom",
-  "mountainRidge",
+  "poolWideChalets",
+  "chaletLawn",
+  "poolLoungers",
+  "chaletFront",
+  "poolCabanasSky",
+  "chaletRowTall",
 ] as const;
 
 const ROW_B = [
-  "poolAerial",
+  "poolDeckChalets",
+  "chaletLounge",
+  "poolCurveTall",
   "chaletDining",
-  "aframeLawnTall",
-  "chaletBedroomDouble",
-  "galTerritoryPanorama",
-  "aframeLounge",
+  "poolWater",
+  "aframeLawnWide",
 ] as const;
 
 function Strip({ keys, reverse, locale }: { keys: readonly (keyof typeof resortImages)[]; reverse?: boolean; locale: Locale }) {

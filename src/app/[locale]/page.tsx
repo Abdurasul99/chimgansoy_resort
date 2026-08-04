@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Hero } from "@/components/sections/Hero";
 import { LeisureShowcase } from "@/components/sections/LeisureShowcase";
-import { MasterPlan } from "@/components/sections/MasterPlan";
 import { RoomCatalog } from "@/components/sections/RoomCatalog";
 import { Faq } from "@/components/sections/Faq";
 import { MapBlock } from "@/components/sections/MapBlock";
@@ -11,11 +10,12 @@ import { TestimonialsCarousel } from "@/components/sections/TestimonialsCarousel
 import { PhotoMarquee } from "@/components/sections/PhotoMarquee";
 import { FaqJsonLd } from "@/components/seo/JsonLd";
 import { BentoGallery } from "@/components/sections/BentoGallery";
+import { MediaArchive } from "@/components/sections/MediaArchive";
 import { WeatherPanel } from "@/components/sections/WeatherPanel";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { AnimatedStat } from "@/components/ui/AnimatedStat";
-import { resortImages } from "@/content/images";
+import { homeGallery, resortImages } from "@/content/images";
 import { poolPricing } from "@/content/pricing";
 import { homeShowcase } from "@/content/home-showcase";
 import { dictionaries } from "@/content/translations";
@@ -68,10 +68,9 @@ const poolPriceLine: Record<string, string> = {
   en: `Mon–Thu ${fmt(poolPricing.adult.weekday)} · Fri–Sun ${fmt(poolPricing.adult.weekend)} UZS per adult · ages 5–15 half price`,
 };
 
-/** Band under the two stay cards. It ran photo-free at first because the pool
- *  frames were assumed to be a render of something unbuilt; they are in fact
- *  the operator's own visualisations of the pool that is sold today, so the
- *  band leads with one. Every pool image in the repo is CGI; the operator asked for the visible mark to come off. */
+/** Band under the two stay cards. It ran photo-free at first, then led with a
+ *  rendering because no photograph of the pool existed. Since the August-2026
+ *  shoot it leads with `poolPanorama` — the built pool, swim-up bar and all. */
 const poolBand = {
   ru: {
     label: "Бассейн",
@@ -110,7 +109,7 @@ export default async function HomePage({ params }: PageProps) {
       <link
         rel="preload"
         as="image"
-        href="/images/resort/16-pool-day-lifestyle.jpg"
+        href="/images/resort/2026-08/pool-panorama.jpg"
         fetchPriority="high"
       />
 
@@ -182,9 +181,9 @@ export default async function HomePage({ params }: PageProps) {
             <figure className="relative order-first min-h-[240px] sm:min-h-[320px] lg:order-last lg:min-h-[380px]">
               <div
                 className="absolute inset-0 bg-cover bg-center"
-                style={imageStyle(resortImages.poolAerial)}
+                style={imageStyle(resortImages.poolPanorama)}
                 role="img"
-                aria-label={text(resortImages.poolAerial.alt, locale)}
+                aria-label={text(resortImages.poolPanorama.alt, locale)}
               />
             </figure>
 
@@ -383,8 +382,12 @@ export default async function HomePage({ params }: PageProps) {
              is deliberately cut here, staying on /services ── */}
       <LeisureShowcase locale={locale} limit={3} />
 
-      {/* ── Master plan — honest renders of what's being built (not bookable) ─── */}
-      <MasterPlan locale={locale} />
+      {/* A "Что мы строим" section used to sit here — three CGI renders of the
+          master plan, the padel courts and the mini-football pitch, framed as
+          "in progress". The operator retired the renders, so the section went
+          with them: the homepage now only shows what a guest can actually book
+          today. The three keys it owned (territoryAerial, sportParking,
+          workoutPadel) were dropped from content/images.ts. */}
 
       {/* The day-use price list used to sit here. Day products are sold again,
           but each now has its own page with a booking form that prices the
@@ -404,6 +407,15 @@ export default async function HomePage({ params }: PageProps) {
           {/* Bento mosaic — curated real photos with hover captions */}
           <div className="mt-10 motion-reveal" data-delay="100">
             <BentoGallery locale={locale} />
+          </div>
+
+          {/* The full archive under the mosaic, each frame opening in the
+              lightbox — including the six the mosaic crops and captions, which
+              belong in a complete set. Until now most of this photography was
+              reachable only from a room page. Same component the day-product
+              pages use. */}
+          <div className="mt-12 motion-reveal" data-delay="140">
+            <MediaArchive locale={locale} images={homeGallery} />
           </div>
         </div>
       </section>

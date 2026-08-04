@@ -36,19 +36,22 @@ const SITE = "https://chimgandarbaza.uz";
 const BOOK_URL = `${SITE}/ru/bron`;
 const IMG = `${SITE}/images/resort`;
 
-const HERO_PHOTO = `${IMG}/02-aerial-full-territory.jpg`;
+const HERO_PHOTO = `${IMG}/2026-08/pool-panorama.jpg`;
 // URLs here are hardcoded, so they bypass content/images.ts and its mapping —
 // which meant "Шале с видом на горы" was sending guests a photo of the padel
-// courts (18 holds the sport zone, not the chalets). Captions now match what is
-// actually inside each file; see the verified table in content/images.ts.
-// The chalet and glamping frames are real photography, the rest are renders.
+// courts (18 held the sport zone, not the chalets).
+//
+// Every frame is now a photograph. Half of this album used to be renderings
+// captioned "(визуализация)", which is an honest label but still answers "what
+// does it look like?" with a drawing. Those files are gone from the repo, so
+// these URLs would 404 if they had been left.
 const ALBUM: { url: string; caption: string }[] = [
-  { url: `${IMG}/02-aerial-full-territory.jpg`, caption: "Вся территория с высоты 🏔" },
+  { url: `${IMG}/2026-08/pool-panorama.jpg`, caption: "Бассейн и горы 🏔" },
+  { url: `${IMG}/2026-08/pool-logo-tall.jpg`, caption: "Мозаика на дне бассейна" },
+  { url: `${IMG}/2026-08/pool-cabanas-valley.jpg`, caption: "Бунгало у воды" },
+  { url: `${IMG}/2026-08/chalet-peaks.jpg`, caption: "Шале под гребнем Чимгана" },
   { url: `${IMG}/rooms/chalet-lounge.jpg`, caption: "Кухня-зал в шале" },
   { url: `${IMG}/rooms/aframe-room.jpg`, caption: "Глэмпинг A-frame внутри" },
-  { url: `${IMG}/16-pool-day-lifestyle.jpg`, caption: "Бассейн с высоты (визуализация)" },
-  { url: `${IMG}/17-workout-padel-zone.jpg`, caption: "Бассейн днём (визуализация)" },
-  { url: `${IMG}/07-aframe-glamping-evening.jpg`, caption: "Вечер у бассейна (визуализация) ✨" },
 ];
 
 // ── date helpers ──────────────────────────────────────────────────────────────

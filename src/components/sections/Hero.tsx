@@ -57,7 +57,10 @@ export function Hero({ locale }: HeroProps) {
       // bg-[#0f1928]: solid dark base (matches the gradient navy, season-proof —
       // not --ink, which flips to light in winter) so the white title is always
       // legible while the hero photo is still downloading. No more blank/cream flash.
-      className="relative isolate flex min-h-[100svh] items-end overflow-hidden -mt-[4.5rem] bg-[#0f1928]"
+      // items-center, not items-end: the whole composition sits in the middle of
+      // the screen. Safe with min-h (not h): when the stack is taller than the
+      // viewport the section grows instead of centring and clipping the top.
+      className="relative isolate flex min-h-[100svh] items-center overflow-hidden -mt-[4.5rem] bg-[#0f1928]"
       aria-label="Hero"
       // Marks this section for the scroll engine: it publishes --hero-shift /
       // --hero-fade / --hero-media here as the hero leaves the viewport.
@@ -229,8 +232,16 @@ export function Hero({ locale }: HeroProps) {
       {/* pb-36 on phones. The concierge launcher is fixed at bottom-[4.5rem]
           (72px) and stands ~56px tall, so it occupies the last ~128px of the
           viewport; anything less than that here leaves it sitting on top of the
-          widget's submit button. */}
-      <div className="hero-fx-content relative z-[4] mx-auto w-full max-w-7xl px-4 pb-36 pt-28 sm:px-6 sm:pb-16 sm:pt-32 lg:pb-24 lg:pt-24 lg:px-8">
+          widget's submit button.
+
+          From sm up the padding is symmetric, which is what actually centres the
+          block: -mt-[4.5rem] only cancels the 4.5rem the header occupies in
+          flow, so the section already starts at the top of the screen and needs
+          no correction. (An earlier attempt added 4.5rem to the top for a header
+          offset that does not exist — and because a centred box splits a padding
+          difference in half, it landed the block 36px low and pushed the hero
+          13px past the fold at 1280x720.) */}
+      <div className="hero-fx-content relative z-[4] mx-auto w-full max-w-7xl px-4 pb-36 pt-28 sm:px-6 sm:pb-24 sm:pt-24 lg:pb-24 lg:pt-24 lg:px-8">
 
         {/* Title, chips and lead form ONE column beside the booking stack.
             The title used to span the full width above this grid, so the hero
@@ -239,7 +250,7 @@ export function Hero({ locale }: HeroProps) {
             the short lead was bottom-aligned to the tall booking column. Beside
             it instead, the hero is max(left, right) and the title sits with the
             text it belongs to. */}
-        <div className="grid items-end gap-8 lg:grid-cols-[1fr_minmax(0,26rem)] lg:gap-12">
+        <div className="grid items-center gap-8 lg:grid-cols-[1fr_minmax(0,26rem)] lg:gap-12">
           {/* min-w-0 on both columns: a grid item defaults to min-width:auto and
               refuses to shrink below its content, so on a 390px phone the
               booking card was rendering 389px wide inside a 358px track and its

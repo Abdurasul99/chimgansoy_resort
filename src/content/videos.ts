@@ -17,7 +17,20 @@ const BASE = "https://rxblzbvichchznop.public.blob.vercel-storage.com/video";
 
 export type VideoClip = {
   key: string;
+  /** Full 720x1280 clip with sound — fetched only when a card is opened. */
   src: string;
+  /**
+   * 400px-wide silent encode for the rail.
+   *
+   * The rail used to autoplay `src`, all 37 MB of it across five files, which is
+   * why only one clip at a time was ever allowed to run — and why the other four
+   * cards sat there as frozen posters looking broken. A card is ~280px wide, so
+   * a 720p master was never the right file for it.
+   *
+   * The five previews come to 5.4 MB (426 KB to 2.8 MB each — the track clip is
+   * the long one), against 37 MB for the masters. See scripts/make-video-previews.js.
+   */
+  previewSrc: string;
   poster: string;
   /** Portrait, from an iPhone held upright. */
   ratio: "9/16";
@@ -30,6 +43,7 @@ export const tubingVideos: VideoClip[] = [
   {
     key: "tubing-4",
     src: `${BASE}/tubing-4.mp4`,
+    previewSrc: `${BASE}/tubing-4-preview.mp4`,
     poster: `${BASE}/tubing-4.jpg`,
     ratio: "9/16",
     title: { ru: "Спуск от первого лица", uz: "Birinchi shaxs ko'zi bilan", en: "The run, first person" },
@@ -42,6 +56,7 @@ export const tubingVideos: VideoClip[] = [
   {
     key: "tubing-1",
     src: `${BASE}/tubing-1.mp4`,
+    previewSrc: `${BASE}/tubing-1-preview.mp4`,
     poster: `${BASE}/tubing-1.jpg`,
     ratio: "9/16",
     title: { ru: "Бассейн и хребет", uz: "Basseyn va tizma", en: "The pool and the ridge" },
@@ -54,6 +69,7 @@ export const tubingVideos: VideoClip[] = [
   {
     key: "tubing-5",
     src: `${BASE}/tubing-5.mp4`,
+    previewSrc: `${BASE}/tubing-5-preview.mp4`,
     poster: `${BASE}/tubing-5.jpg`,
     ratio: "9/16",
     title: { ru: "Бунгало у воды", uz: "Suv bo'yidagi bungalolar", en: "Bungalows by the water" },
@@ -66,6 +82,7 @@ export const tubingVideos: VideoClip[] = [
   {
     key: "tubing-3",
     src: `${BASE}/tubing-3.mp4`,
+    previewSrc: `${BASE}/tubing-3-preview.mp4`,
     poster: `${BASE}/tubing-3.jpg`,
     ratio: "9/16",
     title: { ru: "Домики на газоне", uz: "Maysazordagi uychalar", en: "Cabins on the lawn" },
@@ -78,6 +95,7 @@ export const tubingVideos: VideoClip[] = [
   {
     key: "tubing-2",
     src: `${BASE}/tubing-2.mp4`,
+    previewSrc: `${BASE}/tubing-2-preview.mp4`,
     poster: `${BASE}/tubing-2.jpg`,
     ratio: "9/16",
     title: { ru: "Чимганский хребет", uz: "Chimgon tizmasi", en: "The Chimgan ridge" },

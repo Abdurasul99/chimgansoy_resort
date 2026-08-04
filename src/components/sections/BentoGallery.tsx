@@ -17,36 +17,37 @@ type Cell = {
 
 
 /**
- * Curated for impact, not for inventory.
+ * Curated for impact, not for inventory. The full archive sits directly below
+ * this mosaic on the homepage — this is the six frames that have to earn the
+ * scroll, not a complete set.
  *
- * The mosaic used to spend three of its seven cells on interior close-ups — a
- * bedroom, a kitchen-lounge — which are the room pages' job. At gallery size
- * they read as detail shots of a rental listing rather than a reason to come.
- * What is left is the wide, bright frames: water, lawn, ridge, and one interior
- * that earns its place because the A-frame silhouette IS the product.
+ * Five of the six are the August-2026 shoot: the pool, the chalets under the
+ * ridge, the mosaic on the pool floor, the bungalows, the chalet terrace. The
+ * sixth is the A-frame interior, which stays because the silhouette IS the
+ * product and no exterior frame conveys it.
  *
- * Fewer cells, bigger cells. Seven small tiles competed with each other; five
+ * Fewer cells, bigger cells. Seven small tiles competed with each other; six
  * with a dominant hero gives the eye somewhere to land.
  */
 const CELLS: Cell[] = [
   {
-    image: "poolLifestyle",
-    caption: { ru: "Бассейн днём", uz: "Kunduzgi basseyn", en: "The pool by day" },
+    image: "poolPanorama",
+    caption: { ru: "Бассейн и горы", uz: "Basseyn va tog'lar", en: "The pool and the mountains" },
     span: "md:col-span-2 md:row-span-2",
   },
   {
-    image: "aframeLawnWide",
-    caption: { ru: "Домики на газоне", uz: "Maysazordagi uychalar", en: "Cabins on the lawn" },
+    image: "chaletPeaks",
+    caption: { ru: "Шале под гребнем", uz: "Tizma ostidagi shalelar", en: "Chalets beneath the ridge" },
     span: "md:col-span-2",
   },
   {
-    image: "poolAerial",
-    caption: { ru: "Бассейн с высоты", uz: "Basseyn yuqoridan", en: "The pool from above" },
+    image: "poolLogoTall",
+    caption: { ru: "Мозаика на дне", uz: "Tubdagi mozaika", en: "The mosaic on the floor" },
     span: "",
   },
   {
-    image: "aframeTerraceView",
-    caption: { ru: "Вид с террасы", uz: "Terrasadan manzara", en: "The view from the terrace" },
+    image: "poolCabanas",
+    caption: { ru: "Бунгало у воды", uz: "Suv bo'yidagi bungalolar", en: "Bungalows by the water" },
     span: "",
   },
   {
@@ -55,8 +56,8 @@ const CELLS: Cell[] = [
     span: "md:col-span-2",
   },
   {
-    image: "mountainRidge",
-    caption: { ru: "Хребет Чимгана", uz: "Chimgon tizmasi", en: "The Chimgan ridge" },
+    image: "chaletTerrace",
+    caption: { ru: "Терраса шале", uz: "Shale terrasasi", en: "The chalet terrace" },
     span: "md:col-span-2",
   },
 ];

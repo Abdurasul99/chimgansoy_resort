@@ -41,8 +41,9 @@ export type DayProduct = {
 export const dayProducts: DayProduct[] = [
   {
     slug: "topchan",
-    // Real photography, unlike most of the pool set — these are the property's
-    // own topchans, shot against the ridge.
+    // The property's own topchans, shot against the ridge. A sixth frame here
+    // was `tapchanAerial`, a render of the topchan zone; it went with the rest
+    // of the CGI set.
     image: "galTopchanPeaks",
     gallery: [
       "galTopchanPeaks",
@@ -50,7 +51,6 @@ export const dayProducts: DayProduct[] = [
       "galTopchanInside",
       "galTopchanSwing",
       "galTopchanRidge",
-      "tapchanAerial",
     ],
     videos: [],
     title: { ru: "Топчан", uz: "Topchan", en: "Topchan" },
@@ -118,11 +118,12 @@ export const dayProducts: DayProduct[] = [
     /**
      * NO TUBING PHOTOGRAPHY EXISTS.
      *
-     * The `tubing` key in images.ts resolves to a night render of the master
-     * plan, not a track — using it here would show guests a computer image of a
-     * place they are paying to visit. Until the operator shoots the hill, the
-     * archive carries the real surroundings instead, and the copy promises only
-     * what those photos actually show.
+     * There used to be a `tubing` key in images.ts, but it resolved to a night
+     * render of the master plan rather than a track; it went with the rest of
+     * the CGI set. Until the operator shoots the hill, the archive carries the
+     * real surroundings instead, the copy promises only what those photos
+     * actually show, and the one piece of genuine footage — the first-person
+     * run in content/videos.ts — does the selling.
      */
     image: "chimganMountains",
     gallery: ["chimganMountains", "mountainRidge", "galMountainView"],

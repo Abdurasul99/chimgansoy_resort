@@ -20,7 +20,7 @@ export const INCLUDED_LABEL: LocalizedString = {
 export type Room = {
   slug: RoomCategory;
   category: RoomCategory;
-  /** false = not built yet → shown only in the Master Plan section, not bookable */
+  /** false = not built yet → hidden from the catalogue, and no /nomera page */
   available?: boolean;
   image: keyof typeof resortImages;
   gallery: (keyof typeof resortImages)[];
@@ -119,14 +119,27 @@ export const rooms: Room[] = [
   {
     slug: "cottage",
     category: "cottage",
-    // Real interior shoot of the finished chalet. Previously receptionDay +
-    // restaurantBuilding — i.e. the reception block and the restaurant, not the
-    // chalet at all, so anyone booking a Шале was looking at another building.
-    // gallery[0] spans both columns, so the wide lounge shot leads.
-    image: "chaletLounge",
-    // The exterior leads: gallery[0] spans both columns on /nomera/[slug], and
-    // a guest choosing a chalet wants to see the building before the sofa.
-    gallery: ["chaletExterior", "chaletDining", "chaletBedroomDouble", "chaletBedroomTwin", "chaletBathroom", "chaletKitchen"],
+    // The building, under the ridge it is sold on. The card used to show the
+    // lounge, and before that receptionDay + restaurantBuilding — the reception
+    // block and the restaurant, not the chalet at all, so anyone booking a Шале
+    // was looking at another building entirely.
+    image: "chaletPeaks",
+    // Exteriors first, then interiors. gallery[0] spans both columns on
+    // /nomera/[slug] and the rest fall into a 2-up grid, so the count is kept
+    // odd — an even one leaves a half-empty last row.
+    gallery: [
+      "chaletFront",
+      "chaletTerrace",
+      "chaletLawn",
+      "chaletExterior",
+      "chaletRowTall",
+      "chaletLounge",
+      "chaletDining",
+      "chaletBedroomDouble",
+      "chaletBedroomTwin",
+      "chaletBathroom",
+      "chaletKitchen",
+    ],
     title: { ru: "Шале", uz: "Shale", en: "Chalet" },
     eyebrow: {
       ru: "Для семьи и компании",
@@ -185,16 +198,20 @@ export const rooms: Room[] = [
       { label: { ru: "Парковка у домика", uz: "Uycha yonida parking", en: "Parking by the cabin" } },
       { label: { ru: "Wi-Fi", uz: "Wi-Fi", en: "Wi-Fi" } },
     ],
-    relatedServices: ["kids-playground", "outdoor-cooking", "mini-football"],
+    // Was ["kids-playground", "outdoor-cooking", "mini-football"]. Two of those
+    // slugs do not exist in services.ts — they were left over from the resort
+    // pitch — so the chalet page rendered one related service where it lays out
+    // three, and one of the two ghosts was the mini-football pitch that is not
+    // built. These three are real, and they are what a chalet guest uses.
+    relatedServices: ["restaurant", "outdoor-cooking", "experience"],
   },
   {
     slug: "pool",
     category: "pool",
-    // All three are genuine pool frames now. The gallery used to be
-    // [pool, poolEvening, galTerritoryPanorama], where poolEvening resolved to
-    // the entrance gate — so the Бассейн page showed a building.
-    image: "pool",
-    gallery: ["poolAerial", "poolLifestyle", "poolEvening"],
+    // Photographs of this pool, taken in August 2026. Until then every frame
+    // here was a rendering — the page sold a day pass with a drawing.
+    image: "poolPanorama",
+    gallery: ["poolWideChalets", "poolCabanasValley", "poolLogoTall"],
     title: { ru: "Бассейн", uz: "Basseyn", en: "Pool" },
     eyebrow: {
       ru: "Летний отдых у воды",

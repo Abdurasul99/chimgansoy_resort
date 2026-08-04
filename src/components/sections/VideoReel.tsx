@@ -38,16 +38,29 @@ const COPY: Record<Locale, { eyebrow: string; title: string; lead: string; sound
  *
  * Autoplay is muted and gated on visibility, which is the only way a browser
  * will start a video without a tap — and the only polite way to do it. A clip
- * that leaves the viewport is paused, so a page with five videos never has five
- * decoders running. `preload="none"` keeps the initial page weight to five
- * poster JPEGs; the MP4 is fetched when the card is close enough to matter.
+ * that leaves the viewport is paused, so nothing decodes off screen.
+ *
+ * Every clip that is actually on screen plays. This used to be exactly one —
+ * whichever was most centred — because the rail autoplayed the full 720p
+ * masters and five of those at once is a 37 MB download. The effect on a
+ * desktop, where all five cards sit in a visible row, was four frozen posters
+ * next to one moving card: the page looked broken. The rail now streams the
+ * 400px silent previews (~1 MB each, see content/videos.ts), so all five can
+ * run, and the full clip with sound is fetched only when a card is opened.
  */
+/**
+ * Half visible is the bar for autoplay. Lower and a card one pixel past the
+ * edge of a phone's snap rail starts decoding for nobody; higher and the two
+ * cards flanking the centred one on a tablet never move.
+ */
+const PLAY_AT = 0.5;
+
 export function VideoReel({ locale, clips }: { locale: Locale; clips: VideoClip[] }) {
   const t = COPY[locale] ?? COPY.ru;
   const [open, setOpen] = useState<VideoClip | null>(null);
 
   /**
-   * One observer for the whole rail, playing only the most-visible clip.
+   * One observer for the whole rail, playing every clip that is on screen.
    *
    * Kept in a ref rather than state so a scroll never triggers a React render:
    * the DOM is the only thing that has to change here.
@@ -55,25 +68,34 @@ export function VideoReel({ locale, clips }: { locale: Locale; clips: VideoClip[
   const ratios = useRef(new Map<HTMLVideoElement, number>());
   const io = useRef<IntersectionObserver | null>(null);
 
+  /**
+   * Set while the fullscreen player is up. The rail must not keep five muted
+   * loops decoding behind an overlay that covers them — the guest cannot see
+   * them, and they compete with the 720p master for bandwidth on exactly the
+   * frame that matters. Held in a ref as well as state because `apply` runs
+   * from the observer callback, outside React's render.
+   */
+  const suspended = useRef(false);
+
   const apply = useCallback(() => {
-    let best: HTMLVideoElement | null = null;
-    let bestRatio = 0.35; // below this nothing plays — the rail is off screen
-    for (const [el, r] of ratios.current) {
-      if (r > bestRatio) {
-        bestRatio = r;
-        best = el;
-      }
-    }
-    for (const el of ratios.current.keys()) {
-      if (el === best) {
+    for (const [el, ratio] of ratios.current) {
+      if (!suspended.current && ratio >= PLAY_AT) {
         // play() rejects when the browser declines autoplay; that is a normal
         // outcome, not an error — the poster stays and the tap still works.
-        void el.play().catch(() => {});
+        if (el.paused) void el.play().catch(() => {});
       } else if (!el.paused) {
         el.pause();
       }
     }
   }, []);
+
+  const suspend = useCallback(
+    (on: boolean) => {
+      suspended.current = on;
+      apply();
+    },
+    [apply],
+  );
 
   const observer = useCallback(() => {
     if (io.current) return io.current;
@@ -84,8 +106,10 @@ export function VideoReel({ locale, clips }: { locale: Locale; clips: VideoClip[
         }
         apply();
       },
-      // A spread of thresholds so "most visible" is meaningful, not binary.
-      { threshold: [0, 0.2, 0.4, 0.6, 0.8, 1] },
+      // 0.5 has to be in this list: it is the play threshold, and the observer
+      // only reports when a listed value is crossed. Without it a card parked
+      // between 40% and 60% keeps whatever state it last had.
+      { threshold: [0, 0.2, 0.4, 0.5, 0.6, 0.8, 1] },
     );
     return io.current;
   }, [apply]);
@@ -128,7 +152,10 @@ export function VideoReel({ locale, clips }: { locale: Locale; clips: VideoClip[
               clip={clip}
               locale={locale}
               index={i}
-              onOpen={() => setOpen(clip)}
+              onOpen={() => {
+                suspend(true);
+                setOpen(clip);
+              }}
               register={register}
               unregister={unregister}
             />
@@ -136,7 +163,20 @@ export function VideoReel({ locale, clips }: { locale: Locale; clips: VideoClip[
         </div>
       </div>
 
-      {open && <Fullscreen clip={open} locale={locale} onClose={() => setOpen(null)} labels={t} />}
+      {open && (
+        <Fullscreen
+          // Keyed by clip: without it, opening a second clip after the first
+          // would reuse the same <video> element and inherit its mute state.
+          key={open.key}
+          clip={open}
+          locale={locale}
+          onClose={() => {
+            setOpen(null);
+            suspend(false);
+          }}
+          labels={t}
+        />
+      )}
     </section>
   );
 }
@@ -159,13 +199,10 @@ function ReelCard({
   const ref = useRef<HTMLVideoElement>(null);
 
   /**
-   * Only ONE clip plays at a time, whichever is most centred.
-   *
-   * A per-card observer looked right on a phone, where one card fills the rail
-   * — but from 1024px up all five sit in a visible row, so all five crossed the
-   * threshold together and the page fetched 37 MB in five parallel downloads
-   * with five H.264 decoders running, next to the booking form. The shared
-   * controller in VideoReel decides; the card just registers itself.
+   * The card registers itself; the shared controller in VideoReel decides what
+   * plays. A per-card observer would work too, but then nothing can reason
+   * about the rail as a whole — which is what any future "pause the others"
+   * rule would need.
    */
   useEffect(() => {
     const el = ref.current;
@@ -184,12 +221,27 @@ function ReelCard({
     >
       <video
         ref={ref}
-        src={clip.src}
+        // The preview, not the master: a 280px card has no use for 720p, and
+        // the full file is what the fullscreen player loads on tap.
+        src={clip.previewSrc}
         poster={clip.poster}
         muted
         loop
         playsInline
-        preload="none"
+        // metadata, not none: the container header is fetched up front, so a
+        // card that scrolls into view starts on the next frame rather than
+        // after a round trip. The poster still covers the wait.
+        preload="metadata"
+        // If a preview is missing or fails to decode, fall back to the full
+        // clip rather than leaving a poster that never moves — which is exactly
+        // the "видео не грузятся" symptom this whole change set out to fix.
+        onError={(e) => {
+          const el = e.currentTarget;
+          if (el.src !== clip.src) {
+            el.src = clip.src;
+            el.load();
+          }
+        }}
         className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1.2s] group-hover:scale-[1.04]"
       />
       <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,rgba(10,15,12,0.85)_0%,rgba(10,15,12,0.15)_45%,transparent_70%)]" />
@@ -233,6 +285,7 @@ function Fullscreen({
   labels: { sound: string; muted: string; close: string };
 }) {
   const ref = useRef<HTMLVideoElement>(null);
+  const closeBtn = useRef<HTMLButtonElement>(null);
   const [muted, setMuted] = useState(false);
   const close = useCallback(() => onClose(), [onClose]);
 
@@ -241,9 +294,21 @@ function Fullscreen({
     document.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+
+    /**
+     * Move focus into the dialog and put it back on close.
+     *
+     * The overlay is portaled to <body>, so without this the keyboard caret
+     * stays on the card behind it: Tab walks the page underneath the overlay,
+     * and a screen reader announces a dialog it has not been placed inside.
+     */
+    const returnTo = document.activeElement as HTMLElement | null;
+    closeBtn.current?.focus();
+
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
+      returnTo?.focus?.();
     };
   }, [close]);
 
@@ -257,7 +322,6 @@ function Fullscreen({
       role="dialog"
       aria-modal="true"
       aria-label={text(clip.title, locale)}
-      onClick={(e) => e.target === e.currentTarget && close()}
     >
       <div className="flex shrink-0 items-center justify-between gap-3 px-4 py-3 sm:px-6">
         <p className="min-w-0 truncate font-serif text-lg font-semibold text-white">
@@ -277,6 +341,7 @@ function Fullscreen({
             {muted ? labels.sound : labels.muted}
           </button>
           <button
+            ref={closeBtn}
             type="button"
             onClick={close}
             aria-label={labels.close}
@@ -290,8 +355,18 @@ function Fullscreen({
       </div>
 
       {/* min-h-0 so the stage can shrink inside the flex column — without it the
-          video overflows the viewport and its bottom is cut off. */}
-      <div className="flex min-h-0 flex-1 items-center justify-center px-2 pb-4 sm:px-6">
+          video overflows the viewport and its bottom is cut off.
+
+          This row is also the backdrop: clicking beside the picture closes the
+          player. That only works because the <video> is sized to the picture
+          (max-h/max-w, not h-full w-full). While it filled the row, every click
+          in the letterbox gutters landed on the video element, so a target
+          check never fired and there was no way out of the overlay on a device
+          with no Escape key. */}
+      <div
+        className="flex min-h-0 flex-1 items-center justify-center px-2 pb-4 sm:px-6"
+        onClick={(e) => e.target === e.currentTarget && close()}
+      >
         <video
           ref={ref}
           src={clip.src}
@@ -300,7 +375,13 @@ function Fullscreen({
           loop
           controls
           playsInline
-          className="h-full w-full rounded-2xl object-contain"
+          // The label is driven by the element, not by an assumption about it.
+          // A browser that refuses to autoplay with sound mutes the video
+          // itself, and the button then offered to "turn sound off" on a clip
+          // that was already silent. onVolumeChange also covers the native
+          // controls, which change mute without going through our button.
+          onVolumeChange={(e) => setMuted(e.currentTarget.muted)}
+          className="max-h-full max-w-full rounded-2xl object-contain"
         />
       </div>
     </div>,

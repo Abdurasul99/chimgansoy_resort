@@ -254,18 +254,19 @@ Each image entry now has two layers:
 
 The fallback route is implemented in `src/app/images/resort/[file]/route.ts`. It serves a real local file when present and redirects to the temporary fallback when the file is still missing.
 
-The supplied photo placement plan is documented in:
+What lives in each image folder is documented in `public/images/resort/README.md`.
+(A `src/content/photo-plan.ts` used to sit beside it, mapping the numbered CGI
+render set to placements. Both the renders and that file were deleted in August
+2026 — see the folder README.)
 
-```txt
-src/content/photo-plan.ts
-public/images/resort/README.md
-```
+To add a new photo drop:
 
-When real CHIMGAN DARBAZA photography files are available in the filesystem:
-
-1. Add optimized images to `public/images/resort/` using the names from `public/images/resort/README.md`.
-2. Keep the exact filenames already referenced by `localSrc`; no component changes are needed.
-3. Keep alt text translated for `ru`, `uz`, and `en` when image meaning changes.
+1. Point `scripts/import-photos.js` at the new files and run it. It resizes to a
+   2400px ceiling, strips camera metadata, and writes progressive JPEG into a
+   dated folder under `public/images/resort/`.
+2. Register each file in `src/content/images.ts` under a key that describes what
+   is in the frame — an unregistered file is invisible to the site.
+3. Write the alt text in all three locales (`ru`, `uz`, `en`).
 
 ## Remaining Real Content Work
 
