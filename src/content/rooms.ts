@@ -46,13 +46,36 @@ export const rooms: Room[] = [
   {
     slug: "glamping",
     category: "glamping",
-    // Real interior shoot of the finished cabin. The previous set led with
-    // the June A-frame landscape, which had them still as open shells — so the
-    // page never actually showed the room a guest books.
-    // Order matters: gallery[0] spans both columns on /nomera/[slug], so the
-    // wide exterior goes first and the rest sit in a clean 2×2 below it.
-    image: "aframeRoom",
-    gallery: ["aframeLawnWide", "aframeBed", "aframeLounge", "aframeBathroom", "aframeMinibar"],
+    /**
+     * The card shows the cabin from outside. It led with the interior for a
+     * while — the A-frame bedroom — which reads well but tells a guest scanning
+     * /nomera nothing about what they are booking: the triangle IS the product,
+     * and next to a chalet exterior and a pool, a photograph of a bed does not
+     * say "cabin in the mountains".
+     *
+     * aframeLawnBanner specifically, out of seven exterior frames in the repo.
+     * It is the only one with the landscaping finished AND no tower crane in
+     * the sky: aframe-lawn, -lawn-wide, -lawn-tall and hero-aframe-row all
+     * carry the crane above the second roofline, and aframe-exterior and
+     * hero-aframe-pines were shot when the ground was still geotextile and
+     * sand. The banner is cropped above the roofline, which is what puts the
+     * crane out of frame.
+     *
+     * Order matters: gallery[0] spans both columns on /nomera/[slug], so the
+     * wide exterior goes first and the rest sit in a clean grid below it. The
+     * interior that used to be the card is back in the gallery, where a guest
+     * who has already decided to look closer will find it.
+     */
+    image: "aframeLawnBanner",
+    gallery: [
+      "aframeLawnWide",
+      "aframeRoom",
+      "aframeBed",
+      "aframeLounge",
+      "aframeBathroom",
+      "aframeMinibar",
+      "aframeTerraceView",
+    ],
     title: { ru: "Глэмпинг A-frame", uz: "Glemping A-frame", en: "A-frame Glamping" },
     eyebrow: {
       ru: "A-frame · проживание на природе",

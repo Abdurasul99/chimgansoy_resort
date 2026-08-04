@@ -27,9 +27,12 @@ export const services: Service[] = [
   {
     slug: "restaurant",
     category: "food",
-    // Was galFoodServing — a hand carrying a plate of shashlik on bare ground.
-    // It led the homepage grid and made the kitchen read as a barbecue stop.
-    image: "chaletDining",
+    // Was galFoodServing — a hand carrying a plate of shashlik on bare ground —
+    // and then chaletDining, the chalet's own dining room, which at card size
+    // reads as a living room with a television rather than a kitchen. This is
+    // the only stock image on the site; see the note on the key in images.ts
+    // for why it is a plate of food and not a photograph of a dining room.
+    image: "plovLyagan",
     title: { ru: "Кухня и меню", uz: "Oshxona va menyu", en: "Kitchen & menu" },
     shortDescription: {
       ru: "Готовое меню от кухни — завтрак, ужин и мангальные блюда на террасу.",
@@ -76,10 +79,14 @@ export const services: Service[] = [
   {
     slug: "picnic-zone",
     category: "relax",
-    // Was galTopchanRow (the retired product), then galGreenHills — an empty
-    // hillside with nothing of the resort in it. The grounds card now shows the
-    // grounds: cabins along the finished lawn and walkway.
-    image: "aframeLawnWide",
+    // The grounds card should show the grounds, and this is the only frame that
+    // shows the property as one place: the pool, the swim-up bar, the bungalows,
+    // the chalets and the ridge behind them, all in one shot from the rise.
+    // Its predecessors each showed a fragment or the wrong thing — galTopchanRow
+    // (the retired day product), galGreenHills (an empty hillside with nothing
+    // of the resort in it), then aframeLawnWide, which is the A-frame row and
+    // carries a tower crane in the sky.
+    image: "poolPanorama",
     title: { ru: "Пикник-зона и территория", uz: "Piknik zonasi va hudud", en: "Picnic area & grounds" },
     shortDescription: {
       ru: "Пикник-зона у тюбинг-горки и девять гектаров среди сосен: дорожки, открытые площадки и детская зона.",

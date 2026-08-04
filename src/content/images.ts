@@ -535,6 +535,35 @@ export const resortImages = {
       en: "A chalet with a terrace the full width of its front",
     },
   },
+  /**
+   * The one licensed stock photograph on this site, and the reason is narrow.
+   *
+   * There is no usable picture of the kitchen: the two food frames in the June
+   * shoot are a member of staff carrying a tray across a construction-era path,
+   * and the restaurant building itself was photographed as a bare timber frame
+   * with no walls. The card was falling back to the chalet's dining room, which
+   * reads as somebody's living room with a television in it.
+   *
+   * It is a photograph of FOOD, deliberately, not of a room. A stock interior
+   * under the heading "our kitchen" would be a picture of somebody else's
+   * restaurant passed off as this one — the same substitution the CGI purge
+   * just undid, only harder to spot. A plate of plov claims nothing about the
+   * building; it says what the kitchen cooks.
+   *
+   * Source: Unsplash (photo MHt_fHi6a3M), Unsplash License — free for
+   * commercial use, no attribution required. Replace it the day the operator
+   * shoots the real dining room.
+   */
+  plovLyagan: {
+    src: "/images/resort/stock/plov-lyagan.jpg",
+    localSrc: "/images/resort/stock/plov-lyagan.jpg",
+    position: "center",
+    alt: {
+      ru: "Плов на узбекском лягане с помидорами и зеленью",
+      uz: "O'zbek lyaganida palov, pomidor va ko'kat bilan",
+      en: "Plov on a traditional Uzbek lyagan with tomatoes and herbs",
+    },
+  },
   chaletPeaks: {
     src: "/images/resort/2026-08/chalet-peaks.jpg",
     localSrc: "/images/resort/2026-08/chalet-peaks.jpg",
