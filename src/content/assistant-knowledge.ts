@@ -107,9 +107,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "cancellation",
     keywords: ["отмен", "возврат", "вернуть", "bekor", "qaytarish", "cancel", "refund", "cancellation"],
     answer: {
-      ru: "↩️ Предоплата за проживание невозвратная — вернуть деньги нельзя ни при каком сроке отмены. Возможен только перенос дат, его согласовывает администратор при наличии свободных дат. По дневным визитам условия уточняйте у администратора.",
-      uz: "↩️ Yashash uchun oldindan to'lov qaytarilmaydi — bekor qilish muddatidan qat'i nazar pul qaytarilmaydi. Faqat sanalarni ko'chirish mumkin, buni administrator bo'sh sanalar bo'lganda kelishadi. Kunlik tashriflar bo'yicha shartlarni administratordan aniqlashtiring.",
-      en: "↩️ The prepayment for a stay is non-refundable — no money is returned for any cancellation notice. Only a date transfer is possible, agreed with the administrator subject to availability. For day visits, please confirm the terms with the administrator.",
+      ru: "↩️ Предоплата за проживание невозвратная — вернуть деньги нельзя ни при каком сроке отмены. Перенос дат не является автоматическим правом: он возможен только по согласованию с курортом, при наличии свободных домиков, и не распространяется на выходные и праздничные дни. Дневные услуги (бассейн, топчан, тюбинг) невозвратные и непереносимые: при отмене, опоздании или раннем уходе деньги не возвращаются и время не переносится.",
+      uz: "↩️ Yashash uchun oldindan to'lov qaytarilmaydi — bekor qilish muddatidan qat'i nazar pul qaytarilmaydi. Sanalarni ko'chirish avtomatik huquq emas: faqat kurort bilan kelishilgan holda, bo'sh uychalar bo'lganda va dam olish hamda bayram kunlariga taalluqli emas. Kunlik xizmatlar (basseyn, topchan, tubing) qaytarilmaydi va ko'chirilmaydi.",
+      en: "↩️ The prepayment for a stay is non-refundable — no money is returned for any cancellation notice. A date transfer is not an automatic right: it is granted only by agreement with the resort, subject to free cabins, and does not apply to weekends and public holidays. Day services (pool, topchan, tubing) are non-refundable and non-transferable: no money back and no rescheduling for a cancellation, a late arrival or an early departure.",
     },
   },
 

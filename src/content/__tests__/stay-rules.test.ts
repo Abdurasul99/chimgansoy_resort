@@ -135,6 +135,50 @@ describe("stay rules — occupancy", () => {
   });
 });
 
+describe("refund rules — Роман's answers of 2026-08-05", () => {
+  const refund = legalPolicies.find((p) => p.slug === "payment-refund");
+  const offer = legalPolicies.find((p) => p.slug === "public-offer");
+  const refundText = JSON.stringify(refund);
+  const offerText = JSON.stringify(offer);
+
+  it("charges 100% up front, not 50%", () => {
+    expect(offerText).toContain("Предоплата вносится в размере 100 % стоимости");
+    // The old ladder must be gone from both documents, or a guest can point at
+    // whichever clause suits them.
+    expect(offerText).not.toContain("50 % стоимости");
+    expect(refundText).not.toContain("удерживается 50 %");
+  });
+
+  it("makes day-use non-refundable AND non-transferable", () => {
+    expect(refundText).toContain("невозвратной и непереносимой");
+    // The operator named the three ways a guest loses the money by their own
+    // doing; all three have to be written down or the rule is unenforceable.
+    expect(refundText).toMatch(/Неиспользование забронированной услуги/);
+    expect(refundText).toMatch(/опоздание Заказчика/);
+    expect(refundText).toMatch(/прекращение получения услуги по инициативе Заказчика/);
+    // ...and the old full-refund-at-24h promise must not survive anywhere.
+    expect(refundText).not.toContain("не позднее чем за 24 часа до даты визита");
+    expect(offerText).not.toContain("не позднее чем за 24 часа до визита предоплата возвращается");
+  });
+
+  it("keeps force majeure and the resort's own fault refundable", () => {
+    // The rule is about the guest's fault. A venue that keeps the money when IT
+    // cancels is a different proposition, and not a lawful one.
+    expect(refundText).toContain("обстоятельствам непреодолимой силы");
+    expect(refundText).toContain("возврат денежных средств в полном объёме");
+    expect(refundText).toMatch(/Если услуга не оказана по вине Исполнителя/);
+    // §2 has to point at those exceptions, otherwise it reads as absolute.
+    expect(refundText).toContain("Исключения из пунктов 2.1–2.3");
+  });
+
+  it("makes the date transfer conditional, not a right", () => {
+    expect(refundText).toContain("не является безусловным правом Заказчика");
+    expect(refundText).toContain("по согласованию с Исполнителем");
+    expect(refundText).toMatch(/приходятся на выходные и праздничные дни/);
+    expect(offerText).toMatch(/не распространяется на выходные и праздничные дни/);
+  });
+});
+
 describe("stay rules — what the AI is briefed on", () => {
   // The concierge answers from these two strings and nothing else, so a fact
   // that is missing here is a fact the AI will either omit or invent.
@@ -173,6 +217,16 @@ describe("stay rules — what the AI is briefed on", () => {
       }
       expect(text).toMatch(/стандарт/i);
       expect(text).toMatch(/максимум/i);
+    });
+
+    it(`${name}() carries the refund rules the AI must not soften`, () => {
+      expect(text).toMatch(/Предоплата 100% стоимости/);
+      expect(text).toMatch(/НЕВОЗВРАТНАЯ/);
+      // Both the conditionality of a transfer and the day-use rule, because the
+      // concierge has already been caught inventing friendlier terms than these.
+      expect(text).toMatch(/(не автоматическое право|НЕ автоматическое право|только по согласованию)/i);
+      expect(text).toMatch(/(выходные и праздничные|праздничные и выходные)/i);
+      expect(text).toMatch(/НЕПЕРЕНОСИМ/i);
     });
 
     it(`${name}() spells out how to count the surcharge`, () => {
