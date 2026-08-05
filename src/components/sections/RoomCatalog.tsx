@@ -15,6 +15,14 @@ import { Lightbox } from "@/components/ui/Lightbox";
 type RoomCatalogProps = {
   locale: Locale;
   limit?: number;
+  /**
+   * Ready-made "от … / ночь" strings by room slug, or an empty object.
+   *
+   * Passed in rather than fetched here: this is a client component (it owns the
+   * filter pills and the gallery lightbox), and the price comes from the Exely
+   * engine, which is a server-only call. See lib/room-price.ts.
+   */
+  priceChips?: Record<string, string | null>;
 };
 
 type Filter = "all" | RoomCategory;
@@ -25,7 +33,7 @@ function roomGalleryOf(room: (typeof rooms)[number]) {
   return [...new Set(keys)].map((k) => resortImages[k]);
 }
 
-export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
+export function RoomCatalog({ locale, limit, priceChips = {} }: RoomCatalogProps) {
   const [filter, setFilter] = useState<Filter>("all");
   // Which room the viewer is showing, by slug — null when closed.
   const [gallery, setGallery] = useState<string | null>(null);
@@ -122,6 +130,18 @@ export function RoomCatalog({ locale, limit }: RoomCatalogProps) {
                   <span className="rounded-full bg-[var(--mist)] px-4 py-2 text-sm font-bold text-[var(--ink)]">
                     {text(room.size, locale)}
                   </span>
+                  {/* The price the operator asked for, beside the two facts a
+                      guest is already reading. Gold rather than grey: it is the
+                      one chip here that answers "how much", and it should not
+                      look like a footnote to the floor area.
+
+                      Absent, not blank, when the engine gave nothing — an empty
+                      chip is worse than no chip. */}
+                  {priceChips[room.slug] && (
+                    <span className="rounded-full bg-[var(--sun)]/15 px-4 py-2 text-sm font-bold text-[var(--sun-dark)]">
+                      {priceChips[room.slug]}
+                    </span>
+                  )}
                 </div>
 
                 {/* Amenities */}

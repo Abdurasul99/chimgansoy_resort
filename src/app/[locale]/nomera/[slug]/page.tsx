@@ -3,6 +3,8 @@ import { ServicesGrid } from "@/components/sections/ServicesGrid";
 import { BookingDrawer } from "@/components/sections/BookingDrawer";
 import { PoolRequestForm } from "@/components/sections/PoolRequestForm";
 import { MediaArchive } from "@/components/sections/MediaArchive";
+import { VideoReel } from "@/components/sections/VideoReel";
+import { chaletVideos } from "@/content/videos";
 import { Icon } from "@/components/ui/Icon";
 import { rooms, EXELY_ROOM_TYPE, INCLUDED_LABEL } from "@/content/rooms";
 import { resortImages } from "@/content/images";
@@ -262,6 +264,16 @@ export default async function RoomDetailPage({ params }: PageProps) {
                   ))}
                 </div>
               </div>
+
+              {/* The chalet walkthrough, under its photographs.
+                  Same rail the tubing page uses, so it inherits the work that
+                  made those load: each card plays a 400px silent preview and
+                  only fetches the full clip when it is opened. */}
+              {room.slug === "cottage" && (
+                <div className="mt-14 motion-reveal" data-delay="180">
+                  <VideoReel locale={locale} clips={chaletVideos} />
+                </div>
+              )}
 
               {/* Mobile CTA. Stays go to the Exely engine; the pool jumps to
                   its own request form further down this page. */}

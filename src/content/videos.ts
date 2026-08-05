@@ -106,3 +106,31 @@ export const tubingVideos: VideoClip[] = [
     },
   },
 ];
+
+/**
+ * The chalet walkthrough, sent by the operator on 2026-08-05 and shown on
+ * /nomera/cottage.
+ *
+ * One clip, not a rail — VideoReel handles a single card fine, and there is
+ * exactly one video of this room. The master was 260 MB (1080x1920 at 50 fps,
+ * 21 Mbit/s, 98 seconds), which is more than every photograph on the homepage
+ * put together and would never have started playing on a mountain connection.
+ * scripts/encode-chalet-video.js brings it to 15.3 MB at 720x1280/25fps, with
+ * a 2.8 MB silent preview for the card itself — the operator asked for it to
+ * be added "чтобы оно грузилось", and that is the part that makes it load.
+ */
+export const chaletVideos: VideoClip[] = [
+  {
+    key: "chalet-tour",
+    src: `${BASE}/chalet-tour.mp4`,
+    previewSrc: `${BASE}/chalet-tour-preview.mp4`,
+    poster: `${BASE}/chalet-tour.jpg`,
+    ratio: "9/16",
+    title: { ru: "Шале внутри", uz: "Shale ichkarisi", en: "Inside the chalet" },
+    caption: {
+      ru: "Обход целиком: кухня-зал, обе спальни и терраса",
+      uz: "To'liq aylanib chiqish: oshxona-zal, ikkala yotoqxona va terrasa",
+      en: "The whole walkthrough: kitchen-lounge, both bedrooms and the terrace",
+    },
+  },
+];

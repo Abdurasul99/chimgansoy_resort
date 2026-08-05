@@ -11,6 +11,7 @@ import { pageSeo } from "@/content/seo";
 import { getLocaleParam } from "@/lib/content";
 import { buildMetadata } from "@/lib/metadata";
 import { text } from "@/lib/localize";
+import { getRoomPrices, priceChip } from "@/lib/room-price";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
@@ -54,6 +55,14 @@ const copy = {
 
 export default async function RoomsPage({ params }: PageProps) {
   const locale = await getLocaleParam(params);
+
+  // Live "от …" prices from the booking engine, resolved on the server because
+  // RoomCatalog is a client component. Six-hour cache, and an unreachable
+  // engine simply yields no chip — see lib/room-price.ts.
+  const prices = await getRoomPrices();
+  const priceChips = Object.fromEntries(
+    Object.entries(prices).map(([slug, value]) => [slug, priceChip(value, locale)]),
+  );
   const dict = dictionaries[locale];
   const t = copy[locale];
 
@@ -82,7 +91,7 @@ export default async function RoomsPage({ params }: PageProps) {
         <div className="mx-auto max-w-7xl">
           <SectionHeader title={dict.home.roomsTitle} text={dict.home.roomsText} />
           <div className="mt-10">
-            <RoomCatalog locale={locale} />
+            <RoomCatalog locale={locale} priceChips={priceChips} />
           </div>
 
           {/* What every stay includes */}

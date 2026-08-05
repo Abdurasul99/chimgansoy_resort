@@ -25,6 +25,7 @@ import { buildMetadata } from "@/lib/metadata";
 import { imageStyle } from "@/lib/images";
 import { text } from "@/lib/localize";
 import { localizePath } from "@/i18n/routing";
+import { getRoomPrices, priceChip } from "@/lib/room-price";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
@@ -99,6 +100,14 @@ const poolBand = {
 
 export default async function HomePage({ params }: PageProps) {
   const locale = await getLocaleParam(params);
+
+  // Live "от …" prices from the booking engine, resolved on the server because
+  // RoomCatalog is a client component. Six-hour cache, and an unreachable
+  // engine simply yields no chip — see lib/room-price.ts.
+  const prices = await getRoomPrices();
+  const priceChips = Object.fromEntries(
+    Object.entries(prices).map(([slug, value]) => [slug, priceChip(value, locale)]),
+  );
   const dict = dictionaries[locale];
 
   return (
@@ -171,7 +180,7 @@ export default async function HomePage({ params }: PageProps) {
             </ButtonLink>
           </div>
 
-          <RoomCatalog locale={locale} limit={2} />
+          <RoomCatalog locale={locale} limit={2} priceChips={priceChips} />
 
           {/* Pool — the non-obvious inclusion, now with the frame to sell it */}
           <div

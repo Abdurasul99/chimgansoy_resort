@@ -13,6 +13,7 @@ import { getLocaleParam, getService } from "@/lib/content";
 import { buildMetadata } from "@/lib/metadata";
 import { list, text } from "@/lib/localize";
 import { localizePath } from "@/i18n/routing";
+import { getRoomPrices, priceChip } from "@/lib/room-price";
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string }>;
@@ -51,6 +52,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ServiceDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const locale = await getLocaleParam(params);
+
+  // Live "от …" prices from the booking engine, resolved on the server because
+  // RoomCatalog is a client component. Six-hour cache, and an unreachable
+  // engine simply yields no chip — see lib/room-price.ts.
+  const prices = await getRoomPrices();
+  const priceChips = Object.fromEntries(
+    Object.entries(prices).map(([slug, value]) => [slug, priceChip(value, locale)]),
+  );
   const service = getService(slug);
   const dict = dictionaries[locale];
 
@@ -96,7 +105,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
         <div className="mx-auto max-w-7xl">
           <SectionHeader title={dict.home.roomsTitle} text={dict.home.roomsText} />
           <div className="mt-8">
-            <RoomCatalog locale={locale} />
+            <RoomCatalog locale={locale} priceChips={priceChips} />
           </div>
         </div>
       </section>
