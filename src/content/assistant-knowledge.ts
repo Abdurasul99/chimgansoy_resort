@@ -91,12 +91,14 @@ export const knowledge: KnowledgeEntry[] = [
     id: "checkin",
     keywords: ["заезд", "выезд", "check-in", "checkin", "checkout", "kirish", "chiqish", "во сколько заезд", "когда заезд"],
     answer: {
-      // 14:00 — confirmed by the operator, and it matches the public offer.
-      // The room specs and this entry had drifted to 15:00; the offer was the
-      // one that was right all along.
-      ru: "🕑 Заезд — с 14:00, выезд — до 12:00. Ресепшн работает круглосуточно, так что приехать можно и поздно вечером. Раннее заселение или поздний выезд возможны по согласованию с администратором (зависит от загрузки).",
-      uz: "🕑 Kirish — 14:00 dan, chiqish — 12:00 gacha. Resepshn 24 soat ishlaydi, shuning uchun kech kechqurun ham kelish mumkin. Erta kirish yoki kech chiqish administrator bilan kelishilgan holda mumkin (band bo'lishiga bog'liq).",
-      en: "🕑 Check-in from 2:00 PM, check-out by 12:00 PM. Reception is staffed around the clock, so a late-evening arrival is fine. Early check-in or late check-out can be arranged with the administrator (depending on availability).",
+      // 15:00 — the operator's figure, restated 2026-08-05 together with the
+      // rule that early check-in and late check-out are PAID and depend on
+      // occupancy. This entry said 14:00 for a while on the theory that the
+      // public offer required it; clause 2.4 of the offer has been moved to
+      // 15:00 in the same change, so the two agree again.
+      ru: "🕑 Заезд — с 15:00, выезд — до 12:00. Ресепшн работает круглосуточно, так что приехать можно и поздно вечером. Ранний заезд и поздний выезд предоставляются за доплату и зависят от загрузки — согласуйте с администратором. При заселении понадобятся паспорта всех проживающих. Дополнительно взимается обязательный туристский сбор.",
+      uz: "🕑 Kirish — 15:00 dan, chiqish — 12:00 gacha. Resepshn 24 soat ishlaydi, shuning uchun kech kechqurun ham kelish mumkin. Erta kirish va kech chiqish qo'shimcha to'lov evaziga beriladi va bandlikka bog'liq — administrator bilan kelishing. Joylashuvda barcha yashovchilarning pasporti kerak bo'ladi. Qo'shimcha ravishda majburiy turistik yig'im olinadi.",
+      en: "🕑 Check-in from 3:00 PM, check-out by 12:00 PM. Reception is staffed around the clock, so a late-evening arrival is fine. Early check-in and late check-out are charged and depend on occupancy — arrange them with the administrator. Passports of every guest are required at check-in. A mandatory tourist levy is charged on top.",
     },
   },
 

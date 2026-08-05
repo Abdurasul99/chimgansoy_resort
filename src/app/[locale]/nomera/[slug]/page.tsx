@@ -9,7 +9,7 @@ import { getRoomPrices, priceChip } from "@/lib/room-price";
 import { Icon } from "@/components/ui/Icon";
 import { rooms, EXELY_ROOM_TYPE, INCLUDED_LABEL } from "@/content/rooms";
 import { resortImages } from "@/content/images";
-import { extraGuestPricing } from "@/content/pricing";
+import { extraGuestPricing, stayRules } from "@/content/pricing";
 import { dictionaries } from "@/content/translations";
 import { getLocaleParam, getRoom } from "@/lib/content";
 import { buildMetadata } from "@/lib/metadata";
@@ -102,26 +102,50 @@ export default async function RoomDetailPage({ params }: PageProps) {
   // The pool is booked by request form, not through the booking engine.
   const isPool = room.slug === "pool";
   /**
-   * "Дополнительное место — 400 000 сум за человека за ночь. Дети до 3 лет
-   * бесплатно." Null for the pool, which is a day ticket and has no beds.
+   * The stay rules a guest needs while they are still deciding: the hours, what
+   * an extra person costs, and the two things that surprise people at the door
+   * — the tourist levy and the passport check.
    *
-   * money() is not imported here; the figure is grouped inline with the same
-   * non-breaking separator the rest of the site uses, so it cannot wrap as
-   * "400" / "000" in the narrow column this sits in.
+   * Empty for the pool, which is a day ticket: it has no beds, no check-in hour
+   * and no levy, so the whole block is dropped rather than shown half-blank.
+   *
+   * money() is not imported here; the figures are grouped inline with the same
+   * non-breaking separator the rest of the site uses, so they cannot wrap as
+   * "1" / "000 000" in the narrow column this sits in.
    */
-  const extraRate =
-    room.slug === "glamping"
-      ? extraGuestPricing.glamping
-      : room.slug === "cottage"
-        ? extraGuestPricing.cottage
-        : null;
-  const extraGuest = extraRate
-    ? {
-        ru: `Дополнительное место — ${group(extraRate)} сум за человека за ночь. Дети до ${extraGuestPricing.freeUnderAge} лет — бесплатно.`,
-        uz: `Qo'shimcha joy — bir kishi uchun bir kechaga ${group(extraRate)} so'm. ${extraGuestPricing.freeUnderAge} yoshgacha bolalar — bepul.`,
-        en: `An extra place is ${group(extraRate)} UZS per person per night. Children under ${extraGuestPricing.freeUnderAge} stay free.`,
-      }[locale]
-    : null;
+  const isCabin = room.slug === "glamping" || room.slug === "cottage";
+  const { adult, child, childFrom, childTo, freeThroughAge, guestVisitCottage } = extraGuestPricing;
+  const stayNotes: string[] = !isCabin
+    ? []
+    : {
+        ru: [
+          `Заезд с ${stayRules.checkIn}, выезд до ${stayRules.checkOut}. Ранний заезд и поздний выезд — по загрузке и за доплату.`,
+          `Дополнительное место за ночь: взрослый — ${group(adult)} сум, ребёнок ${childFrom}–${childTo} лет — ${group(child)} сум. Дети до ${freeThroughAge} лет включительно — бесплатно.`,
+          ...(room.slug === "cottage"
+            ? [`Гостевой визит в шале (без ночёвки) — ${group(guestVisitCottage)} сум.`]
+            : []),
+          "Дополнительно взимается обязательный туристский сбор.",
+          "При заселении нужны паспорта всех проживающих.",
+        ],
+        uz: [
+          `Kirish ${stayRules.checkIn} dan, chiqish ${stayRules.checkOut} gacha. Erta kirish va kech chiqish — bandlikka qarab va qo'shimcha to'lov evaziga.`,
+          `Bir kechaga qo'shimcha joy: kattalar — ${group(adult)} so'm, ${childFrom}–${childTo} yoshdagi bola — ${group(child)} so'm. ${freeThroughAge} yoshgacha bolalar (shu yosh ham) — bepul.`,
+          ...(room.slug === "cottage"
+            ? [`Shalega mehmon tashrifi (tunab qolmasdan) — ${group(guestVisitCottage)} so'm.`]
+            : []),
+          "Qo'shimcha ravishda majburiy turistik yig'im olinadi.",
+          "Joylashuvda barcha yashovchilarning pasporti kerak bo'ladi.",
+        ],
+        en: [
+          `Check-in from ${stayRules.checkIn}, check-out by ${stayRules.checkOut}. Early check-in and late check-out depend on occupancy and are charged.`,
+          `An extra place per night: adult — ${group(adult)} UZS, child aged ${childFrom}–${childTo} — ${group(child)} UZS. Children up to and including ${freeThroughAge} stay free.`,
+          ...(room.slug === "cottage"
+            ? [`A guest visit to a chalet (no overnight stay) — ${group(guestVisitCottage)} UZS.`]
+            : []),
+          "A mandatory tourist levy is charged on top.",
+          "Passports of every guest are required at check-in.",
+        ],
+      }[locale];
 
   // Live rate for this room, or null when the engine gave nothing.
   const livePrice = priceChip((await getRoomPrices())[room.slug], locale);
@@ -264,14 +288,20 @@ export default async function RoomDetailPage({ params }: PageProps) {
                     ))}
                   </ul>
 
-                  {/* The extra-person charge, under what the rate covers —
-                      because that is the moment a guest works out whether their
-                      party fits, and the answer "it fits, for a bit more" needs
-                      to be there rather than discovered at check-in. */}
-                  {extraGuest && (
-                    <p className="mt-4 border-t border-[color:var(--line)] pt-3 text-sm leading-6 text-[var(--muted)]">
-                      {extraGuest}
-                    </p>
+                  {/* The stay rules, under what the rate covers — because this
+                      is the moment a guest works out whether their party fits
+                      and what the night will actually cost. Everything here is
+                      something that would otherwise be discovered at the door:
+                      the extra place, the levy, the passports. */}
+                  {stayNotes.length > 0 && (
+                    <ul className="mt-4 space-y-2 border-t border-[color:var(--line)] pt-3">
+                      {stayNotes.map((note) => (
+                        <li key={note} className="flex gap-2.5 text-sm leading-6 text-[var(--muted)]">
+                          <Icon name="check" className="mt-1.5 h-3 w-3 shrink-0 text-[var(--green)]" />
+                          <span>{note}</span>
+                        </li>
+                      ))}
+                    </ul>
                   )}
                 </div>
               )}

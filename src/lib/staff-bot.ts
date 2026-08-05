@@ -28,7 +28,7 @@ import { answerGuestQuestion } from "./staff-ai";
 import { getChimganWeather, t, weatherAdvice, weatherInfo } from "./bot-weather";
 import { checkAvailability } from "./exely";
 import { contacts } from "@/content/contacts";
-import { parkingPricing, priceList, topchanPricing, tubingPricing } from "@/content/pricing";
+import { extraGuestPricing, parkingPricing, priceList, topchanPricing, tubingPricing } from "@/content/pricing";
 import { money } from "./venue-facts";
 import { ridesRu } from "./tariff";
 import { recentRequests, requestsByDate, storeConfigured, type StoredRequest } from "./requests-store";
@@ -114,7 +114,7 @@ function menuText(): string {
     "",
     "Горный курорт в 45 минутах от Ташкента, высота 1700 м.",
     "Глэмпинг A-frame и шале, бассейн включён в проживание.",
-    "Заезд с 14:00, выезд до 12:00.",
+    "Заезд с 15:00, выезд до 12:00.",
     "",
     "Выберите, что вам нужно:",
   ].join("\n");
@@ -297,6 +297,16 @@ function renderPrices(): View {
       "",
       "🏊 <b>Бассейн</b> — тариф по возрастам, смотрите на сайте.",
       "🏕 Проживание (глэмпинг, шале): цены зависят от дат — смотрите «🗓 Свободные даты и цены».",
+      "",
+      // The three charges that a guest only meets at the door if nobody says
+      // them out loud. Same figures as the room pages and the AI briefing.
+      "<b>➕ Дополнительное место за ночь</b> (в глэмпинге и шале одинаково):",
+      `• Взрослый — <b>${money(extraGuestPricing.adult)}</b>`,
+      `• Ребёнок ${extraGuestPricing.childFrom}–${extraGuestPricing.childTo} лет — <b>${money(extraGuestPricing.child)}</b>`,
+      `• Дети до ${extraGuestPricing.freeThroughAge} лет включительно — <b>бесплатно</b>`,
+      `🚪 Гостевой визит в шале (без ночёвки) — <b>${money(extraGuestPricing.guestVisitCottage)}</b>`,
+      "",
+      "<i>Ранний заезд и поздний выезд — за доплату, по загрузке. Дополнительно взимается обязательный туристский сбор.</i>",
     ].join("\n"),
     keyboard: [
       [
@@ -323,7 +333,7 @@ function renderContacts(): View {
       `📍 ${esc(contacts.address.ru)}`,
       `Карта: ${contacts.googleMapsUrl}`,
       "",
-      "Заезд с 14:00, выезд до 12:00.",
+      "Заезд с 15:00, выезд до 12:00.",
     ].join("\n"),
     keyboard: backRow(),
   };

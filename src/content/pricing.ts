@@ -209,23 +209,61 @@ export const priceLabels = {
 /**
  * The extra-person charge on top of a cabin's rate.
  *
- * Operator, 2026-08-05: "400 глемпинг / 400 шале за человека, если больше то
- * еще. До 3 лет бесплатно. +1 место, стоимость."
+ * These figures took three passes to settle, so the trail is worth keeping:
  *
- * Read as 400 000 сум per additional guest beyond the rate's base occupancy,
- * the same for both cabin types, with under-threes free. The figure was given
- * as "400" — every other price on this site is quoted in full, so the magnitude
- * is an inference from context rather than something the operator wrote out.
- * It is editable from /admin → Цены precisely so a wrong reading costs one
- * correction and no deploy.
+ *   1. The operator's shorthand "400 глемпинг / 400 шале" was read as 400 000
+ *      per cabin type, flagged at the time as an inference about the magnitude.
+ *   2. A "Прочее" list arrived quoting 1 000 000 adult / 500 000 child /
+ *      500 000 guest visit, which looked like a correction and was applied.
+ *   3. Роман (CMO/CEO) settled it on 2026-08-05: "Взрослый - 400 000 /
+ *      Детский 4 - 12 лет - 300 000 / Дети до 3 лет - бесплатно", confirmed as
+ *      covering both cabin types — "это шале и глемпинг? — да, универсальный
+ *      ценник" — plus "услуга гостевого визита в Шале – 300.000 сум."
+ *
+ * So the 1 000 000 / 500 000 pair in step 2 was never live long enough to be
+ * quoted to a guest, and the numbers below are the ones the commercial lead
+ * signed off. What step 2 DID get right, and what stands, is the shape: the
+ * charge varies by the guest's age, not by which cabin they sleep in. Hence one
+ * `adult` figure rather than a glamping/cottage pair.
+ *
+ * `guestVisitCottage` is a different product entirely: a visitor who comes to
+ * someone else's chalet for the day and does not sleep there.
+ *
+ * Ages: 0–3 free, 4–12 at the child rate, 13+ at the adult rate.
+ * `freeThroughAge` is inclusive — a three-year-old is free — which is why it is
+ * not named `freeUnderAge` any more.
  *
  * Distinct from poolPricing.freeChildUnder, which is 5: that is a day ticket to
  * the water, this is a bed. Do not merge them.
  */
 export const extraGuestPricing = {
-  /** Per additional guest, per night, in sum. Same for both cabin types today. */
-  glamping: 400_000,
-  cottage: 400_000,
-  /** Children strictly under this age are not charged an extra place. */
-  freeUnderAge: 3,
+  /** An additional adult (13+), per night, in sum. Same in both cabin types. */
+  adult: 400_000,
+  /** An additional child aged childFrom..childTo, per night, in sum. */
+  child: 300_000,
+  childFrom: 4,
+  childTo: 12,
+  /** Children of this age and younger are not charged an extra place at all. */
+  freeThroughAge: 3,
+  /** A day visitor to a chalet who does not stay the night. Per visit. */
+  guestVisitCottage: 300_000,
+} as const;
+
+/**
+ * The house rules a guest needs before booking, not at the door.
+ *
+ * Operator, 2026-08-05: official check-in 15:00, check-out 12:00; early
+ * check-in and late check-out are PAID and depend on how full the hotel is; a
+ * mandatory tourist levy is charged; every guest presents a passport at
+ * check-in.
+ *
+ * The levy has no figure here on purpose. It is set by law, the operator did
+ * not name an amount, and a made-up number on a page that also carries the
+ * public offer is worse than no number — so the site says the levy exists and
+ * leaves the sum to the administrator. Add `touristLevy` here the day the
+ * operator supplies it.
+ */
+export const stayRules = {
+  checkIn: "15:00",
+  checkOut: "12:00",
 } as const;

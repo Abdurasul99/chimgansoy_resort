@@ -37,9 +37,9 @@ const values = [
     num: "03",
     title: { ru: "Круглый год в горах", uz: "Yil davomida tog'larda", en: "Year-round in the mountains" },
     copy: {
-      ru: "Летом — бассейн, терраса и ужин на воздухе. Осенью и зимой — тёплый пол в шале, горный воздух и снежные вершины в панорамном окне. Заезд с 14:00, выезд до 12:00.",
-      uz: "Yozda — basseyn, terrasa va ochiq havoda kechki ovqat. Kuz va qishda — shaledagi issiq pol, tog' havosi va panoramali derazadagi qorli cho'qqilar. Kirish 14:00 dan, chiqish 12:00 gacha.",
-      en: "In summer — the pool, the terrace, and dinner in the open air. In autumn and winter — heated floors in the chalet, mountain air, and snowy peaks through the panoramic window. Check-in from 14:00, check-out by 12:00.",
+      ru: "Летом — бассейн, терраса и ужин на воздухе. Осенью и зимой — тёплый пол в шале, горный воздух и снежные вершины в панорамном окне. Заезд с 15:00, выезд до 12:00.",
+      uz: "Yozda — basseyn, terrasa va ochiq havoda kechki ovqat. Kuz va qishda — shaledagi issiq pol, tog' havosi va panoramali derazadagi qorli cho'qqilar. Kirish 15:00 dan, chiqish 12:00 gacha.",
+      en: "In summer — the pool, the terrace, and dinner in the open air. In autumn and winter — heated floors in the chalet, mountain air, and snowy peaks through the panoramic window. Check-in from 15:00, check-out by 12:00.",
     },
   },
 ];

@@ -143,10 +143,10 @@ export default async function HomePage({ params }: PageProps) {
                 <span className="h-px w-10 bg-[var(--accent-strong)]/40" />
                 <span className="text-[var(--muted)]">
                   {locale === "ru"
-                    ? "заезд 14:00 · выезд 12:00"
+                    ? "заезд 15:00 · выезд 12:00"
                     : locale === "uz"
-                      ? "kirish 14:00 · chiqish 12:00"
-                      : "check-in 14:00 · check-out 12:00"}
+                      ? "kirish 15:00 · chiqish 12:00"
+                      : "check-in 15:00 · check-out 12:00"}
                 </span>
               </div>
               <h2 className="motion-reveal-mask mt-4 font-serif text-[clamp(2.4rem,6vw,4.2rem)] font-semibold leading-[1.02] text-[var(--ink)]">
@@ -378,7 +378,7 @@ export default async function HomePage({ params }: PageProps) {
                   Was "08–18 open hours", which is the day-visit window and read
                   as "we close before dinner" next to a stay-led headline. */}
               <div className="editorial-badge editorial-badge--accent absolute -bottom-6 -left-6 hidden lg:block">
-                <p className="font-serif text-4xl font-bold leading-none">14:00</p>
+                <p className="font-serif text-4xl font-bold leading-none">15:00</p>
                 <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-white/80">
                   {locale === "ru" ? "заезд · выезд 12:00" : locale === "uz" ? "kirish · chiqish 12:00" : "check-in · out 12:00"}
                 </p>

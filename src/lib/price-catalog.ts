@@ -19,6 +19,17 @@ import type { OverrideData } from "@/lib/site-overrides";
  *   tubing.ts). Prices are editable; the shape of the list is not.
  * • accommodation rates — they live in Exely, which is where the operator
  *   already changes them. Two sources for one number is how they drift.
+ *
+ * The one rename made on purpose
+ * ------------------------------
+ * extraGuest.glamping / extraGuest.cottage became extraGuest.adult / .child /
+ * .guestVisitCottage on 2026-08-05. That breaks the never-rename rule knowingly:
+ * the old keys did not just hold a wrong number, they held the wrong QUESTION —
+ * the charge turned out to vary by the guest's age, not by which cabin they
+ * sleep in, so there is no honest value to migrate into. The old pair was live
+ * for a few hours on the day it shipped, which is the whole window in which an
+ * override could have been saved against them; a stale patch under those keys
+ * is now simply ignored.
  */
 
 export type PriceField = {
@@ -63,18 +74,25 @@ export function fields(): PriceField[] {
 
   out.push(
     {
-      key: "extraGuest.glamping",
+      key: "extraGuest.adult",
       group: "Доплата за человека",
-      label: "Глэмпинг — дополнительное место",
-      hint: `за ночь, дети до ${extraGuestPricing.freeUnderAge} лет бесплатно`,
-      value: extraGuestPricing.glamping,
+      label: "Взрослый — дополнительное место",
+      hint: `за ночь, одинаково в глэмпинге и шале; дети до ${extraGuestPricing.freeThroughAge} лет включительно бесплатно`,
+      value: extraGuestPricing.adult,
     },
     {
-      key: "extraGuest.cottage",
+      key: "extraGuest.child",
       group: "Доплата за человека",
-      label: "Шале — дополнительное место",
-      hint: `за ночь, дети до ${extraGuestPricing.freeUnderAge} лет бесплатно`,
-      value: extraGuestPricing.cottage,
+      label: `Ребёнок ${extraGuestPricing.childFrom}–${extraGuestPricing.childTo} лет — дополнительное место`,
+      hint: "за ночь",
+      value: extraGuestPricing.child,
+    },
+    {
+      key: "extraGuest.guestVisitCottage",
+      group: "Доплата за человека",
+      label: "Гостевой визит в шале",
+      hint: "за визит, без ночёвки",
+      value: extraGuestPricing.guestVisitCottage,
     },
   );
 
