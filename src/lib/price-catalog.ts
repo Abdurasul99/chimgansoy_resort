@@ -1,4 +1,4 @@
-import { dayUse, poolPricing, priceList, tubingPricing } from "@/content/pricing";
+import { dayUse, extraGuestPricing, poolPricing, priceList, tubingPricing } from "@/content/pricing";
 import type { OverrideData } from "@/lib/site-overrides";
 
 /**
@@ -58,6 +58,23 @@ export function fields(): PriceField[] {
       group: "Бассейн",
       label: "Ребёнок 5–15, Пт–Вс",
       value: poolPricing.child.weekend,
+    },
+  );
+
+  out.push(
+    {
+      key: "extraGuest.glamping",
+      group: "Доплата за человека",
+      label: "Глэмпинг — дополнительное место",
+      hint: `за ночь, дети до ${extraGuestPricing.freeUnderAge} лет бесплатно`,
+      value: extraGuestPricing.glamping,
+    },
+    {
+      key: "extraGuest.cottage",
+      group: "Доплата за человека",
+      label: "Шале — дополнительное место",
+      hint: `за ночь, дети до ${extraGuestPricing.freeUnderAge} лет бесплатно`,
+      value: extraGuestPricing.cottage,
     },
   );
 

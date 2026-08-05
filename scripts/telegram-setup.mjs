@@ -53,7 +53,10 @@ switch (cmd) {
     const res = await api("setWebhook", {
       url,
       secret_token: SECRET || undefined,
-      allowed_updates: ["message", "callback_query"],
+      // business_* are opt-in: Telegram withholds them unless they are listed
+      // here, so the Business handler in staff-bot.ts stays dead code without
+      // this line even after the account owner connects the bot.
+      allowed_updates: ["message", "callback_query", "business_connection", "business_message"],
       drop_pending_updates: true,
     });
     console.log(res.ok ? `✓ Webhook set → ${url}` : `✗ ${res.description}`);

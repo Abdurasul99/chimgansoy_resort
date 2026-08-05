@@ -205,3 +205,27 @@ export const priceLabels = {
   weekendLabel: { ru: "Пт–Вс", uz: "Ju–Yak", en: "Fri–Sun" } satisfies LocalizedString,
   currencyShort: { ru: "сум", uz: "so'm", en: "UZS" } satisfies LocalizedString,
 };
+
+/**
+ * The extra-person charge on top of a cabin's rate.
+ *
+ * Operator, 2026-08-05: "400 глемпинг / 400 шале за человека, если больше то
+ * еще. До 3 лет бесплатно. +1 место, стоимость."
+ *
+ * Read as 400 000 сум per additional guest beyond the rate's base occupancy,
+ * the same for both cabin types, with under-threes free. The figure was given
+ * as "400" — every other price on this site is quoted in full, so the magnitude
+ * is an inference from context rather than something the operator wrote out.
+ * It is editable from /admin → Цены precisely so a wrong reading costs one
+ * correction and no deploy.
+ *
+ * Distinct from poolPricing.freeChildUnder, which is 5: that is a day ticket to
+ * the water, this is a bed. Do not merge them.
+ */
+export const extraGuestPricing = {
+  /** Per additional guest, per night, in sum. Same for both cabin types today. */
+  glamping: 400_000,
+  cottage: 400_000,
+  /** Children strictly under this age are not charged an extra place. */
+  freeUnderAge: 3,
+} as const;

@@ -9,12 +9,18 @@ import { getRoomPrices, priceChip } from "@/lib/room-price";
 import { Icon } from "@/components/ui/Icon";
 import { rooms, EXELY_ROOM_TYPE, INCLUDED_LABEL } from "@/content/rooms";
 import { resortImages } from "@/content/images";
+import { extraGuestPricing } from "@/content/pricing";
 import { dictionaries } from "@/content/translations";
 import { getLocaleParam, getRoom } from "@/lib/content";
 import { buildMetadata } from "@/lib/metadata";
 import { list, text } from "@/lib/localize";
 import { imageStyle } from "@/lib/images";
 import { localizePath } from "@/i18n/routing";
+
+/** 400000 -> "400 000" with a non-breaking separator, as elsewhere on the site. */
+function group(n: number): string {
+  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0");
+}
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string }>;
@@ -95,6 +101,28 @@ export default async function RoomDetailPage({ params }: PageProps) {
   const dict = dictionaries[locale];
   // The pool is booked by request form, not through the booking engine.
   const isPool = room.slug === "pool";
+  /**
+   * "Дополнительное место — 400 000 сум за человека за ночь. Дети до 3 лет
+   * бесплатно." Null for the pool, which is a day ticket and has no beds.
+   *
+   * money() is not imported here; the figure is grouped inline with the same
+   * non-breaking separator the rest of the site uses, so it cannot wrap as
+   * "400" / "000" in the narrow column this sits in.
+   */
+  const extraRate =
+    room.slug === "glamping"
+      ? extraGuestPricing.glamping
+      : room.slug === "cottage"
+        ? extraGuestPricing.cottage
+        : null;
+  const extraGuest = extraRate
+    ? {
+        ru: `Дополнительное место — ${group(extraRate)} сум за человека за ночь. Дети до ${extraGuestPricing.freeUnderAge} лет — бесплатно.`,
+        uz: `Qo'shimcha joy — bir kishi uchun bir kechaga ${group(extraRate)} so'm. ${extraGuestPricing.freeUnderAge} yoshgacha bolalar — bepul.`,
+        en: `An extra place is ${group(extraRate)} UZS per person per night. Children under ${extraGuestPricing.freeUnderAge} stay free.`,
+      }[locale]
+    : null;
+
   // Live rate for this room, or null when the engine gave nothing.
   const livePrice = priceChip((await getRoomPrices())[room.slug], locale);
   // Each room shows its own footage; the pool has none yet.
@@ -235,6 +263,16 @@ export default async function RoomDetailPage({ params }: PageProps) {
                       </li>
                     ))}
                   </ul>
+
+                  {/* The extra-person charge, under what the rate covers —
+                      because that is the moment a guest works out whether their
+                      party fits, and the answer "it fits, for a bit more" needs
+                      to be there rather than discovered at check-in. */}
+                  {extraGuest && (
+                    <p className="mt-4 border-t border-[color:var(--line)] pt-3 text-sm leading-6 text-[var(--muted)]">
+                      {extraGuest}
+                    </p>
+                  )}
                 </div>
               )}
 

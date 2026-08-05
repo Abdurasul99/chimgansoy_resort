@@ -621,6 +621,38 @@ type TgUpdate = {
   };
 };
 
+/**
+ * Night window for the auto-reply in the hotel's personal chats, Asia/Tashkent
+ * (UTC+5 year-round, so a fixed offset is exact here).
+ *
+ * The operator answers their own DMs during the day and only wants cover while
+ * they are asleep. Guests write at 01:00 asking whether the venue is open
+ * tomorrow, and that question keeps until morning badly.
+ */
+const NIGHT_FROM = 23; // inclusive
+const NIGHT_UNTIL = 8; // exclusive — the venue opens at 08:00
+
+function isNight(): boolean {
+  const hour = new Date(Date.now() + 5 * 3600 * 1000).getUTCHours();
+  return hour >= NIGHT_FROM || hour < NIGHT_UNTIL;
+}
+
+/**
+ * The "this is a bot" note goes out once per conversation per night, not under
+ * every message — repeated five times in a row it reads like a machine
+ * apologising for itself. Kept in memory: a cold lambda may re-introduce
+ * itself, which is a far cheaper failure than a store, and the same trade-off
+ * the AI's own history map already makes.
+ */
+const nightNoteSent = new Map<number, number>();
+
+function needsNightNote(chatId: number): boolean {
+  const last = nightNoteSent.get(chatId) ?? 0;
+  if (Date.now() - last < 6 * 3600 * 1000) return false;
+  nightNoteSent.set(chatId, Date.now());
+  return true;
+}
+
 /** Handle one Telegram update. The bot is public — no allowlist. */
 /**
  * Telegram Business: the bot answering in the hotel account's own DMs.
@@ -650,15 +682,22 @@ async function handleBusinessMessage(update: TgUpdate): Promise<void> {
   // by hand would otherwise trigger the AI on its own words.
   if (m.from?.id && m.chat.id === m.from.id && m.from.is_bot) return;
 
+  // During the day the operator answers personally; the AI only covers the
+  // hours nobody is awake. Silence here is the correct behaviour, not a miss.
+  if (!isNight()) return;
+
   await sendChatAction(chatId, "typing", connection);
   const ai = await answerGuestQuestion(text, { chatId });
   const reply = ai.ok
     ? ai.text
     : [
         "Извините, сейчас не могу ответить автоматически.",
-        `Позвоните нам: ${contacts.phone}`,
+        `Менеджер напишет утром, с ${String(NIGHT_UNTIL).padStart(2, "0")}:00. Телефон: ${contacts.phone}`,
       ].join("\n");
-  await sendMessage(chatId, esc(reply), { business_connection_id: connection });
+  const note = needsNightNote(chatId)
+    ? `\n\n<i>Сейчас ночь — отвечает автоматический помощник. Менеджер прочитает переписку утром, с ${String(NIGHT_UNTIL).padStart(2, "0")}:00.</i>`
+    : "";
+  await sendMessage(chatId, esc(reply) + note, { business_connection_id: connection });
 }
 
 export async function handleGuestUpdate(update: TgUpdate): Promise<void> {
