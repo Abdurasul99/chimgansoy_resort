@@ -26,7 +26,23 @@ const SERVICE_META: Record<string, { name: string; perPerson: boolean }> = {
   "5075692": { name: "Бассейн", perPerson: true },
 };
 
-export type AvailOption = { name: string; price: number; freeCancellation: boolean };
+/**
+ * One bookable room type on the requested dates.
+ *
+ * Deliberately carries NO cancellation terms. Exely's rate plan exposes
+ * `cancel_penalty_group.free_cancellation`, and it was passed through to the
+ * AI concierge until 2026-08-05, when a guest asking about 20 August was told
+ * in writing: "Both options include free cancellation up to 48 hours before
+ * check-in." Neither half of that is ours to promise — the prepayment is
+ * non-refundable with a date transfer only (Публичная оферта, разделы 3–4), and
+ * the "48 hours" was invented outright, since the flag is a boolean with no
+ * deadline attached.
+ *
+ * The refund policy lives in src/content/policies-legal.ts and is briefed to the
+ * AI from src/lib/venue-facts.ts. The booking engine is the source of truth for
+ * PRICES and AVAILABILITY, and for nothing else.
+ */
+export type AvailOption = { name: string; price: number };
 export type AvailService = { name: string; price: number; perPerson: boolean };
 export type AvailResult =
   | {
@@ -89,11 +105,11 @@ export async function checkAvailability(input: {
       const placements = (roomTypes[0]?.placements as Array<{ price_after_tax?: number }> | undefined) ?? [];
       const price = placements.reduce((s, pl) => s + (pl.price_after_tax || 0), 0);
       if (price <= 0) continue;
-      const ratePlans = (rs.rate_plans as Array<Record<string, unknown>> | undefined) ?? [];
-      const cpg = ratePlans[0]?.cancel_penalty_group as { free_cancellation?: boolean } | undefined;
-      const freeCancellation = !!cpg?.free_cancellation;
+      // rs.rate_plans[].cancel_penalty_group is deliberately NOT read — see
+      // the note on AvailOption. Whatever Exely's rate plan says about free
+      // cancellation, it is not what the guest signed.
       const prev = byName.get(name);
-      if (!prev || price < prev.price) byName.set(name, { name, price, freeCancellation });
+      if (!prev || price < prev.price) byName.set(name, { name, price });
     }
 
     // Extra services (e.g. the pool) with live per-date prices.

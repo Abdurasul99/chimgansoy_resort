@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { contacts } from "@/content/contacts";
+import { flattenMarkdown } from "@/lib/chat-format";
 
 type Locale = "ru" | "uz" | "en";
 type Msg = { role: "user" | "assistant"; content: string };
@@ -56,7 +57,7 @@ function linkifyBare(chunk: string, keyBase: string): ReactNode[] {
 /** Assistant text → text + clickable links (Markdown links first, then bare URLs). */
 function richText(raw: string): ReactNode[] {
   // Small models occasionally emit **bold** despite instructions — show clean text.
-  const text = raw.replace(/\*\*([^*]*)\*\*/g, "$1");
+  const text = flattenMarkdown(raw).replace(/\*\*([^*]*)\*\*/g, "$1");
   const out: ReactNode[] = [];
   let last = 0;
   let n = 0;

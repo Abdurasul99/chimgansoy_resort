@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import { buildSystemPrompt } from "@/lib/ai-context";
+import { buildSystemPrompt, languageDirective } from "@/lib/ai-context";
 import { checkAvailability } from "@/lib/exely";
 import { getChimganWeather, weatherInfo } from "@/lib/bot-weather";
 import { venueTopic, type Topic } from "@/lib/venue-topics";
@@ -202,6 +202,7 @@ function stripDisclaimer(reply: string, toolsUsed: Set<string>): string {
   return stripped || reply;
 }
 
+
 /**
  * AI concierge endpoint (Groq, OpenAI-compatible). Grounded in the resort's
  * facts via buildSystemPrompt(), and able to read live availability/prices
@@ -239,7 +240,15 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "empty" }, { status: 400 });
   }
 
-  const messages: GroqMsg[] = [{ role: "system", content: buildSystemPrompt(locale) }, ...history];
+  const langDirective: GroqMsg = {
+    role: "system",
+    content: languageDirective(history[history.length - 1].content, locale),
+  };
+  const messages: GroqMsg[] = [
+    { role: "system", content: buildSystemPrompt(locale) },
+    ...history,
+    langDirective,
+  ];
 
   try {
     // First pass — the model may ask to check live availability.
@@ -275,6 +284,11 @@ export async function POST(req: NextRequest) {
                 : { ok: false, error: "unknown_tool" };
         messages.push({ role: "tool", tool_call_id: tc.id, content: JSON.stringify(result) });
       }
+      // Restate the language, because the tool results just displaced the copy
+      // added before the first pass — and it is THIS pass that writes the text
+      // the guest reads. The tool payload is English-keyed JSON, which on its
+      // own nudges the answer towards English.
+      messages.push(langDirective);
       // Second pass — model turns the tool result into a natural answer. Stay
       // on whichever model answered the first pass so the voice doesn't switch
       // mid-conversation.

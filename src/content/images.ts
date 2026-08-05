@@ -246,16 +246,6 @@ export const resortImages = {
       en: "View of the mountain ridge from a cabin terrace",
     },
   },
-  aframeLawnWide: {
-    src: "/images/resort/rooms/aframe-lawn-wide.jpg",
-    localSrc: "/images/resort/rooms/aframe-lawn-wide.jpg",
-    position: "center",
-    alt: {
-      ru: "Ряд домиков A-frame вдоль газона и дорожки",
-      uz: "Maysazor va yo'lak bo'ylab A-frame uychalari qatori",
-      en: "A row of A-frame cabins along the lawn and walkway",
-    },
-  },
   aframeBed: {
     src: "/images/resort/rooms/aframe-bed.jpg",
     localSrc: "/images/resort/rooms/aframe-bed.jpg",

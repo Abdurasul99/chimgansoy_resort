@@ -68,27 +68,28 @@ export const rooms: Room[] = [
      */
     image: "aframeLawnBanner",
     gallery: [
-      // aframeLawnWide led this gallery until 2026-08-04 — the A-frame row with
-      // a tower crane in the sky. gallery[0] spans both columns on the room
-      // page, so it was the largest photo a guest saw before booking. It went
-      // to an interior for a few hours because nothing clean existed; the
-      // operator's second drop the same day supplied a crane-free exterior,
-      // which is what the top of this gallery should have been all along.
+      // This gallery's lead has been argued over four times, so: the A-frame
+      // exteriors split into two sets, and neither is ideal.
       //
-      // Except those two turned out to be CLOSE-UPS of the terrace decking and
-      // its railing, not pictures of a cabin. The operator saw the result and
-      // said so — "не очень хорошо видно" — and they were right: gallery[0]
-      // spans both columns, and a wide slot filled with a handrail says nothing
-      // about what is being rented.
+      // The OLD set (aframeLawn, -LawnWide, -LawnTall, aframeExterior) is
+      // landscape, which is what gallery[0] wants — it spans both columns in a
+      // 4:3 box. But it is 896×672, and every frame has a tower crane in the
+      // sky. aframeLawnWide led here after the crane was retouched out
+      // (scripts/retouch-crane.js), until the operator opened it full-screen on
+      // 2026-08-05 and said it is "не в качестве". They are right, and the
+      // retouch is not the reason: 896px shown at 1280 is soft no matter what
+      // is in the sky.
       //
-      // aframeLawnWide leads instead: the row of cabins on the finished lawn,
-      // roofs intact. It is usable again because the tower crane has been taken
-      // out of the sky — scripts/retouch-crane.js documents exactly which pixels
-      // were rewritten and which were not. The terrace details follow, further
-      // down, where a detail belongs.
-      "aframeLawnWide",
-      "aframeTerraceRail",
+      // The AUGUST set is 1802×2400 and sharp, but every frame of it is
+      // portrait — there is no wide A-frame exterior in it at all.
+      //
+      // So the lead is aframeGableSky: the triangular silhouette against the
+      // sky, which is the one frame that reads as "this is what you are
+      // renting" even cropped. It is top-anchored in images.ts, so the double-
+      // wide 4:3 crop spends itself on the grass and keeps the apex.
+      // aframeTerraceRail follows — a detail, in the place a detail belongs.
       "aframeGableSky",
+      "aframeTerraceRail",
       "aframeRoom",
       "aframeBed",
       "aframeChairsWindow",
