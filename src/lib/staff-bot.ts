@@ -303,7 +303,7 @@ function renderPrices(): View {
       "<b>➕ Дополнительное место за ночь</b> (в глэмпинге и шале одинаково):",
       `• Взрослый — <b>${money(extraGuestPricing.adult)}</b>`,
       `• Ребёнок ${extraGuestPricing.childFrom}–${extraGuestPricing.childTo} лет — <b>${money(extraGuestPricing.child)}</b>`,
-      `• Дети до ${extraGuestPricing.freeThroughAge} лет включительно — <b>бесплатно</b>`,
+      `• Дети 0–${extraGuestPricing.freeThroughAge} лет — <b>бесплатно</b>`,
       `🚪 Гостевой визит в шале (без ночёвки) — <b>${money(extraGuestPricing.guestVisitCottage)}</b>`,
       "",
       "<i>Ранний заезд и поздний выезд — за доплату, по загрузке. Дополнительно взимается обязательный туристский сбор.</i>",

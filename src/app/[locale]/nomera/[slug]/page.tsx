@@ -120,7 +120,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
     : {
         ru: [
           `Заезд с ${stayRules.checkIn}, выезд до ${stayRules.checkOut}. Ранний заезд и поздний выезд — по загрузке и за доплату.`,
-          `Дополнительное место за ночь: взрослый — ${group(adult)} сум, ребёнок ${childFrom}–${childTo} лет — ${group(child)} сум. Дети до ${freeThroughAge} лет включительно — бесплатно.`,
+          `Дополнительное место за ночь: взрослый — ${group(adult)} сум, ребёнок ${childFrom}–${childTo} лет — ${group(child)} сум. Дети 0–${freeThroughAge} лет — бесплатно.`,
           ...(room.slug === "cottage"
             ? [`Гостевой визит в шале (без ночёвки) — ${group(guestVisitCottage)} сум.`]
             : []),
@@ -129,7 +129,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
         ],
         uz: [
           `Kirish ${stayRules.checkIn} dan, chiqish ${stayRules.checkOut} gacha. Erta kirish va kech chiqish — bandlikka qarab va qo'shimcha to'lov evaziga.`,
-          `Bir kechaga qo'shimcha joy: kattalar — ${group(adult)} so'm, ${childFrom}–${childTo} yoshdagi bola — ${group(child)} so'm. ${freeThroughAge} yoshgacha bolalar (shu yosh ham) — bepul.`,
+          `Bir kechaga qo'shimcha joy: kattalar — ${group(adult)} so'm, ${childFrom}–${childTo} yoshdagi bola — ${group(child)} so'm. 0–${freeThroughAge} yoshdagi bolalar — bepul.`,
           ...(room.slug === "cottage"
             ? [`Shalega mehmon tashrifi (tunab qolmasdan) — ${group(guestVisitCottage)} so'm.`]
             : []),
@@ -138,7 +138,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
         ],
         en: [
           `Check-in from ${stayRules.checkIn}, check-out by ${stayRules.checkOut}. Early check-in and late check-out depend on occupancy and are charged.`,
-          `An extra place per night: adult — ${group(adult)} UZS, child aged ${childFrom}–${childTo} — ${group(child)} UZS. Children up to and including ${freeThroughAge} stay free.`,
+          `An extra place per night: adult — ${group(adult)} UZS, child aged ${childFrom}–${childTo} — ${group(child)} UZS. Children aged 0–${freeThroughAge} stay free.`,
           ...(room.slug === "cottage"
             ? [`A guest visit to a chalet (no overnight stay) — ${group(guestVisitCottage)} UZS.`]
             : []),
