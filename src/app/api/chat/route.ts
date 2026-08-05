@@ -133,12 +133,32 @@ async function callGroq(
     body.tools = TOOLS;
     body.tool_choice = "auto";
   }
-  return fetch(GROQ_URL, {
+  const res = await fetch(GROQ_URL, {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify(body),
     signal: AbortSignal.timeout(30_000),
   });
+
+  /**
+   * The quota, in the log, on every call.
+   *
+   * Groq reports the remaining per-minute allowance in response headers. Without
+   * this the only signal that the site is at its ceiling is a guest getting a
+   * 502 — which is how the concierge managed to be down all day unnoticed. One
+   * line per call makes "how close are we" answerable before it breaks, and
+   * makes the case for a paid tier a measurement rather than an argument.
+   */
+  const remaining = res.headers.get("x-ratelimit-remaining-tokens");
+  const limit = res.headers.get("x-ratelimit-limit-tokens");
+  if (limit) {
+    console.log(
+      `[chat] quota ${model}: ${remaining ?? "?"}/${limit} tokens left this minute` +
+        ` (reset ${res.headers.get("x-ratelimit-reset-tokens") ?? "?"}, http ${res.status})`,
+    );
+  }
+
+  return res;
 }
 
 /**
