@@ -119,7 +119,10 @@ export const rooms: Room[] = [
       en: "Glamping is designed for guests who want quiet air and a close-to-nature stay without giving up comfort. It fits romantic escapes, short resets, and intimate family trips.",
     },
     priceFrom: { ru: "Цена при бронировании", uz: "Bron qilishda narx", en: "Price at booking" },
-    capacity: { ru: "до 3 гостей", uz: "3 mehmongacha", en: "up to 3 guests" },
+    // Base 2, max 3 (operator, 2026-08-05). Said "до 3 гостей" before, which is
+    // the ceiling and not what the rate covers — a guest reading it planned for
+    // three and met a surcharge at the desk. Both numbers, in the chip.
+    capacity: { ru: "2 гостя, до 3 с доплатой", uz: "2 mehmon, qo'shimcha to'lov bilan 3 tagacha", en: "2 guests, up to 3 with a surcharge" },
     size: { ru: "28 м² + терраса 15 м²", uz: "28 m² + terrasa 15 m²", en: "28 m² + 15 m² terrace" },
     // No bath anywhere on the property — every unit has a shower. Stated
     // explicitly so nobody books expecting one.
@@ -212,10 +215,12 @@ export const rooms: Room[] = [
       en: "The chalet is for guests who need a fully private format. Two separate bedrooms: a double bed in one, two single beds in the other, each bedroom with its own toilet and shower. Plus a kitchen-lounge and a private terrace for the evenings. Everything the glamping cabin has — air conditioning, heated floors, a TV, Wi-Fi and free parking — is here too.",
     },
     priceFrom: { ru: "Цена при бронировании", uz: "Bron qilishda narx", en: "Price at booking" },
-    // 6, confirmed by the operator 2026-08-02. Booking.com and Exely still hold
-    // 5 for this unit — they have to be raised there too or the channels will
-    // reject the sixth guest the site just accepted.
-    capacity: { ru: "до 6 гостей", uz: "6 mehmongacha", en: "up to 6 guests" },
+    // Base 4, max 6 (operator, 2026-08-05). The max was confirmed as 6 on
+    // 2026-08-02; Booking.com and Exely still hold 5 for this unit and have to
+    // be raised there too, or the channels reject the sixth guest the site just
+    // accepted. What is new is the base: the rate covers four, and guests five
+    // and six are surcharged.
+    capacity: { ru: "4 гостя, до 6 с доплатой", uz: "4 mehmon, qo'shimcha to'lov bilan 6 tagacha", en: "4 guests, up to 6 with a surcharge" },
     size: { ru: "3 комнаты + терраса 35 м²", uz: "3 xona + terrasa 35 m²", en: "3 rooms + 35 m² terrace" },
     amenities: {
       // Two ensuites, both with a shower — there is no bath anywhere on the

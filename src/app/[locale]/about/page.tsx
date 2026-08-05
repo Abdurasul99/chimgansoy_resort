@@ -28,9 +28,9 @@ const values = [
     num: "02",
     title: { ru: "Двадцать отдельных домиков", uz: "Yigirma alohida uycha", en: "Twenty standalone cabins" },
     copy: {
-      ru: "Десять A-frame для двоих-троих и десять шале с двумя спальнями и кухней-залом. Каждый домик стоит отдельно — со своей террасой, санузлом и видом на хребет. Бассейн включён в проживание.",
-      uz: "Ikki-uch kishilik o'nta A-frame va ikki yotoqxona hamda oshxona-zalli o'nta shale. Har bir uycha alohida turadi — o'z terrasasi, sanuzeli va tizma manzarasi bilan. Basseyn yashash narxiga kiritilgan.",
-      en: "Ten A-frames for two or three, and ten chalets with two bedrooms and a kitchen-lounge. Each cabin stands on its own — its own terrace, bathroom, and view of the ridge. The pool is included in the stay.",
+      ru: "Десять A-frame для двоих и десять шале с двумя спальнями и кухней-залом для четверых; в A-frame можно добавить третье место, в шале — пятое и шестое, за доплату. Каждый домик стоит отдельно — со своей террасой, санузлом и видом на хребет. Бассейн включён в проживание.",
+      uz: "Ikki kishilik o'nta A-frame va to'rt kishilik, ikki yotoqxona hamda oshxona-zalli o'nta shale; qo'shimcha to'lov bilan A-frame'ga uchinchi, shalega beshinchi va oltinchi joy qo'shiladi. Har bir uycha alohida turadi — o'z terrasasi, sanuzeli va tizma manzarasi bilan. Basseyn yashash narxiga kiritilgan.",
+      en: "Ten A-frames for two and ten chalets with two bedrooms and a kitchen-lounge for four; a third place in an A-frame, and a fifth and sixth in a chalet, can be added for a surcharge. Each cabin stands on its own — its own terrace, bathroom, and view of the ridge. The pool is included in the stay.",
     },
   },
   {

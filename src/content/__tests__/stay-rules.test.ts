@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { extraGuestPricing, stayRules } from "@/content/pricing";
+import { cabinOccupancy, extraGuestPricing, stayRules } from "@/content/pricing";
 import { legalPolicies } from "@/content/policies-legal";
 import { rooms } from "@/content/rooms";
 import { fields } from "@/lib/price-catalog";
@@ -104,6 +104,37 @@ describe("stay rules — the extra-person charge", () => {
   });
 });
 
+describe("stay rules — occupancy", () => {
+  it("matches the operator's figures", () => {
+    // "Глемпинг стандарт - 2 человека. Максимум +1. Шале стандарт 4 человека.
+    // Максимум +2." (operator, 2026-08-05)
+    expect(cabinOccupancy.glamping).toEqual({ base: 2, max: 3 });
+    expect(cabinOccupancy.cottage).toEqual({ base: 4, max: 6 });
+  });
+
+  it("keeps base below max, so an extra place is always possible", () => {
+    for (const [slug, occ] of Object.entries(cabinOccupancy)) {
+      expect(occ.base, slug).toBeLessThan(occ.max);
+      expect(occ.base, slug).toBeGreaterThan(0);
+    }
+  });
+
+  it("states BOTH numbers on the room cards, in all three languages", () => {
+    // The capacity chip used to carry only the maximum, which is the number a
+    // guest plans around and the wrong one: the rate covers the base.
+    for (const slug of ["glamping", "cottage"] as const) {
+      const room = rooms.find((r) => r.slug === slug);
+      expect(room, slug).toBeDefined();
+      const occ = cabinOccupancy[slug];
+      for (const locale of ["ru", "uz", "en"] as const) {
+        const chip = room!.capacity[locale];
+        expect(chip, `${slug}/${locale}`).toContain(String(occ.base));
+        expect(chip, `${slug}/${locale}`).toContain(String(occ.max));
+      }
+    }
+  });
+});
+
 describe("stay rules — what the AI is briefed on", () => {
   // The concierge answers from these two strings and nothing else, so a fact
   // that is missing here is a fact the AI will either omit or invent.
@@ -130,4 +161,25 @@ describe("stay rules — what the AI is briefed on", () => {
   it("venueFacts() explains the guest visit as its own product", () => {
     expect(venueFacts()).toMatch(/ГОСТЕВОЙ ВИЗИТ В ШАЛЕ/);
   });
+
+  for (const [name, text] of Object.entries(briefings)) {
+    it(`${name}() states base occupancy, not just the maximum`, () => {
+      // Asked about four adults and a six-year-old in a chalet on 2026-08-05,
+      // the concierge answered "5 человек — дополнительная плата не требуется".
+      // It was reasoning from the only number it had, which was the maximum.
+      for (const occ of Object.values(cabinOccupancy)) {
+        expect(text).toContain(String(occ.base));
+        expect(text).toContain(String(occ.max));
+      }
+      expect(text).toMatch(/стандарт/i);
+      expect(text).toMatch(/максимум/i);
+    });
+
+    it(`${name}() spells out how to count the surcharge`, () => {
+      expect(text).toMatch(/КАК СЧИТАТЬ ДОПЛАТУ/);
+      expect(text).toMatch(/СВЕРХ СТАНДАРТА, а не сверх максимума/);
+      // The worked example is the case that went wrong in production.
+      expect(text).toMatch(/4 взрослых и ребёнок 6 лет в шале/);
+    });
+  }
 });

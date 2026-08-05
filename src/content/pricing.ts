@@ -207,6 +207,28 @@ export const priceLabels = {
 };
 
 /**
+ * How many guests a cabin's rate covers, and how many it can hold at all.
+ *
+ * Operator, 2026-08-05: "Глемпинг стандарт - 2 человека. Максимум +1. Шале
+ * стандарт 4 человека. Максимум +2."
+ *
+ * The site said only "до 3 гостей" and "до 6 гостей" before this, which is the
+ * MAXIMUM and says nothing about what the price covers. That gap had already
+ * produced a wrong answer in production: asked about four adults and a
+ * six-year-old in a chalet, the concierge replied "5 человек — дополнительная
+ * плата не требуется", because six was the only number it knew. Under the base
+ * of four that party owes one adult place and one child place.
+ *
+ * `base` is what the nightly rate includes; every guest beyond it is charged
+ * per extraGuestPricing. `max` is a hard limit — beds, not money — so a party
+ * over it needs a second cabin, not a bigger surcharge.
+ */
+export const cabinOccupancy = {
+  glamping: { base: 2, max: 3 },
+  cottage: { base: 4, max: 6 },
+} as const;
+
+/**
  * The extra-person charge on top of a cabin's rate.
  *
  * These figures took three passes to settle, so the trail is worth keeping:

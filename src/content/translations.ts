@@ -42,7 +42,7 @@ export const dictionaries = {
       eyebrow: "CHIMGANDARBAZA.UZ / CHIMGANDARBAZA.COM",
       title: "CHIMGAN DARBAZA",
       lead: "Шале и A-frame глэмпинг на высоте 1700 м, в 45 минутах от Ташкента. Бассейн включён в проживание, горы Чимгана — сразу за террасой.",
-      heroChips: ["Шале до 6 гостей", "Глэмпинг A-frame", "Бассейн включён"],
+      heroChips: ["Шале для 4 гостей", "Глэмпинг A-frame", "Бассейн включён"],
       heroOffer: "Бронируйте шале и глэмпинг заранее",
       // "Только бассейн" asserted the pool was the sole day product. The
       // topchan and the tubing hill are sold alongside it now, each with its
@@ -51,7 +51,7 @@ export const dictionaries = {
       newsTitle: "Актуально на территории",
       stayEyebrow: "Проживание",
       aboutTitle: "Горный курорт в 45 минутах от Ташкента",
-      aboutText: "CHIMGAN DARBAZA — курорт на 9 гектарах на высоте 1700 м. Двадцать отдельных домиков: A-frame глэмпинг для двоих-троих и шале с двумя спальнями и кухней-залом для семьи или компании. Бассейн включён в проживание, кухня работает на территории, горные маршруты Чимгана начинаются сразу за оградой.",
+      aboutText: "CHIMGAN DARBAZA — курорт на 9 гектарах на высоте 1700 м. Двадцать отдельных домиков: A-frame глэмпинг для двоих и шале с двумя спальнями и кухней-залом для четверых — и там, и там можно добавить места за доплату. Бассейн включён в проживание, кухня работает на территории, горные маршруты Чимгана начинаются сразу за оградой.",
       roomsTitle: "Где вы будете жить",
       // Operator's own wording, 2026-08-02. The chalet capacity of 6 is now
       // confirmed and carried through rooms.ts and the AI facts; Booking.com
@@ -151,7 +151,7 @@ export const dictionaries = {
       eyebrow: "CHIMGANDARBAZA.UZ / CHIMGANDARBAZA.COM",
       title: "CHIMGAN DARBAZA",
       lead: "1700 m balandlikda, Toshkentdan 45 daqiqada shale va A-frame glemping. Basseyn yashash narxiga kiritilgan, Chimgon tog'lari — terrasangiz ortida.",
-      heroChips: ["6 mehmongacha shale", "A-frame glemping", "Basseyn kiritilgan"],
+      heroChips: ["4 mehmonga shale", "A-frame glemping", "Basseyn kiritilgan"],
       heroOffer: "Shale va glempingni oldindan bron qiling",
       heroPoolCta: "Basseyn DAY PASS",
       newsTitle: "Hududdagi yangiliklar",

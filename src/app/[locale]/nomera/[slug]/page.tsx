@@ -9,7 +9,7 @@ import { getRoomPrices, priceChip } from "@/lib/room-price";
 import { Icon } from "@/components/ui/Icon";
 import { rooms, EXELY_ROOM_TYPE, INCLUDED_LABEL } from "@/content/rooms";
 import { resortImages } from "@/content/images";
-import { extraGuestPricing, stayRules } from "@/content/pricing";
+import { cabinOccupancy, extraGuestPricing, stayRules } from "@/content/pricing";
 import { dictionaries } from "@/content/translations";
 import { getLocaleParam, getRoom } from "@/lib/content";
 import { buildMetadata } from "@/lib/metadata";
@@ -115,10 +115,14 @@ export default async function RoomDetailPage({ params }: PageProps) {
    */
   const isCabin = room.slug === "glamping" || room.slug === "cottage";
   const { adult, child, childFrom, childTo, freeThroughAge, guestVisitCottage } = extraGuestPricing;
-  const stayNotes: string[] = !isCabin
+  // Base occupancy leads the list, because it is the number the rate covers —
+  // the one a guest needs before they can work out whether they owe anything.
+  const occ = isCabin ? cabinOccupancy[room.slug as "glamping" | "cottage"] : null;
+  const stayNotes: string[] = !isCabin || !occ
     ? []
     : {
         ru: [
+          `Стандартное размещение — ${occ.base} гостя, максимум ${occ.max}. Места сверх стандарта — за доплату.`,
           `Заезд с ${stayRules.checkIn}, выезд до ${stayRules.checkOut}. Ранний заезд и поздний выезд — по загрузке и за доплату.`,
           `Дополнительное место за ночь: взрослый — ${group(adult)} сум, ребёнок ${childFrom}–${childTo} лет — ${group(child)} сум. Дети 0–${freeThroughAge} лет — бесплатно.`,
           ...(room.slug === "cottage"
@@ -128,6 +132,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
           "При заселении нужны паспорта всех проживающих.",
         ],
         uz: [
+          `Standart joylashuv — ${occ.base} mehmon, maksimum ${occ.max}. Standartdan ortiq joylar — qo'shimcha to'lov evaziga.`,
           `Kirish ${stayRules.checkIn} dan, chiqish ${stayRules.checkOut} gacha. Erta kirish va kech chiqish — bandlikka qarab va qo'shimcha to'lov evaziga.`,
           `Bir kechaga qo'shimcha joy: kattalar — ${group(adult)} so'm, ${childFrom}–${childTo} yoshdagi bola — ${group(child)} so'm. 0–${freeThroughAge} yoshdagi bolalar — bepul.`,
           ...(room.slug === "cottage"
@@ -137,6 +142,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
           "Joylashuvda barcha yashovchilarning pasporti kerak bo'ladi.",
         ],
         en: [
+          `The rate covers ${occ.base} guests; the cabin holds up to ${occ.max}. Places beyond the standard are charged.`,
           `Check-in from ${stayRules.checkIn}, check-out by ${stayRules.checkOut}. Early check-in and late check-out depend on occupancy and are charged.`,
           `An extra place per night: adult — ${group(adult)} UZS, child aged ${childFrom}–${childTo} — ${group(child)} UZS. Children aged 0–${freeThroughAge} stay free.`,
           ...(room.slug === "cottage"

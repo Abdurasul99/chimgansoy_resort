@@ -80,8 +80,9 @@ function group(n: number): string {
  * caller falls back to room.priceFrom rather than showing an empty chip.
  *
  * "за ночь" is not decoration: the figure is a one-night rate for two adults,
- * and a bare "от 1 500 000 сум" beside "до 3 гостей" reads as the price of the
- * whole stay.
+ * and a bare "от 1 500 000 сум" beside the capacity chip reads as the price of
+ * the whole stay. Two adults is also exactly the glamping base occupancy, so
+ * the chip and the engine now describe the same party.
  */
 export function priceChip(price: number | undefined, locale: string): string | null {
   if (!price || price <= 0) return null;
