@@ -48,6 +48,6 @@ export async function POST(req: NextRequest) {
 
 // A GET is handy for a quick "is the route deployed?" check in the browser.
 export async function GET() {
-  const configured = !!process.env.TELEGRAM_STAFF_BOT_TOKEN && !!process.env.GROQ_API_KEY;
+  const configured = !!process.env.TELEGRAM_STAFF_BOT_TOKEN && (!!process.env.GROQ_API_KEY || !!process.env.GROQ_API_KEY_2);
   return Response.json({ ok: true, service: "chimgandarbaza guest bot", configured });
 }

@@ -236,7 +236,12 @@ export async function answerGuestQuestion(
   question: string,
   opts: { chatId?: number; repliedTo?: string } = {},
 ): Promise<GuestAiResult> {
-  const apiKey = process.env.GROQ_API_KEY?.trim();
+  // The bot serves one person, so it rarely meets the ceiling — but when it
+  // does, the second account is right there. Same order as the site concierge.
+  const keys = [process.env.GROQ_API_KEY, process.env.GROQ_API_KEY_2]
+    .map((k) => k?.trim())
+    .filter((k): k is string => Boolean(k));
+  const apiKey = keys[0];
   if (!apiKey) return { ok: false, error: "no_groq_key" };
 
   const messages: GroqMsg[] = [{ role: "system", content: systemPrompt() }];

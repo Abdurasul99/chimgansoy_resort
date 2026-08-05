@@ -182,36 +182,46 @@ async function callGroq(
  * never see an error because another guest asked a question ten seconds ago.
  */
 async function callWithFallback(
-  apiKey: string,
+  keys: string[],
   messages: GroqMsg[],
   withTools: boolean,
-): Promise<{ res: Response; model: string }> {
-  const res = await callGroq(apiKey, messages, withTools, MODEL_PRIMARY);
-  if (res.status !== 429) return { res, model: MODEL_PRIMARY };
+): Promise<{ res: Response; model: string; key: string }> {
+  /**
+   * Keys are the INNER loop, models the outer.
+   *
+   * The per-minute token allowance is per account, so a second key is a second
+   * allowance — not a spare in case the first one breaks. That makes switching
+   * key the cheapest way to keep the BEST model: it is strictly better to ask
+   * 120b again on the other account than to drop to 20b on the exhausted one.
+   * Dropping a model tier is what happens only when every account is out.
+   */
+  let last: Response | null = null;
 
-  console.warn("[chat] primary model rate-limited, falling back to", MODEL_FALLBACK);
-  const fb = await callGroq(apiKey, messages, withTools, MODEL_FALLBACK);
-  if (fb.status !== 429) return { res: fb, model: MODEL_FALLBACK };
-  // Different family, different bucket — the only retry with a real chance.
-  console.error("[chat] both gpt-oss models rate-limited, trying", MODEL_LAST_RESORT);
-  const last = await callGroq(apiKey, messages, withTools, MODEL_LAST_RESORT);
-  if (last.status !== 429) return { res: last, model: MODEL_LAST_RESORT };
-  if (fb.status !== 429) return { res: fb, model: MODEL_FALLBACK };
+  for (const model of [MODEL_PRIMARY, MODEL_FALLBACK, MODEL_LAST_RESORT]) {
+    for (let i = 0; i < keys.length; i++) {
+      const res = await callGroq(keys[i], messages, withTools, model);
+      if (res.status !== 429) return { res, model, key: `key${i + 1}` };
+      last = res;
+      console.warn(`[chat] rate-limited: ${model} on key${i + 1}`);
+    }
+  }
 
   /**
-   * Both models over the per-minute allowance.
+   * Every model on every key is over the allowance.
    *
-   * The system prompt is around 6 000 tokens of Russian, so on the free tier a
-   * single question very nearly is the minute's budget — two guests a minute
-   * apart is enough to land here. Groq says how long to wait in Retry-After;
-   * honouring it once turns a visible failure into a slower answer, which is
-   * what a guest waiting on a price would choose. Capped so nobody stares at a
-   * spinner: past that, the caller shows the "call us" fallback.
+   * Groq says how long to wait in Retry-After; honouring it once turns a visible
+   * failure into a slower answer, which is what a guest waiting on a price would
+   * choose. Capped so nobody stares at a spinner — past that the caller shows
+   * the "call us" fallback.
    */
-  const wait = Math.min((Number(fb.headers.get("retry-after")) || 4) * 1000, 6_000);
-  console.warn(`[chat] both models rate-limited, retrying in ${wait}ms`);
+  const wait = Math.min((Number(last?.headers.get("retry-after")) || 4) * 1000, 6_000);
+  console.error(`[chat] every model on every key rate-limited, retrying in ${wait}ms`);
   await new Promise((r) => setTimeout(r, wait));
-  return { res: await callGroq(apiKey, messages, withTools, MODEL_FALLBACK), model: MODEL_FALLBACK };
+  return {
+    res: await callGroq(keys[0], messages, withTools, MODEL_FALLBACK),
+    model: MODEL_FALLBACK,
+    key: "key1",
+  };
 }
 
 /**
@@ -242,8 +252,19 @@ function stripDisclaimer(reply: string, toolsUsed: Set<string>): string {
  * error the client turns into a "message us" fallback if the key/network fail.
  */
 export async function POST(req: NextRequest) {
-  const apiKey = process.env.GROQ_API_KEY;
-  if (!apiKey) {
+  /**
+   * Every Groq account configured, in order.
+   *
+   * A second key is a second per-minute token allowance, not a spare in case
+   * the first breaks — the free tier caps at 8 000 tokens a minute per account,
+   * and one guest question costs about 3 800 of them. Two accounts is two
+   * guests a minute instead of one. Blank or missing entries drop out, so
+   * deleting GROQ_API_KEY_2 in Vercel is all it takes to go back to one.
+   */
+  const keys = [process.env.GROQ_API_KEY, process.env.GROQ_API_KEY_2]
+    .map((k) => k?.trim())
+    .filter((k): k is string => Boolean(k));
+  if (keys.length === 0) {
     return Response.json({ error: "ai_not_configured" }, { status: 503 });
   }
 
@@ -276,7 +297,8 @@ export async function POST(req: NextRequest) {
 
   try {
     // First pass — the model may ask to check live availability.
-    let { res, model } = await callWithFallback(apiKey, messages, true);
+    let { res, model, key } = await callWithFallback(keys, messages, true);
+    const keyIndex = Math.max(0, Number(key.replace("key", "")) - 1);
     if (!res.ok) {
       const detail = await res.text().catch(() => "");
       console.error(`[chat] Groq ${res.status}: ${detail.slice(0, 300)}`);
@@ -311,15 +333,19 @@ export async function POST(req: NextRequest) {
       // Second pass — model turns the tool result into a natural answer. Stay
       // on whichever model answered the first pass so the voice doesn't switch
       // mid-conversation.
-      res = await callGroq(apiKey, messages, false, model);
+      res = await callGroq(keys[keyIndex] ?? keys[0], messages, false, model);
       if (res.status === 429) {
         // Second pass has no tools, so it is cheap; walk the chain rather than
         // losing an answer the guest has already waited for.
-        for (const next of [MODEL_FALLBACK, MODEL_LAST_RESORT]) {
-          if (next === model) continue;
-          model = next;
-          res = await callGroq(apiKey, messages, false, model);
-          if (res.status !== 429) break;
+        // Walk models on the SAME key first, then the other keys: the tool
+        // result is already fetched and the guest has already waited.
+        outer: for (const next of [model, MODEL_FALLBACK, MODEL_LAST_RESORT]) {
+          for (const k of keys) {
+            if (next === model && k === keys[keyIndex]) continue;
+            model = next;
+            res = await callGroq(k, messages, false, model);
+            if (res.status !== 429) break outer;
+          }
         }
       }
       if (!res.ok) {
