@@ -1,5 +1,5 @@
 import { contacts } from "@/content/contacts";
-import { venueFacts } from "@/lib/venue-facts";
+import { venueCore } from "@/lib/venue-facts";
 
 /**
  * Builds the system prompt for the guest-facing AI concierge on the site.
@@ -20,7 +20,7 @@ export function buildSystemPrompt(locale: "ru" | "uz" | "en"): string {
 
 Сегодня: ${today}. Даты для проверки доступности вычисляй относительно этой даты.
 
-${venueFacts()}
+${venueCore()}
 
 ССЫЛКИ (вставляй их СТРОГО в формате Markdown [текст](URL); других ссылок не выдумывай):
 - Онлайн-бронирование: [страница бронирования](/${locale}/bron)

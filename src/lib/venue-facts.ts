@@ -1,5 +1,5 @@
 import { contacts } from "@/content/contacts";
-import { priceList, topchanPricing, tubingPricing } from "@/content/pricing";
+import { poolPricing, priceList, topchanPricing, tubingPricing } from "@/content/pricing";
 import { ridesRu } from "@/lib/tariff";
 
 /** 50000 -> "50 000" */
@@ -89,4 +89,55 @@ ${prices}
 ЖИВОТНЫЕ: ПОЛНЫЙ ЗАПРЕТ на проживание с животными — заселиться с питомцем нельзя, ни в шале, ни в глэмпинг. На территорию животные тоже не допускаются. Это условие Публичной оферты, а не пожелание: не обещай «уточнить у администратора» и не оставляй гостю надежды на исключение.
 
 КОНТАКТЫ: телефон ${contacts.phone} (он же WhatsApp и Telegram), Instagram @chimgandarbaza, e-mail ${contacts.email}. Адрес: ${contacts.address.ru}. Карта: ${contacts.googleMapsUrl}`;
+}
+
+/**
+ * The compact briefing the public concierge carries on every turn.
+ *
+ * Roughly a quarter of venueFacts(). Everything here is something a guest asks
+ * on the first message; everything cut is reachable through the lookup_facts
+ * tool, which the model calls only when the conversation actually goes there.
+ *
+ * The cut was forced by arithmetic, not taste: the Groq free tier allows 8000
+ * tokens per MINUTE and a turn was requesting 6436, so a single question
+ * exhausted the quota and every following one returned 502. Sending less is the
+ * fix. It also sharpens the answers — five thousand tokens of standing rules
+ * compete with each other for the model's attention.
+ *
+ * WHAT MUST NEVER LEAVE THIS FILE, whatever else is trimmed: the refund rule.
+ * A concierge that forgets it invents the old one, and the old one promised
+ * money back.
+ */
+export function venueCore(): string {
+  const packages = tubingPricing.packages
+    .map((p) => `${p.rides} ${ridesRu(p.rides)} — ${money(p.price)} сум`)
+    .join("; ");
+
+  return `О КОМПЛЕКСЕ:
+- «CHIMGAN DARBAZA» (chimgandarbaza.uz) — горный курорт в 45 минутах от Ташкента, 1700 м, Бостанлыкский район. 9 гектаров, 20 домиков: 10 шале и 10 глэмпингов A-frame. Круглый год.
+- Два формата: ПРОЖИВАНИЕ (глэмпинг, шале) и ОТДЫХ НА ДЕНЬ без ночёвки (бассейн, топчан, тюбинг).
+- На территории: бассейн 680 м² с детским бассейном и пул-баром, топчаны, всесезонная тюбинг-горка, летний ресторан, мангал и казан в аренду, детская площадка.
+- ЧЕГО НЕТ: ванн — везде душ. VIP-зона с DJ ещё строится, работающей не называй.
+
+ДНЕВНОЙ ОТДЫХ (цены фиксированные, инструмент для них НЕ вызывай):
+- ТОПЧАН: ${money(topchanPricing.rent.weekday)} Пн–Чт / ${money(topchanPricing.rent.weekend)} Пт–Вс сум за топчан целиком (НЕ с человека), до ${topchanPricing.capacity} гостей. Заявка: /<локаль>/topchan
+- ТЮБИНГ: ${packages}. Одна цена всю неделю, трасса всесезонная. Заявка: /<локаль>/tubing
+- БАССЕЙН: Пн–Чт ${money(poolPricing.adult.weekday)} / Пт–Вс ${money(poolPricing.adult.weekend)} сум со взрослого; дети 5–15 — ${money(poolPricing.child.weekday)} / ${money(poolPricing.child.weekend)}; до 5 лет бесплатно. Пятница — ВЫХОДНОЙ тариф. Работает 08:00–20:00. Заявка: /<локаль>/nomera/pool
+- Вход на территорию и парковка БЕСПЛАТНЫ. Платная парковка только у гостей ТЮБИНГА: 50 000 Пн–Чт / 100 000 Пт–Вс за автомобиль.
+
+ПРОЖИВАНИЕ:
+- Заезд с 14:00, выезд до 12:00, ресепшн круглосуточно.
+- Глэмпинг A-frame — до 3 гостей, 28 м² + терраса 15 м². Шале — до 6 гостей, две спальни со своими санузлами, кухня-зал, терраса 35 м².
+- Цены проживания НЕ фиксированные — только из инструмента check_availability.
+- ВКЛЮЧЕНО: завтрак, бассейн, тюбинг (2 спуска глэмпингу, 4 шале), парковка, Wi-Fi.
+
+УСЛОВИЯ — ЗНАЙ НАИЗУСТЬ, НЕ ВЫДУМЫВАЙ:
+- Предоплата 50% в течение 24 часов после подтверждения. ПРЕДОПЛАТА ЗА ПРОЖИВАНИЕ НЕВОЗВРАТНАЯ: возврата нет ни при каком сроке отмены, возможен ТОЛЬКО ПЕРЕНОС ДАТ у администратора. Никаких процентов и шкал не называй.
+- По отмене ДНЕВНЫХ услуг сроков и процентов НЕ называй вообще — отправляй к администратору.
+- При заселении берётся ВОЗВРАТНЫЙ депозит 500 000 сум за домик. Это не предоплата.
+- ЖИВОТНЫЕ: полный запрет на проживание с животными и на вход на территорию. Исключений нет.
+
+КОНТАКТЫ: ${contacts.phone} (WhatsApp и Telegram), ${contacts.email}, Instagram @chimgandarbaza.
+
+ЕСЛИ НУЖНЫ ПОДРОБНОСТИ, которых здесь нет — полный тариф бассейна с бунгало и полотенцами, меню ресторана, дорога и координаты, состав домиков, аренда и расходники, детали отмены — ВЫЗОВИ инструмент lookup_facts с нужной темой. Не выдумывай и не отвечай «уточните у администратора» там, где ответ можно получить инструментом.`;
 }

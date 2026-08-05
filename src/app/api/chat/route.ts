@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 import { buildSystemPrompt } from "@/lib/ai-context";
 import { checkAvailability } from "@/lib/exely";
 import { getChimganWeather, weatherInfo } from "@/lib/bot-weather";
+import { venueTopic, type Topic } from "@/lib/venue-topics";
 
 /**
  * Live weather for the concierge, shaped for a model rather than a chat card.
@@ -43,6 +44,12 @@ const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
  */
 const MODEL_PRIMARY = "openai/gpt-oss-120b";
 const MODEL_FALLBACK = "openai/gpt-oss-20b";
+// A third model, from a different family, so it has its OWN per-minute token
+// bucket. The old two-model chain shared a ceiling: the log for the 502s read
+// "primary rate-limited, falling back to gpt-oss-20b" and then "both models
+// rate-limited" — a fallback that fails for the same reason as the primary is
+// not a fallback.
+const MODEL_LAST_RESORT = "llama-3.3-70b-versatile";
 
 type ChatMsg = { role: "user" | "assistant"; content: string };
 type ToolCall = { id: string; function: { name: string; arguments: string } };
@@ -81,6 +88,25 @@ const TOOLS = [
   {
     type: "function",
     function: {
+      name: "lookup_facts",
+      description:
+        "Подробности о курорте, которых нет в кратком брифинге: полный тариф бассейна с бунгало и полотенцами (pool), меню ресторана и правила своей еды (menu), дорога, координаты и ссылки на карты (directions), условия отмены, переноса, предоплаты, депозита и животных (policy), аренда мангала/казана, дрова, уголь, парковка (extras), подробный состав шале и глэмпинга (rooms). Вызывай ВМЕСТО того, чтобы отвечать «уточните у администратора».",
+      parameters: {
+        type: "object",
+        properties: {
+          topic: {
+            type: "string",
+            enum: ["pool", "menu", "directions", "policy", "extras", "rooms"],
+            description: "Тема, по которой нужны подробности",
+          },
+        },
+        required: ["topic"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
       name: "get_weather",
       description:
         "Живая погода в Чимгане на территории курорта (1700 м): сейчас, минимум/максимум сегодня и завтра. Вызывай ВСЕГДА, когда гость спрашивает про погоду, температуру, холодно ли, что надеть, стоит ли ехать. Без вызова температуру не называй.",
@@ -99,7 +125,7 @@ async function callGroq(
     model,
     messages,
     temperature: 0.15,
-    max_tokens: 1000,
+    max_tokens: 700,
     // "low" was starving the language and price-formatting rules of attention.
     reasoning_effort: "medium",
   };
@@ -130,6 +156,11 @@ async function callWithFallback(
 
   console.warn("[chat] primary model rate-limited, falling back to", MODEL_FALLBACK);
   const fb = await callGroq(apiKey, messages, withTools, MODEL_FALLBACK);
+  if (fb.status !== 429) return { res: fb, model: MODEL_FALLBACK };
+  // Different family, different bucket — the only retry with a real chance.
+  console.error("[chat] both gpt-oss models rate-limited, trying", MODEL_LAST_RESORT);
+  const last = await callGroq(apiKey, messages, withTools, MODEL_LAST_RESORT);
+  if (last.status !== 429) return { res: last, model: MODEL_LAST_RESORT };
   if (fb.status !== 429) return { res: fb, model: MODEL_FALLBACK };
 
   /**
@@ -224,7 +255,7 @@ export async function POST(req: NextRequest) {
       msg.tool_calls.forEach((tc) => tc.function?.name && toolsUsed.add(tc.function.name));
       messages.push(msg);
       for (const tc of msg.tool_calls) {
-        let args: { checkin?: string; checkout?: string; adults?: number } = {};
+        let args: { checkin?: string; checkout?: string; adults?: number; topic?: string } = {};
         try {
           args = JSON.parse(tc.function?.arguments || "{}");
         } catch {
@@ -236,16 +267,24 @@ export async function POST(req: NextRequest) {
             ? await checkAvailability(args)
             : name === "get_weather"
               ? await weatherForConcierge()
-              : { ok: false, error: "unknown_tool" };
+              : name === "lookup_facts"
+                ? { ok: true, topic: args.topic, facts: venueTopic((args.topic as Topic) ?? "policy") }
+                : { ok: false, error: "unknown_tool" };
         messages.push({ role: "tool", tool_call_id: tc.id, content: JSON.stringify(result) });
       }
       // Second pass — model turns the tool result into a natural answer. Stay
       // on whichever model answered the first pass so the voice doesn't switch
       // mid-conversation.
       res = await callGroq(apiKey, messages, false, model);
-      if (res.status === 429 && model === MODEL_PRIMARY) {
-        model = MODEL_FALLBACK;
-        res = await callGroq(apiKey, messages, false, model);
+      if (res.status === 429) {
+        // Second pass has no tools, so it is cheap; walk the chain rather than
+        // losing an answer the guest has already waited for.
+        for (const next of [MODEL_FALLBACK, MODEL_LAST_RESORT]) {
+          if (next === model) continue;
+          model = next;
+          res = await callGroq(apiKey, messages, false, model);
+          if (res.status !== 429) break;
+        }
       }
       if (!res.ok) {
         const detail = await res.text().catch(() => "");
