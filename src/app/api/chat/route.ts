@@ -59,7 +59,22 @@ type GroqMsg = {
   tool_calls?: ToolCall[];
   tool_call_id?: string;
 };
-type GroqResponse = { choices?: Array<{ message?: GroqMsg }> };
+type GroqUsage = { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number };
+type GroqResponse = { choices?: Array<{ message?: GroqMsg }>; usage?: GroqUsage };
+
+/**
+ * Prompt and completion tokens, separately, in the log.
+ *
+ * The quota header gives a total; billing everywhere charges input and output
+ * at different rates — often by an order of magnitude — so a total cannot
+ * answer "what would this cost elsewhere". This can.
+ */
+function logUsage(where: string, model: string, usage?: GroqUsage) {
+  if (!usage) return;
+  console.log(
+    `[chat] usage ${where} ${model}: in=${usage.prompt_tokens ?? "?"} out=${usage.completion_tokens ?? "?"} total=${usage.total_tokens ?? "?"}`,
+  );
+}
 
 // The one tool the concierge can call: live availability + prices from Exely.
 const TOOLS = [
@@ -268,6 +283,7 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: "ai_failed" }, { status: 502 });
     }
     let data = (await res.json()) as GroqResponse;
+    logUsage("pass1", model, data.usage);
     let msg = data.choices?.[0]?.message;
 
     const toolsUsed = new Set<string>();
@@ -312,6 +328,7 @@ export async function POST(req: NextRequest) {
         return Response.json({ error: "ai_failed" }, { status: 502 });
       }
       data = (await res.json()) as GroqResponse;
+      logUsage("pass2", model, data.usage);
       msg = data.choices?.[0]?.message;
     }
 
