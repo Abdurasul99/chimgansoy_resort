@@ -19,6 +19,19 @@ export function BookingDrawer({ locale, roomTitle, roomSlug, priceFrom }: Bookin
     locale === "ru" ? "Подбор подходящих дат" : locale === "uz" ? "Mos sanalarni tanlaymiz" : "We help pick the dates",
   ];
 
+  /**
+   * The rate arrives as one string — "от 1 500 000 сум / ночь", or the fallback
+   * sentence "Цена при бронировании" when the booking engine gave nothing.
+   *
+   * Split on the last " / " so the figure can carry the weight and the period
+   * can sit under it in caption size. The fallback has no separator and simply
+   * renders whole, which is why this is a split rather than a required pair of
+   * props: one of the two possible values is not a price at all.
+   */
+  const sep = priceFrom.lastIndexOf(" / ");
+  const amount = sep === -1 ? priceFrom : priceFrom.slice(0, sep);
+  const period = sep === -1 ? null : priceFrom.slice(sep + 3);
+
   // Exely reads room-type=<id> to open on the right room (not a slug).
   const roomType = EXELY_ROOM_TYPE[roomSlug];
   const requestHref = roomType
@@ -29,7 +42,19 @@ export function BookingDrawer({ locale, roomTitle, roomSlug, priceFrom }: Bookin
     <div className="rounded-3xl border border-[color:var(--line)] bg-[var(--paper)] p-6 shadow-[var(--shadow-card)]">
       <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGAN DARBAZA</p>
       <h3 className="mt-2 font-serif text-2xl font-semibold text-[var(--ink)]">{roomTitle}</h3>
-      <p className="mt-1 text-sm text-[var(--muted)]">{priceFrom}</p>
+
+      {/* The price, as the second thing read after the room's name.
+          It sat here as small muted text under the title — the same weight as a
+          caption, on the panel where a guest decides. A rate is not a footnote
+          to the room's name; on this card it is the question being answered. */}
+      <div className="mt-4 rounded-2xl bg-[var(--sun)]/12 px-4 py-3">
+        <p className="font-serif text-2xl font-bold leading-tight tabular-nums text-[var(--ink)] sm:text-[1.75rem]">
+          {amount}
+        </p>
+        {period && (
+          <p className="mt-0.5 text-xs font-semibold text-[var(--muted)]">{period}</p>
+        )}
+      </div>
 
       <div className="mt-6 h-px bg-[color:var(--line)]" />
 
