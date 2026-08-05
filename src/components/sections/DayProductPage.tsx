@@ -87,7 +87,13 @@ export function DayProductPage({ locale, slug }: { locale: Locale; slug: "topcha
           ))}
 
           <div className="mt-14 motion-reveal" data-delay="100">
-            <MediaArchive locale={locale} images={product.gallery} videos={product.videos} />
+            <MediaArchive
+              locale={locale}
+              images={product.gallery}
+              videos={product.videos}
+              // The hero at the top of this page uses product.image.
+              exclude={[product.image]}
+            />
           </div>
         </div>
       </section>

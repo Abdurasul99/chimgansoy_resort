@@ -5,6 +5,14 @@ export type Service = {
   slug: string;
   category: "relax" | "food" | "activity";
   image: keyof typeof resortImages;
+  /**
+   * The frame beside the description, further down the page.
+   *
+   * Separate from image because the page renders both: the hero at the top
+   * and a sticky portrait frame beside the text. They were the same photograph,
+   * so every service page showed one picture twice on one scroll.
+   */
+  secondImage: keyof typeof resortImages;
   title: LocalizedString;
   shortDescription: LocalizedString;
   description: LocalizedString;
@@ -33,6 +41,7 @@ export const services: Service[] = [
     // the only stock image on the site; see the note on the key in images.ts
     // for why it is a plate of food and not a photograph of a dining room.
     image: "plovLyagan",
+    secondImage: "chaletDining",
     title: { ru: "Кухня и меню", uz: "Oshxona va menyu", en: "Kitchen & menu" },
     shortDescription: {
       ru: "Готовое меню от кухни — завтрак, ужин и мангальные блюда на террасу.",
@@ -61,6 +70,7 @@ export const services: Service[] = [
     // террасой") — the same photo twice for the same idea. This is the walking
     // route itself, which is what the card is actually selling.
     image: "mountainWalks",
+    secondImage: "chimganMountains",
     title: { ru: "Горные прогулки рядом", uz: "Atrofdagi tog' sayrlari", en: "Mountain walks nearby" },
     shortDescription: {
       ru: "Лёгкие пешие маршруты, конные прогулки и канатные дороги в районе Чимгана.",
@@ -93,6 +103,7 @@ export const services: Service[] = [
     // galGreenHills (an empty hillside with nothing of the resort in it), then
     // aframeLawnWide, which carries a tower crane in the sky.
     image: "galTerritoryPanorama",
+    secondImage: "galTopchanSwing",
     title: { ru: "Пикник-зона и территория", uz: "Piknik zonasi va hudud", en: "Picnic area & grounds" },
     shortDescription: {
       ru: "Пикник-зона у тюбинг-горки и девять гектаров среди сосен: дорожки, открытые площадки и детская зона.",
@@ -115,6 +126,7 @@ export const services: Service[] = [
     slug: "outdoor-cooking",
     category: "food",
     image: "galMangalFire",
+    secondImage: "galKazanStone",
     title: { ru: "Мангал и казан", uz: "Mangal va qozon", en: "BBQ grill & kazan" },
     shortDescription: {
       ru: "Аренда мангала, казана и место под костёр — готовите сами своё.",

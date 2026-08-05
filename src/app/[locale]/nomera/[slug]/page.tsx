@@ -183,7 +183,15 @@ export default async function RoomDetailPage({ params }: PageProps) {
             {/* Under the form, not above it: a guest who has just read a price
                 wants to see what they are paying for. */}
             <div className="mt-12">
-              <MediaArchive locale={locale} images={POOL_ARCHIVE} />
+              {/* Everything this page has already shown above: the hero photo,
+                  the room's own gallery further down, and the picnic-zone frame
+                  the services grid uses. Before this filter the pool page
+                  printed five photographs twice on one scroll. */}
+              <MediaArchive
+                locale={locale}
+                images={POOL_ARCHIVE}
+                exclude={[room.image, ...room.gallery, "galTerritoryPanorama"]}
+              />
             </div>
           </div>
         </section>

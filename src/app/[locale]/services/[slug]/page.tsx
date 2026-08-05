@@ -79,7 +79,9 @@ export default async function ServiceDetailPage({ params }: PageProps) {
 
       <section className="px-4 py-14 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
-          <ImageFrame image={resortImages[service.image]} locale={locale} className="aspect-[4/5] lg:sticky lg:top-28" priority />
+          {/* A DIFFERENT photograph from the hero. Both frames used service.image, so
+              every service page printed the same picture twice on one scroll. */}
+          <ImageFrame image={resortImages[service.secondImage]} locale={locale} className="aspect-[4/5] lg:sticky lg:top-28" priority />
           <div>
             <SectionHeader title={text(service.title, locale)} text={text(service.description, locale)} />
             <div className="mt-8 grid gap-3 sm:grid-cols-2">

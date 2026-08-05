@@ -18,6 +18,16 @@ type Props = {
   locale: Locale;
   /** Keys into content/images.ts. */
   images: readonly ImageKey[];
+  /**
+   * Keys already shown ABOVE this block on the same page.
+   *
+   * Every page that carries an archive also carries a hero, and often a gallery
+   * — and the archive lists were written independently of both, so the pool page
+   * printed five photographs twice and the topchan page printed its hero again
+   * two screens down. Filtering here rather than curating each list by hand
+   * means the rule cannot rot: change a hero and the archive follows.
+   */
+  exclude?: readonly string[];
   videos?: VideoAsset[];
 };
 
@@ -32,12 +42,13 @@ type Props = {
  * operator has not shot any — and an empty "Видео" heading over blank space
  * would read as a broken page rather than as a section awaiting content.
  */
-export function MediaArchive({ locale, images, videos = [] }: Props) {
+export function MediaArchive({ locale, images, videos = [], exclude = [] }: Props) {
   const t = COPY[locale] ?? COPY.ru;
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
 
-  const assets = images.map((key) => resortImages[key]).filter(Boolean);
+  const shown = images.filter((key) => !exclude.includes(key));
+  const assets = shown.map((key) => resortImages[key]).filter(Boolean);
   if (assets.length === 0 && videos.length === 0) return null;
 
   return (
@@ -53,7 +64,7 @@ export function MediaArchive({ locale, images, videos = [] }: Props) {
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
             {assets.map((asset, i) => (
               <button
-                key={images[i]}
+                key={shown[i]}
                 type="button"
                 onClick={() => {
                   setIndex(i);
