@@ -98,8 +98,14 @@ export function RoomCatalog({ locale, limit, priceChips = {} }: RoomCatalogProps
                 <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,18,14,1.0)_0%,rgba(12,18,14,0.55)_45%,rgba(12,18,14,0.08)_100%)]" />
 
                 {/* Floating price badge */}
+                {/* The badge over the photo. It kept saying "Цена при
+                    бронировании" while the chip below the description already
+                    showed the real rate — two price labels on one card
+                    disagreeing about whether there is a price. */}
                 <div className="glass-badge absolute right-5 top-5 rounded-full px-4 py-1.5 backdrop-blur-sm">
-                  <p className="text-xs font-bold text-white/80">{text(room.priceFrom, locale)}</p>
+                  <p className="text-xs font-bold text-white/80">
+                    {priceChips[room.slug] ?? text(room.priceFrom, locale)}
+                  </p>
                 </div>
 
                 {/* Photo count — tells the guest there is something behind the click */}

@@ -314,7 +314,11 @@ export default async function RoomDetailPage({ params }: PageProps) {
                     locale={locale}
                     roomTitle={text(room.title, locale)}
                     roomSlug={room.slug}
-                    priceFrom={text(room.priceFrom, locale)}
+                    // The sticky panel is the last thing a guest reads before
+                    // pressing "Забронировать", and it was the one surface still
+                    // saying "Цена при бронировании" after the hero chip and the
+                    // cards had learned the real rate.
+                    priceFrom={livePrice ?? text(room.priceFrom, locale)}
                   />
                 </div>
               </div>
