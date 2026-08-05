@@ -194,3 +194,118 @@ export async function recentRequests(
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     .slice(0, Math.max(1, limit));
 }
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * Reads for the operator's panel.
+ *
+ * The panel asks two questions the guest-facing code never did: "what came in
+ * over a period" and "how much did each service bring". Both are answered from
+ * the same archive, but they want very different amounts of it.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+/** One archived request as the pathname alone describes it — no body fetched. */
+export type RequestStub = {
+  service: RequestService;
+  /** The visit date the blob is filed under, YYYY-MM-DD. */
+  date: string;
+  /** Submission time, from the epoch prefix in the filename. */
+  submittedAt: number;
+  url: string;
+};
+
+/**
+ * Every archived request, as pathnames.
+ *
+ * The key scheme is `requests/<service>/<date>/<epoch>-<id>.json`, so the two
+ * fields the panel filters and groups by — which service, and which day — are
+ * already in the path. Listing costs one round trip per page of 1000 and no
+ * body fetch at all; hydrating the same set would be one HTTP request PER
+ * REQUEST, which for a season's archive is thousands.
+ *
+ * So: index from pathnames, then hydrate only the page being displayed.
+ */
+export async function requestIndex(): Promise<RequestStub[]> {
+  if (!storeConfigured()) return [];
+  const out: RequestStub[] = [];
+  let cursor: string | undefined;
+
+  try {
+    // Paginated, unlike urlsUnder(): that caps at 1000 and silently truncates,
+    // which is invisible until the archive passes a thousand and the panel
+    // quietly starts under-reporting.
+    do {
+      const page = await list({ prefix: "requests/", limit: 1000, cursor });
+      for (const blob of page.blobs) {
+        // requests/<service>/<date>/<epoch>-<id>.json
+        const parts = blob.pathname.split("/");
+        if (parts.length !== 4) continue;
+        const [, service, date, file] = parts;
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
+        const stamp = Number(file.split("-")[0]);
+        out.push({
+          service: service as RequestService,
+          date,
+          submittedAt: Number.isFinite(stamp) ? stamp : 0,
+          url: blob.url,
+        });
+      }
+      cursor = page.hasMore ? page.cursor : undefined;
+    } while (cursor);
+  } catch (e) {
+    console.error("[store] index failed:", e);
+    return out;
+  }
+
+  return out;
+}
+
+/** Requests whose VISIT date falls in [from, to], newest submission first. */
+export async function requestsBetween(from: string, to: string): Promise<StoredRequest[]> {
+  const stubs = (await requestIndex()).filter((s) => s.date >= from && s.date <= to);
+  const rows = await hydrate(stubs.map((s) => s.url));
+  return rows.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
+/** One service's line in the panel's summary. */
+export type ServiceTotals = {
+  service: RequestService;
+  requests: number;
+  /** Sum of `total`. Zero for services whose price is not known at request time. */
+  revenue: number;
+  guests: number;
+  units: number;
+};
+
+/**
+ * Totals per service over a visit-date range.
+ *
+ * "Revenue" is deliberately the sum of what the FORMS COMPUTED, not money
+ * received: there is no payment integration yet, and every row here is a
+ * request the operator still has to confirm by phone. The panel labels it
+ * accordingly — calling it выручка would be the single most misleading number
+ * we could put on that screen.
+ *
+ * Accommodation and inquiry rows carry total: 0 by design (the rate comes from
+ * the PMS later), so they contribute to `requests` and never to `revenue`.
+ */
+export async function serviceTotals(from: string, to: string): Promise<ServiceTotals[]> {
+  const rows = await requestsBetween(from, to);
+  const by = new Map<RequestService, ServiceTotals>();
+
+  for (const r of rows) {
+    const entry = by.get(r.service) ?? {
+      service: r.service,
+      requests: 0,
+      revenue: 0,
+      guests: 0,
+      units: 0,
+    };
+    entry.requests += 1;
+    entry.revenue += r.total || 0;
+    entry.guests += (r.adults || 0) + (r.kids || 0) + (r.toddlers || 0);
+    entry.units += r.units || 0;
+    by.set(r.service, entry);
+  }
+
+  return [...by.values()].sort((a, b) => b.requests - a.requests);
+}
