@@ -92,13 +92,31 @@ export function languageDirective(lastUserMessage: string, locale: "ru" | "uz" |
     return "ЯЗЫК СЛЕДУЮЩЕГО ОТВЕТА: РУССКИЙ. Последнее сообщение гостя написано кириллицей. Отвечай целиком по-русски, даже если весь предыдущий разговор шёл на другом языке.";
   }
 
-  // Uzbek Latin has letters and endings that English does not.
-  if (latin > 0 && /[‘’']|\b(qancha|narx|bo|kerak|mumkin|salom|rahmat|nechta|qanday|bormi|uchun)\b|(ning|larda|dagi|mi)\b/i.test(text)) {
-    return "KEYINGI JAVOB TILI: O'ZBEK (lotin alifbosida). Mehmonning oxirgi xabari o'zbek tilida. Butun javobni o'zbekcha yoz, avvalgi suhbat boshqa tilda bo'lsa ham. Kirill alifbosidan foydalanma.";
+  // Uzbek Latin, by markers English does not have: o‘/g‘ (a letter carrying the
+  // apostrophe, NOT a bare apostrophe — "don't" and "I'm" are not Uzbek), the
+  // common question words, and the case endings.
+  const uzbek = /[og]['‘’`]|\b(qancha|narx|narxi|kerak|mumkin|salom|rahmat|nechta|qanday|bormi|uchun|yoki|bilan|qilish)\b|\w+(ning|larda|dagi|ingiz)\b/i;
+  if (latin > 0 && uzbek.test(text)) {
+    return "KEYINGI JAVOB TILI: O'ZBEK (lotin alifbosida). Mehmonning oxirgi xabari o'zbek tilida. Butun javobni o'zbekcha yoz, avvalgi suhbat boshqa tilda bo'lsa ham. Kirill alifbosidan foydalanma. Rus tilida javob berma.";
+  }
+
+  /**
+   * English gets named outright rather than described.
+   *
+   * "Match the guest's language" is an instruction that needs an inference, and
+   * it loses to the fact that everything else in the context — this whole
+   * prompt, the venue briefing, the tool descriptions — is written in Russian.
+   * The first version of this function said only "match", and an English
+   * question about 20 August came back in fluent Russian: worse than the bug it
+   * replaced. Naming the language leaves nothing to infer.
+   */
+  const english = /\b(the|is|are|do|does|did|you|your|have|has|for|and|can|could|what|how|when|where|why|price|prices|room|rooms|book|booking|hello|hi|thanks|thank|we|my|me|with|there|about|free|available|night|stay)\b/i;
+  if (latin > 0 && english.test(text)) {
+    return "LANGUAGE OF THE NEXT REPLY: ENGLISH. The guest's last message is in English. Write the entire reply in English, even if the earlier conversation was in another language. Do NOT reply in Russian.";
   }
 
   if (latin > 0) {
-    return "LANGUAGE OF THE NEXT REPLY: match the language of the guest's LAST message, whatever it is — English, German, Turkish, Arabic, Chinese. Reply entirely in that one language, even if the earlier conversation was in another.";
+    return "LANGUAGE OF THE NEXT REPLY: the language of the guest's LAST message — German, Turkish, French, Spanish, or whatever it is. Reply entirely in that one language, even if the earlier conversation was in another. Do NOT default to Russian just because these instructions are written in Russian.";
   }
 
   const fallback = { ru: "РУССКИЙ", uz: "O'ZBEK (lotin)", en: "ENGLISH" }[locale];

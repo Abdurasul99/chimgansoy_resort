@@ -64,11 +64,25 @@ describe("languageDirective", () => {
     expect(d).toMatch(/Kirill alifbosidan foydalanma/);
   });
 
-  it("leaves other Latin-script languages to the model", () => {
-    expect(languageDirective("Do you have free rooms for 20th of August", "ru")).toMatch(
-      /LANGUAGE OF THE NEXT REPLY: match the language of the guest's LAST message/,
-    );
-    expect(languageDirective("Haben Sie Zimmer frei?", "ru")).toMatch(/LANGUAGE OF THE NEXT REPLY/);
+  it("names English outright for the question from the screenshot", () => {
+    // The first version of this said only "match the guest's language", and
+    // production answered this very question in Russian — everything else in
+    // the context is Russian, so "match" had to compete with the whole prompt.
+    const d = languageDirective("Do you have free rooms for 20th of August", "ru");
+    expect(d).toMatch(/LANGUAGE OF THE NEXT REPLY: ENGLISH/);
+    expect(d).toMatch(/Do NOT reply in Russian/);
+  });
+
+  it("leaves other Latin-script languages to the model, but forbids Russian", () => {
+    const d = languageDirective("Haben Sie Zimmer frei im August?", "ru");
+    expect(d).toMatch(/the language of the guest's LAST message/);
+    expect(d).toMatch(/Do NOT default to Russian/);
+  });
+
+  it("does not mistake an English contraction for Uzbek", () => {
+    // The first cut matched any apostrophe, so "don't" and "I'm" read as Uzbek.
+    expect(languageDirective("I don't have a booking yet, what's the price?", "ru")).toMatch(/ENGLISH/);
+    expect(languageDirective("We're coming with my family", "ru")).toMatch(/ENGLISH/);
   });
 
   it("falls back to the UI locale when the message has no letters", () => {
