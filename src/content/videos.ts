@@ -134,3 +134,59 @@ export const chaletVideos: VideoClip[] = [
     },
   },
 ];
+
+/**
+ * Two more clips from the tubing hill, sent 2026-08-05. Phone footage,
+ * 1072x1904 — encoded to the same 720x1280 rail geometry as the rest.
+ */
+export const extraTubingVideos: VideoClip[] = [
+  {
+    key: "tubing-6",
+    src: `${BASE}/tubing-6.mp4`,
+    previewSrc: `${BASE}/tubing-6-preview.mp4`,
+    poster: `${BASE}/tubing-6.jpg`,
+    ratio: "9/16",
+    title: { ru: "На горке", uz: "Gorkada", en: "On the hill" },
+    caption: {
+      ru: "Как проходит спуск с точки зрения гостя",
+      uz: "Tushish mehmon ko'zi bilan qanday ko'rinadi",
+      en: "The run as a guest sees it",
+    },
+  },
+  {
+    key: "tubing-7",
+    src: `${BASE}/tubing-7.mp4`,
+    previewSrc: `${BASE}/tubing-7-preview.mp4`,
+    poster: `${BASE}/tubing-7.jpg`,
+    ratio: "9/16",
+    title: { ru: "Трасса и подъём", uz: "Trassa va ko'tarilish", en: "The track and the lift" },
+    caption: {
+      ru: "Подъём обратной тягой — наверх пешком идти не нужно",
+      uz: "Teskari tortish bilan ko'tarilish — yuqoriga piyoda chiqish shart emas",
+      en: "The powered lift — nobody walks back up",
+    },
+  },
+];
+
+/**
+ * The A-frame walkthrough, shown on /nomera/glamping.
+ *
+ * The master was 248 MB of 4K (2160x3840, 49 s). At 720x1280 it is 8.3 MB,
+ * with a 1.5 MB silent preview for the card — the difference between a video
+ * that plays on a mountain connection and one that never starts.
+ */
+export const glampingVideos: VideoClip[] = [
+  {
+    key: "glamping-tour",
+    src: `${BASE}/glamping-tour.mp4`,
+    previewSrc: `${BASE}/glamping-tour-preview.mp4`,
+    poster: `${BASE}/glamping-tour.jpg`,
+    ratio: "9/16",
+    title: { ru: "Глэмпинг внутри", uz: "Glemping ichkarisi", en: "Inside the A-frame" },
+    caption: {
+      ru: "Домик A-frame целиком: кровать, санузел и терраса",
+      uz: "A-frame uycha to'liq: karavot, sanuzel va terrasa",
+      en: "The whole A-frame: the bed, the bathroom and the terrace",
+    },
+  },
+];

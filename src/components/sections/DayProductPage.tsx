@@ -6,7 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { VideoReel } from "@/components/sections/VideoReel";
 import { getDayProduct } from "@/content/day-products";
 import { resortImages } from "@/content/images";
-import { tubingVideos } from "@/content/videos";
+import { tubingVideos, extraTubingVideos } from "@/content/videos";
 import { list, text } from "@/lib/localize";
 import type { Locale } from "@/i18n/config";
 
@@ -56,7 +56,7 @@ export function DayProductPage({ locale, slug }: { locale: Locale; slug: "topcha
       {/* Straight under the form: a guest who has just read the tariff is the
           one most worth showing the run to. Photography of the track never
           existed — this footage is the first real look at it. */}
-      {slug === "tubing" && <VideoReel locale={locale} clips={tubingVideos} />}
+      {slug === "tubing" && <VideoReel locale={locale} clips={[...tubingVideos, ...extraTubingVideos]} />}
 
       <section className="px-4 py-14 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">
