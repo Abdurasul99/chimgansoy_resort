@@ -98,15 +98,15 @@ export function RoomCatalog({ locale, limit, priceChips = {} }: RoomCatalogProps
                 <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,18,14,1.0)_0%,rgba(12,18,14,0.55)_45%,rgba(12,18,14,0.08)_100%)]" />
 
                 {/* Floating price badge */}
-                {/* The badge over the photo. It kept saying "Цена при
-                    бронировании" while the chip below the description already
-                    showed the real rate — two price labels on one card
-                    disagreeing about whether there is a price. */}
-                <div className="glass-badge absolute right-5 top-5 rounded-full px-4 py-1.5 backdrop-blur-sm">
-                  <p className="text-xs font-bold text-white/80">
-                    {priceChips[room.slug] ?? text(room.priceFrom, locale)}
-                  </p>
-                </div>
+                {/* There WAS a price badge here. It is gone on purpose.
+                    It carried the placeholder "Цена при бронировании" for as
+                    long as no real rate existed. When the live rate arrived it
+                    was pointed at the same source as the chip below the
+                    description — and the card then printed the same price
+                    twice, once over the photograph and once under it. One price
+                    per card; the chip is the one that stays, because it sits
+                    with the two other facts a guest is comparing (capacity and
+                    area) instead of floating over the roofline. */}
 
                 {/* Photo count — tells the guest there is something behind the click */}
                 <span className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-black/45 px-3 py-1.5 text-[11px] font-bold text-white/90 backdrop-blur-sm transition-colors group-hover:bg-black/65">
