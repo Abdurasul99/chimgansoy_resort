@@ -74,6 +74,19 @@ export const rooms: Room[] = [
       // to an interior for a few hours because nothing clean existed; the
       // operator's second drop the same day supplied a crane-free exterior,
       // which is what the top of this gallery should have been all along.
+      //
+      // Except those two turned out to be CLOSE-UPS of the terrace decking and
+      // its railing, not pictures of a cabin. The operator saw the result and
+      // said so — "не очень хорошо видно" — and they were right: gallery[0]
+      // spans both columns, and a wide slot filled with a handrail says nothing
+      // about what is being rented.
+      //
+      // aframeLawnWide leads instead: the row of cabins on the finished lawn,
+      // roofs intact. It is usable again because the tower crane has been taken
+      // out of the sky — scripts/retouch-crane.js documents exactly which pixels
+      // were rewritten and which were not. The terrace details follow, further
+      // down, where a detail belongs.
+      "aframeLawnWide",
       "aframeTerraceRail",
       "aframeGableSky",
       "aframeRoom",
