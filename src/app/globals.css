@@ -543,17 +543,27 @@ textarea {
 .marquee-strip:hover .marquee-track {
   animation-play-state: paused;
 }
+/* Fixed HEIGHT, free width — so nothing is cropped.
+   The card used to be a fixed 3:2 box with object-fit: cover, which is fine
+   until a portrait frame lands in it: a 2200x2931 photograph in a 360x240 slot
+   loses 44% of its height, and what survives is a horizontal slice through the
+   middle of the subject. Six of the twelve frames in this strip are portrait,
+   because the "one photo, one zone" rule spent the landscape ones elsewhere.
+   Letting each card take its own aspect makes the strip a film strip, which is
+   what it is, and every frame arrives whole. */
 .marquee-card {
   flex: 0 0 auto;
-  width: clamp(200px, 26vw, 360px);
-  aspect-ratio: 3 / 2;
+  height: clamp(190px, 22vw, 280px);
+  width: auto;
   overflow: hidden;
   border-radius: 14px;
   box-shadow: var(--shadow-card);
 }
 .marquee-card img {
-  width: 100%;
+  display: block;
   height: 100%;
+  width: auto;
+  max-width: none;
   object-fit: cover;
   transition: transform 0.9s var(--ease-premium);
 }
@@ -597,7 +607,9 @@ textarea {
   }
   .marquee-card {
     scroll-snap-align: center;
-    width: min(78vw, 320px);
+    /* Height only here as well — a pinned width would reintroduce the crop
+       that the desktop rule was just changed to avoid. */
+    height: clamp(200px, 46vw, 260px);
   }
 
   /* Parallax offsets are scroll-driven movement too — same complaint. */

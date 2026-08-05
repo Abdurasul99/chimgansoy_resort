@@ -125,6 +125,21 @@ const SURFACES = {
   archive: listFrom(images, /export const homeGallery = \[([\s\S]*?)\] as const/, "homeGallery"),
 };
 
+/**
+ * The photo strip is served from small derivatives, not the masters — see
+ * stripSrc() in PhotoMarquee. A key added to a row without regenerating them
+ * would render a broken image, so it fails here instead.
+ */
+const stripDir = path.join(ROOT, "public", "images", "resort", "strip");
+const stripMissing = [];
+for (const key of SURFACES.marquee) {
+  const block = images.match(new RegExp(`^ {2}${key}: \\{([\\s\\S]*?)^ {2}\\},`, "m"));
+  const p = block && (block[1].match(/localSrc:\s*"([^"]+)"/) || block[1].match(/src:\s*"([^"]+)"/) || [])[1];
+  if (!p) continue;
+  const name = p.split("/").pop().replace(/\.(png|webp|jpeg)$/i, ".jpg");
+  if (!fs.existsSync(path.join(stripDir, name))) stripMissing.push(`${key} -> strip/${name}`);
+}
+
 const owner = new Map();
 const clashes = [];
 for (const [surface, keys] of Object.entries(SURFACES)) {
@@ -147,4 +162,9 @@ if (clashes.length) {
   for (const c of clashes) console.error(`  ${c.key} — ${c.a} + ${c.b}`);
   process.exit(1);
 }
-console.log("ok — every homepage photo is used exactly once");
+if (stripMissing.length) {
+  console.error(`\n${stripMissing.length} strip derivative(s) missing — run scripts/make-strip-derivatives.js:`);
+  for (const m of stripMissing) console.error(`  ${m}`);
+  process.exit(1);
+}
+console.log("ok — every homepage photo is used exactly once, and the strip has its derivatives");

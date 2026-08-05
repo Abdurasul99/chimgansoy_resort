@@ -48,13 +48,33 @@ const ROW_B = [
   "galTopchanRow",
 ] as const;
 
+/**
+ * The strip's own copy of a photograph, 560px tall.
+ *
+ * The cards render at ~250px, and the masters are 2200–2400px files: about
+ * 4 MB for a decorative band that sits above anything a guest can act on, and
+ * competes with the hero's own photograph for the first seconds of bandwidth.
+ * scripts/make-strip-derivatives.js writes these; 5.7 MB became 550 KB.
+ *
+ * There is no runtime fallback to the master: this is a server component, and
+ * shipping a client component purely to catch a missing file would cost more
+ * than the problem. `scripts/check-home-photos.js` asserts that every key in
+ * the strip has a derivative, so a frame added without regenerating fails the
+ * check rather than reaching a guest as a broken image.
+ */
+function stripSrc(full: string): string {
+  const name = full.split("/").pop()?.replace(/\.(png|webp|jpeg)$/i, ".jpg");
+  return name ? `/images/resort/strip/${name}` : full;
+}
+
 function Card({ imageKey, locale, alt }: { imageKey: keyof typeof resortImages; locale: Locale; alt: boolean }) {
   const img = resortImages[imageKey];
+  const full = img.localSrc ?? img.src;
   return (
     <div className="marquee-card">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={img.localSrc ?? img.src}
+        src={stripSrc(full)}
         alt={alt ? text(img.alt, locale) : ""}
         loading="lazy"
         decoding="async"
