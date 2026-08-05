@@ -1,4 +1,14 @@
 /**
+ * NOT WIRED UP. Nothing in src/ imports this file — the FAQ accordion it fed
+ * was replaced by the AI concierge, which reads src/lib/venue-facts.ts instead.
+ *
+ * It is kept because the curated question list is worth something if a static
+ * FAQ ever returns, but treat it as a draft, not as a source of truth: it drifted
+ * far enough that on 2026-08-05 it was still promising "бесплатная отмена за 24
+ * часа" three months after that stopped being true. If you change a fact about
+ * the venue, change venue-facts.ts — this file reaches no guest.
+ */
+/**
  * Locally hosted FAQ knowledge base for the resort assistant.
  * No external API calls — all answers are matched by keyword overlap.
  */
@@ -95,9 +105,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "cancellation",
     keywords: ["отмен", "возврат", "вернуть", "bekor", "qaytarish", "cancel", "refund", "cancellation"],
     answer: {
-      ru: "↩️ Бесплатная отмена возможна за 24 часа до заезда. Если отменяете позже — условия зависят от даты и типа бронирования, уточняйте у администратора.",
-      uz: "↩️ Bepul bekor qilish kirishdan 24 soat oldin mumkin. Keyinroq bekor qilsangiz, shartlar sanalar va bron turiga bog'liq — administrator bilan aniqlashtiring.",
-      en: "↩️ Free cancellation up to 24 hours before check-in. If you cancel later, terms depend on the date and booking type — please confirm with the administrator.",
+      ru: "↩️ Предоплата за проживание невозвратная — вернуть деньги нельзя ни при каком сроке отмены. Возможен только перенос дат, его согласовывает администратор при наличии свободных дат. По дневным визитам условия уточняйте у администратора.",
+      uz: "↩️ Yashash uchun oldindan to'lov qaytarilmaydi — bekor qilish muddatidan qat'i nazar pul qaytarilmaydi. Faqat sanalarni ko'chirish mumkin, buni administrator bo'sh sanalar bo'lganda kelishadi. Kunlik tashriflar bo'yicha shartlarni administratordan aniqlashtiring.",
+      en: "↩️ The prepayment for a stay is non-refundable — no money is returned for any cancellation notice. Only a date transfer is possible, agreed with the administrator subject to availability. For day visits, please confirm the terms with the administrator.",
     },
   },
 
