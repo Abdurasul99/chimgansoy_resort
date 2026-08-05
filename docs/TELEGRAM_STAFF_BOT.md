@@ -200,14 +200,13 @@ text goes to the AI concierge.
   updates **both** the bot and the site concierge. Day-use figures come from
   `src/content/pricing.ts`; the photo album and hero are URL lists at the top of
   `src/lib/staff-bot.ts` (images must exist under `public/images/resort/`).
-- **AI budget**: DeepSeek answers first and is paid, so the old ceiling of
-  ~30–40 questions a day is gone — a question costs about $0.0001 once the
-  static venue briefing is a prompt-cache hit. Groq's free tier (8K
-  tokens/minute, shared with the site concierge) sits underneath as the
-  fallback. The order is in `src/lib/ai-provider.ts` and is shared by both
-  assistants on purpose. Buttons (prices, weather, photos, contacts) consume
-  nothing. If every provider is out the bot falls back to the admin's
-  phone/WhatsApp, so guests are never left without a route to a human.
+- **AI budget**: Groq's free tier is shared with the site concierge — ~8K
+  tokens/minute and roughly 30–40 AI questions/day across both. The model
+  order is in `src/lib/ai-provider.ts`, shared by both assistants on purpose:
+  a rotated key must not leave one of them calling a dead account. Buttons
+  (prices, weather, photos, contacts) consume nothing. On rate-limit or any AI
+  failure the bot falls back to the admin's phone/WhatsApp, so guests are never
+  left without a route to a human.
 - **Date accuracy**: the model gets a ready 14-day calendar in the prompt and is
   forbidden from computing dates itself (it got «суббота» wrong before this).
   Accommodation/pool prices are only ever quoted after a live `public_prices`

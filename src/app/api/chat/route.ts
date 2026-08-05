@@ -163,9 +163,12 @@ async function callWithFallback(
    * choose. Capped so nobody stares at a spinner — past that the caller shows
    * the "call us" fallback.
    */
-  const retry = targets[targets.length - 1];
+  // 20b on purpose, not the best model and not merely the last one tried: by
+  // this point the goal is an answer at all, and it has by far the largest
+  // per-minute allowance of the three.
+  const retry = targets.find((t) => t.model.includes("gpt-oss-20b")) ?? targets[targets.length - 1];
   const wait = Math.min((Number(last?.headers.get("retry-after")) || 4) * 1000, 6_000);
-  console.error(`[chat] every provider unavailable, retrying ${retry.model} in ${wait}ms`);
+  console.error(`[chat] every account unavailable, retrying ${retry.model} in ${wait}ms`);
   await new Promise((r) => setTimeout(r, wait));
   return { res: await callModel(retry, messages, withTools), target: retry };
 }
@@ -200,8 +203,7 @@ function stripDisclaimer(reply: string, toolsUsed: Set<string>): string {
 }
 
 /**
- * AI concierge endpoint (DeepSeek, then Groq — both OpenAI-compatible, so one
- * request shape serves every provider). Grounded in the resort's
+ * AI concierge endpoint (Groq, OpenAI-compatible). Grounded in the resort's
  * facts via buildSystemPrompt(), and able to read live availability/prices
  * from Exely via the check_availability tool. Best-effort: returns a clear
  * error the client turns into a "message us" fallback if the key/network fail.
