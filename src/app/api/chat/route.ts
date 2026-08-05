@@ -3,6 +3,7 @@ import { buildSystemPrompt } from "@/lib/ai-context";
 import { checkAvailability } from "@/lib/exely";
 import { getChimganWeather, weatherInfo } from "@/lib/bot-weather";
 import { venueTopic, type Topic } from "@/lib/venue-topics";
+import { aiTargets, callAiModel, shouldFallThrough, type AiTarget } from "@/lib/ai-provider";
 
 /**
  * Live weather for the concierge, shaped for a model rather than a chat card.
@@ -26,30 +27,6 @@ async function weatherForConcierge() {
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
-/**
- * Two models on purpose.
- *
- * 20b at reasoning_effort "low" was what shipped, and it could not hold the
- * language instruction: guests writing Russian got answers in Kazakh, and digit
- * grouping came out as "320 0000 сум" for a 3 200 000 rate.
- *
- * 120b fixes both — but Groq's free tier caps it at 8 000 tokens per minute and
- * one request costs ~3 700 (the venue knowledge base is a big system prompt).
- * That is barely two guests a minute before everyone starts seeing errors, so
- * it cannot be the only model. On a 429 we drop to 20b, which has a far larger
- * TPM allowance, rather than showing the guest a failure.
- *
- * Raising the Groq plan above the free tier would let 120b serve every request.
- */
-const MODEL_PRIMARY = "openai/gpt-oss-120b";
-const MODEL_FALLBACK = "openai/gpt-oss-20b";
-// A third model, from a different family, so it has its OWN per-minute token
-// bucket. The old two-model chain shared a ceiling: the log for the 502s read
-// "primary rate-limited, falling back to gpt-oss-20b" and then "both models
-// rate-limited" — a fallback that fails for the same reason as the primary is
-// not a fallback.
-const MODEL_LAST_RESORT = "llama-3.3-70b-versatile";
 
 type ChatMsg = { role: "user" | "assistant"; content: string };
 type ToolCall = { id: string; function: { name: string; arguments: string } };
@@ -130,30 +107,13 @@ const TOOLS = [
   },
 ];
 
-async function callGroq(
-  apiKey: string,
-  messages: GroqMsg[],
-  withTools: boolean,
-  model: string = MODEL_PRIMARY,
-): Promise<Response> {
-  const body: Record<string, unknown> = {
-    model,
-    messages,
-    temperature: 0.15,
-    max_tokens: 700,
-    // "low" was starving the language and price-formatting rules of attention.
-    reasoning_effort: "medium",
-  };
+async function callModel(target: AiTarget, messages: GroqMsg[], withTools: boolean): Promise<Response> {
+  const body: Record<string, unknown> = { messages, temperature: 0.15, max_tokens: 700 };
   if (withTools) {
     body.tools = TOOLS;
     body.tool_choice = "auto";
   }
-  const res = await fetch(GROQ_URL, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-    signal: AbortSignal.timeout(30_000),
-  });
+  const res = await callAiModel(target, body, 30_000);
 
   /**
    * The quota, in the log, on every call.
@@ -168,7 +128,7 @@ async function callGroq(
   const limit = res.headers.get("x-ratelimit-limit-tokens");
   if (limit) {
     console.log(
-      `[chat] quota ${model}: ${remaining ?? "?"}/${limit} tokens left this minute` +
+      `[chat] quota ${target.model}: ${remaining ?? "?"}/${limit} tokens left this minute` +
         ` (reset ${res.headers.get("x-ratelimit-reset-tokens") ?? "?"}, http ${res.status})`,
     );
   }
@@ -177,51 +137,37 @@ async function callGroq(
 }
 
 /**
- * Calls the good model, and silently drops to the lighter one when Groq says we
- * are over the per-minute token allowance. A guest waiting on a price should
- * never see an error because another guest asked a question ten seconds ago.
+ * Walks the provider list until one answers. A guest waiting on a price should
+ * never see an error because another guest asked a question ten seconds ago,
+ * nor because a prepaid balance ran dry overnight.
  */
 async function callWithFallback(
-  keys: string[],
+  targets: AiTarget[],
   messages: GroqMsg[],
   withTools: boolean,
-): Promise<{ res: Response; model: string; key: string }> {
-  /**
-   * Keys are the INNER loop, models the outer.
-   *
-   * The per-minute token allowance is per account, so a second key is a second
-   * allowance — not a spare in case the first one breaks. That makes switching
-   * key the cheapest way to keep the BEST model: it is strictly better to ask
-   * 120b again on the other account than to drop to 20b on the exhausted one.
-   * Dropping a model tier is what happens only when every account is out.
-   */
+): Promise<{ res: Response; target: AiTarget }> {
   let last: Response | null = null;
 
-  for (const model of [MODEL_PRIMARY, MODEL_FALLBACK, MODEL_LAST_RESORT]) {
-    for (let i = 0; i < keys.length; i++) {
-      const res = await callGroq(keys[i], messages, withTools, model);
-      if (res.status !== 429) return { res, model, key: `key${i + 1}` };
-      last = res;
-      console.warn(`[chat] rate-limited: ${model} on key${i + 1}`);
-    }
+  for (const target of targets) {
+    const res = await callModel(target, messages, withTools);
+    if (!shouldFallThrough(res.status)) return { res, target };
+    last = res;
+    console.warn(`[chat] ${target.label} ${target.model} unavailable (${res.status})`);
   }
 
   /**
-   * Every model on every key is over the allowance.
+   * Every provider is out at once.
    *
    * Groq says how long to wait in Retry-After; honouring it once turns a visible
    * failure into a slower answer, which is what a guest waiting on a price would
    * choose. Capped so nobody stares at a spinner — past that the caller shows
    * the "call us" fallback.
    */
+  const retry = targets[targets.length - 1];
   const wait = Math.min((Number(last?.headers.get("retry-after")) || 4) * 1000, 6_000);
-  console.error(`[chat] every model on every key rate-limited, retrying in ${wait}ms`);
+  console.error(`[chat] every provider unavailable, retrying ${retry.model} in ${wait}ms`);
   await new Promise((r) => setTimeout(r, wait));
-  return {
-    res: await callGroq(keys[0], messages, withTools, MODEL_FALLBACK),
-    model: MODEL_FALLBACK,
-    key: "key1",
-  };
+  return { res: await callModel(retry, messages, withTools), target: retry };
 }
 
 /**
@@ -240,31 +186,29 @@ function stripDisclaimer(reply: string, toolsUsed: Set<string>): string {
   // model often puts it in the same paragraph as the forecast, so a line filter
   // would either miss it or take the weather with it. The prompt always places
   // it last, so everything after the opening words is safe to drop.
-  return reply
+  const stripped = reply
     .replace(/\s*[«"]?\s*(я\s+могу\s+ошибаться|i\s+may\s+be\s+wrong|men\s+xato\s+qilishim)[\s\S]*$/i, "")
     .trim();
+  /**
+   * "Always places it last" is a prompt instruction, not a guarantee. A model
+   * that opens with the disclaimer instead has its entire answer cut here, and
+   * the caller turns the empty string into a 502 — which is exactly how every
+   * weather question started failing the moment a new provider phrased things
+   * its own way. An unwanted sentence is a far smaller problem than no answer.
+   */
+  return stripped || reply;
 }
 
 /**
- * AI concierge endpoint (Groq, OpenAI-compatible). Grounded in the resort's
+ * AI concierge endpoint (DeepSeek, then Groq — both OpenAI-compatible, so one
+ * request shape serves every provider). Grounded in the resort's
  * facts via buildSystemPrompt(), and able to read live availability/prices
  * from Exely via the check_availability tool. Best-effort: returns a clear
  * error the client turns into a "message us" fallback if the key/network fail.
  */
 export async function POST(req: NextRequest) {
-  /**
-   * Every Groq account configured, in order.
-   *
-   * A second key is a second per-minute token allowance, not a spare in case
-   * the first breaks — the free tier caps at 8 000 tokens a minute per account,
-   * and one guest question costs about 3 800 of them. Two accounts is two
-   * guests a minute instead of one. Blank or missing entries drop out, so
-   * deleting GROQ_API_KEY_2 in Vercel is all it takes to go back to one.
-   */
-  const keys = [process.env.GROQ_API_KEY, process.env.GROQ_API_KEY_2]
-    .map((k) => k?.trim())
-    .filter((k): k is string => Boolean(k));
-  if (keys.length === 0) {
+  const targets = aiTargets();
+  if (targets.length === 0) {
     return Response.json({ error: "ai_not_configured" }, { status: 503 });
   }
 
@@ -297,15 +241,14 @@ export async function POST(req: NextRequest) {
 
   try {
     // First pass — the model may ask to check live availability.
-    let { res, model, key } = await callWithFallback(keys, messages, true);
-    const keyIndex = Math.max(0, Number(key.replace("key", "")) - 1);
+    let { res, target } = await callWithFallback(targets, messages, true);
     if (!res.ok) {
       const detail = await res.text().catch(() => "");
-      console.error(`[chat] Groq ${res.status}: ${detail.slice(0, 300)}`);
+      console.error(`[chat] ${target.label} ${res.status}: ${detail.slice(0, 300)}`);
       return Response.json({ error: "ai_failed" }, { status: 502 });
     }
     let data = (await res.json()) as GroqResponse;
-    logUsage("pass1", model, data.usage);
+    logUsage("pass1", target.model, data.usage);
     let msg = data.choices?.[0]?.message;
 
     const toolsUsed = new Set<string>();
@@ -333,28 +276,24 @@ export async function POST(req: NextRequest) {
       // Second pass — model turns the tool result into a natural answer. Stay
       // on whichever model answered the first pass so the voice doesn't switch
       // mid-conversation.
-      res = await callGroq(keys[keyIndex] ?? keys[0], messages, false, model);
-      if (res.status === 429) {
-        // Second pass has no tools, so it is cheap; walk the chain rather than
-        // losing an answer the guest has already waited for.
-        // Walk models on the SAME key first, then the other keys: the tool
-        // result is already fetched and the guest has already waited.
-        outer: for (const next of [model, MODEL_FALLBACK, MODEL_LAST_RESORT]) {
-          for (const k of keys) {
-            if (next === model && k === keys[keyIndex]) continue;
-            model = next;
-            res = await callGroq(k, messages, false, model);
-            if (res.status !== 429) break outer;
-          }
+      res = await callModel(target, messages, false);
+      if (shouldFallThrough(res.status)) {
+        // Second pass has no tools, so it is cheap; walk the rest of the chain
+        // rather than losing an answer the guest has already waited for.
+        for (const next of targets) {
+          if (next === target) continue;
+          res = await callModel(next, messages, false);
+          target = next;
+          if (!shouldFallThrough(res.status)) break;
         }
       }
       if (!res.ok) {
         const detail = await res.text().catch(() => "");
-        console.error(`[chat] Groq(2) ${res.status}: ${detail.slice(0, 300)}`);
+        console.error(`[chat] ${target.label}(2) ${res.status}: ${detail.slice(0, 300)}`);
         return Response.json({ error: "ai_failed" }, { status: 502 });
       }
       data = (await res.json()) as GroqResponse;
-      logUsage("pass2", model, data.usage);
+      logUsage("pass2", target.model, data.usage);
       msg = data.choices?.[0]?.message;
     }
 

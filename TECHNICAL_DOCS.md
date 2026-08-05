@@ -126,10 +126,23 @@ stored in this doc** — get them from the existing `.env.local`, from Vercel
 | `BOOKING_EMAIL_FROM` | Verified sender (e.g. `reception@chimgandarbaza.uz`) | Vercel |
 | `RESERVATIONS_EMAIL_TO` | Recipient for booking-form emails | Vercel |
 | `INFO_EMAIL_TO` | Recipient for footer inquiry emails | Vercel |
+| `DEEPSEEK_API_KEY` | AI concierge, primary provider (paid) | `.env.local` + Vercel |
+| `GROQ_API_KEY` | AI concierge fallback (free tier) | `.env.local` + Vercel |
+| `GROQ_API_KEY_2` | Optional second Groq account — a second per-minute allowance | Vercel |
+
+The provider order lives in `src/lib/ai-provider.ts` and is shared by the site
+concierge and the Telegram bot. Any one key is enough; a provider that answers
+401/402/403/429/5xx hands the question to the next one, so a revoked or spent
+key degrades the answer rather than breaking the assistants.
+
+> **Windows note:** a real `DEEPSEEK_API_KEY` in the user environment beats
+> `.env.local` — Next.js will not override a variable the OS already set. A
+> leftover from the old integration is why every question once returned 502
+> locally. Check with `[Environment]::GetEnvironmentVariable("DEEPSEEK_API_KEY","User")`.
 
 **Legacy variables still in `.env.local` — SAFE TO DELETE** (their integrations
 were removed): `NEXT_PUBLIC_BNOVO_IFRAME_URL`, `NEXT_PUBLIC_BNOVO_UID`,
-`PAYKEEPER_SERVER`, `PAYKEEPER_USER`, `PAYKEEPER_PASSWORD`, `DEEPSEEK_API_KEY`.
+`PAYKEEPER_SERVER`, `PAYKEEPER_USER`, `PAYKEEPER_PASSWORD`.
 
 > Note: Exely needs **no** website env var — its loader is embedded directly in
 > `src/app/[locale]/layout.tsx` (see §4).

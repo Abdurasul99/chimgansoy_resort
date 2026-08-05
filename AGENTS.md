@@ -117,7 +117,7 @@ Email is sent via the **Resend HTTP API** (no SDK). The sender (`BOOKING_EMAIL_F
 
 The floating "Вопросы / Savollar / FAQ" button opens **`FaqPanel`** — a static accordion of localized questions powered by `src/content/assistant-knowledge.ts`. There's also a text search input on top that filters the visible list (no AI behind it, just substring matching with a keyword fallback).
 
-The old DeepSeek AI chat (and `src/app/api/chat/route.ts`) was removed (commit `3c31f9f`). Env var `DEEPSEEK_API_KEY` is no longer used — safe to delete from Vercel.
+> **Stale section.** The AI concierge came back after this was written: `/api/chat` exists again, `FaqPanel` talks to it, and `DEEPSEEK_API_KEY` is in active use as the primary provider (see *Env vars* below and `src/lib/ai-provider.ts`). The accordion described here is no longer the whole story.
 
 `FaqPanel.tsx` only surfaces a curated subset of entries (`FAQ_ORDER`). Topics tied to overnight stays (cottage, glamping, checkin, cancellation, pool) are hidden but live in the knowledge file — re-add their ids to `FAQ_ORDER` when overnight stays open back up.
 
@@ -151,12 +151,20 @@ INFO_EMAIL_TO                = info@chimgandarbaza.uz           # inquiry flows
 
 # Google Maps embed
 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY = AIza...   # used for the iframe on /contact
+
+# AI concierge — the order lives in src/lib/ai-provider.ts
+DEEPSEEK_API_KEY             = sk-...    # primary; paid, ~$0.0001 per question with cache hits
+GROQ_API_KEY                 = gsk_...   # free tier, the fallback under DeepSeek
+GROQ_API_KEY_2               = gsk_...   # optional second Groq account = second per-minute allowance
 ```
+
+Any one of the three is enough to run the assistants; missing keys simply drop
+out of the chain. If a provider answers 401/402/403/429/5xx the next one takes
+the question, so a dead key degrades the answer instead of breaking the site.
 
 `info@`, `reservations@`, `bookings@` are aliases of one Google Workspace mailbox (`manager@chimgandarbaza.uz`) so all of them land in the same inbox.
 
 **Removed env vars (safe to delete from Vercel):**
-- `DEEPSEEK_API_KEY` (AI chat removed)
 - `NEXT_PUBLIC_BNOVO_IFRAME_URL`, `NEXT_PUBLIC_BNOVO_UID` (Bnovo removed)
 - `PAYKEEPER_SERVER`, `PAYKEEPER_USER`, `PAYKEEPER_PASSWORD` (online payment removed)
 

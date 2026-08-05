@@ -1,19 +1,18 @@
 /**
  * AI concierge of the guest-facing Telegram bot.
  *
- * Free-text guest questions go to Groq (openai/gpt-oss-20b, same stack as the
- * site concierge in app/api/chat) with ONE public tool: live accommodation /
- * pool prices from the booking engine. No PMS access, no internal data —
- * this AI is designed for clients only.
+ * Free-text guest questions go to the same providers as the site concierge in
+ * app/api/chat — the order lives in lib/ai-provider — with ONE public tool:
+ * live accommodation / pool prices from the booking engine. No PMS access, no
+ * internal data — this AI is designed for clients only.
  */
 
 import { checkAvailability } from "./exely";
 import { getChimganWeather, weatherInfo } from "./bot-weather";
 import { venueFacts } from "./venue-facts";
 import { contacts } from "@/content/contacts";
+import { aiTargets, callAiModel, shouldFallThrough, type AiTarget } from "./ai-provider";
 
-const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
-const MODEL = "openai/gpt-oss-20b";
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
 
 type ToolCall = { id: string; function: { name: string; arguments: string } };
@@ -177,27 +176,33 @@ function systemPrompt(): string {
   ].join("\n");
 }
 
-// ── Groq loop ─────────────────────────────────────────────────────────────────
+// ── model loop ────────────────────────────────────────────────────────────────
 
-async function callGroq(apiKey: string, messages: GroqMsg[], withTools: boolean) {
-  const body: Record<string, unknown> = {
-    model: MODEL,
-    messages,
-    temperature: 0.2,
-    max_tokens: 700,
-    // "medium": noticeably better date/tool planning than "low", still fast on Groq.
-    reasoning_effort: "medium",
-  };
+function callModel(target: AiTarget, messages: GroqMsg[], withTools: boolean) {
+  const body: Record<string, unknown> = { messages, temperature: 0.2, max_tokens: 700 };
   if (withTools) {
     body.tools = TOOLS;
     body.tool_choice = "auto";
   }
-  return fetch(GROQ_URL, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-    signal: AbortSignal.timeout(25_000),
-  });
+  return callAiModel(target, body, 25_000);
+}
+
+/**
+ * First provider that will actually answer. Returns null only when every one of
+ * them is rate-limited, out of balance or down — the caller then falls back to
+ * the admin's phone number, which is the one route that never fails.
+ */
+async function callFirstAvailable(
+  targets: AiTarget[],
+  messages: GroqMsg[],
+  withTools: boolean,
+): Promise<{ res: Response; target: AiTarget } | null> {
+  for (const target of targets) {
+    const res = await callModel(target, messages, withTools);
+    if (!shouldFallThrough(res.status)) return { res, target };
+    console.warn(`[guest-ai] ${target.label} ${target.model} unavailable (${res.status})`);
+  }
+  return null;
 }
 
 export type GuestAiResult = { ok: true; text: string } | { ok: false; error: string };
@@ -236,13 +241,10 @@ export async function answerGuestQuestion(
   question: string,
   opts: { chatId?: number; repliedTo?: string } = {},
 ): Promise<GuestAiResult> {
-  // The bot serves one person, so it rarely meets the ceiling — but when it
-  // does, the second account is right there. Same order as the site concierge.
-  const keys = [process.env.GROQ_API_KEY, process.env.GROQ_API_KEY_2]
-    .map((k) => k?.trim())
-    .filter((k): k is string => Boolean(k));
-  const apiKey = keys[0];
-  if (!apiKey) return { ok: false, error: "no_groq_key" };
+  // Same provider order as the site concierge, for the same reason: whichever
+  // one is answering the website right now is the one that will answer here.
+  const targets = aiTargets();
+  if (targets.length === 0) return { ok: false, error: "no_ai_key" };
 
   const messages: GroqMsg[] = [{ role: "system", content: systemPrompt() }];
   if (opts.chatId != null) messages.push(...chatHistory(opts.chatId));
@@ -252,13 +254,15 @@ export async function answerGuestQuestion(
 
   try {
     for (let round = 0; round < 3; round++) {
-      const res = await callGroq(apiKey, messages, true);
+      const picked = await callFirstAvailable(targets, messages, true);
+      if (!picked) return { ok: false, error: "ai_unavailable" };
+      const { res, target } = picked;
       if (!res.ok) {
-        console.error(`[guest-ai] Groq ${res.status}:`, (await res.text().catch(() => "")).slice(0, 200));
-        return { ok: false, error: `groq_${res.status}` };
+        console.error(`[guest-ai] ${target.label} ${res.status}:`, (await res.text().catch(() => "")).slice(0, 200));
+        return { ok: false, error: `ai_${res.status}` };
       }
       const msg = ((await res.json()) as GroqResponse).choices?.[0]?.message;
-      if (!msg) return { ok: false, error: "groq_empty" };
+      if (!msg) return { ok: false, error: "ai_empty" };
 
       if (msg.tool_calls?.length) {
         messages.push(msg);
@@ -273,14 +277,14 @@ export async function answerGuestQuestion(
 
       const text = msg.content?.trim();
       if (text) return finish(question, text, opts.chatId);
-      return { ok: false, error: "groq_empty" };
+      return { ok: false, error: "ai_empty" };
     }
 
     // Tool budget exhausted — force a final answer from what's gathered.
-    const res = await callGroq(apiKey, messages, false);
-    if (!res.ok) return { ok: false, error: `groq_${res.status}` };
-    const text = ((await res.json()) as GroqResponse).choices?.[0]?.message?.content?.trim();
-    return text ? finish(question, text, opts.chatId) : { ok: false, error: "groq_empty" };
+    const picked = await callFirstAvailable(targets, messages, false);
+    if (!picked?.res.ok) return { ok: false, error: `ai_${picked?.res.status ?? "unavailable"}` };
+    const text = ((await picked.res.json()) as GroqResponse).choices?.[0]?.message?.content?.trim();
+    return text ? finish(question, text, opts.chatId) : { ok: false, error: "ai_empty" };
   } catch (e) {
     console.error("[guest-ai] threw:", e);
     return { ok: false, error: "ai_failed" };

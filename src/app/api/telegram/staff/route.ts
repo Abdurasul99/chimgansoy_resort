@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { handleGuestUpdate } from "@/lib/staff-bot";
+import { aiTargets } from "@/lib/ai-provider";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -48,6 +49,6 @@ export async function POST(req: NextRequest) {
 
 // A GET is handy for a quick "is the route deployed?" check in the browser.
 export async function GET() {
-  const configured = !!process.env.TELEGRAM_STAFF_BOT_TOKEN && (!!process.env.GROQ_API_KEY || !!process.env.GROQ_API_KEY_2);
+  const configured = !!process.env.TELEGRAM_STAFF_BOT_TOKEN && aiTargets().length > 0;
   return Response.json({ ok: true, service: "chimgandarbaza guest bot", configured });
 }
