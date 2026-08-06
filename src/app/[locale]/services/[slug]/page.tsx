@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { BookingWidget } from "@/components/sections/BookingWidget";
 import { MenuBoard } from "@/components/sections/MenuBoard";
 import { PageHero } from "@/components/sections/PageHero";
@@ -10,6 +11,7 @@ import { services } from "@/content/services";
 import { resortImages } from "@/content/images";
 import { dictionaries } from "@/content/translations";
 import { getLocaleParam, getService } from "@/lib/content";
+import { getService as getLiveService } from "@/lib/services-live";
 import { buildMetadata } from "@/lib/metadata";
 import { list, text } from "@/lib/localize";
 import { localizePath } from "@/i18n/routing";
@@ -77,6 +79,8 @@ export default async function ServiceDetailPage({ params }: PageProps) {
     Object.entries(prices).map(([slug, value]) => [slug, priceChip(value, locale)]),
   );
   const service = getService(slug);
+  // A service the operator switched off must not keep answering on its own URL.
+  if (!(await getLiveService(slug))) notFound();
   const dict = dictionaries[locale];
 
   return (

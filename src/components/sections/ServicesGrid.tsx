@@ -14,16 +14,33 @@ type ServicesGridProps = {
   limit?: number;
   showFilters?: boolean;
   slugs?: string[];
+  /**
+   * Slugs the operator switched off in the admin. Passed in rather than read
+   * here: this is a client component, and the store lives behind Blob.
+   */
+  hiddenSlugs?: string[];
+  /** Free-text price line per slug, also from the admin. */
+  priceNotes?: Record<string, string>;
 };
 
-export function ServicesGrid({ locale, limit, showFilters = true, slugs }: ServicesGridProps) {
+export function ServicesGrid({
+  locale,
+  limit,
+  showFilters = true,
+  slugs,
+  hiddenSlugs,
+  priceNotes,
+}: ServicesGridProps) {
   const [filter, setFilter] = useState("all");
   const dict = dictionaries[locale];
   const visibleServices = useMemo(() => {
-    const source = slugs ? services.filter((service) => slugs.includes(service.slug)) : services;
+    const shown = hiddenSlugs?.length
+      ? services.filter((service) => !hiddenSlugs.includes(service.slug))
+      : services;
+    const source = slugs ? shown.filter((service) => slugs.includes(service.slug)) : shown;
     const filtered = filter === "all" ? source : source.filter((service) => service.category === filter);
     return typeof limit === "number" ? filtered.slice(0, limit) : filtered;
-  }, [filter, limit, slugs]);
+  }, [filter, limit, slugs, hiddenSlugs]);
 
   return (
     <div>
@@ -81,6 +98,14 @@ export function ServicesGrid({ locale, limit, showFilters = true, slugs }: Servi
               <div className="flex flex-1 flex-col p-5 sm:p-6">
                 <h3 className="font-serif text-2xl font-bold leading-tight text-[var(--ink)]">{text(service.title, locale)}</h3>
                 <p className="mt-2 flex-1 text-sm leading-6 text-[var(--muted)]">{text(service.shortDescription, locale)}</p>
+                {/* Operator price line, when they wrote one. Free text, not a
+                    number: «от 150 000 сум», «по запросу» and «включено в
+                    проживание» are all answers they need to be able to give. */}
+                {priceNotes?.[service.slug] ? (
+                  <p className="mt-3 text-sm font-bold text-[var(--sun-dark)]">
+                    {priceNotes[service.slug]}
+                  </p>
+                ) : null}
                 <span className="mt-5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--forest-dark)] transition-colors group-hover:text-[var(--accent-strong)]">
                   {dict.details}
                   <svg className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

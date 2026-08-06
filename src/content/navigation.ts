@@ -36,6 +36,7 @@ export const footerNavigation = [
       { href: "/nomera/cottage", label: { ru: "Шале", uz: "Shale", en: "Chalet" } },
       { href: "/nomera/pool", label: { ru: "Бассейн", uz: "Basseyn", en: "Pool" } },
       { href: "/bron", label: { ru: "Забронировать", uz: "Bron qilish", en: "Book now" } },
+      { href: "/novosti", label: { ru: "Новости", uz: "Yangiliklar", en: "News" } },
     ],
   },
   // Day products are sold again, each with its own request form. They get their

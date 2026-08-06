@@ -1,19 +1,30 @@
 import { AdminHeading } from "../AdminShell";
+import { ServicesForm } from "./ServicesForm";
+import { resolveServices, type LiveService } from "@/lib/services-live";
+import { readForEdit } from "@/lib/site-overrides";
 
 /**
- * Placeholder with a real explanation.
- *
- * A nav item leading to a blank screen is what the operator complained about
- * once already; a nav item that says what it will do and what it is waiting for
- * is at least honest.
+ * Reads uncached, like the price screen: an operator must never edit a copy
+ * that is minutes old, or their own previous save is silently overwritten by
+ * the form they are looking at.
  */
-export default function Page() {
+export default async function Page() {
+  const overrides = await readForEdit();
+  const items: LiveService[] = resolveServices(overrides);
+  const storeReady = Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
+
   return (
     <>
-      <AdminHeading title="Услуги" hint="Добавление, скрытие и редактирование услуг на территории." />
-      <div className="rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] p-6">
-        <p className="text-sm leading-7 text-[var(--muted)]">Раздел в работе — подключается следующим. Хранилище уже готово: правки лягут поверх того, что в коде, и сайт продолжит работать, даже если хранилище окажется недоступно.<br /><br />Фотографии будут выбираться из уже загруженных на сайт, а не грузиться с телефона: на сайте нет оптимизации изображений, и снимок на 6 МБ уехал бы каждому посетителю как есть.</p>
-      </div>
+      <AdminHeading
+        title="Услуги"
+        hint="Что показывать на сайте, какую цену писать на карточке, и свои услуги в дополнение к тем, что уже есть."
+      />
+      <ServicesForm items={items} storeReady={storeReady} />
+      <p className="mt-8 text-xs leading-6 text-[var(--muted)]">
+        Услуги из кода не удаляются — их можно только скрыть. Так фотографии и текст
+        остаются на месте, и вернуть услугу весной это одна галочка, а не переписывание
+        страницы. Удалять можно только то, что вы добавили сами.
+      </p>
     </>
   );
 }
