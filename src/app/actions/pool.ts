@@ -2,6 +2,7 @@
 
 import { contacts } from "@/content/contacts";
 import { poolPricing } from "@/content/pricing";
+import { getPricing } from "@/lib/pricing-live";
 import { esc } from "@/lib/telegram";
 import {
   deliverRequest,
@@ -80,19 +81,21 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
 
   const weekend = isWeekend(date);
   const tariff = weekend ? "Пт–Вс" : "Пн–Чт";
-  const adultRate = weekend ? poolPricing.adult.weekend : poolPricing.adult.weekday;
-  const childRate = weekend ? poolPricing.child.weekend : poolPricing.child.weekday;
+  // Operator's current tariff, not the one this build shipped with.
+  const live = await getPricing();
+  const adultRate = weekend ? live.pool.adult.weekend : live.pool.adult.weekday;
+  const childRate = weekend ? live.pool.child.weekend : live.pool.child.weekday;
 
   const bungalowPrice =
-    bungalowRaw === "b4" ? poolPricing.extras.bungalow4
-    : bungalowRaw === "b10" ? poolPricing.extras.bungalow10
+    bungalowRaw === "b4" ? live.pool.extras.bungalow4
+    : bungalowRaw === "b10" ? live.pool.extras.bungalow10
     : 0;
   const bungalowLabel =
     bungalowRaw === "b4" ? "Бунгало до 4 чел."
     : bungalowRaw === "b10" ? "Бунгало до 10 чел."
     : null;
 
-  const towelsPrice = towels * poolPricing.extras.towel;
+  const towelsPrice = towels * live.pool.extras.towel;
   const total = adults * adultRate + kids * childRate + towelsPrice + bungalowPrice;
   const tel = dialable(phone);
 
@@ -114,7 +117,7 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
     `<b>Взрослые и дети 15+:</b> ${adults} × ${money(adultRate)} = ${money(adults * adultRate)} сум`,
     ...(kids ? [`<b>Дети 5–15:</b> ${kids} × ${money(childRate)} = ${money(kids * childRate)} сум`] : []),
     ...(toddlers ? [`<b>Дети до 5:</b> ${toddlers} — бесплатно`] : []),
-    ...(towels ? [`<b>Полотенца:</b> ${towels} × ${money(poolPricing.extras.towel)} = ${money(towelsPrice)} сум`] : []),
+    ...(towels ? [`<b>Полотенца:</b> ${towels} × ${money(live.pool.extras.towel)} = ${money(towelsPrice)} сум`] : []),
     ...(bungalowLabel ? [`<b>${bungalowLabel}:</b> ${money(bungalowPrice)} сум`] : []),
     "",
     `<b>ИТОГО: ${money(total)} сум</b>`,

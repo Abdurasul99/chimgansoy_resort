@@ -5,6 +5,7 @@ import { TubingRequestForm } from "@/components/sections/TubingRequestForm";
 import { Icon } from "@/components/ui/Icon";
 import { VideoReel } from "@/components/sections/VideoReel";
 import { getDayProduct } from "@/content/day-products";
+import { getPricing } from "@/lib/pricing-live";
 import { resortImages } from "@/content/images";
 import { tubingVideos, extraTubingVideos } from "@/content/videos";
 import { list, text } from "@/lib/localize";
@@ -29,9 +30,11 @@ const ABOUT: Record<Locale, string> = {
  * came for, so the booking action sits in the first screen and the reading
  * material is the reward for scrolling — the same call the pool page makes.
  */
-export function DayProductPage({ locale, slug }: { locale: Locale; slug: "topchan" | "tubing" }) {
+export async function DayProductPage({ locale, slug }: { locale: Locale; slug: "topchan" | "tubing" }) {
   const product = getDayProduct(slug);
   if (!product) return null;
+  // Operator prices, resolved once and handed to the form below.
+  const pricing = await getPricing();
 
   return (
     <>
@@ -46,9 +49,9 @@ export function DayProductPage({ locale, slug }: { locale: Locale; slug: "topcha
       <section id="request" className="scroll-mt-24 bg-[var(--surface)] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <div className="mx-auto max-w-3xl">
           {slug === "topchan" ? (
-            <TopchanRequestForm locale={locale} />
+            <TopchanRequestForm locale={locale} pricing={pricing} />
           ) : (
-            <TubingRequestForm locale={locale} />
+            <TubingRequestForm locale={locale} pricing={pricing} />
           )}
         </div>
       </section>

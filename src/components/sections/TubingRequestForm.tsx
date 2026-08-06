@@ -2,7 +2,8 @@
 
 import { useActionState, useEffect, useState } from "react";
 import { submitTubingRequest } from "@/app/actions/tubing";
-import { parkingPricing, priceLabels, tubingPricing } from "@/content/pricing";
+import { priceLabels, tubingPricing } from "@/content/pricing";
+import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 import { contacts } from "@/content/contacts";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Icon } from "@/components/ui/Icon";
@@ -135,7 +136,18 @@ const field =
 const labelCls =
   "mb-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]";
 
-export function TubingRequestForm({ locale }: { locale: Locale }) {
+export function TubingRequestForm({
+  locale,
+  pricing,
+}: {
+  locale: Locale;
+  /**
+ * Live tariff. Defaults to the code's constants, so this component still
+ * renders standalone (tests, storybook) without a server round-trip.
+ */
+  pricing?: LivePricing;
+}) {
+  const live = pricing ?? resolvePricing();
   const t = COPY[locale] ?? COPY.ru;
   const [state, action, pending] = useActionState(formAction, initialState);
 
@@ -144,13 +156,13 @@ export function TubingRequestForm({ locale }: { locale: Locale }) {
   const [weekend, setWeekend] = useState(false);
   // One quantity per package, indexed to pricing.ts — the server reads pack0,
   // pack1 … so a third package needs no change on either side.
-  const [packs, setPacks] = useState<number[]>(() => tubingPricing.packages.map(() => 0));
+  const [packs, setPacks] = useState<number[]>(() => live.tubing.packages.map(() => 0));
 
-  const carRate = weekend ? parkingPricing.weekend : parkingPricing.weekday;
+  const carRate = weekend ? live.parking.weekend : live.parking.weekday;
   const total =
-    tubingPricing.packages.reduce((sum, p, i) => sum + (packs[i] ?? 0) * p.price, 0) +
+    live.tubing.packages.reduce((sum, p, i) => sum + (packs[i] ?? 0) * p.price, 0) +
     cars * carRate;
-  const rides = tubingPricing.packages.reduce((n, p, i) => n + (packs[i] ?? 0) * p.rides, 0);
+  const rides = live.tubing.packages.reduce((n, p, i) => n + (packs[i] ?? 0) * p.rides, 0);
 
   useEffect(() => {
     if (state.status === "ok") trackEvent("tubing_request_submitted", { form: "tubing" });
@@ -189,7 +201,7 @@ export function TubingRequestForm({ locale }: { locale: Locale }) {
       <div className="mt-7">
         <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]">{t.priceTitle}</p>
         <div className="mt-3 overflow-hidden rounded-2xl border border-[color:var(--line)] bg-[var(--paper)]">
-          {tubingPricing.packages.map((p) => (
+          {live.tubing.packages.map((p) => (
             <div key={p.rides} className="flex items-baseline justify-between border-b border-[color:var(--line)] px-4 py-3">
               <span className="text-sm text-[var(--ink)]">{t.packLabel(p.rides)}</span>
               <span className="font-serif text-lg font-bold text-[var(--ink)]">{money(p.price)}</span>
@@ -202,12 +214,12 @@ export function TubingRequestForm({ locale }: { locale: Locale }) {
           <div className="flex items-baseline justify-between gap-3 border-b border-[color:var(--line)] px-4 py-3">
             <span className="text-sm text-[var(--ink)]">{t.entry}</span>
             <span className="text-right">
-              <span className="font-serif text-lg font-bold text-[var(--ink)]">{money(parkingPricing.weekday)}</span>
+              <span className="font-serif text-lg font-bold text-[var(--ink)]">{money(live.parking.weekday)}</span>
               <span className="ml-1 text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">
                 {text(priceLabels.weekdaysLabel, locale)}
               </span>
               <span className="mx-1.5 text-[var(--muted)]">·</span>
-              <span className="font-serif text-lg font-bold text-[var(--accent-strong)]">{money(parkingPricing.weekend)}</span>
+              <span className="font-serif text-lg font-bold text-[var(--accent-strong)]">{money(live.parking.weekend)}</span>
               <span className="ml-1 text-[10px] font-bold uppercase tracking-wider text-[var(--accent-strong)]">
                 {text(priceLabels.weekendLabel, locale)}
               </span>
@@ -235,7 +247,7 @@ export function TubingRequestForm({ locale }: { locale: Locale }) {
         />
 
         <div className="grid gap-3 sm:grid-cols-2">
-          {tubingPricing.packages.map((p, i) => (
+          {live.tubing.packages.map((p, i) => (
             <label key={p.rides} className="block">
               <span className={labelCls}>
                 {t.packLabel(p.rides)} ({money(p.price)})

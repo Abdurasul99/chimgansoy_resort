@@ -6,6 +6,7 @@ import { MediaArchive } from "@/components/sections/MediaArchive";
 import { VideoReel } from "@/components/sections/VideoReel";
 import { chaletVideos, glampingVideos } from "@/content/videos";
 import { getRoomPrices, priceChip } from "@/lib/room-price";
+import { getPricing } from "@/lib/pricing-live";
 import { Icon } from "@/components/ui/Icon";
 import { rooms, EXELY_ROOM_TYPE, INCLUDED_LABEL } from "@/content/rooms";
 import { resortImages } from "@/content/images";
@@ -129,6 +130,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
    * non-breaking separator the rest of the site uses, so they cannot wrap as
    * "1" / "000 000" in the narrow column this sits in.
    */
+  const livePricing = await getPricing();
   const isCabin = room.slug === "glamping" || room.slug === "cottage";
   const { adult, child, childFrom, childTo, freeThroughAge, guestVisitCottage } = extraGuestPricing;
   // Base occupancy leads the list, because it is the number the rate covers —
@@ -140,31 +142,31 @@ export default async function RoomDetailPage({ params }: PageProps) {
         ru: [
           `Стандартное размещение — ${occ.base} гостя, максимум ${occ.max}. Места сверх стандарта — за доплату.`,
           `Заезд с ${stayRules.checkIn}, выезд до ${stayRules.checkOut}. Ранний заезд и поздний выезд — по загрузке и за доплату.`,
-          `Дополнительное место за ночь: взрослый — ${group(adult)} сум, ребёнок ${childFrom}–${childTo} лет — ${group(child)} сум. Дети 0–${freeThroughAge} лет — бесплатно.`,
+          `Дополнительное место за ночь: взрослый — ${group(livePricing.extraGuest.adult)} сум, ребёнок ${childFrom}–${childTo} лет — ${group(livePricing.extraGuest.child)} сум. Дети 0–${freeThroughAge} лет — бесплатно.`,
           ...(room.slug === "cottage"
-            ? [`Гостевой визит в шале (без ночёвки) — ${group(guestVisitCottage)} сум.`]
+            ? [`Гостевой визит в шале (без ночёвки) — ${group(livePricing.extraGuest.guestVisitCottage)} сум.`]
             : []),
-          `Туристский сбор за каждую ночь с человека: граждане Узбекистана — ${group(touristTax.resident)} сум, иностранцы — ${group(touristTax.nonResident)} сум. Платится при заселении сверх стоимости.`,
+          `Туристский сбор за каждую ночь с человека: граждане Узбекистана — ${group(livePricing.touristTax.resident)} сум, иностранцы — ${group(livePricing.touristTax.nonResident)} сум. Платится при заселении сверх стоимости.`,
           "При заселении нужны паспорта всех проживающих.",
         ],
         uz: [
           `Standart joylashuv — ${occ.base} mehmon, maksimum ${occ.max}. Standartdan ortiq joylar — qo'shimcha to'lov evaziga.`,
           `Kirish ${stayRules.checkIn} dan, chiqish ${stayRules.checkOut} gacha. Erta kirish va kech chiqish — bandlikka qarab va qo'shimcha to'lov evaziga.`,
-          `Bir kechaga qo'shimcha joy: kattalar — ${group(adult)} so'm, ${childFrom}–${childTo} yoshdagi bola — ${group(child)} so'm. 0–${freeThroughAge} yoshdagi bolalar — bepul.`,
+          `Bir kechaga qo'shimcha joy: kattalar — ${group(livePricing.extraGuest.adult)} so'm, ${childFrom}–${childTo} yoshdagi bola — ${group(livePricing.extraGuest.child)} so'm. 0–${freeThroughAge} yoshdagi bolalar — bepul.`,
           ...(room.slug === "cottage"
-            ? [`Shalega mehmon tashrifi (tunab qolmasdan) — ${group(guestVisitCottage)} so'm.`]
+            ? [`Shalega mehmon tashrifi (tunab qolmasdan) — ${group(livePricing.extraGuest.guestVisitCottage)} so'm.`]
             : []),
-          `Har bir kecha uchun har bir mehmondan turistik yig'im: O'zbekiston fuqarolari — ${group(touristTax.resident)} so'm, chet el fuqarolari — ${group(touristTax.nonResident)} so'm. Joylashuvda narx ustiga to'lanadi.`,
+          `Har bir kecha uchun har bir mehmondan turistik yig'im: O'zbekiston fuqarolari — ${group(livePricing.touristTax.resident)} so'm, chet el fuqarolari — ${group(livePricing.touristTax.nonResident)} so'm. Joylashuvda narx ustiga to'lanadi.`,
           "Joylashuvda barcha yashovchilarning pasporti kerak bo'ladi.",
         ],
         en: [
           `The rate covers ${occ.base} guests; the cabin holds up to ${occ.max}. Places beyond the standard are charged.`,
           `Check-in from ${stayRules.checkIn}, check-out by ${stayRules.checkOut}. Early check-in and late check-out depend on occupancy and are charged.`,
-          `An extra place per night: adult — ${group(adult)} UZS, child aged ${childFrom}–${childTo} — ${group(child)} UZS. Children aged 0–${freeThroughAge} stay free.`,
+          `An extra place per night: adult — ${group(livePricing.extraGuest.adult)} UZS, child aged ${childFrom}–${childTo} — ${group(livePricing.extraGuest.child)} UZS. Children aged 0–${freeThroughAge} stay free.`,
           ...(room.slug === "cottage"
-            ? [`A guest visit to a chalet (no overnight stay) — ${group(guestVisitCottage)} UZS.`]
+            ? [`A guest visit to a chalet (no overnight stay) — ${group(livePricing.extraGuest.guestVisitCottage)} UZS.`]
             : []),
-          `A tourist levy per person per night: Uzbek citizens — ${group(touristTax.resident)} UZS, foreign nationals — ${group(touristTax.nonResident)} UZS. Paid at check-in on top of the rate.`,
+          `A tourist levy per person per night: Uzbek citizens — ${group(livePricing.touristTax.resident)} UZS, foreign nationals — ${group(livePricing.touristTax.nonResident)} UZS. Paid at check-in on top of the rate.`,
           "Passports of every guest are required at check-in.",
         ],
       }[locale];
@@ -253,7 +255,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
       {isPool && (
         <section id="pool-request" className="scroll-mt-24 bg-[var(--surface)] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <div className="mx-auto max-w-3xl">
-            <PoolRequestForm locale={locale} />
+            <PoolRequestForm locale={locale} pricing={await getPricing()} />
             {/* Under the form, not above it: a guest who has just read a price
                 wants to see what they are paying for. */}
             <div className="mt-12">

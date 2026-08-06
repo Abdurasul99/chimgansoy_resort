@@ -2,6 +2,7 @@
 
 import { contacts } from "@/content/contacts";
 import { parkingPricing, tubingPricing } from "@/content/pricing";
+import { getPricing } from "@/lib/pricing-live";
 import { esc } from "@/lib/telegram";
 import { ridesRu } from "@/lib/tariff";
 import {
@@ -76,14 +77,15 @@ export async function submitTubingRequest(formData: FormData): Promise<TubingRes
 
   // One quantity per package, posted as pack0 / pack1 … so adding a third
   // package to pricing.ts needs no change here.
-  const packs = tubingPricing.packages.map((p, i) => ({
+  const live = await getPricing();
+  const packs = live.tubing.packages.map((p, i) => ({
     ...p,
     qty: num(((formData.get(`pack${i}`) as string | null) ?? "").trim(), 100),
   }));
 
   const weekend = isWeekend(date);
   const tariff = weekend ? "Пт–Вс" : "Пн–Чт";
-  const carRate = weekend ? parkingPricing.weekend : parkingPricing.weekday;
+  const carRate = weekend ? live.parking.weekend : live.parking.weekday;
 
   const lines: { label: string; qty: number; rate: number }[] = [
     ...packs

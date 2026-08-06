@@ -1,4 +1,13 @@
-import { dayUse, extraGuestPricing, poolPricing, priceList, tubingPricing } from "@/content/pricing";
+import {
+  dayUse,
+  extraGuestPricing,
+  parkingPricing,
+  poolPricing,
+  priceList,
+  topchanPricing,
+  touristTax,
+  tubingPricing,
+} from "@/content/pricing";
 import type { OverrideData } from "@/lib/site-overrides";
 
 /**
@@ -69,6 +78,72 @@ export function fields(): PriceField[] {
       group: "Бассейн",
       label: "Ребёнок 5–15, Пт–Вс",
       value: poolPricing.child.weekend,
+    },
+  );
+
+  out.push(
+    {
+      key: "pool.extra.towel",
+      group: "Бассейн",
+      label: "Аренда полотенца",
+      hint: "одна цена всю неделю",
+      value: poolPricing.extras.towel,
+    },
+    {
+      key: "pool.extra.bungalow4",
+      group: "Бассейн",
+      label: "Бунгало на 4 гостей",
+      hint: "входные билеты не включены",
+      value: poolPricing.extras.bungalow4,
+    },
+    {
+      key: "pool.extra.bungalow10",
+      group: "Бассейн",
+      label: "Бунгало на 10 гостей",
+      hint: "входные билеты не включены",
+      value: poolPricing.extras.bungalow10,
+    },
+    {
+      key: "topchan.rent.weekday",
+      group: "Топчан",
+      label: "Аренда топчана, Пн–Чт",
+      hint: `за топчан целиком, до ${topchanPricing.capacity} гостей`,
+      value: topchanPricing.rent.weekday,
+    },
+    {
+      key: "topchan.rent.weekend",
+      group: "Топчан",
+      label: "Аренда топчана, Пт–Вс",
+      hint: "пятница считается выходным",
+      value: topchanPricing.rent.weekend,
+    },
+    {
+      key: "parking.weekday",
+      group: "Парковка",
+      label: "Парковка, Пн–Чт",
+      hint: "только для гостей тюбинга; остальным бесплатно",
+      value: parkingPricing.weekday,
+    },
+    {
+      key: "parking.weekend",
+      group: "Парковка",
+      label: "Парковка, Пт–Вс",
+      hint: "за автомобиль",
+      value: parkingPricing.weekend,
+    },
+    {
+      key: "touristTax.resident",
+      group: "Туристский сбор",
+      label: "Граждане и резиденты Узбекистана",
+      hint: "за ночь с человека, платится при заселении",
+      value: touristTax.resident,
+    },
+    {
+      key: "touristTax.nonResident",
+      group: "Туристский сбор",
+      label: "Иностранные граждане",
+      hint: "за ночь с человека; ставка установлена законодательством",
+      value: touristTax.nonResident,
     },
   );
 

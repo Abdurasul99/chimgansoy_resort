@@ -2,7 +2,8 @@
 
 import { Fragment, useActionState, useEffect, useState } from "react";
 import { submitTopchanRequest } from "@/app/actions/topchan";
-import { poolPricing, priceLabels, priceList, topchanPricing } from "@/content/pricing";
+import { priceLabels, priceList, topchanPricing } from "@/content/pricing";
+import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 import { contacts } from "@/content/contacts";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Icon } from "@/components/ui/Icon";
@@ -161,7 +162,18 @@ const labelCls =
 /** The cooking rentals, in the order the operator's poster lists them. */
 const EXTRA_KEYS = ["kazan", "mangal", "firewood", "charcoal"] as const;
 
-export function TopchanRequestForm({ locale }: { locale: Locale }) {
+export function TopchanRequestForm({
+  locale,
+  pricing,
+}: {
+  locale: Locale;
+  /**
+ * Live tariff. Defaults to the code's constants, so this component still
+ * renders standalone (tests, storybook) without a server round-trip.
+ */
+  pricing?: LivePricing;
+}) {
+  const live = pricing ?? resolvePricing();
   const t = COPY[locale] ?? COPY.ru;
   const [state, action, pending] = useActionState(formAction, initialState);
 
@@ -182,10 +194,10 @@ export function TopchanRequestForm({ locale }: { locale: Locale }) {
   const topchans = Math.max(Math.ceil(guests / topchanPricing.capacity), 1);
 
   const total =
-    topchans * band(topchanPricing.rent) +
-    poolAdults * band(poolPricing.adult) +
-    poolKids * band(poolPricing.child) +
-    towels * poolPricing.extras.towel +
+    topchans * band(live.topchan) +
+    poolAdults * band(live.pool.adult) +
+    poolKids * band(live.pool.child) +
+    towels * live.pool.extras.towel +
     EXTRA_KEYS.reduce((sum, key) => {
       const item = priceList.find((p) => p.key === key);
       return item ? sum + (extras[key] ?? 0) * band(item) : sum;
@@ -242,7 +254,7 @@ export function TopchanRequestForm({ locale }: { locale: Locale }) {
             </span>
 
             {[
-              [t.topchan, topchanPricing.rent] as const,
+              [t.topchan, live.topchan] as const,
             ].map(([label, rate]) => (
               <Fragment key={label}>
                 <span className="border-b border-[color:var(--line)] py-3 pr-2 text-sm text-[var(--ink)]">{label}</span>
@@ -355,19 +367,19 @@ export function TopchanRequestForm({ locale }: { locale: Locale }) {
           <p className="mt-5 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]">{t.poolTitle}</p>
           <div className="mt-3 grid gap-3 sm:grid-cols-3">
             <label className="block">
-              <span className={labelCls}>{t.poolAdults} ({money(band(poolPricing.adult))})</span>
+              <span className={labelCls}>{t.poolAdults} ({money(band(live.pool.adult))})</span>
               <input name="poolAdults" type="number" min={0} max={200} step={1}
                 inputMode="numeric" value={poolAdults} onChange={(e) => setPoolAdults(+e.target.value || 0)}
                 className={field} />
             </label>
             <label className="block">
-              <span className={labelCls}>{t.poolKids} ({money(band(poolPricing.child))})</span>
+              <span className={labelCls}>{t.poolKids} ({money(band(live.pool.child))})</span>
               <input name="poolKids" type="number" min={0} max={200} step={1}
                 inputMode="numeric" value={poolKids} onChange={(e) => setPoolKids(+e.target.value || 0)}
                 className={field} />
             </label>
             <label className="block">
-              <span className={labelCls}>{t.towels} ({money(poolPricing.extras.towel)})</span>
+              <span className={labelCls}>{t.towels} ({money(live.pool.extras.towel)})</span>
               <input name="towels" type="number" min={0} max={50} step={1}
                 inputMode="numeric" value={towels} onChange={(e) => setTowels(+e.target.value || 0)}
                 className={field} />

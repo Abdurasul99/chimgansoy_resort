@@ -2,6 +2,7 @@
 
 import { contacts } from "@/content/contacts";
 import { poolPricing, priceList, topchanPricing } from "@/content/pricing";
+import { getPricing } from "@/lib/pricing-live";
 import { esc } from "@/lib/telegram";
 import {
   deliverRequest,
@@ -43,8 +44,12 @@ const MESSAGES = {
 type Lang = keyof typeof MESSAGES;
 
 /** The cooking rentals, looked up by key so a price change lands in one place. */
-function extraRate(key: string, weekend: boolean): number {
-  const item = priceList.find((p) => p.key === key);
+function extraRate(
+  live: { extras: { key: string; weekday: number; weekend: number }[] },
+  key: string,
+  weekend: boolean,
+): number {
+  const item = live.extras.find((p) => p.key === key);
   if (!item) return 0;
   return weekend ? item.weekend : item.weekday;
 }
@@ -96,15 +101,17 @@ export async function submitTopchanRequest(formData: FormData): Promise<TopchanR
   const weekend = isWeekend(date);
   const tariff = weekend ? "Пт–Вс" : "Пн–Чт";
 
+  // Capacity stays a code constant: it is a divisor, and furniture, not a price.
+  const live = await getPricing();
   const topchans = Math.max(Math.ceil(guests / topchanPricing.capacity), 1);
-  const rent = weekend ? topchanPricing.rent.weekend : topchanPricing.rent.weekday;
+  const rent = weekend ? live.topchan.weekend : live.topchan.weekday;
 
-  const kazanRate = extraRate("kazan", weekend);
-  const mangalRate = extraRate("mangal", weekend);
-  const firewoodRate = extraRate("firewood", weekend);
-  const charcoalRate = extraRate("charcoal", weekend);
-  const poolAdultRate = weekend ? poolPricing.adult.weekend : poolPricing.adult.weekday;
-  const poolKidRate = weekend ? poolPricing.child.weekend : poolPricing.child.weekday;
+  const kazanRate = extraRate(live, "kazan", weekend);
+  const mangalRate = extraRate(live, "mangal", weekend);
+  const firewoodRate = extraRate(live, "firewood", weekend);
+  const charcoalRate = extraRate(live, "charcoal", weekend);
+  const poolAdultRate = weekend ? live.pool.adult.weekend : live.pool.adult.weekday;
+  const poolKidRate = weekend ? live.pool.child.weekend : live.pool.child.weekday;
 
   const lines: { label: string; qty: number; rate: number }[] = [
     { label: `Топчан (до ${topchanPricing.capacity} чел.)`, qty: topchans, rate: rent },
@@ -114,7 +121,7 @@ export async function submitTopchanRequest(formData: FormData): Promise<TopchanR
     { label: "Аренда мангала", qty: mangal, rate: mangalRate },
     { label: "Дрова, пучок", qty: firewood, rate: firewoodRate },
     { label: "Уголь, кг", qty: charcoal, rate: charcoalRate },
-    { label: "Полотенце", qty: towels, rate: poolPricing.extras.towel },
+    { label: "Полотенце", qty: towels, rate: live.pool.extras.towel },
   ].filter((l) => l.qty > 0);
 
   const total = lines.reduce((sum, l) => sum + l.qty * l.rate, 0);

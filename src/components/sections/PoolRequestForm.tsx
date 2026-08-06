@@ -3,6 +3,7 @@
 import { Fragment, useActionState, useEffect, useState } from "react";
 import { submitPoolRequest } from "@/app/actions/pool";
 import { poolPricing, priceLabels } from "@/content/pricing";
+import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 import { contacts } from "@/content/contacts";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Icon } from "@/components/ui/Icon";
@@ -155,7 +156,18 @@ const field =
 const labelCls =
   "mb-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]";
 
-export function PoolRequestForm({ locale }: { locale: Locale }) {
+export function PoolRequestForm({
+  locale,
+  pricing,
+}: {
+  locale: Locale;
+  /**
+ * Live tariff. Defaults to the code's constants, so this component still
+ * renders standalone (tests, storybook) without a server round-trip.
+ */
+  pricing?: LivePricing;
+}) {
+  const live = pricing ?? resolvePricing();
   const t = COPY[locale] ?? COPY.ru;
   const [state, action, pending] = useActionState(formAction, initialState);
 
@@ -168,16 +180,16 @@ export function PoolRequestForm({ locale }: { locale: Locale }) {
   const [bungalow, setBungalow] = useState("none");
   const [weekend, setWeekend] = useState(false);
 
-  const adultRate = weekend ? poolPricing.adult.weekend : poolPricing.adult.weekday;
-  const childRate = weekend ? poolPricing.child.weekend : poolPricing.child.weekday;
+  const adultRate = weekend ? live.pool.adult.weekend : live.pool.adult.weekday;
+  const childRate = weekend ? live.pool.child.weekend : live.pool.child.weekday;
   const bungalowPrice =
-    bungalow === "b4" ? poolPricing.extras.bungalow4
-    : bungalow === "b10" ? poolPricing.extras.bungalow10
+    bungalow === "b4" ? live.pool.extras.bungalow4
+    : bungalow === "b10" ? live.pool.extras.bungalow10
     : 0;
   const total =
     adults * adultRate +
     kids * childRate +
-    towels * poolPricing.extras.towel +
+    towels * live.pool.extras.towel +
     bungalowPrice;
 
   useEffect(() => {
@@ -232,8 +244,8 @@ export function PoolRequestForm({ locale }: { locale: Locale }) {
             </span>
 
             {[
-              [t.adults, poolPricing.adult] as const,
-              [t.kids, poolPricing.child] as const,
+              [t.adults, live.pool.adult] as const,
+              [t.kids, live.pool.child] as const,
             ].map(([label, band]) => (
               <Fragment key={label}>
                 <span className="border-b border-[color:var(--line)] py-3 pr-2 text-sm text-[var(--ink)]">{label}</span>
