@@ -63,6 +63,24 @@ export type OverrideData = {
     image?: string;
     hidden?: boolean;
   }>;
+  /**
+   * Per-room patch for /nomera/<slug>: the lists a guest reads, the photos in
+   * the gallery, and a price line.
+   *
+   * A list is REPLACED when present, not merged item by item. Merging would
+   * make removing a line from the code impossible — the operator would delete
+   * it and it would come straight back on the next deploy.
+   */
+  rooms: Record<
+    string,
+    {
+      priceNote?: string;
+      amenities?: string[];
+      features?: string[];
+      /** Keys of resortImages, in the order they should appear. */
+      gallery?: string[];
+    }
+  >;
   news: NewsItem[];
 };
 
@@ -73,7 +91,7 @@ export type Overrides = {
   data: OverrideData;
 };
 
-export const EMPTY: OverrideData = { prices: {}, services: {}, customServices: [], news: [] };
+export const EMPTY: OverrideData = { prices: {}, services: {}, customServices: [], rooms: {}, news: [] };
 
 function configured(): boolean {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
@@ -117,7 +135,26 @@ function coerce(raw: unknown): OverrideData {
       )
     : [];
 
-  return { prices, services, customServices, news };
+  // Rooms were added after the first documents were saved. A missing key is
+  // read as "no room edits" rather than as a version mismatch — bumping the
+  // version would discard every price the operator had already set.
+  const rooms: OverrideData["rooms"] = {};
+  for (const [slug, v] of Object.entries(d.rooms ?? {})) {
+    if (!v || typeof v !== "object") continue;
+    const r = v as Record<string, unknown>;
+    const list = (x: unknown) =>
+      Array.isArray(x)
+        ? x.filter((i): i is string => typeof i === "string" && i.trim().length > 0).map((i) => i.trim())
+        : undefined;
+    rooms[slug] = {
+      priceNote: typeof r.priceNote === "string" && r.priceNote.trim() ? r.priceNote.trim() : undefined,
+      amenities: list(r.amenities),
+      features: list(r.features),
+      gallery: list(r.gallery),
+    };
+  }
+
+  return { prices, services, customServices, rooms, news };
 }
 
 async function fetchOverrides(): Promise<OverrideData> {

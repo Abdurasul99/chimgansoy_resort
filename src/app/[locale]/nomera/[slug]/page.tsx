@@ -6,6 +6,7 @@ import { MediaArchive } from "@/components/sections/MediaArchive";
 import { VideoReel } from "@/components/sections/VideoReel";
 import { chaletVideos, glampingVideos } from "@/content/videos";
 import { getRoomPrices, priceChip } from "@/lib/room-price";
+import { getRoom as getLiveRoom } from "@/lib/rooms-live";
 import { getPricing } from "@/lib/pricing-live";
 import { Icon } from "@/components/ui/Icon";
 import { rooms, EXELY_ROOM_TYPE, INCLUDED_LABEL } from "@/content/rooms";
@@ -131,6 +132,8 @@ export default async function RoomDetailPage({ params }: PageProps) {
    * "1" / "000 000" in the narrow column this sits in.
    */
   const livePricing = await getPricing();
+  // Operator edits for this page: lists, gallery, price line.
+  const live = await getLiveRoom(room.slug);
   const isCabin = room.slug === "glamping" || room.slug === "cottage";
   const { adult, child, childFrom, childTo, freeThroughAge, guestVisitCottage } = extraGuestPricing;
   // Base occupancy leads the list, because it is the number the rate covers —
@@ -225,7 +228,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
                   number is being asked to enquire about the price of a cabin,
                   which is not how anyone books a weekend. */}
               <span className="rounded-full border border-[var(--accent)]/30 bg-[var(--accent)]/12 px-4 py-2 text-sm font-semibold text-[var(--accent)] backdrop-blur-sm">
-                {isPool ? poolPriceChip[locale] : livePrice ?? text(room.priceFrom, locale)}
+                {isPool ? poolPriceChip[locale] : live?.priceNote ?? livePrice ?? text(room.priceFrom, locale)}
               </span>
             </div>
 
@@ -266,7 +269,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
               <MediaArchive
                 locale={locale}
                 images={POOL_ARCHIVE}
-                exclude={[room.image, ...room.gallery, "galTerritoryPanorama"]}
+                exclude={[room.image, ...(live?.gallery ?? room.gallery), "galTerritoryPanorama"]}
               />
             </div>
           </div>
@@ -335,7 +338,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
                 <div>
                   <h2 className="font-serif text-2xl font-semibold text-[var(--ink)]">{dict.detailLabels.amenities}</h2>
                   <ul className="mt-5 space-y-3">
-                    {list(room.amenities, locale).map((item) => (
+                    {(live?.amenities(locale) ?? list(room.amenities, locale)).map((item) => (
                       <li key={item} className="flex items-center gap-3 text-sm text-[var(--muted)]">
                         <Icon name="check" className="h-4 w-4 shrink-0 text-[var(--green)]" />
                         {item}
@@ -346,7 +349,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
                 <div>
                   <h2 className="font-serif text-2xl font-semibold text-[var(--ink)]">{dict.detailLabels.features}</h2>
                   <ul className="mt-5 space-y-3">
-                    {list(room.features, locale).map((item) => (
+                    {(live?.features(locale) ?? list(room.features, locale)).map((item) => (
                       <li key={item} className="flex items-start gap-3 text-sm text-[var(--muted)]">
                         <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
                         {item}
@@ -362,7 +365,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
                   {locale === "ru" ? "Фотографии" : locale === "uz" ? "Fotosuratlar" : "Gallery"}
                 </p>
                 <div className="grid gap-3 sm:grid-cols-2">
-                  {room.gallery.map((imageKey, i) => (
+                  {(live?.gallery ?? room.gallery).map((imageKey, i) => (
                     <div
                       key={imageKey}
                       className={`overflow-hidden rounded-2xl bg-cover bg-center transition-transform duration-700 hover:scale-[1.02] ${
@@ -418,7 +421,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
                     // pressing "Забронировать", and it was the one surface still
                     // saying "Цена при бронировании" after the hero chip and the
                     // cards had learned the real rate.
-                    priceFrom={livePrice ?? text(room.priceFrom, locale)}
+                    priceFrom={live?.priceNote ?? livePrice ?? text(room.priceFrom, locale)}
                   />
                 </div>
               </div>

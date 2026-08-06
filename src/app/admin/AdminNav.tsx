@@ -18,6 +18,7 @@ const NAV = [
   { href: "/admin/analitika", label: "Аналитика" },
   { href: "/admin/tseny", label: "Цены" },
   { href: "/admin/uslugi", label: "Услуги" },
+  { href: "/admin/nomera", label: "Домики" },
   { href: "/admin/novosti", label: "Новости" },
 ];
 
