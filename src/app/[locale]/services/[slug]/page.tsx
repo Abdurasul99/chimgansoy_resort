@@ -15,6 +15,20 @@ import { list, text } from "@/lib/localize";
 import { localizePath } from "@/i18n/routing";
 import { getRoomPrices, priceChip } from "@/lib/room-price";
 
+/**
+ * Revalidated every six hours because the «от …» chip is a LIVE price.
+ *
+ * Without this the page is fully static and the price is whatever the booking
+ * engine happened to answer during the build. Exely returns an empty offer list
+ * often enough — sold out, or simply slow — and when that lands on a build, every
+ * room page ships «Цена при бронировании» and stays that way until somebody
+ * redeploys. The operator saw exactly that on the chalet page on 2026-08-06.
+ *
+ * Six hours matches the unstable_cache TTL in lib/room-price.ts, so this adds no
+ * outbound requests — it only lets a bad build heal itself.
+ */
+export const revalidate = 21600;
+
 type PageProps = {
   params: Promise<{ locale: string; slug: string }>;
 };

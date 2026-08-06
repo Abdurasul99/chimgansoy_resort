@@ -91,14 +91,12 @@ export const knowledge: KnowledgeEntry[] = [
     id: "checkin",
     keywords: ["заезд", "выезд", "check-in", "checkin", "checkout", "kirish", "chiqish", "во сколько заезд", "когда заезд"],
     answer: {
-      // 15:00 — the operator's figure, restated 2026-08-05 together with the
-      // rule that early check-in and late check-out are PAID and depend on
-      // occupancy. This entry said 14:00 for a while on the theory that the
-      // public offer required it; clause 2.4 of the offer has been moved to
-      // 15:00 in the same change, so the two agree again.
-      ru: "🕑 Заезд — с 15:00, выезд — до 12:00. Ресепшн работает круглосуточно, так что приехать можно и поздно вечером. Ранний заезд и поздний выезд предоставляются за доплату и зависят от загрузки — согласуйте с администратором. При заселении понадобятся паспорта всех проживающих. Дополнительно взимается обязательный туристский сбор.",
-      uz: "🕑 Kirish — 15:00 dan, chiqish — 12:00 gacha. Resepshn 24 soat ishlaydi, shuning uchun kech kechqurun ham kelish mumkin. Erta kirish va kech chiqish qo'shimcha to'lov evaziga beriladi va bandlikka bog'liq — administrator bilan kelishing. Joylashuvda barcha yashovchilarning pasporti kerak bo'ladi. Qo'shimcha ravishda majburiy turistik yig'im olinadi.",
-      en: "🕑 Check-in from 3:00 PM, check-out by 12:00 PM. Reception is staffed around the clock, so a late-evening arrival is fine. Early check-in and late check-out are charged and depend on occupancy — arrange them with the administrator. Passports of every guest are required at check-in. A mandatory tourist levy is charged on top.",
+      // 14:00 — Публичная оферта, пп. 1, 2.5, 4.2 и Правила пребывания 4.1.
+      // Побывало 15:00 в течение суток по неформальному списку оператора и
+      // вернулось обратно, когда пришли подписанные документы от 05.08.2026.
+      ru: "🕑 Заезд — с 14:00, выезд — до 12:00. Ресепшн работает круглосуточно, так что приехать можно и поздно вечером. Ранний заезд и поздний выезд предоставляются за доплату и зависят от загрузки — согласуйте с администратором. При заселении понадобятся паспорта всех проживающих. Дополнительно взимается обязательный туристский сбор.",
+      uz: "🕑 Kirish — 14:00 dan, chiqish — 12:00 gacha. Resepshn 24 soat ishlaydi, shuning uchun kech kechqurun ham kelish mumkin. Erta kirish va kech chiqish qo'shimcha to'lov evaziga beriladi va bandlikka bog'liq — administrator bilan kelishing. Joylashuvda barcha yashovchilarning pasporti kerak bo'ladi. Qo'shimcha ravishda majburiy turistik yig'im olinadi.",
+      en: "🕑 Check-in from 2:00 PM, check-out by 12:00 PM. Reception is staffed around the clock, so a late-evening arrival is fine. Early check-in and late check-out are charged and depend on occupancy — arrange them with the administrator. Passports of every guest are required at check-in. A mandatory tourist levy is charged on top.",
     },
   },
 
@@ -107,9 +105,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "cancellation",
     keywords: ["отмен", "возврат", "вернуть", "bekor", "qaytarish", "cancel", "refund", "cancellation"],
     answer: {
-      ru: "↩️ Предоплата за проживание невозвратная — вернуть деньги нельзя ни при каком сроке отмены. Перенос дат не является автоматическим правом: он возможен только по согласованию с курортом, при наличии свободных домиков, и не распространяется на выходные и праздничные дни. Дневные услуги (бассейн, топчан, тюбинг) невозвратные и непереносимые: при отмене, опоздании или раннем уходе деньги не возвращаются и время не переносится.",
-      uz: "↩️ Yashash uchun oldindan to'lov qaytarilmaydi — bekor qilish muddatidan qat'i nazar pul qaytarilmaydi. Sanalarni ko'chirish avtomatik huquq emas: faqat kurort bilan kelishilgan holda, bo'sh uychalar bo'lganda va dam olish hamda bayram kunlariga taalluqli emas. Kunlik xizmatlar (basseyn, topchan, tubing) qaytarilmaydi va ko'chirilmaydi.",
-      en: "↩️ The prepayment for a stay is non-refundable — no money is returned for any cancellation notice. A date transfer is not an automatic right: it is granted only by agreement with the resort, subject to free cabins, and does not apply to weekends and public holidays. Day services (pool, topchan, tubing) are non-refundable and non-transferable: no money back and no rescheduling for a cancellation, a late arrival or an early departure.",
+      ru: "↩️ Проживание: при отмене не позднее чем за 5 суток до заезда предоплата возвращается полностью или переносится; менее чем за 5 суток, но не позднее чем за 48 часов — удерживается 50 %; менее чем за 48 часов или при неявке — предоплата не возвращается. Перенос дат не автоматическое право: только по согласованию, при наличии свободных домиков, не более одного раза и не на выходные (Пт–Вс) и праздники. Дневные услуги (бассейн, топчан, тюбинг) невозвратные и непереносимые: при отмене, опоздании или раннем уходе деньги не возвращаются и время не переносится.",
+      uz: "↩️ Yashash: kirishdan kamida 5 kun oldin bekor qilinsa — oldindan to'lov to'liq qaytariladi yoki ko'chiriladi; 5 kundan kam, lekin 48 soatdan oldin — 50 % ushlab qolinadi; 48 soatdan kam qolganda yoki kelmaganda — qaytarilmaydi. Sanalarni ko'chirish avtomatik huquq emas: faqat kelishilgan holda, bo'sh uychalar bo'lganda, bir martadan ko'p emas va dam olish (Ju–Yak) hamda bayram kunlariga emas. Kunlik xizmatlar (basseyn, topchan, tubing) qaytarilmaydi va ko'chirilmaydi.",
+      en: "↩️ Stays: cancel at least 5 days before check-in and the prepayment is refunded in full or moved to new dates; less than 5 days but more than 48 hours — 50 % is retained; less than 48 hours or a no-show — nothing is returned. A date transfer is not an automatic right: by agreement only, subject to free cabins, once per booking, and never on weekends (Fri–Sun) or public holidays. Day services (pool, topchan, tubing) are non-refundable and non-transferable.",
     },
   },
 

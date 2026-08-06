@@ -272,20 +272,110 @@ export const extraGuestPricing = {
 } as const;
 
 /**
- * The house rules a guest needs before booking, not at the door.
+ * The stay terms a guest needs before booking, not at the door.
  *
- * Operator, 2026-08-05: official check-in 15:00, check-out 12:00; early
- * check-in and late check-out are PAID and depend on how full the hotel is; a
- * mandatory tourist levy is charged; every guest presents a passport at
- * check-in.
+ * Every figure here comes from the operator's signed documents of 5 August 2026
+ * — Публичная оферта and Политика возврата и отмены, Редакция № 1 — which are
+ * reproduced verbatim on /legal/* from those same .docx files (see
+ * scripts/build-legal.js). Where an informal message from the operator and the
+ * document disagree, the document wins: it is what the guest accepts at
+ * booking and what a dispute is decided on.
  *
- * The levy has no figure here on purpose. It is set by law, the operator did
- * not name an amount, and a made-up number on a page that also carries the
- * public offer is worse than no number — so the site says the levy exists and
- * leaves the sum to the administrator. Add `touristLevy` here the day the
- * operator supplies it.
+ * Two figures were changed BACK on 2026-08-06 because of exactly that:
+ *
+ *  • checkIn was moved to 15:00 on 2026-08-05 from a "Прочее" list. The offer
+ *    says 14:00 in four separate clauses (1 «Заезд/Выезд», 2.5, 4.2 and
+ *    Правила пребывания 4.1), and prices early arrival relative to 14:00 in
+ *    5.2.1. The same "Прочее" list had already been wrong once about the
+ *    extra-guest rate.
+ *
+ *  • The prepayment was described as flatly non-refundable. The signed policy
+ *    grants a FULL refund five days out and half of it up to 48 hours — see
+ *    `accommodationCancellation`. The site was refusing refunds the contract
+ *    gives, which is the worse direction of the two to be wrong in.
  */
 export const stayRules = {
-  checkIn: "15:00",
+  /** Оферта, п. 4.2: расчётное время заезда. */
+  checkIn: "14:00",
+  /** Оферта, п. 4.2: расчётный час. */
   checkOut: "12:00",
+  /** Правила пребывания, п. 1.9 — тишина на территории. */
+  quietFrom: "23:00",
+  quietTo: "08:00",
+} as const;
+
+/**
+ * Туристский (гостиничный) сбор — per person, per night, on top of the rate.
+ *
+ * Оферта, п. 5.1.5: charged separately at check-in for every night, from
+ * Uzbek citizens and foreigners alike. The two rates are set by law and differ
+ * by an order of magnitude, which is precisely why the site must not quote "a
+ * tourist levy" without saying which one applies to the reader.
+ *
+ * Figures from the operator, 2026-08-06.
+ */
+export const touristTax = {
+  /** Граждане и резиденты Республики Узбекистан. */
+  resident: 1_692,
+  /** Иностранные граждане (нерезиденты). */
+  nonResident: 61_800,
+} as const;
+
+/**
+ * Ранний заезд и поздний выезд — оферта, пп. 5.2.1–5.2.3.
+ *
+ * Priced as a share of one night rather than a flat sum, so there is nothing to
+ * keep in sync with the nightly rate. Subject to availability and prior
+ * agreement in every case — the share is what it costs when granted, not a
+ * promise that it will be.
+ */
+export const earlyLateCheck = {
+  /** Заезд 06:00–14:00 — доля стоимости суток. */
+  earlyShare: 0.5,
+  /** Выезд 12:00–18:00 — доля стоимости суток. */
+  lateShare: 0.5,
+  /** После 18:00 выезд оплачивается как полные сутки. */
+  lateFullAfter: "18:00",
+  /**
+   * Заезд 00:00–06:00 оплачивается как 22 часа проживания, и плата за ранний
+   * заезд сверх этого НЕ взимается (п. 5.2.3). Ночной приезд дешевле утреннего
+   * — контринтуитивно, и поэтому стоит отдельного упоминания.
+   */
+  nightArrivalHours: 22,
+} as const;
+
+/**
+ * Отмена бронирования ПРОЖИВАНИЯ — оферта п. 6.4 и Политика возврата п. 2.1.
+ *
+ * A ladder, not a blanket rule. Stated here as data so the room pages, the FAQ
+ * and both AI briefings quote one set of numbers.
+ *
+ * Day-use services (бассейн, топчан, тюбинг) are NOT on this ladder: they are
+ * non-refundable and non-transferable outright — оферта п. 6.5. The only
+ * exceptions to either rule are force majeure/weather (п. 6.12–6.13) and the
+ * resort's own fault (п. 6.11).
+ */
+export const accommodationCancellation = {
+  /** Не позднее этого срока до заезда — возврат 100 %. */
+  fullRefundDays: 5,
+  /** От 5 суток до этого срока — удерживается 50 %. */
+  halfRefundHours: 48,
+  halfRefundShare: 0.5,
+  /** Позже — удерживается всё. */
+} as const;
+
+/**
+ * Перенос дат — оферта п. 6.8, Политика возврата раздел 4.
+ *
+ * Not a right: granted by agreement, subject to availability, and blocked
+ * entirely on peak days in BOTH directions — a booking that falls on Fri/Sat/Sun
+ * or a public holiday cannot be moved, and nothing can be moved onto one.
+ */
+export const dateTransfer = {
+  maxTimes: 1,
+  withinMonths: 3,
+  /** Пятница, суббота, воскресенье — выходные для целей переноса. */
+  blockedWeekdays: [5, 6, 0] as const,
+  /** Ваучер на разницу, если новые даты дешевле. */
+  voucherMonths: 6,
 } as const;

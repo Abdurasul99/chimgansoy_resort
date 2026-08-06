@@ -17,12 +17,32 @@ type HeaderProps = {
   locale: Locale;
 };
 
+/**
+ * Day products are sold by request form on their own page, not through the
+ * rooms engine — a topchan has no check-in date and tubing has no nights.
+ *
+ * The header CTA used to send every visitor to /bron regardless. A guest
+ * reading about the tubing hill pressed the one gold button on the screen and
+ * landed in an Exely availability search asking which cabin they wanted
+ * (operator, 2026-08-06: «он бронит по системе номеров, а нужно чтобы по
+ * системе тюбинга или бассейна»). On these pages the button now scrolls to the
+ * form that actually sells the thing being read about.
+ */
+const DAY_PRODUCT_PATHS = ["/topchan", "/tubing", "/nomera/pool"] as const;
+
 export function Header({ locale }: HeaderProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const dict = dictionaries[locale];
+
+  // The request form on every day-product page is anchored #request.
+  const dayProduct = DAY_PRODUCT_PATHS.find((p) => pathname.endsWith(localizePath(locale, p)));
+  const bookHref = dayProduct ? `${localizePath(locale, dayProduct)}#request` : localizePath(locale, "/bron");
+  // Only the rooms engine needs a full page load; an in-page anchor must not
+  // reload, or the jump is lost to the navigation.
+  const bookReload = !dayProduct;
 
   // Scrolling down past the hero tucks the bar away; any upward move brings it
   // straight back. Reads from the shared scroll loop rather than adding a second
@@ -165,9 +185,11 @@ export function Header({ locale }: HeaderProps) {
               ))}
             </div>
 
-            {/* Book CTA — full navigation so the Exely engine embeds on /bron */}
+            {/* Book CTA — full navigation so the Exely engine embeds on /bron;
+                on a day-product page it points at that page own request form. */}
             <a
-              href={localizePath(locale, "/bron")}
+              href={bookHref}
+              {...(bookReload ? {} : { "data-anchor": "request" })}
               className="btn-press btn-glow-primary inline-flex h-10 items-center justify-center rounded-full px-5 text-[13px] font-bold"
             >
               {dict.bookNow}
@@ -258,7 +280,7 @@ export function Header({ locale }: HeaderProps) {
 
         <div className="px-6 pb-10 space-y-4">
           <a
-            href={localizePath(locale, "/bron")}
+            href={bookHref}
             className="btn-press flex items-center justify-center rounded-full bg-[var(--sun)] py-4 text-base font-bold text-[var(--on-accent)] transition-all duration-300 hover:bg-[var(--sun-dark)]"
             onClick={() => setIsOpen(false)}
           >

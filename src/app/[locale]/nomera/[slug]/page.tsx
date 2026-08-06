@@ -9,13 +9,27 @@ import { getRoomPrices, priceChip } from "@/lib/room-price";
 import { Icon } from "@/components/ui/Icon";
 import { rooms, EXELY_ROOM_TYPE, INCLUDED_LABEL } from "@/content/rooms";
 import { resortImages } from "@/content/images";
-import { cabinOccupancy, extraGuestPricing, stayRules } from "@/content/pricing";
+import { cabinOccupancy, extraGuestPricing, stayRules, touristTax } from "@/content/pricing";
 import { dictionaries } from "@/content/translations";
 import { getLocaleParam, getRoom } from "@/lib/content";
 import { buildMetadata } from "@/lib/metadata";
 import { list, text } from "@/lib/localize";
 import { imageStyle } from "@/lib/images";
 import { localizePath } from "@/i18n/routing";
+
+/**
+ * Revalidated every six hours because the «от …» chip is a LIVE price.
+ *
+ * Without this the page is fully static and the price is whatever the booking
+ * engine happened to answer during the build. Exely returns an empty offer list
+ * often enough — sold out, or simply slow — and when that lands on a build, every
+ * room page ships «Цена при бронировании» and stays that way until somebody
+ * redeploys. The operator saw exactly that on the chalet page on 2026-08-06.
+ *
+ * Six hours matches the unstable_cache TTL in lib/room-price.ts, so this adds no
+ * outbound requests — it only lets a bad build heal itself.
+ */
+export const revalidate = 21600;
 
 /** 400000 -> "400 000" with a non-breaking separator, as elsewhere on the site. */
 function group(n: number): string {
@@ -128,7 +142,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
           ...(room.slug === "cottage"
             ? [`Гостевой визит в шале (без ночёвки) — ${group(guestVisitCottage)} сум.`]
             : []),
-          "Дополнительно взимается обязательный туристский сбор.",
+          `Туристский сбор за каждую ночь с человека: граждане Узбекистана — ${group(touristTax.resident)} сум, иностранцы — ${group(touristTax.nonResident)} сум. Платится при заселении сверх стоимости.`,
           "При заселении нужны паспорта всех проживающих.",
         ],
         uz: [
@@ -138,7 +152,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
           ...(room.slug === "cottage"
             ? [`Shalega mehmon tashrifi (tunab qolmasdan) — ${group(guestVisitCottage)} so'm.`]
             : []),
-          "Qo'shimcha ravishda majburiy turistik yig'im olinadi.",
+          `Har bir kecha uchun har bir mehmondan turistik yig'im: O'zbekiston fuqarolari — ${group(touristTax.resident)} so'm, chet el fuqarolari — ${group(touristTax.nonResident)} so'm. Joylashuvda narx ustiga to'lanadi.`,
           "Joylashuvda barcha yashovchilarning pasporti kerak bo'ladi.",
         ],
         en: [
@@ -148,7 +162,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
           ...(room.slug === "cottage"
             ? [`A guest visit to a chalet (no overnight stay) — ${group(guestVisitCottage)} UZS.`]
             : []),
-          "A mandatory tourist levy is charged on top.",
+          `A tourist levy per person per night: Uzbek citizens — ${group(touristTax.resident)} UZS, foreign nationals — ${group(touristTax.nonResident)} UZS. Paid at check-in on top of the rate.`,
           "Passports of every guest are required at check-in.",
         ],
       }[locale];
