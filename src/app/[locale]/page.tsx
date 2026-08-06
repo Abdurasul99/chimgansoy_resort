@@ -36,10 +36,12 @@ import { getRoomPrices, priceChip } from "@/lib/room-price";
  * room page ships «Цена при бронировании» and stays that way until somebody
  * redeploys. The operator saw exactly that on the chalet page on 2026-08-06.
  *
- * Six hours matches the unstable_cache TTL in lib/room-price.ts, so this adds no
- * outbound requests — it only lets a bad build heal itself.
+ * Fifteen minutes, not six hours: page revalidation reads the six-hour data
+ * cache in lib/room-price.ts, so a short window costs no extra outbound
+ * requests — it only decides how long a bad build stays visible. Six hours of
+ * «Цена при бронировании» on a page the engine is happily quoting is too long.
  */
-export const revalidate = 21600;
+export const revalidate = 900;
 
 type PageProps = {
   params: Promise<{ locale: string }>;

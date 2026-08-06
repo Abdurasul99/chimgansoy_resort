@@ -61,14 +61,38 @@ async function fetchPrices(): Promise<Record<string, number>> {
  *
  * Three outbound requests are far too many to make while a guest waits for the
  * homepage, and a nightly rate does not move on a scale where six hours matters.
- * This is `unstable_cache` rather than a route-segment `revalidate`, because the
- * latter would flip all 70-odd prerendered pages from static to ISR — a large
- * change to the whole site to put one chip on two cards.
  */
-export const getRoomPrices = unstable_cache(fetchPrices, ["room-prices-v1"], {
+const cachedPrices = unstable_cache(fetchPrices, ["room-prices-v1"], {
   revalidate: 60 * 60 * 6,
   tags: ["room-prices"],
 });
+
+/** How many room types the engine is expected to price. */
+const EXPECTED = Object.keys(SLUG_BY_EXELY_NAME).length;
+
+/**
+ * The cached prices, unless the cache holds a gap — in which case, one live retry.
+ *
+ * Exely answers reliably at request time and unreliably during `next build`.
+ * On 2026-08-06 a build got the A-frame and not the chalet, and because the
+ * result is cached for six hours and the page was fully static, the chalet page
+ * advertised "Цена при бронировании" while the engine was quite happily quoting
+ * 3 000 000 сум to anyone who asked. The operator noticed before we did.
+ *
+ * A partial answer is indistinguishable from "sold out" in the payload, so this
+ * cannot be fixed by inspecting the response — but a gap is cheap to re-probe
+ * and expensive to serve, so it is re-probed. A complete answer never reaches
+ * this path, which is the normal case.
+ */
+export async function getRoomPrices(): Promise<Record<string, number>> {
+  const cached = await cachedPrices();
+  if (Object.keys(cached).length >= EXPECTED) return cached;
+
+  const fresh = await fetchPrices().catch(() => ({}) as Record<string, number>);
+  // Merge rather than replace: the retry may itself come back short, and a
+  // price we already had is better than a blank chip.
+  return { ...cached, ...fresh };
+}
 
 /** 1500000 -> "1 500 000" with non-breaking spaces, matching lib/tariff money(). */
 function group(n: number): string {
