@@ -12,6 +12,7 @@ import {
 import { legalPolicies } from "@/content/policies-legal";
 import { rooms } from "@/content/rooms";
 import { fields } from "@/lib/price-catalog";
+import { resolvePricing } from "@/lib/pricing-resolve";
 import { money, venueCore, venueFacts } from "@/lib/venue-facts";
 
 /**
@@ -281,4 +282,26 @@ describe("stay rules — what the AI is briefed on", () => {
       expect(text).toMatch(/4 взрослых и ребёнок 6 лет в шале/);
     });
   }
+});
+
+describe("брифинги следуют правкам оператора, а не константам", () => {
+  it("изменённая цена бассейна попадает в оба брифинга", () => {
+    // The whole point of the pricing rewiring: an assistant that keeps quoting
+    // the old figure contradicts the page it sits on, which is worse than
+    // saying nothing.
+    const patched = resolvePricing({ "pool.adult.weekday": 137_000 });
+    expect(venueCore(patched)).toContain(money(137_000));
+    expect(venueFacts(patched)).toContain(money(137_000));
+  });
+
+  it("изменённая доплата за человека тоже", () => {
+    const patched = resolvePricing({ "extraGuest.adult": 555_000 });
+    expect(venueCore(patched)).toContain(money(555_000));
+    expect(venueFacts(patched)).toContain(money(555_000));
+  });
+
+  it("без правок брифинг тот же, что и был", () => {
+    expect(venueCore(resolvePricing())).toBe(venueCore());
+    expect(venueFacts(resolvePricing())).toBe(venueFacts());
+  });
 });

@@ -1,5 +1,6 @@
 import { contacts } from "@/content/contacts";
 import { venueCore } from "@/lib/venue-facts";
+import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 
 /**
  * Builds the system prompt for the guest-facing AI concierge on the site.
@@ -9,7 +10,10 @@ import { venueCore } from "@/lib/venue-facts";
  * adds only the guest-specific parts: role, live-availability tool rules,
  * clickable links, and answer style.
  */
-export function buildSystemPrompt(locale: "ru" | "uz" | "en"): string {
+export function buildSystemPrompt(
+  locale: "ru" | "uz" | "en",
+  live: LivePricing = resolvePricing(),
+): string {
   const langName =
     locale === "uz" ? "Uzbek (o'zbek tilida)" : locale === "en" ? "English" : "Russian (по-русски)";
 
@@ -20,7 +24,7 @@ export function buildSystemPrompt(locale: "ru" | "uz" | "en"): string {
 
 Сегодня: ${today}. Даты для проверки доступности вычисляй относительно этой даты.
 
-${venueCore()}
+${venueCore(live)}
 
 ССЫЛКИ (вставляй их СТРОГО в формате Markdown [текст](URL); других ссылок не выдумывай):
 - Онлайн-бронирование: [страница бронирования](/${locale}/bron)

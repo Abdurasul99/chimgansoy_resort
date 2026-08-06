@@ -1,4 +1,5 @@
 import { venueFacts } from "@/lib/venue-facts";
+import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 
 /**
  * The venue briefing, split so the model can be given a little and ask for more.
@@ -66,8 +67,8 @@ const HEADINGS = [
 ];
 
 /** The detail behind one topic, as plain text for the model to read. */
-export function venueTopic(topic: Topic): string {
-  const all = venueFacts();
+export function venueTopic(topic: Topic, live: LivePricing = resolvePricing()): string {
+  const all = venueFacts(live);
   const grab = (h: string) => section(all, h, HEADINGS.filter((x) => x !== h));
 
   switch (topic) {

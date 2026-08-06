@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { buildSystemPrompt, languageDirective } from "@/lib/ai-context";
+import { getPricing } from "@/lib/pricing-live";
 import { checkAvailability } from "@/lib/exely";
 import { getChimganWeather, weatherInfo } from "@/lib/bot-weather";
 import { venueTopic, type Topic } from "@/lib/venue-topics";
@@ -245,7 +246,7 @@ export async function POST(req: NextRequest) {
     content: languageDirective(history[history.length - 1].content, locale),
   };
   const messages: GroqMsg[] = [
-    { role: "system", content: buildSystemPrompt(locale) },
+    { role: "system", content: buildSystemPrompt(locale, await getPricing()) },
     ...history,
     langDirective,
   ];

@@ -32,6 +32,7 @@ import { extraGuestPricing, parkingPricing, priceList, topchanPricing, tubingPri
 import { money } from "./venue-facts";
 import { ridesRu } from "./tariff";
 import { recentRequests, requestsByDate, storeConfigured, type StoredRequest } from "./requests-store";
+import { getPricing } from "./pricing-live";
 
 const SITE = "https://chimgandarbaza.uz";
 const BOOK_URL = `${SITE}/ru/bron`;
@@ -268,7 +269,9 @@ async function renderWeather(): Promise<View> {
   };
 }
 
-function renderPrices(): View {
+async function renderPrices(): Promise<View> {
+  // Operator tariff, so the bot never quotes a price the site has moved past.
+  const live = await getPricing();
   const rows = priceList.map((p) => {
     const sub = p.subtitle ? ` (${esc(p.subtitle.ru)})` : "";
     return `• ${esc(p.title.ru)}${sub} — <b>${money(p.weekday)}</b> / <b>${money(p.weekend)}</b>`;
@@ -278,7 +281,7 @@ function renderPrices(): View {
       "<b>🏷 Цены на день</b>",
       "<i>будни (Пн–Чт) / выходные (Пт–Вс), в сумах</i>",
       "",
-      `🛖 <b>Топчан</b> (до ${topchanPricing.capacity} чел.) — <b>${money(topchanPricing.rent.weekday)}</b> / <b>${money(topchanPricing.rent.weekend)}</b>`,
+      `🛖 <b>Топчан</b> (до ${topchanPricing.capacity} чел.) — <b>${money(live.topchan.weekday)}</b> / <b>${money(live.topchan.weekend)}</b>`,
       "",
       // Tubing is priced per package of rides, so it cannot sit in the two-column
       // weekday/weekend table above without implying a band it does not have.
@@ -287,7 +290,7 @@ function renderPrices(): View {
         .join(" · ")} <i>(цена одна всю неделю)</i>`,
       // Parking is charged to tubing visitors only, so it is stated beside
       // tubing rather than as a line everyone reads as applying to them.
-      `🚗 <b>Парковка</b> (1 авто, только для тюбинга) — <b>${money(parkingPricing.weekday)}</b> / <b>${money(parkingPricing.weekend)}</b>`,
+      `🚗 <b>Парковка</b> (1 авто, только для тюбинга) — <b>${money(live.parking.weekday)}</b> / <b>${money(live.parking.weekend)}</b>`,
       "<i>Проживающим, гостям бассейна и топчана парковка бесплатна.</i>",
       "",
       "<b>Аренда и расходники:</b>",
@@ -301,10 +304,10 @@ function renderPrices(): View {
       // The three charges that a guest only meets at the door if nobody says
       // them out loud. Same figures as the room pages and the AI briefing.
       "<b>➕ Дополнительное место за ночь</b> (в глэмпинге и шале одинаково):",
-      `• Взрослый — <b>${money(extraGuestPricing.adult)}</b>`,
-      `• Ребёнок ${extraGuestPricing.childFrom}–${extraGuestPricing.childTo} лет — <b>${money(extraGuestPricing.child)}</b>`,
+      `• Взрослый — <b>${money(live.extraGuest.adult)}</b>`,
+      `• Ребёнок ${extraGuestPricing.childFrom}–${extraGuestPricing.childTo} лет — <b>${money(live.extraGuest.child)}</b>`,
       `• Дети 0–${extraGuestPricing.freeThroughAge} лет — <b>бесплатно</b>`,
-      `🚪 Гостевой визит в шале (без ночёвки) — <b>${money(extraGuestPricing.guestVisitCottage)}</b>`,
+      `🚪 Гостевой визит в шале (без ночёвки) — <b>${money(live.extraGuest.guestVisitCottage)}</b>`,
       "",
       "<i>Ранний заезд и поздний выезд — за доплату, по загрузке. Дополнительно взимается обязательный туристский сбор.</i>",
     ].join("\n"),
@@ -545,7 +548,7 @@ async function viewFor(action: string): Promise<View> {
     case "weather":
       return renderWeather();
     case "prices":
-      return renderPrices();
+      return await renderPrices();
     case "contacts":
       return renderContacts();
     case "book":

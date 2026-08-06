@@ -12,6 +12,7 @@ import { getChimganWeather, weatherInfo } from "./bot-weather";
 import { venueFacts } from "./venue-facts";
 import { contacts } from "@/content/contacts";
 import { aiTargets, callAiModel, shouldFallThrough, type AiTarget } from "./ai-provider";
+import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -108,7 +109,7 @@ function calendarLines(days = 14): string {
   return out.join("\n");
 }
 
-function systemPrompt(): string {
+function systemPrompt(live: LivePricing = resolvePricing()): string {
   return [
     "Ты — дружелюбный ИИ-консьерж горного комплекса CHIMGAN DARBAZA (Чимган, Узбекистан) в Telegram.",
     "Ты общаешься с ГОСТЯМИ: цены, свободные даты, бронирование, услуги, как добраться.",
@@ -117,7 +118,7 @@ function systemPrompt(): string {
     calendarLines(),
     "",
     "═══ ЗНАНИЯ О КОМПЛЕКСЕ (отвечай по ним напрямую) ═══",
-    venueFacts(),
+    venueFacts(live),
     "═══════════════════════════════════════════════════════════════════",
     "",
     "ЖИВЫЕ ДАННЫЕ: public_prices — реальные цены и доступность ПРОЖИВАНИЯ (Глэмпинг/Шале) на",
