@@ -1,4 +1,7 @@
 import { dictionaries } from "@/content/translations";
+import { topchanPricing } from "@/content/pricing";
+import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
+import { money } from "@/lib/venue-facts";
 import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
 import { HeroSlideshow } from "@/components/sections/HeroSlideshow";
@@ -9,14 +12,25 @@ import { Icon } from "@/components/ui/Icon";
 
 type HeroProps = {
   locale: Locale;
+  /** Live tariff; defaults to the code's constants for a standalone render. */
+  pricing?: LivePricing;
 };
 
-/** Second line of the pool CTA — the terms that make it worth a tap. */
-const poolHint: Record<Locale, string> = {
-  ru: "Тариф на целый день · от 100 000 сум · заявка за минуту",
-  uz: "Kun bo'yi tarif · 100 000 so'mdan · bir daqiqada ariza",
-  en: "Full-day pass · from 100 000 UZS · a one-minute request",
-};
+/**
+ * Second line of the pool CTA — the terms that make it worth a tap.
+ *
+ * A function of the tariff rather than a string. This is the most visible price
+ * on the site, and it used to be prose: neither an admin edit nor a change to
+ * pricing.ts could reach it, only a rewrite of this file.
+ */
+function poolHint(live: LivePricing, locale: Locale): string {
+  const from = money(live.pool.adult.weekday);
+  return {
+    ru: `Тариф на целый день · от ${from} сум · заявка за минуту`,
+    uz: `Kun bo'yi tarif · ${from} so'mdan · bir daqiqada ariza`,
+    en: `Full-day pass · from ${from} UZS · a one-minute request`,
+  }[locale];
+}
 
 /**
  * The two day products sold beside the pool.
@@ -25,31 +39,46 @@ const poolHint: Record<Locale, string> = {
  * homepage leads on — but each has its own page and its own request form, so
  * each needs its own way out of the first screen rather than being buried in
  * the navigation.
+ *
+ * Prices come from the tariff: the topchan rate and the CHEAPEST tubing
+ * package, so the "от" stays true whatever the operator sets in the admin.
  */
-const dayCtas: { href: string; icon: "topchan" | "snowflake"; label: Record<Locale, string>; hint: Record<Locale, string> }[] = [
-  {
-    href: "/topchan#request",
-    icon: "topchan",
-    label: { ru: "Топчан", uz: "Topchan", en: "Topchan" },
-    hint: {
-      ru: "до 8 гостей · от 150 000 сум",
-      uz: "8 kishigacha · 150 000 so'mdan",
-      en: "up to 8 guests · from 150 000 UZS",
-    },
-  },
-  {
-    href: "/tubing#request",
-    icon: "snowflake",
-    label: { ru: "Тюбинг горка", uz: "Tubing gorkasi", en: "Tubing hill" },
-    hint: {
-      ru: "2 или 4 спуска · от 50 000 сум",
-      uz: "2 yoki 4 marta · 50 000 so'mdan",
-      en: "2 or 4 rides · from 50 000 UZS",
-    },
-  },
-];
+function dayCtas(
+  live: LivePricing,
+  locale: Locale,
+): { href: string; icon: "topchan" | "snowflake"; label: string; hint: string }[] {
+  const topchan = money(live.topchan.weekday);
+  const ride = money(Math.min(...live.tubing.packages.map((p) => p.price)));
+  const cap = topchanPricing.capacity;
+  const rides = live.tubing.packages.map((p) => p.rides).join(" / ");
 
-export function Hero({ locale }: HeroProps) {
+  return [
+    {
+      href: "/topchan#request",
+      icon: "topchan",
+      label: { ru: "Топчан", uz: "Topchan", en: "Topchan" }[locale],
+      hint: {
+        ru: `до ${cap} гостей · от ${topchan} сум`,
+        uz: `${cap} kishigacha · ${topchan} so'mdan`,
+        en: `up to ${cap} guests · from ${topchan} UZS`,
+      }[locale],
+    },
+    {
+      href: "/tubing#request",
+      icon: "snowflake",
+      label: { ru: "Тюбинг горка", uz: "Tubing gorkasi", en: "Tubing hill" }[locale],
+      hint: {
+        ru: `${rides} спуска · от ${ride} сум`,
+        uz: `${rides} marta · ${ride} so'mdan`,
+        en: `${rides} rides · from ${ride} UZS`,
+      }[locale],
+    },
+  ];
+}
+
+export function Hero({ locale, pricing }: HeroProps) {
+  const live = pricing ?? resolvePricing();
+  const ctas = dayCtas(live, locale);
   const dict = dictionaries[locale];
 
   return (
@@ -316,7 +345,7 @@ export function Hero({ locale }: HeroProps) {
                   {dict.home.heroPoolCta}
                 </span>
                 <span className="mt-1 block text-[0.8rem] font-semibold leading-snug opacity-75 sm:text-[0.88rem]">
-                  {poolHint[locale]}
+                  {poolHint(live, locale)}
                 </span>
               </span>
               <span
@@ -331,7 +360,7 @@ export function Hero({ locale }: HeroProps) {
                 photograph rather than gold: three solid gold blocks would fight
                 each other and the pool would stop reading as the lead. */}
             <div className="mb-3 grid grid-cols-2 gap-2 sm:gap-3">
-              {dayCtas.map((cta) => (
+              {ctas.map((cta) => (
                 <a
                   key={cta.href}
                   href={localizePath(locale, cta.href)}
@@ -345,10 +374,10 @@ export function Hero({ locale }: HeroProps) {
                       ends in "Тюбин…" tells a guest nothing. */}
                   <span className="min-w-0 flex-1">
                     <span className="block text-[0.9rem] font-extrabold leading-tight sm:text-[1.05rem]">
-                      {cta.label[locale]}
+                      {cta.label}
                     </span>
                     <span className="mt-0.5 block text-[0.7rem] font-semibold leading-snug text-white/70 sm:text-[0.78rem]">
-                      {cta.hint[locale]}
+                      {cta.hint}
                     </span>
                   </span>
                   <span

@@ -23,7 +23,7 @@ export function FaqJsonLd({ locale }: { locale: Locale }) {
   const data = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: faqItems.map((item) => ({
+    mainEntity: faqItems().map((item) => ({
       "@type": "Question",
       name: text(item.question, locale),
       acceptedAnswer: {

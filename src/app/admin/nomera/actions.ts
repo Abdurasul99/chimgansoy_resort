@@ -32,17 +32,22 @@ export async function saveRoom(_prev: RoomFormState, formData: FormData): Promis
 
   const amenities = lines(formData.get("amenities"));
   const features = lines(formData.get("features"));
+  const data = await readForEdit();
+  // Both halves of the library: the studio registry and the operator uploads.
+  // Filtering on resortImages alone would silently drop every uploaded photo.
+  const known = new Set([...Object.keys(resortImages), ...data.photos.map((p) => p.id)]);
   const gallery = String(formData.get("gallery") ?? "")
     .split(",")
     .map((s) => s.trim())
-    .filter((k) => k && k in resortImages);
+    .filter((k) => known.has(k));
   const priceNote = String(formData.get("priceNote") ?? "").trim().slice(0, 120);
+  const priceRaw = String(formData.get("priceFrom") ?? "").replace(/[^0-9]/g, "");
+  const priceFrom = priceRaw ? Math.min(Number(priceRaw), 999_000_000) : 0;
 
   if (gallery.length === 0) {
     return { error: "Выберите хотя бы одну фотографию." };
   }
 
-  const data = await readForEdit();
   // An empty textarea means "use the code's list", not "show nothing". Clearing
   // a field is how the operator undoes their own edit and goes back to default.
   const next = {
@@ -52,6 +57,8 @@ export async function saveRoom(_prev: RoomFormState, formData: FormData): Promis
     // is a mistake rather than an intention, and it is rejected above.
     gallery,
     ...(priceNote ? { priceNote } : {}),
+    // Ноль означает «вернуться к цене из Exely», а не «бесплатно».
+    ...(priceFrom > 0 ? { priceFrom } : {}),
   };
 
   const res = await saveOverrides({ ...data, rooms: { ...data.rooms, [slug]: next } });

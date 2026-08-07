@@ -1,7 +1,9 @@
 import { AdminHeading } from "../AdminShell";
 import { RoomForm, type PhotoOption, type RoomEditor } from "./RoomForm";
+import { PhotoLibrary } from "./PhotoLibrary";
 import { resolveRooms } from "@/lib/rooms-live";
 import { readForEdit } from "@/lib/site-overrides";
+import { getRoomPrices } from "@/lib/room-price";
 import { resortImages } from "@/content/images";
 
 /**
@@ -11,8 +13,9 @@ import { resortImages } from "@/content/images";
  * no room tag on an image, and guessing one from the key would quietly hide
  * frames the operator wanted. They can see the pictures; they can decide.
  */
-function photoOptions(): PhotoOption[] {
-  return Object.entries(resortImages)
+function photoOptions(uploaded: { id: string; url: string; alt: string }[]): PhotoOption[] {
+  const own: PhotoOption[] = uploaded.map((p) => ({ key: p.id, src: p.url, alt: p.alt }));
+  const registry = Object.entries(resortImages)
     .map(([key, img]) => ({
       key,
       src: img.localSrc ?? img.src,
@@ -20,20 +23,26 @@ function photoOptions(): PhotoOption[] {
     }))
     .filter((p) => p.src.startsWith("/images/"))
     .sort((a, b) => a.key.localeCompare(b.key));
+  // Uploads first: they are the ones the operator just added and is looking for.
+  return [...own, ...registry];
 }
 
 export default async function Page() {
   const overrides = await readForEdit();
   const storeReady = Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
-  const photos = photoOptions();
+  const photos = photoOptions(overrides.photos);
+  // Shown beside the field so the operator can see the number they override.
+  const enginePrices = await getRoomPrices();
 
   const editors: RoomEditor[] = resolveRooms(overrides).map((r) => ({
     slug: r.base.slug,
     title: r.base.title.ru,
     amenities: r.amenities("ru"),
     features: r.features("ru"),
-    gallery: r.gallery,
+    gallery: r.galleryKeys,
     priceNote: r.priceNote,
+    priceFrom: r.priceFrom,
+    enginePrice: enginePrices[r.base.slug],
     edited: r.edited,
   }));
 
@@ -43,6 +52,10 @@ export default async function Page() {
         title="Домики"
         hint="Что написано и какие фотографии стоят на страницах глэмпинга, шале и бассейна."
       />
+
+      <div className="mb-8">
+        <PhotoLibrary photos={overrides.photos} storeReady={storeReady} />
+      </div>
 
       <div className="space-y-8">
         {editors.map((room) => (

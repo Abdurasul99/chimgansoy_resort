@@ -38,6 +38,16 @@ export const OVERRIDES_TAG = "site-overrides";
 /** Bumped only for a breaking shape change; a mismatch is treated as empty. */
 const VERSION = 1;
 
+export type UploadedPhoto = {
+  /** Стабильный ключ, которым на него ссылается галерея домика. */
+  id: string;
+  url: string;
+  alt: string;
+  width: number;
+  height: number;
+  uploadedAt: string;
+};
+
 export type NewsItem = {
   id: string;
   /** YYYY-MM-DD, the date shown to a guest. */
@@ -75,12 +85,26 @@ export type OverrideData = {
     string,
     {
       priceNote?: string;
+      /**
+       * «от … сум / ночь» на карточке и на странице домика.
+       *
+       * Перебивает живую цену из Exely. Оператор попросил это прямо, зная,
+       * что движок продолжит считать по своей ставке — см. комментарий в
+       * lib/rooms-live.ts.
+       */
+      priceFrom?: number;
       amenities?: string[];
       features?: string[];
       /** Keys of resortImages, in the order they should appear. */
       gallery?: string[];
     }
   >;
+  /**
+   * Фотографии, загруженные оператором. Хранятся отдельно от реестра в коде:
+   * реестр — это то, что снято и обработано для сайта, а это — то, что
+   * оператор добавил сам. Ссылка ведёт в Blob, файл уже сжат при загрузке.
+   */
+  photos: UploadedPhoto[];
   news: NewsItem[];
 };
 
@@ -91,7 +115,7 @@ export type Overrides = {
   data: OverrideData;
 };
 
-export const EMPTY: OverrideData = { prices: {}, services: {}, customServices: [], rooms: {}, news: [] };
+export const EMPTY: OverrideData = { prices: {}, services: {}, customServices: [], rooms: {}, photos: [], news: [] };
 
 function configured(): boolean {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
@@ -146,7 +170,11 @@ function coerce(raw: unknown): OverrideData {
       Array.isArray(x)
         ? x.filter((i): i is string => typeof i === "string" && i.trim().length > 0).map((i) => i.trim())
         : undefined;
+    const priceFrom = typeof r.priceFrom === "number" && Number.isFinite(r.priceFrom) && r.priceFrom > 0
+      ? Math.round(r.priceFrom)
+      : undefined;
     rooms[slug] = {
+      priceFrom,
       priceNote: typeof r.priceNote === "string" && r.priceNote.trim() ? r.priceNote.trim() : undefined,
       amenities: list(r.amenities),
       features: list(r.features),
@@ -154,7 +182,20 @@ function coerce(raw: unknown): OverrideData {
     };
   }
 
-  return { prices, services, customServices, rooms, news };
+  const photos = Array.isArray(d.photos)
+    ? d.photos.filter(
+        (p): p is UploadedPhoto =>
+          !!p &&
+          typeof p === "object" &&
+          typeof p.id === "string" &&
+          typeof p.url === "string" &&
+          // Only our own store: a URL from anywhere else would let a saved
+          // document point the site at someone else's server.
+          /^https:\/\/[a-z0-9-]+\.public\.blob\.vercel-storage\.com\//.test(p.url),
+      )
+    : [];
+
+  return { prices, services, customServices, rooms, photos, news };
 }
 
 async function fetchOverrides(): Promise<OverrideData> {

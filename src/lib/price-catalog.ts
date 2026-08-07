@@ -1,5 +1,6 @@
 import {
   dayUse,
+  depositPricing,
   extraGuestPricing,
   parkingPricing,
   poolPricing,
@@ -130,6 +131,13 @@ export function fields(): PriceField[] {
       label: "Парковка, Пт–Вс",
       hint: "за автомобиль",
       value: parkingPricing.weekend,
+    },
+    {
+      key: "deposit.perCabin",
+      group: "Проживание",
+      label: "Возвратный депозит за домик",
+      hint: "берётся при заселении, возвращается при выезде",
+      value: depositPricing.perCabin,
     },
     {
       key: "touristTax.resident",

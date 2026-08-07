@@ -1,5 +1,6 @@
 import {
   dayUse,
+  depositPricing,
   extraGuestPricing,
   parkingPricing,
   poolPricing,
@@ -44,6 +45,7 @@ export type LivePricing = {
   extras: { key: string; weekday: number; weekend: number }[];
   extraGuest: { adult: number; child: number; guestVisitCottage: number };
   touristTax: { resident: number; nonResident: number };
+  deposit: number;
 };
 
 /** A patched value, or the code's own — anything invalid falls back silently. */
@@ -115,6 +117,7 @@ export function resolvePricing(patch: Record<string, number> = {}): LivePricing 
       resident: pick(patch, "touristTax.resident", touristTax.resident),
       nonResident: pick(patch, "touristTax.nonResident", touristTax.nonResident),
     },
+    deposit: pick(patch, "deposit.perCabin", depositPricing.perCabin),
   };
 }
 

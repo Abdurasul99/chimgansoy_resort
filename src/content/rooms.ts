@@ -293,12 +293,16 @@ export const rooms: Room[] = [
       // cheap tariff — the poster and the booking form both charge Friday at
       // the weekend rate, so the page was quoting a price the form would not
       // honour.
-      ru: "Гостям глэмпинга и шале бассейн включён в стоимость проживания — отдельно бронировать не нужно. Приехать только на бассейн, без ночёвки, тоже можно, гостей без ограничения: 100 000 сум с человека в будни (Пн–Чт) и 200 000 сум в выходные (Пт–Вс), дети 5–15 лет вдвое дешевле, до 5 лет бесплатно. Оставьте заявку ниже — администратор перезвонит и подтвердит время. Рядом кухня и зона мангала.",
-      uz: "Glemping va shale mehmonlari uchun basseyn yashash narxiga kiritilgan — alohida bron qilish shart emas. Faqat basseynga, tunamasdan kelish ham mumkin, mehmonlar soni cheklanmagan: ish kunlari (Du–Pay) bir kishidan 100 000 so'm, dam olish kunlari (Ju–Yak) 200 000 so'm, 5–15 yoshli bolalar ikki barobar arzon, 5 yoshgacha bepul. Quyida ariza qoldiring — administrator qo'ng'iroq qilib, vaqtni tasdiqlaydi. Yaqinida oshxona va mangal zonasi.",
-      en: "For glamping and chalet guests the pool is included in the room rate — no separate booking needed. Coming just for the pool, without an overnight stay, also works, with no cap on group size: 100 000 UZS per person Mon–Thu and 200 000 UZS Fri–Sun, half price for children 5–15 and free under five. Send a request below and our administrator will call back to confirm the time. The kitchen and BBQ area are nearby.",
+      ru: "Гостям глэмпинга и шале бассейн включён в стоимость проживания — отдельно бронировать не нужно. Приехать только на бассейн, без ночёвки, тоже можно, гостей без ограничения. Тариф с человека зависит от дня недели, дети 5–15 лет вдвое дешевле, до 5 лет бесплатно — суммы в форме заявки ниже. Оставьте заявку ниже — администратор перезвонит и подтвердит время. Рядом кухня и зона мангала.",
+      uz: "Glemping va shale mehmonlari uchun basseyn yashash narxiga kiritilgan — alohida bron qilish shart emas. Faqat basseynga, tunamasdan kelish ham mumkin, mehmonlar soni cheklanmagan. Bir kishidan tarif hafta kuniga bog'liq, 5–15 yoshli bolalar ikki barobar arzon, 5 yoshgacha bepul — summalar quyidagi ariza shaklida. Quyida ariza qoldiring — administrator qo'ng'iroq qilib, vaqtni tasdiqlaydi. Yaqinida oshxona va mangal zonasi.",
+      en: "For glamping and chalet guests the pool is included in the room rate — no separate booking needed. Coming just for the pool, without an overnight stay, also works, with no cap on group size. The per-person rate depends on the day of the week, children 5–15 are half price and under-fives are free — the figures are in the request form below. Send a request below and our administrator will call back to confirm the time. The kitchen and BBQ area are nearby.",
     },
     // Fixed tariff now — the engine no longer prices this one.
-    priceFrom: { ru: "от 100 000 сум с человека", uz: "100 000 so'mdan bir kishidan", en: "from 100 000 UZS per person" },
+    // Число не дублируется здесь: страница бассейна печатает чип из живого
+    // тарифа (poolPriceChip), а этот текст — запасной вариант, если тариф
+    // почему-то не прочитался. Цифра в двух местах разошлась бы при первой же
+    // правке в админке.
+    priceFrom: { ru: "тариф с человека", uz: "bir kishidan tarif", en: "per-person rate" },
     capacity: { ru: "без ограничения по гостям", uz: "mehmonlar soni cheklanmagan", en: "any group size" },
     size: { ru: "Открытый бассейн 680 м²", uz: "680 m² ochiq basseyn", en: "680 m² outdoor pool" },
     amenities: {

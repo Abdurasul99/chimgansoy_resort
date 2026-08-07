@@ -1,4 +1,6 @@
 import type { LocalizedString } from "./types";
+import { money } from "@/lib/venue-facts";
+import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 
 export type FaqItem = {
   question: LocalizedString;
@@ -15,7 +17,32 @@ export type FaqItem = {
  * and venue-facts.ts, and was the version Google had indexed. Stays lead now;
  * the day visit is the last entry, not the premise.
  */
-export const faqItems: FaqItem[] = [
+/**
+ * Built from the live tariff rather than declared as data.
+ *
+ * The answers quote prices, and they double as FAQPage JSON-LD — a figure that
+ * lags behind the admin is wrong in Google's rich result too, which a guest
+ * reads before the site.
+ */
+export function faqItems(live: LivePricing = resolvePricing()): FaqItem[] {
+  const P = {
+    poolAdultWeekday: money(live.pool.adult.weekday),
+    poolAdultWeekend: money(live.pool.adult.weekend),
+    poolChildWeekday: money(live.pool.child.weekday),
+    poolChildWeekend: money(live.pool.child.weekend),
+    towel: money(live.pool.extras.towel),
+    bungalow4: money(live.pool.extras.bungalow4),
+    bungalow10: money(live.pool.extras.bungalow10),
+    topchanWeekday: money(live.topchan.weekday),
+    topchanWeekend: money(live.topchan.weekend),
+    parkingWeekday: money(live.parking.weekday),
+    parkingWeekend: money(live.parking.weekend),
+    ride2: money(live.tubing.packages.find((p) => p.rides === 2)?.price ?? 0),
+    ride4: money(live.tubing.packages.find((p) => p.rides === 4)?.price ?? 0),
+    deposit: money(live.deposit),
+  };
+
+  return [
   {
     question: {
       ru: "Какие форматы проживания есть?",
@@ -35,9 +62,9 @@ export const faqItems: FaqItem[] = [
       en: "Is the pool included in the room rate?",
     },
     answer: {
-      ru: "Да. Гостям шале и глэмпинга бассейн включён в стоимость — отдельно бронировать не нужно. Без проживания — дневной билет: взрослые и дети от 15 лет 100 000 сум в будни (Пн–Чт) и 200 000 сум в выходные (Пт–Вс); дети 5–15 лет — 50 000 и 100 000 сум; до 5 лет бесплатно со взрослыми. Полотенце 30 000 сум, бунгало 300 000 (до 4 чел.) или 500 000 сум (до 10 чел.) — входные билеты в аренду бунгало не входят. Бассейн работает ежедневно 08:00–20:00, заявка — формой на странице бассейна.",
-      uz: "Ha. Shale va glemping mehmonlari uchun basseyn narxga kiritilgan — alohida bron qilish shart emas. Yashashsiz — kunlik chipta: kattalar va 15 yoshdan katta bolalar ish kunlari (Du–Pay) 100 000 so'm, dam olish kunlari (Ju–Yak) 200 000 so'm; 5–15 yoshli bolalar — 50 000 va 100 000 so'm; 5 yoshgacha kattalar bilan bepul. Sochiq 30 000 so'm, bungalo 300 000 (4 kishigacha) yoki 500 000 so'm (10 kishigacha) — kirish chiptalari bungalo ijarasiga kirmaydi. Basseyn har kuni 08:00–20:00, ariza — basseyn sahifasidagi shakl orqali.",
-      en: "Yes. For chalet and glamping guests the pool is included in the rate — no separate booking needed. Without a stay — a day pass: adults and ages 15+ pay 100 000 UZS Mon–Thu and 200 000 UZS Fri–Sun; children 5–15 pay 50 000 and 100 000; under-fives are free with an adult. Towel 30 000, bungalow 300 000 (up to 4) or 500 000 UZS (up to 10) — entry tickets are not included in a bungalow. The pool is open daily 08:00–20:00; requests go through the form on the pool page.",
+      ru: `Да. Гостям шале и глэмпинга бассейн включён в стоимость — отдельно бронировать не нужно. Без проживания — дневной билет: взрослые и дети от 15 лет ${P.poolAdultWeekday} сум в будни (Пн–Чт) и ${P.poolAdultWeekend} сум в выходные (Пт–Вс); дети 5–15 лет — 50 000 и ${P.poolAdultWeekday} сум; до 5 лет бесплатно со взрослыми. Полотенце ${P.towel} сум, бунгало 300 000 (до 4 чел.) или ${P.bungalow10} сум (до 10 чел.) — входные билеты в аренду бунгало не входят. Бассейн работает ежедневно 08:00–20:00, заявка — формой на странице бассейна.`,
+      uz: `Ha. Shale va glemping mehmonlari uchun basseyn narxga kiritilgan — alohida bron qilish shart emas. Yashashsiz — kunlik chipta: kattalar va 15 yoshdan katta bolalar ish kunlari (Du–Pay) ${P.poolAdultWeekday} so'm, dam olish kunlari (Ju–Yak) ${P.poolAdultWeekend} so'm; 5–15 yoshli bolalar — 50 000 va ${P.poolAdultWeekday} so'm; 5 yoshgacha kattalar bilan bepul. Sochiq ${P.towel} so'm, bungalo 300 000 (4 kishigacha) yoki ${P.bungalow10} so'm (10 kishigacha) — kirish chiptalari bungalo ijarasiga kirmaydi. Basseyn har kuni 08:00–20:00, ariza — basseyn sahifasidagi shakl orqali.`,
+      en: `Yes. For chalet and glamping guests the pool is included in the rate — no separate booking needed. Without a stay — a day pass: adults and ages 15+ pay ${P.poolAdultWeekday} UZS Mon–Thu and ${P.poolAdultWeekend} UZS Fri–Sun; children 5–15 pay 50 000 and 100 000; under-fives are free with an adult. Towel 30 000, bungalow 300 000 (up to 4) or ${P.bungalow10} UZS (up to 10) — entry tickets are not included in a bungalow. The pool is open daily 08:00–20:00; requests go through the form on the pool page.`,
     },
   },
   {
@@ -83,9 +110,10 @@ export const faqItems: FaqItem[] = [
       en: "Can we come for the day, without staying over?",
     },
     answer: {
-      ru: "Да, на день можно приехать тремя способами. Топчан — 150 000 сум в будни (Пн–Чт) и 300 000 в выходные (Пт–Вс) за топчан целиком, до 8 гостей. Бассейн — 100 000 и 200 000 сум с человека, дети 5–15 вдвое дешевле, до 5 лет бесплатно. Тюбинг-горка — 50 000 сум за 2 спуска и 100 000 за 4, цена одна всю неделю. Вход на территорию бесплатный; парковка платная только для тюбинга — 50 000 и 100 000 сум за автомобиль. У каждого формата своя форма заявки на сайте — администратор перезвонит и подтвердит.",
-      uz: "Ha, bir kunga uch xil kelish mumkin. Topchan — ish kunlari (Du–Pay) 150 000 so'm, dam olish kunlari (Ju–Yak) 300 000 so'm butun topchan uchun, 8 kishigacha. Basseyn — bir kishidan 100 000 va 200 000 so'm, 5–15 yosh ikki barobar arzon, 5 yoshgacha bepul. Tubing gorkasi — 2 marta uchish 50 000 so'm, 4 marta 100 000 so'm, narx butun hafta bir xil. Hududga kirish bepul; parkovka faqat tubing uchun to'lanadi — avtomobil uchun 50 000 va 100 000 so'm. Har bir formatning saytda o'z arizasi bor — administrator qo'ng'iroq qilib tasdiqlaydi.",
-      en: "Yes, in three ways. A topchan costs 150 000 UZS Mon–Thu and 300 000 Fri–Sun for the whole platform, seating up to 8. The pool is 100 000 and 200 000 UZS per person, half price for ages 5–15 and free under five. The tubing hill is 50 000 UZS for 2 rides and 100 000 for 4, at one price all week. Entry to the grounds is free; parking is charged for tubing only, at 50 000 and 100 000 UZS per car. Each has its own request form on the site, and the administrator calls back to confirm.",
+      ru: `Да, на день можно приехать тремя способами. Топчан — ${P.topchanWeekday} сум в будни (Пн–Чт) и 300 000 в выходные (Пт–Вс) за топчан целиком, до 8 гостей. Бассейн — 100 000 и ${P.poolAdultWeekend} сум с человека, дети 5–15 вдвое дешевле, до 5 лет бесплатно. Тюбинг-горка — ${P.ride2} сум за 2 спуска и 100 000 за 4, цена одна всю неделю. Вход на территорию бесплатный; парковка платная только для тюбинга — 50 000 и ${P.poolAdultWeekday} сум за автомобиль. У каждого формата своя форма заявки на сайте — администратор перезвонит и подтвердит.`,
+      uz: `Ha, bir kunga uch xil kelish mumkin. Topchan — ish kunlari (Du–Pay) ${P.topchanWeekday} so'm, dam olish kunlari (Ju–Yak) ${P.topchanWeekend} so'm butun topchan uchun, 8 kishigacha. Basseyn — bir kishidan 100 000 va ${P.poolAdultWeekend} so'm, 5–15 yosh ikki barobar arzon, 5 yoshgacha bepul. Tubing gorkasi — 2 marta uchish ${P.ride2} so'm, 4 marta ${P.poolAdultWeekday} so'm, narx butun hafta bir xil. Hududga kirish bepul; parkovka faqat tubing uchun to'lanadi — avtomobil uchun 50 000 va ${P.poolAdultWeekday} so'm. Har bir formatning saytda o'z arizasi bor — administrator qo'ng'iroq qilib tasdiqlaydi.`,
+      en: `Yes, in three ways. A topchan costs ${P.topchanWeekday} UZS Mon–Thu and 300 000 Fri–Sun for the whole platform, seating up to 8. The pool is 100 000 and ${P.poolAdultWeekend} UZS per person, half price for ages 5–15 and free under five. The tubing hill is ${P.ride2} UZS for 2 rides and 100 000 for 4, at one price all week. Entry to the grounds is free; parking is charged for tubing only, at 50 000 and ${P.poolAdultWeekday} UZS per car. Each has its own request form on the site, and the administrator calls back to confirm.`,
     },
   },
-];
+  ];
+}

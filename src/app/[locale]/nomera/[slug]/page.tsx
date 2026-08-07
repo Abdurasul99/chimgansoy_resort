@@ -8,6 +8,7 @@ import { chaletVideos, glampingVideos } from "@/content/videos";
 import { getRoomPrices, priceChip } from "@/lib/room-price";
 import { getRoom as getLiveRoom } from "@/lib/rooms-live";
 import { getPricing } from "@/lib/pricing-live";
+import type { LivePricing } from "@/lib/pricing-resolve";
 import { Icon } from "@/components/ui/Icon";
 import { rooms, EXELY_ROOM_TYPE, INCLUDED_LABEL } from "@/content/rooms";
 import { resortImages } from "@/content/images";
@@ -16,7 +17,7 @@ import { dictionaries } from "@/content/translations";
 import { getLocaleParam, getRoom } from "@/lib/content";
 import { buildMetadata } from "@/lib/metadata";
 import { list, text } from "@/lib/localize";
-import { imageStyle } from "@/lib/images";
+import { frameStyle, imageStyle } from "@/lib/images";
 import { localizePath } from "@/i18n/routing";
 
 /**
@@ -53,11 +54,16 @@ const poolCta: Record<string, string> = {
 /** rooms.ts still says "цена при бронировании" for the pool, which was true
  *  while the engine priced it. It has a fixed tariff now, so the hero chip
  *  shows the real number. */
-const poolPriceChip: Record<string, string> = {
-  ru: "от 100 000 сум с человека",
-  uz: "100 000 so'mdan bir kishidan",
-  en: "from 100 000 UZS per person",
-};
+function poolPriceChip(live: LivePricing, locale: string): string {
+  const from = group(live.pool.adult.weekday);
+  return (
+    {
+      ru: `от ${from} сум с человека`,
+      uz: `${from} so'mdan bir kishidan`,
+      en: `from ${from} UZS per person`,
+    }[locale] ?? `от ${from} сум`
+  );
+}
 
 /**
  * The pool photo archive under the request form.
@@ -134,6 +140,9 @@ export default async function RoomDetailPage({ params }: PageProps) {
   const livePricing = await getPricing();
   // Operator edits for this page: lists, gallery, price line.
   const live = await getLiveRoom(room.slug);
+  // Resolved once: either the operator's selection or the code's gallery,
+  // already turned into renderable frames by lib/rooms-live.ts.
+  const galleryFrames = live?.gallery ?? [];
   const isCabin = room.slug === "glamping" || room.slug === "cottage";
   const { adult, child, childFrom, childTo, freeThroughAge, guestVisitCottage } = extraGuestPricing;
   // Base occupancy leads the list, because it is the number the rate covers —
@@ -228,7 +237,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
                   number is being asked to enquire about the price of a cabin,
                   which is not how anyone books a weekend. */}
               <span className="rounded-full border border-[var(--accent)]/30 bg-[var(--accent)]/12 px-4 py-2 text-sm font-semibold text-[var(--accent)] backdrop-blur-sm">
-                {isPool ? poolPriceChip[locale] : live?.priceNote ?? livePrice ?? text(room.priceFrom, locale)}
+                {isPool ? poolPriceChip(livePricing, locale) : live?.priceNote ?? livePrice ?? text(room.priceFrom, locale)}
               </span>
             </div>
 
@@ -269,7 +278,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
               <MediaArchive
                 locale={locale}
                 images={POOL_ARCHIVE}
-                exclude={[room.image, ...(live?.gallery ?? room.gallery), "galTerritoryPanorama"]}
+                exclude={[room.image, ...room.gallery, "galTerritoryPanorama"]}
               />
             </div>
           </div>
@@ -365,15 +374,18 @@ export default async function RoomDetailPage({ params }: PageProps) {
                   {locale === "ru" ? "Фотографии" : locale === "uz" ? "Fotosuratlar" : "Gallery"}
                 </p>
                 <div className="grid gap-3 sm:grid-cols-2">
-                  {(live?.gallery ?? room.gallery).map((imageKey, i) => (
+                  {/* Frames, not registry keys: the gallery may now mix the
+                      studio set with photographs the operator uploaded, and
+                      the page renders both the same way. */}
+                  {galleryFrames.map((frame, i) => (
                     <div
-                      key={imageKey}
+                      key={frame.src}
                       className={`overflow-hidden rounded-2xl bg-cover bg-center transition-transform duration-700 hover:scale-[1.02] ${
                         i === 0 ? "aspect-[4/3] sm:col-span-2" : "aspect-[4/3]"
                       }`}
-                      style={imageStyle(resortImages[imageKey])}
+                      style={frameStyle(frame)}
                       role="img"
-                      aria-label={text(resortImages[imageKey].alt, locale)}
+                      aria-label={frame.alt}
                     />
                   ))}
                 </div>

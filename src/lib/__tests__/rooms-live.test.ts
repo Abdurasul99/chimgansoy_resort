@@ -13,7 +13,9 @@ describe("страница домика — без правок оператор
       expect(live.amenities(locale)).toEqual(glamping.amenities[locale]);
       expect(live.features(locale)).toEqual(glamping.features[locale]);
     }
-    expect(live.gallery).toEqual(glamping.gallery);
+    // gallery отдаёт готовые кадры, galleryKeys — исходные ключи.
+    expect(live.galleryKeys).toEqual(glamping.gallery);
+    expect(live.gallery.length).toBe(glamping.gallery.length);
     expect(live.priceNote).toBeUndefined();
     expect(live.edited).toEqual({ amenities: false, features: false, gallery: false });
   });
@@ -50,20 +52,22 @@ describe("страница домика — галерея", () => {
   it("оператор выбирает кадры и их порядок", () => {
     const chosen = [glamping.gallery[2], glamping.gallery[0]];
     const live = resolveRoom(glamping, patch({ glamping: { gallery: chosen } }));
-    expect(live.gallery).toEqual(chosen);
+    expect(live.galleryKeys).toEqual(chosen);
     expect(live.edited.gallery).toBe(true);
   });
 
   it("несуществующий ключ отбрасывается, страница не падает", () => {
     // A photo renamed in a deploy must not 500 the room page for everyone.
     const live = resolveRoom(glamping, patch({ glamping: { gallery: ["нет-такой-картинки", glamping.gallery[1]] } }));
-    expect(live.gallery).toEqual([glamping.gallery[1]]);
+    expect(live.galleryKeys).toEqual([glamping.gallery[1]]);
   });
 
   it("пустая галерея откатывается к кодовой, а не оставляет пустое место", () => {
     for (const empty of [[], ["нет-такой", "и-такой"]]) {
       const live = resolveRoom(glamping, patch({ glamping: { gallery: empty } }));
-      expect(live.gallery).toEqual(glamping.gallery);
+      // gallery отдаёт готовые кадры, galleryKeys — исходные ключи.
+    expect(live.galleryKeys).toEqual(glamping.gallery);
+    expect(live.gallery.length).toBe(glamping.gallery.length);
       expect(live.edited.gallery).toBe(false);
     }
   });

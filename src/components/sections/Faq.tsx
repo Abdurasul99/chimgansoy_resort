@@ -1,16 +1,20 @@
 import { faqItems } from "@/content/faq";
 import type { Locale } from "@/i18n/config";
+import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 import { text } from "@/lib/localize";
 import { Icon } from "@/components/ui/Icon";
 
 type FaqProps = {
   locale: Locale;
+  /** Live tariff — the answers quote prices. */
+  pricing?: LivePricing;
 };
 
-export function Faq({ locale }: FaqProps) {
+export function Faq({ locale, pricing }: FaqProps) {
+  const items = faqItems(pricing ?? resolvePricing());
   return (
     <div className="divide-y divide-[color:var(--line)] rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] shadow-[var(--shadow-card)]">
-      {faqItems.map((item) => (
+      {items.map((item) => (
         <details key={text(item.question, locale)} className="group p-5 sm:p-6">
           <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-[var(--ink)]">
             <span>{text(item.question, locale)}</span>

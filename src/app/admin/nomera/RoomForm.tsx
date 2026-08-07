@@ -15,6 +15,9 @@ export type RoomEditor = {
   features: string[];
   gallery: string[];
   priceNote?: string;
+  priceFrom?: number;
+  /** Что прямо сейчас отдаёт Exely — чтобы оператор видел, что перебивает. */
+  enginePrice?: number;
   edited: { amenities: boolean; features: boolean; gallery: boolean };
 };
 
@@ -105,19 +108,43 @@ export function RoomForm({
 
         <label className="mt-4 block">
           <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
-            Строка с ценой
+            Цена «от … за ночь», сум
+          </span>
+          <input
+            name="priceFrom"
+            inputMode="numeric"
+            defaultValue={room.priceFrom ?? ""}
+            placeholder={room.enginePrice ? String(room.enginePrice) : ""}
+            disabled={!storeReady}
+            className={field}
+          />
+          <span className="mt-1 block text-xs text-[var(--muted)]">
+            {room.enginePrice
+              ? `Сейчас система бронирования отдаёт ${room.enginePrice.toLocaleString("ru-RU")} сум. Оставьте пустым — покажем её.`
+              : "Система бронирования сейчас цену не отдаёт. Заполните, чтобы на карточке было число."}
+          </span>
+          <span className="mt-1 block text-xs text-[var(--muted)]">
+            Ваша цифра меняет ТОЛЬКО то, что написано на сайте. Считать деньги гостю
+            будет система бронирования по своей ставке — если меняете здесь, поменяйте
+            и в Exely, иначе они разойдутся.
+          </span>
+        </label>
+
+        <label className="mt-4 block">
+          <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
+            Или своя строка вместо цены
           </span>
           <input
             name="priceNote"
             defaultValue={room.priceNote ?? ""}
             maxLength={120}
-            placeholder="оставьте пустым — покажем живую цену из системы бронирования"
+            placeholder="напр. по запросу"
             disabled={!storeReady}
             className={field}
           />
           <span className="mt-1 block text-xs text-[var(--muted)]">
-            Пока поле пустое, на карточке стоит «от …» из Exely. Заполните, только если
-            нужно перебить её своим текстом.
+            Текст вместо числа — для случаев вроде «по запросу». Если заполнены оба поля,
+            победит текст.
           </span>
         </label>
 

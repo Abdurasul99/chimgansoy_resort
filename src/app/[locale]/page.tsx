@@ -17,6 +17,7 @@ import { ButtonLink } from "@/components/ui/ButtonLink";
 import { AnimatedStat } from "@/components/ui/AnimatedStat";
 import { homeGallery, resortImages } from "@/content/images";
 import { poolPricing } from "@/content/pricing";
+import { getPricing } from "@/lib/pricing-live";
 import { homeShowcase } from "@/content/home-showcase";
 import { dictionaries } from "@/content/translations";
 import { pageSeo } from "@/content/seo";
@@ -116,6 +117,8 @@ const poolBand = {
 
 export default async function HomePage({ params }: PageProps) {
   const locale = await getLocaleParam(params);
+  // One read for the whole page: the hero buttons and the FAQ both quote prices.
+  const livePricing = await getPricing();
 
   // Live "от …" prices from the booking engine, resolved on the server because
   // RoomCatalog is a client component. Six-hour cache, and an unreachable
@@ -142,7 +145,7 @@ export default async function HomePage({ params }: PageProps) {
       <FaqJsonLd locale={locale} />
 
       {/* ── Hero ──────────────────────────────────────── */}
-      <Hero locale={locale} />
+      <Hero locale={locale} pricing={livePricing} />
 
       {/* ── Living photo strip — real 2026 shots ──────── */}
       <PhotoMarquee locale={locale} />
@@ -507,7 +510,7 @@ export default async function HomePage({ params }: PageProps) {
             <div className="motion-reveal">
               <SectionHeader title={dict.home.faqTitle} />
             </div>
-            <Faq locale={locale} />
+            <Faq locale={locale} pricing={livePricing} />
           </div>
         </div>
       </section>
