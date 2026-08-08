@@ -256,17 +256,35 @@ export function TopchanRequestForm({
 
             {[
               [t.topchan, live.topchan] as const,
-            ].map(([label, rate]) => (
-              <Fragment key={label}>
-                <span className="border-b border-[color:var(--line)] py-3 pr-2 text-sm text-[var(--ink)]">{label}</span>
-                <span className="border-b border-[color:var(--line)] py-3 pl-4 text-right font-serif text-lg font-bold text-[var(--ink)]">
-                  {money(rate.weekday)}
-                </span>
-                <span className="border-b border-[color:var(--line)] py-3 pl-4 text-right font-serif text-lg font-bold text-[var(--accent-strong)]">
-                  {money(rate.weekend)}
-                </span>
-              </Fragment>
-            ))}
+            ].map(([label, rate]) => {
+              // Ровно та же логика, что и у расходников ниже: с 2026-08-08 у
+              // топчана единый тариф, и две одинаковые колонки читались бы как
+              // ошибка вёрстки, а не как «цена одна на всю неделю».
+              const flat = rate.weekday === rate.weekend;
+              const cell = "border-b border-[color:var(--line)] py-3";
+              return (
+                <Fragment key={label}>
+                  <span className={`${cell} pr-2 text-sm text-[var(--ink)]`}>{label}</span>
+                  {flat ? (
+                    <span className={`${cell} col-span-2 pl-4 text-right font-serif text-lg font-bold text-[var(--ink)]`}>
+                      {money(rate.weekday)}{" "}
+                      <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">
+                        {t.allWeek}
+                      </span>
+                    </span>
+                  ) : (
+                    <>
+                      <span className={`${cell} pl-4 text-right font-serif text-lg font-bold text-[var(--ink)]`}>
+                        {money(rate.weekday)}
+                      </span>
+                      <span className={`${cell} pl-4 text-right font-serif text-lg font-bold text-[var(--accent-strong)]`}>
+                        {money(rate.weekend)}
+                      </span>
+                    </>
+                  )}
+                </Fragment>
+              );
+            })}
 
             {EXTRA_KEYS.map((key) => {
               const item = priceList.find((p) => p.key === key);
