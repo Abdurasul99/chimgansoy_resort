@@ -123,7 +123,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
     // Facts mirror src/lib/venue-facts.ts, which is also what the AI concierge
     // is briefed from — one story for crawlers and for guests.
     numberOfRooms: 20,
-    checkinTime: "14:00",
+    checkinTime: "15:00",
     checkoutTime: "12:00",
     amenityFeature: [
       { "@type": "LocationFeatureSpecification", name: "Swimming pool", value: true },

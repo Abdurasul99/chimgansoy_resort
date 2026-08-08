@@ -45,12 +45,14 @@ function sourceFiles(dir = SRC): string[] {
 }
 
 describe("stay rules — check-in hour", () => {
-  it("is 14:00, as the offer defines it in four separate clauses", () => {
-    // Moved to 15:00 on 2026-08-05 from an informal "Прочее" list, and back on
-    // 2026-08-06 when the signed offer arrived saying 14:00 in §1, §2.5, §4.2
-    // and Правила пребывания §4.1 — and pricing early arrival against it in
-    // §5.2.1. The document is what the guest accepts at booking.
-    expect(stayRules.checkIn).toBe("14:00");
+  it("is 15:00 — the operator decides the hour, and the offer follows", () => {
+    // Fourth setting of this number: 15:00 → 14:00 → 15:00 → 14:00 → 15:00.
+    // The 2026-08-06 revert was correct at the time — the signed offer said
+    // 14:00 in four clauses. On 2026-08-08 the operator asked for 15:00 with
+    // that conflict spelled out, so the offer TEXT was moved with it. The
+    // lawyer's .docx still says 14:00 and has to be reissued; until then
+    // scripts/build-legal.js overrides the hour and shouts about it.
+    expect(stayRules.checkIn).toBe("15:00");
     expect(stayRules.checkOut).toBe("12:00");
   });
 
@@ -59,7 +61,7 @@ describe("stay rules — check-in hour", () => {
     // legitimate number — a kitchen hour, a cron expression — and this test has
     // no business failing on those.
     const arrival = /заезд|kirish|check-?in|checkinTime/i;
-    const wrongHour = /\b15:00\b|\b3:00\s?PM\b/i;
+    const wrongHour = /\b14:00\b|\b2:00\s?PM\b/i;
     const offenders: string[] = [];
 
     for (const file of sourceFiles()) {

@@ -65,6 +65,35 @@ function paragraphs(file) {
     .filter(Boolean);
 }
 
+// ── операторский час заезда поверх документа ─────────────────────────────────
+
+/**
+ * Час заезда берётся у оператора, а не из .docx.
+ *
+ * Юрист выпустил оферту с 14:00 (пп. 1, 2.5, 4.2 и Правила пребывания 4.1,
+ * плюс расчёт раннего заезда в 5.2.1). Оператор 2026-08-08, зная про это
+ * расхождение, попросил на сайте 15:00. Оставить сайт на 15:00, а оферту на
+ * 14:00 нельзя: оферту гость акцептует при бронировании, и противоречие
+ * толкуется против нас.
+ *
+ * Поэтому час подменяется здесь — и КРИЧИТ об этом в консоль при каждой
+ * пересборке. Молча вернуть 14:00 при следующем обновлении документов было бы
+ * худшим из возможных поведений: сайт разъехался бы с самим собой, и никто не
+ * понял бы, почему.
+ *
+ * Убрать этот блок, как только придёт .docx с 15:00.
+ */
+const OPERATOR_CHECK_IN = "15:00";
+const DOCUMENT_CHECK_IN = "14:00";
+let overridden = 0;
+
+function enforceCheckIn(text) {
+  if (!text.includes(DOCUMENT_CHECK_IN)) return text;
+  const out = text.split(DOCUMENT_CHECK_IN).join(OPERATOR_CHECK_IN);
+  overridden += text.split(DOCUMENT_CHECK_IN).length - 1;
+  return out;
+}
+
 // ── paragraphs → sections ────────────────────────────────────────────────────
 
 /** "1.ТЕРМИНЫ И ОПРЕДЕЛЕНИЯ" or "1. ТЕРМИНЫ..." — a numbered ALL-CAPS heading. */
@@ -97,7 +126,7 @@ function sectionise(paras, { preambleTitle }) {
       continue;
     }
     // Re-space the "6.4.При отмене" style the converter produces.
-    current.items.push(p.replace(/^(\d+(?:\.\d+)*)\.(?=[^\s\d])/, "$1. "));
+    current.items.push(enforceCheckIn(p.replace(/^(\d+(?:\.\d+)*)\.(?=[^\s\d])/, "$1. ")));
   }
   if (current.items.length) sections.push(current);
   return sections;
@@ -195,3 +224,15 @@ export const legalPolicies: PolicyPage[] = [
 
 fs.writeFileSync(OUT, header + built.join("\n") + "\n];\n", "utf8");
 console.log(`\n→ ${path.relative(path.join(__dirname, ".."), OUT)}`);
+
+if (overridden) {
+  console.log(
+    `\n${"!".repeat(72)}\n` +
+      `ВНИМАНИЕ: час заезда подменён ${overridden} раз(а): ` +
+      `${DOCUMENT_CHECK_IN} в документе → ${OPERATOR_CHECK_IN} на сайте.\n` +
+      `Присланная оферта всё ещё говорит ${DOCUMENT_CHECK_IN}. Опубликованный текст\n` +
+      `отличается от файла юриста — нужна новая редакция .docx, после чего блок\n` +
+      `enforceCheckIn в этом скрипте надо удалить.\n` +
+      `${"!".repeat(72)}`,
+  );
+}
