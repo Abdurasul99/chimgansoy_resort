@@ -59,8 +59,11 @@ describe("day-product tariffs match the operator's posters", () => {
     expect(topchanPricing.inventory).toBe(30);
   });
 
-  it("entry: 50 000 / 100 000 per car", () => {
-    expect(parkingPricing).toEqual({ weekday: 50_000, weekend: 100_000 });
+  it("parking: 50 000 per car, one price all week", () => {
+    // Was 50 000 / 100 000 by day band until 2026-08-08, when the operator made
+    // it flat. The shape is asserted too, not just the number: a stray weekday
+    // key reappearing would mean two sources for one price again.
+    expect(parkingPricing).toEqual({ flat: 50_000 });
   });
 
   it("tubing: 2 rides 50 000, 4 rides 100 000, one price all week", () => {

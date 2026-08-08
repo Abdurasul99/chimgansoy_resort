@@ -74,7 +74,7 @@ describe("правка цены доходит до каждой витрины"
   const patched = resolvePricing({
     "pool.adult.weekday": 424_242,
     "topchan.rent.weekday": 313_131,
-    "parking.weekday": 121_212,
+    "parking.flat": 121_212,
     "deposit.perCabin": 989_898,
   });
 

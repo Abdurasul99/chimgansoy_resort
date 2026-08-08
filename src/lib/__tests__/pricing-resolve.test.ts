@@ -28,7 +28,8 @@ describe("resolvePricing — без правок", () => {
     expect(p.pool.adult).toEqual(poolPricing.adult);
     expect(p.pool.child).toEqual(poolPricing.child);
     expect(p.topchan).toEqual(topchanPricing.rent);
-    expect(p.parking).toEqual({ weekday: parkingPricing.weekday, weekend: parkingPricing.weekend });
+    // У парковки одна ставка на всю неделю — тарифных полос нет.
+    expect(p.parking).toBe(parkingPricing.flat);
     expect(p.touristTax).toEqual({ resident: touristTax.resident, nonResident: touristTax.nonResident });
     expect(p.tubing.packages).toEqual(tubingPricing.packages.map((x) => ({ rides: x.rides, price: x.price })));
     expect(p.dayUse.map((i) => i.key)).toEqual(dayUse.map((i) => i.key));
@@ -56,7 +57,7 @@ describe("resolvePricing — правки оператора", () => {
   });
 
   it("допускает ноль — бесплатная услуга это законная цена", () => {
-    expect(resolvePricing({ "parking.weekday": 0 }).parking.weekday).toBe(0);
+    expect(resolvePricing({ "parking.flat": 0 }).parking).toBe(0);
   });
 });
 
@@ -104,8 +105,7 @@ describe("каталог админки и резолвер описывают �
     for (const key of [
       "topchan.rent.weekday",
       "topchan.rent.weekend",
-      "parking.weekday",
-      "parking.weekend",
+      "parking.flat",
       "pool.adult.weekday",
       "pool.extra.towel",
       "touristTax.resident",

@@ -290,7 +290,7 @@ async function renderPrices(): Promise<View> {
         .join(" · ")} <i>(цена одна всю неделю)</i>`,
       // Parking is charged to tubing visitors only, so it is stated beside
       // tubing rather than as a line everyone reads as applying to them.
-      `🚗 <b>Парковка</b> (1 авто, только для тюбинга) — <b>${money(live.parking.weekday)}</b> / <b>${money(live.parking.weekend)}</b>`,
+      `🚗 <b>Парковка</b> (1 авто, только для тюбинга) — <b>${money(live.parking)}</b> <i>(одна цена всю неделю)</i>`,
       "<i>Проживающим, гостям бассейна и топчана парковка бесплатна.</i>",
       "",
       "<b>Аренда и расходники:</b>",

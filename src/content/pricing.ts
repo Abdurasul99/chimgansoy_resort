@@ -196,8 +196,11 @@ export const poolPricing = {
  * forms have no car field now, and only TubingRequestForm reads this.
  */
 export const parkingPricing = {
-  weekday: 50_000,
-  weekend: 100_000,
+  /**
+   * Одна цена всю неделю (оператор, 2026-08-08). Раньше было 50 000 в будни и
+   * 100 000 в выходные; тарифных полос у парковки больше нет.
+   */
+  flat: 50_000,
 };
 
 export const priceLabels = {

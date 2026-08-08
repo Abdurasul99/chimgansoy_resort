@@ -1,7 +1,7 @@
 "use server";
 
 import { contacts } from "@/content/contacts";
-import { poolPricing } from "@/content/pricing";
+import { poolFacts, poolPricing } from "@/content/pricing";
 import { getPricing } from "@/lib/pricing-live";
 import { esc } from "@/lib/telegram";
 import {
@@ -77,7 +77,16 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
   const kids = num(((formData.get("kids") as string | null) ?? "").trim());
   const toddlers = num(((formData.get("toddlers") as string | null) ?? "").trim());
   const towels = num(((formData.get("towels") as string | null) ?? "").trim(), 50);
-  const bungalowRaw = ((formData.get("bungalow") as string | null) ?? "none").trim();
+  // Потолок ставится здесь, а не в разметке: max у input — подсказка,
+  // которую инспектор снимает за две секунды, а считает сумму сервер.
+  const bungalowSmall = Math.min(
+    num(((formData.get("bungalowSmall") as string | null) ?? "").trim()),
+    poolFacts.bungalows.small.count,
+  );
+  const bungalowLarge = Math.min(
+    num(((formData.get("bungalowLarge") as string | null) ?? "").trim()),
+    poolFacts.bungalows.large.count,
+  );
 
   const weekend = isWeekend(date);
   const tariff = weekend ? "Пт–Вс" : "Пн–Чт";
@@ -86,14 +95,25 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
   const adultRate = weekend ? live.pool.adult.weekend : live.pool.adult.weekday;
   const childRate = weekend ? live.pool.child.weekend : live.pool.child.weekday;
 
-  const bungalowPrice =
-    bungalowRaw === "b4" ? live.pool.extras.bungalow4
-    : bungalowRaw === "b10" ? live.pool.extras.bungalow10
-    : 0;
-  const bungalowLabel =
-    bungalowRaw === "b4" ? "Бунгало до 4 чел."
-    : bungalowRaw === "b10" ? "Бунгало до 10 чел."
-    : null;
+  const smallPrice = bungalowSmall * live.pool.extras.bungalow4;
+  const largePrice = bungalowLarge * live.pool.extras.bungalow10;
+  const bungalowPrice = smallPrice + largePrice;
+
+  /** Short form for the e-mail and the archive: «Бунгало до 4 чел. ×2». */
+  const bungalowSummary = [
+    ...(bungalowSmall ? [`Бунгало до ${poolFacts.bungalows.small.capacity} чел. ×${bungalowSmall}`] : []),
+    ...(bungalowLarge ? [`Бунгало до ${poolFacts.bungalows.large.capacity} чел. ×${bungalowLarge}`] : []),
+  ];
+
+  /** Lines for the message — only the types actually asked for. */
+  const bungalowLines = [
+    ...(bungalowSmall
+      ? [`<b>Бунгало до ${poolFacts.bungalows.small.capacity} чел.:</b> ${bungalowSmall} × ${money(live.pool.extras.bungalow4)} = ${money(smallPrice)} сум`]
+      : []),
+    ...(bungalowLarge
+      ? [`<b>Бунгало до ${poolFacts.bungalows.large.capacity} чел.:</b> ${bungalowLarge} × ${money(live.pool.extras.bungalow10)} = ${money(largePrice)} сум`]
+      : []),
+  ];
 
   const towelsPrice = towels * live.pool.extras.towel;
   const total = adults * adultRate + kids * childRate + towelsPrice + bungalowPrice;
@@ -118,7 +138,7 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
     ...(kids ? [`<b>Дети 5–15:</b> ${kids} × ${money(childRate)} = ${money(kids * childRate)} сум`] : []),
     ...(toddlers ? [`<b>Дети до 5:</b> ${toddlers} — бесплатно`] : []),
     ...(towels ? [`<b>Полотенца:</b> ${towels} × ${money(live.pool.extras.towel)} = ${money(towelsPrice)} сум`] : []),
-    ...(bungalowLabel ? [`<b>${bungalowLabel}:</b> ${money(bungalowPrice)} сум`] : []),
+    ...bungalowLines,
     "",
     `<b>ИТОГО: ${money(total)} сум</b>`,
     ...(message ? ["", `<b>Комментарий:</b> ${esc(message)}`] : []),
@@ -132,7 +152,7 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
          <b>Телефон:</b> <a href="tel:${esc(tel)}">${esc(tel)}</a><br>
          <b>Дата:</b> ${esc(date)} · тариф ${tariff}<br>
          <b>Гостей:</b> ${adults} взр.${kids ? " + " + kids + " дет. 5–15" : ""}${toddlers ? " + " + toddlers + " до 5" : ""}<br>
-         ${towels ? "<b>Полотенца:</b> " + towels + "<br>" : ""}${bungalowLabel ? "<b>" + bungalowLabel + "</b><br>" : ""}
+         ${towels ? "<b>Полотенца:</b> " + towels + "<br>" : ""}${bungalowSummary.map((s) => "<b>" + s + "</b><br>").join("")}
          <b>К оплате:</b> ${money(total)} сум</p>
       ${message ? `<p><b>Комментарий:</b> ${esc(message)}</p>` : ""}
       <p style="color:#7a7a73;font-size:12px">Отправлено с chimgandarbaza.uz</p>
@@ -152,7 +172,7 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
       toddlers,
       extras: [
         ...(towels ? [`полотенца ×${towels}`] : []),
-        ...(bungalowLabel ? [bungalowLabel] : []),
+        ...bungalowSummary,
       ],
       total,
       tariff,

@@ -33,7 +33,7 @@ vi.mock("@/lib/request-delivery", async (orig) => {
 
 import { submitTopchanRequest } from "@/app/actions/topchan";
 import { submitPoolRequest } from "@/app/actions/pool";
-import { topchanPricing, poolPricing } from "@/content/pricing";
+import { topchanPricing, poolPricing, poolFacts } from "@/content/pricing";
 
 /** A date that is always in the future and always a Monday — weekday band. */
 function nextMonday(): string {
@@ -118,5 +118,44 @@ describe("мусор в сторе не меняет счёт", () => {
       form({ locale: "ru", name: "Т", phone: "+998901234567", guests: "2", date: nextMonday() }),
     );
     expect(sentTotal()).toBe(topchanPricing.rent.weekday);
+  });
+});
+
+describe("бунгало: сервер не даёт заказать больше, чем есть", () => {
+  const base = { locale: "ru", name: "Тест", phone: "+998901234567", guests: "1", kids: "0", toddlers: "0" };
+
+  it("считает количество каждого типа", async () => {
+    await submitPoolRequest(
+      form({ ...base, date: nextMonday(), bungalowSmall: "2", bungalowLarge: "1" }),
+    );
+    expect(sentTotal()).toBe(
+      poolPricing.adult.weekday + 2 * poolPricing.extras.bungalow4 + poolPricing.extras.bungalow10,
+    );
+  });
+
+  it("обрезает по наличию — 8 маленьких и 4 больших", async () => {
+    // max у input снимается инспектором за две секунды, поэтому потолок
+    // проверяется здесь: гость не должен получить счёт на сто бунгало.
+    await submitPoolRequest(
+      form({ ...base, date: nextMonday(), bungalowSmall: "99", bungalowLarge: "99" }),
+    );
+    expect(sentTotal()).toBe(
+      poolPricing.adult.weekday +
+        poolFacts.bungalows.small.count * poolPricing.extras.bungalow4 +
+        poolFacts.bungalows.large.count * poolPricing.extras.bungalow10,
+    );
+  });
+
+  it("отрицательное количество не уменьшает счёт", async () => {
+    await submitPoolRequest(
+      form({ ...base, date: nextMonday(), bungalowSmall: "-5", bungalowLarge: "-5" }),
+    );
+    expect(sentTotal()).toBe(poolPricing.adult.weekday);
+  });
+
+  it("цена бунгало из админки применяется к каждому", async () => {
+    readOverrides.mockResolvedValue({ ...EMPTY, prices: { "pool.extra.bungalow4": 10_000 } });
+    await submitPoolRequest(form({ ...base, date: nextMonday(), bungalowSmall: "3" }));
+    expect(sentTotal()).toBe(poolPricing.adult.weekday + 30_000);
   });
 });

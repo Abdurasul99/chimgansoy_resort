@@ -85,7 +85,7 @@ export async function submitTubingRequest(formData: FormData): Promise<TubingRes
 
   const weekend = isWeekend(date);
   const tariff = weekend ? "Пт–Вс" : "Пн–Чт";
-  const carRate = weekend ? live.parking.weekend : live.parking.weekday;
+  const carRate = live.parking;
 
   const lines: { label: string; qty: number; rate: number }[] = [
     ...packs

@@ -39,7 +39,8 @@ export type LivePricing = {
     extras: { towel: number; bungalow4: number; bungalow10: number };
   };
   topchan: { weekday: number; weekend: number };
-  parking: { weekday: number; weekend: number };
+  /** Одна ставка всю неделю — у парковки нет тарифных полос. */
+  parking: number;
   tubing: { packages: { rides: number; price: number }[] };
   dayUse: { key: string; weekday: number; weekend: number }[];
   extras: { key: string; weekday: number; weekend: number }[];
@@ -82,10 +83,7 @@ export function resolvePricing(patch: Record<string, number> = {}): LivePricing 
       weekday: pick(patch, "topchan.rent.weekday", topchanPricing.rent.weekday),
       weekend: pick(patch, "topchan.rent.weekend", topchanPricing.rent.weekend),
     },
-    parking: {
-      weekday: pick(patch, "parking.weekday", parkingPricing.weekday),
-      weekend: pick(patch, "parking.weekend", parkingPricing.weekend),
-    },
+    parking: pick(patch, "parking.flat", parkingPricing.flat),
     // The LIST of packages is code, only the price is editable — the request
     // form renders packages by index and the server action trusts that index.
     tubing: {

@@ -1,8 +1,11 @@
 "use client";
 
 import { Fragment, useActionState, useEffect, useState } from "react";
+
+/** Держит счётчик в [0, max]: браузер пускает и минус, и что угодно сверху. */
+const clamp = (value: number, max: number) => Math.min(Math.max(value, 0), max);
 import { submitPoolRequest } from "@/app/actions/pool";
-import { poolPricing, priceLabels } from "@/content/pricing";
+import { poolFacts, poolPricing, priceLabels } from "@/content/pricing";
 import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 import { contacts } from "@/content/contacts";
 import { DatePicker } from "@/components/ui/DatePicker";
@@ -36,10 +39,8 @@ const COPY: Record<
     kids: string;
     toddlers: string;
     towels: string;
-    bungalow: string;
-    bungalowNone: string;
-    bungalow4: string;
-    bungalow10: string;
+    bungalowSmall: string;
+    bungalowLarge: string;
     total: string;
     freeNote: string;
   }
@@ -66,13 +67,11 @@ const COPY: Record<
     kids: "Дети 5–15 лет",
     toddlers: "Дети до 5 лет",
     towels: "Полотенца (30 000)",
-    bungalow: "Бунгало",
-    bungalowNone: "Не нужно",
+    bungalowSmall: `Бунгало до ${poolFacts.bungalows.small.capacity} чел. (всего ${poolFacts.bungalows.small.count})`,
+    bungalowLarge: `Бунгало до ${poolFacts.bungalows.large.capacity} чел. (всего ${poolFacts.bungalows.large.count})`,
     // Kept short on purpose: the select is the third cell of a three-column
     // row inside a max-w-3xl card, so it never gets more than ~170 px of text
     // room — the old labels had their price cut off at every screen width.
-    bungalow4: "4 чел. · 300 000",
-    bungalow10: "10 чел. · 500 000",
     total: "Предварительно к оплате",
     freeNote: "Вход и парковка для посетителей бассейна БЕСПЛАТНЫ. Гостям, проживающим в шале и глэмпинге, вход тоже бесплатный. Дети до 5 лет — бесплатно в сопровождении взрослых. Аренда бунгало не включает входные билеты. Бассейн работает ежедневно 08:00–20:00. Со своей едой и напитками в зону бассейна нельзя — на территории работают пул-бар и ресторан.",
   },
@@ -98,10 +97,8 @@ const COPY: Record<
     kids: "5–15 yoshli bolalar",
     toddlers: "5 yoshgacha bolalar",
     towels: "Sochiq (30 000)",
-    bungalow: "Bungalo",
-    bungalowNone: "Kerak emas",
-    bungalow4: "4 kishi · 300 000",
-    bungalow10: "10 kishi · 500 000",
+    bungalowSmall: `${poolFacts.bungalows.small.capacity} kishilik bungalo (jami ${poolFacts.bungalows.small.count})`,
+    bungalowLarge: `${poolFacts.bungalows.large.capacity} kishilik bungalo (jami ${poolFacts.bungalows.large.count})`,
     total: "Taxminiy to'lov",
     freeNote: "Basseyn mehmonlari uchun kirish va parkovka BEPUL. Shale va glempingda turuvchilar uchun kirish ham bepul. 5 yoshgacha bolalar — kattalar bilan bepul. Bungalo ijarasi kirish chiptalarini o'z ichiga olmaydi. Basseyn har kuni 08:00–20:00. Basseyn hududiga o'z ovqatingiz va ichimliklaringiz bilan kirish mumkin emas — hududda pul-bar va restoran ishlaydi.",
   },
@@ -127,10 +124,8 @@ const COPY: Record<
     kids: "Children 5–15",
     toddlers: "Children under 5",
     towels: "Towels (30 000)",
-    bungalow: "Bungalow",
-    bungalowNone: "Not needed",
-    bungalow4: "4 people · 300 000",
-    bungalow10: "10 people · 500 000",
+    bungalowSmall: `Bungalow for ${poolFacts.bungalows.small.capacity} (${poolFacts.bungalows.small.count} total)`,
+    bungalowLarge: `Bungalow for ${poolFacts.bungalows.large.capacity} (${poolFacts.bungalows.large.count} total)`,
     total: "Estimated total",
     freeNote: "Entry and parking are FREE for pool visitors. Chalet and glamping guests get in free too. Under-fives free with an adult. Bungalow rental does not include entry tickets. The pool is open daily 08:00–20:00. Outside food and drink are not allowed in the pool area — the pool bar and the restaurant are on site.",
   },
@@ -177,15 +172,14 @@ export function PoolRequestForm({
   const [kids, setKids] = useState(0);
   const [toddlers, setToddlers] = useState(0);
   const [towels, setTowels] = useState(0);
-  const [bungalow, setBungalow] = useState("none");
+  const [bungalowSmall, setBungalowSmall] = useState(0);
+  const [bungalowLarge, setBungalowLarge] = useState(0);
   const [weekend, setWeekend] = useState(false);
 
   const adultRate = weekend ? live.pool.adult.weekend : live.pool.adult.weekday;
   const childRate = weekend ? live.pool.child.weekend : live.pool.child.weekday;
   const bungalowPrice =
-    bungalow === "b4" ? live.pool.extras.bungalow4
-    : bungalow === "b10" ? live.pool.extras.bungalow10
-    : 0;
+    bungalowSmall * live.pool.extras.bungalow4 + bungalowLarge * live.pool.extras.bungalow10;
   const total =
     adults * adultRate +
     kids * childRate +
@@ -319,13 +313,25 @@ export function PoolRequestForm({
               inputMode="numeric" value={towels} onChange={(e) => setTowels(+e.target.value || 0)}
               className={field} />
           </label>
+          {/* Два счётчика вместо «одно из»: ограничить нечего, пока заказать
+              можно ровно одно. max — подсказка, настоящий потолок в экшене. */}
           <label className="block">
-            <span className={labelCls}>{t.bungalow}</span>
-            <select name="bungalow" value={bungalow} onChange={(e) => setBungalow(e.target.value)} className={field}>
-              <option value="none">{t.bungalowNone}</option>
-              <option value="b4">{t.bungalow4}</option>
-              <option value="b10">{t.bungalow10}</option>
-            </select>
+            <span className={labelCls}>
+              {t.bungalowSmall} ({money(live.pool.extras.bungalow4)})
+            </span>
+            <input name="bungalowSmall" type="number" min={0} max={poolFacts.bungalows.small.count} step={1}
+              inputMode="numeric" value={bungalowSmall}
+              onChange={(e) => setBungalowSmall(clamp(+e.target.value || 0, poolFacts.bungalows.small.count))}
+              className={field} />
+          </label>
+          <label className="block">
+            <span className={labelCls}>
+              {t.bungalowLarge} ({money(live.pool.extras.bungalow10)})
+            </span>
+            <input name="bungalowLarge" type="number" min={0} max={poolFacts.bungalows.large.count} step={1}
+              inputMode="numeric" value={bungalowLarge}
+              onChange={(e) => setBungalowLarge(clamp(+e.target.value || 0, poolFacts.bungalows.large.count))}
+              className={field} />
           </label>
         </div>
 

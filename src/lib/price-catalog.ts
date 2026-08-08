@@ -119,18 +119,11 @@ export function fields(): PriceField[] {
       value: topchanPricing.rent.weekend,
     },
     {
-      key: "parking.weekday",
+      key: "parking.flat",
       group: "Парковка",
-      label: "Парковка, Пн–Чт",
-      hint: "только для гостей тюбинга; остальным бесплатно",
-      value: parkingPricing.weekday,
-    },
-    {
-      key: "parking.weekend",
-      group: "Парковка",
-      label: "Парковка, Пт–Вс",
-      hint: "за автомобиль",
-      value: parkingPricing.weekend,
+      label: "Парковка, вся неделя",
+      hint: "за автомобиль; только для гостей тюбинга, остальным бесплатно",
+      value: parkingPricing.flat,
     },
     {
       key: "deposit.perCabin",

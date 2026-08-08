@@ -158,7 +158,7 @@ export function TubingRequestForm({
   // pack1 … so a third package needs no change on either side.
   const [packs, setPacks] = useState<number[]>(() => live.tubing.packages.map(() => 0));
 
-  const carRate = weekend ? live.parking.weekend : live.parking.weekday;
+  const carRate = live.parking;
   const total =
     live.tubing.packages.reduce((sum, p, i) => sum + (packs[i] ?? 0) * p.price, 0) +
     cars * carRate;
@@ -213,16 +213,10 @@ export function TubingRequestForm({
               price all week" reads as the weekday figure being the price. */}
           <div className="flex items-baseline justify-between gap-3 border-b border-[color:var(--line)] px-4 py-3">
             <span className="text-sm text-[var(--ink)]">{t.entry}</span>
+            {/* Одна цена всю неделю (оператор, 2026-08-08) — тарифных полос у
+                парковки больше нет, поэтому и подписей Пн–Чт / Пт–Вс тоже. */}
             <span className="text-right">
-              <span className="font-serif text-lg font-bold text-[var(--ink)]">{money(live.parking.weekday)}</span>
-              <span className="ml-1 text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">
-                {text(priceLabels.weekdaysLabel, locale)}
-              </span>
-              <span className="mx-1.5 text-[var(--muted)]">·</span>
-              <span className="font-serif text-lg font-bold text-[var(--accent-strong)]">{money(live.parking.weekend)}</span>
-              <span className="ml-1 text-[10px] font-bold uppercase tracking-wider text-[var(--accent-strong)]">
-                {text(priceLabels.weekendLabel, locale)}
-              </span>
+              <span className="font-serif text-lg font-bold text-[var(--ink)]">{money(live.parking)}</span>
             </span>
           </div>
           <div className="px-4 py-3 text-xs leading-5 text-[var(--muted)]">{t.seasonNote}</div>
