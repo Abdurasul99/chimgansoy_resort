@@ -33,7 +33,7 @@ vi.mock("@/lib/request-delivery", async (orig) => {
 
 import { submitTopchanRequest } from "@/app/actions/topchan";
 import { submitPoolRequest } from "@/app/actions/pool";
-import { topchanPricing, poolPricing, poolFacts } from "@/content/pricing";
+import { topchanPricing, poolPricing, poolFacts, parkingPricing } from "@/content/pricing";
 
 /** A date that is always in the future and always a Monday — weekday band. */
 function nextMonday(): string {
@@ -157,5 +157,27 @@ describe("бунгало: сервер не даёт заказать больш
     readOverrides.mockResolvedValue({ ...EMPTY, prices: { "pool.extra.bungalow4": 10_000 } });
     await submitPoolRequest(form({ ...base, date: nextMonday(), bungalowSmall: "3" }));
     expect(sentTotal()).toBe(poolPricing.adult.weekday + 30_000);
+  });
+});
+
+describe("топчан: парковка попадает в счёт", () => {
+  const base = { locale: "ru", name: "Тест", phone: "+998901234567", guests: "4" };
+
+  it("без машины ничего не добавляется", async () => {
+    await submitTopchanRequest(form({ ...base, date: nextMonday() }));
+    expect(sentTotal()).toBe(topchanPricing.rent.weekday);
+  });
+
+  it("две машины — две парковки по одной цене", async () => {
+    // Одна цена всю неделю: у парковки больше нет тарифных полос, поэтому
+    // будни и выходные должны дать одинаковую надбавку.
+    await submitTopchanRequest(form({ ...base, date: nextMonday(), cars: "2" }));
+    expect(sentTotal()).toBe(topchanPricing.rent.weekday + 2 * parkingPricing.flat);
+  });
+
+  it("цена парковки из админки применяется", async () => {
+    readOverrides.mockResolvedValue({ ...EMPTY, prices: { "parking.flat": 77_000 } });
+    await submitTopchanRequest(form({ ...base, date: nextMonday(), cars: "3" }));
+    expect(sentTotal()).toBe(topchanPricing.rent.weekday + 231_000);
   });
 });
