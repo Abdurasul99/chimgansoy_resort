@@ -19,6 +19,14 @@ export type Service = {
   highlights: LocalizedList;
   bestFor: LocalizedString;
   ctaLabel?: LocalizedString;
+  /**
+   * Куда ведёт карточка, если у услуги уже есть своя страница.
+   *
+   * Бассейн и тюбинг продаются со своих страниц с формой заявки. Без этого поля
+   * карточка вела бы на /services/<slug>, где пришлось бы держать второе
+   * описание того же самого — и разошлось бы оно при первой правке.
+   */
+  href?: string;
 };
 
 /**
@@ -144,6 +152,64 @@ export const services: Service[] = [
       en: ["BBQ grill rental", "Kazan rental", "Firewood and charcoal sold on site", "Bring your own food welcome"],
     },
     bestFor: { ru: "Шашлык на природе", uz: "Tabiatda shashlik", en: "Open-air BBQ" },
+  },
+  {
+    slug: "pool",
+    category: "relax",
+    /**
+     * Ведёт на собственную страницу бассейна, а не на /services/pool.
+     * Там тариф по возрастам и дням, форма заявки и фотоархив — второе
+     * описание того же самого разошлось бы с первым при первой же правке.
+     */
+    href: "/nomera/pool",
+    image: "poolPanorama",
+    secondImage: "poolCabanasValley",
+    title: { ru: "Панорамный бассейн", uz: "Panoramali basseyn", en: "Panoramic pool" },
+    shortDescription: {
+      ru: "Открытый бассейн с видом на горы — бронируется отдельно, без ночёвки.",
+      uz: "Tog' manzarali ochiq basseyn — alohida, tunamasdan bron qilinadi.",
+      en: "An outdoor pool with mountain views — bookable separately, no overnight stay needed.",
+    },
+    description: {
+      ru: "Бассейн 680 м² с детской зоной, пул-баром и бунгало вдоль воды. Проживающим вход включён в стоимость; приехать только на бассейн, без ночёвки, тоже можно — тариф зависит от возраста и дня недели.",
+      uz: "680 m² basseyn, bolalar zonasi, pul-bar va suv bo'yidagi bungalolar. Yashovchilar uchun kirish narxga kiritilgan; tunamasdan faqat basseynga kelish ham mumkin — tarif yosh va hafta kuniga bog'liq.",
+      en: "A 680 m² pool with a children's area, a pool bar and bungalows along the water. Included for staying guests; you can also come just for the pool, at a rate that depends on age and day of week.",
+    },
+    highlights: {
+      ru: ["680 м² и детский бассейн", "Пул-бар у воды", "Бунгало в аренду", "Включён в проживание"],
+      uz: ["680 m² va bolalar basseyni", "Suv bo'yida pul-bar", "Ijaraga bungalolar", "Yashash narxiga kiritilgan"],
+      en: ["680 m² plus a children's pool", "Pool bar by the water", "Bungalows for rent", "Included with a stay"],
+    },
+    bestFor: { ru: "Жаркий день в горах", uz: "Tog'dagi issiq kun", en: "A hot day in the mountains" },
+  },
+  {
+    slug: "tubing",
+    category: "activity",
+    /** Своя страница с пакетами спусков, правилами и видео трассы. */
+    href: "/tubing",
+    /**
+     * Фотографий самой горки не существует — в day-products.ts это записано
+     * отдельно. До съёмки карточка показывает Чимган, а не выдуманный кадр.
+     */
+    image: "chimganMountains",
+    secondImage: "galTerritoryPanorama",
+    title: { ru: "Тюбинг-горка", uz: "Tubing gorkasi", en: "Tubing hill" },
+    shortDescription: {
+      ru: "Всесезонная трасса 150 метров с автоматическим подъёмом — работает круглый год, не только по снегу.",
+      uz: "Avtomatik ko'targichli 150 metrlik butun mavsumga mo'ljallangan trassa — faqat qorda emas, yil davomida ishlaydi.",
+      en: "A 150-metre all-season track with a powered lift — open year-round, not just on snow.",
+    },
+    description: {
+      ru: "Трасса 150 метров длиной и 6 метров шириной, всесезонная. Подъём автоматический — пешком в горку идти не нужно. Одновременно спускаются до 5 человек, внизу безопасная зона остановки. Берётся пакетами спусков, цена одинаковая всю неделю.",
+      uz: "Uzunligi 150 metr, kengligi 6 metr, butun mavsumga mo'ljallangan trassa. Ko'tarilish avtomatik — tepalikka piyoda chiqish shart emas. Bir vaqtda 5 kishigacha tushadi, pastda xavfsiz to'xtash zonasi. Uchish paketlari bilan olinadi, narx butun hafta bir xil.",
+      en: "A 150-metre track, 6 metres wide, running all year. The lift is powered, so nobody walks up. Up to 5 people descend at once, with a controlled stop at the bottom. Sold in ride packages at one price all week.",
+    },
+    highlights: {
+      ru: ["Работает круглый год", "150 м трассы, автоматический подъём", "Пакеты 2 или 4 спуска", "Одна цена всю неделю"],
+      uz: ["Yil davomida ishlaydi", "150 m trassa, avtomatik ko'targich", "2 yoki 4 marta uchish paketlari", "Butun hafta bir xil narx"],
+      en: ["Open all year", "150 m track with a powered lift", "Packages of 2 or 4 rides", "One price all week"],
+    },
+    bestFor: { ru: "Компании и дети от 7 лет", uz: "Do'stlar va 7 yoshdan bolalar", en: "Groups and children from 7" },
   },
 ];
 

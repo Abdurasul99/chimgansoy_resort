@@ -45,7 +45,9 @@ type PageProps = {
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return services.map((service) => ({ slug: service.slug }));
+  // Услуги со своим href живут на собственных страницах — /services/<slug>
+  // для них не существует, иначе описание пришлось бы держать в двух местах.
+  return services.filter((s) => !s.href).map((service) => ({ slug: service.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

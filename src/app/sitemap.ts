@@ -20,7 +20,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/tubing",
   ];
   const roomPaths = rooms.map((room) => `/nomera/${room.slug}`);
-  const servicePaths = services.map((service) => `/services/${service.slug}`);
+  // Услуги со своим href живут на собственных страницах — /services/<slug>
+  // для них не существует, и класть его в карту сайта значит звать Google на 404.
+  const servicePaths = services
+    .filter((service) => !service.href)
+    .map((service) => `/services/${service.slug}`);
 
   return [...staticPaths, ...roomPaths, ...servicePaths].flatMap((path) =>
     locales.map((locale) => ({

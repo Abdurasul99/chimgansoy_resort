@@ -73,7 +73,7 @@ export function ServicesGrid({
           return (
             <a
               key={service.slug}
-              href={localizePath(locale, `/services/${service.slug}`)}
+              href={localizePath(locale, service.href ?? `/services/${service.slug}`)}
               className="motion-reveal group flex flex-col overflow-hidden rounded-3xl border border-[color:var(--line)] bg-[var(--paper)] shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[var(--shadow-card-hover)]"
               data-delay={String((index % 3) * 80)}
               aria-label={text(service.title, locale)}

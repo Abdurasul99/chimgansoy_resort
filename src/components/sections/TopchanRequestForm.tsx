@@ -40,6 +40,7 @@ const COPY: Record<
     poolAdults: string;
     poolKids: string;
     towels: string;
+    cars: string;
     total: string;
     freeNote: string;
   }
@@ -69,6 +70,7 @@ const COPY: Record<
     poolTitle: "Доступ в бассейн",
     poolAdults: "Взрослые и дети 15+",
     poolKids: "Дети 5–15 лет",
+    cars: "Парковочное место",
     towels: "Полотенца",
     total: "Предварительно к оплате",
     freeNote: `Топчан оплачивается целиком, не с человека: один вмещает до ${topchanPricing.capacity} гостей. Свои продукты и свой мангал привозить можно.`,
@@ -98,6 +100,7 @@ const COPY: Record<
     poolTitle: "Basseynga kirish",
     poolAdults: "Kattalar va 15+ bolalar",
     poolKids: "5–15 yoshli bolalar",
+    cars: "Parkovka joyi",
     towels: "Sochiqlar",
     total: "Taxminiy to'lov",
     freeNote: `Topchan bir kishidan emas, butunlay to'lanadi: bittasiga ${topchanPricing.capacity} kishigacha sig'adi. O'z mahsulotlaringiz va mangalingizni olib kelish mumkin.`,
@@ -127,6 +130,7 @@ const COPY: Record<
     poolTitle: "Pool access",
     poolAdults: "Adults and ages 15+",
     poolKids: "Children 5–15",
+    cars: "Parking space",
     towels: "Towels",
     total: "Estimated total",
     freeNote: `A topchan is charged as a whole, not per person: one seats up to ${topchanPricing.capacity} guests. You may bring your own food and your own grill.`,
@@ -185,6 +189,7 @@ export function TopchanRequestForm({
   const [poolAdults, setPoolAdults] = useState(0);
   const [poolKids, setPoolKids] = useState(0);
   const [towels, setTowels] = useState(0);
+  const [cars, setCars] = useState(0);
 
   const band = <T extends { weekday: number; weekend: number }>(x: T) =>
     weekend ? x.weekend : x.weekday;
@@ -198,6 +203,7 @@ export function TopchanRequestForm({
     poolAdults * band(live.pool.adult) +
     poolKids * band(live.pool.child) +
     towels * live.pool.extras.towel +
+    cars * live.parking +
     EXTRA_KEYS.reduce((sum, key) => {
       const item = priceList.find((p) => p.key === key);
       return item ? sum + (extras[key] ?? 0) * band(item) : sum;
@@ -382,6 +388,14 @@ export function TopchanRequestForm({
               <span className={labelCls}>{t.towels} ({money(live.pool.extras.towel)})</span>
               <input name="towels" type="number" min={0} max={50} step={1}
                 inputMode="numeric" value={towels} onChange={(e) => setTowels(+e.target.value || 0)}
+                className={field} />
+            </label>
+            {/* Парковка для дневных гостей — по умолчанию 0: приехавший без
+                машины не должен вычитать её из своего счёта. */}
+            <label className="block">
+              <span className={labelCls}>{t.cars} ({money(live.parking)})</span>
+              <input name="cars" type="number" min={0} max={60} step={1}
+                inputMode="numeric" value={cars} onChange={(e) => setCars(+e.target.value || 0)}
                 className={field} />
             </label>
           </div>
