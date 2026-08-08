@@ -27,15 +27,18 @@ export const dayUse: PriceItem[] = [
     icon: "car",
     title: { ru: "Парковочное место", uz: "Parkovka joyi", en: "Parking space" },
     subtitle: { ru: "1 автомобиль", uz: "1 avtomobil", en: "per car" },
+    // Только для тюбинга. Гостям топчана парковка бесплатная, но не
+    // гарантированная — по постеру оператора.
     weekday: 50_000,
-    weekend: 100_000,
+    weekend: 50_000,
   },
   {
     key: "topchan",
     icon: "topchan",
     title: { ru: "Топчан", uz: "Topchan", en: "Topchan" },
     subtitle: { ru: "аренда, до 8 чел.", uz: "ijara, 8 kishigacha", en: "rental, up to 8 people" },
-    weekday: 150_000,
+    // Единый тариф по постеру оператора: полос Пн–Чт / Пт–Вс у топчана нет.
+    weekday: 300_000,
     weekend: 300_000,
   },
 ];
@@ -59,8 +62,9 @@ export const topchanPricing = {
    * (08:00–20:00) and from reception, which is staffed round the clock.
    * ASSUMPTION worth re-confirming: the poster predates the pool's later hours.
    */
-  hours: "08:00–18:00",
-  rent: { weekday: 150_000, weekend: 300_000 },
+  hours: "08:00–20:00",
+  /** Единый тариф Пн–Вс по постеру оператора (2026-08-08). */
+  rent: { weekday: 300_000, weekend: 300_000 },
 };
 
 /**
@@ -106,7 +110,8 @@ export const priceList: PriceItem[] = [
     key: "kazan",
     icon: "kazan",
     title: { ru: "Аренда казана", uz: "Qozon ijarasi", en: "Kazan rental" },
-    weekday: 50_000,
+    // Единый тариф Пн–Вс по постеру.
+    weekday: 100_000,
     weekend: 100_000,
   },
   {

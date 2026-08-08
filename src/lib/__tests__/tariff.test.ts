@@ -53,8 +53,11 @@ describe("money", () => {
 });
 
 describe("day-product tariffs match the operator's posters", () => {
-  it("topchan: 150 000 / 300 000, up to 8 guests, 30 on site", () => {
-    expect(topchanPricing.rent).toEqual({ weekday: 150_000, weekend: 300_000 });
+  it("topchan: 300 000 всю неделю, до 8 гостей, 30 на территории", () => {
+    // Постер оператора (2026-08-08): «Единый тариф на услуги пикник-зоны
+    // (Пн–Вс)». Полос у топчана нет — пара ключей осталась только чтобы
+    // оператор мог вернуть праздничный тариф из админки, не трогая код.
+    expect(topchanPricing.rent).toEqual({ weekday: 300_000, weekend: 300_000 });
     expect(topchanPricing.capacity).toBe(8);
     expect(topchanPricing.inventory).toBe(30);
   });
@@ -80,9 +83,10 @@ describe("day-product tariffs match the operator's posters", () => {
     expect(poolPricing.extras).toEqual({ towel: 30_000, bungalow4: 300_000, bungalow10: 500_000 });
   });
 
-  it("rentals: only the kazan doubles at the weekend", () => {
+  it("аренда и расходники: единый тариф всю неделю", () => {
     const rate = (key: string) => priceList.find((p) => p.key === key);
-    expect(rate("kazan")).toMatchObject({ weekday: 50_000, weekend: 100_000 });
+    // Казан тоже единый по постеру — 100 000 всю неделю, а не 50/100.
+    expect(rate("kazan")).toMatchObject({ weekday: 100_000, weekend: 100_000 });
     expect(rate("mangal")).toMatchObject({ weekday: 50_000, weekend: 50_000 });
     expect(rate("firewood")).toMatchObject({ weekday: 50_000, weekend: 50_000 });
     expect(rate("charcoal")).toMatchObject({ weekday: 30_000, weekend: 30_000 });

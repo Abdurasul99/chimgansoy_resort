@@ -160,24 +160,16 @@ describe("бунгало: сервер не даёт заказать больш
   });
 });
 
-describe("топчан: парковка попадает в счёт", () => {
+describe("топчан: парковка НЕ попадает в счёт", () => {
   const base = { locale: "ru", name: "Тест", phone: "+998901234567", guests: "4" };
 
-  it("без машины ничего не добавляется", async () => {
-    await submitTopchanRequest(form({ ...base, date: nextMonday() }));
-    expect(sentTotal()).toBe(topchanPricing.rent.weekday);
-  });
-
-  it("две машины — две парковки по одной цене", async () => {
-    // Одна цена всю неделю: у парковки больше нет тарифных полос, поэтому
-    // будни и выходные должны дать одинаковую надбавку.
-    await submitTopchanRequest(form({ ...base, date: nextMonday(), cars: "2" }));
-    expect(sentTotal()).toBe(topchanPricing.rent.weekday + 2 * parkingPricing.flat);
-  });
-
-  it("цена парковки из админки применяется", async () => {
-    readOverrides.mockResolvedValue({ ...EMPTY, prices: { "parking.flat": 77_000 } });
+  it("парковка у топчана бесплатная — постер оператора", async () => {
+    // Час она была платной строкой: «Парковка стандарт 50 000, добавить» плюс
+    // «тут не исправлено» на скриншоте прайса читались как просьба включить её
+    // в счёт. Постер сказал прямо: «Парковка: Бесплатная, но не
+    // гарантированная». Даже если поле cars придёт из старой вкладки, счёт
+    // меняться не должен.
     await submitTopchanRequest(form({ ...base, date: nextMonday(), cars: "3" }));
-    expect(sentTotal()).toBe(topchanPricing.rent.weekday + 231_000);
+    expect(sentTotal()).toBe(topchanPricing.rent.weekday);
   });
 });

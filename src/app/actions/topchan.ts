@@ -1,7 +1,7 @@
 "use server";
 
 import { contacts } from "@/content/contacts";
-import { poolPricing, priceList, topchanPricing } from "@/content/pricing";
+import { topchanPricing } from "@/content/pricing";
 import { getPricing } from "@/lib/pricing-live";
 import { esc } from "@/lib/telegram";
 import {
@@ -93,7 +93,6 @@ export async function submitTopchanRequest(formData: FormData): Promise<TopchanR
   const firewood = num(((formData.get("firewood") as string | null) ?? "").trim(), 50);
   const charcoal = num(((formData.get("charcoal") as string | null) ?? "").trim(), 50);
   const towels = num(((formData.get("towels") as string | null) ?? "").trim(), 50);
-  const cars = num(((formData.get("cars") as string | null) ?? "").trim(), 60);
   // Pool upsell — the CMO's «Добавить доступ в бассейн». Charged per head at the
   // published pool tariff, so it has to know the age split.
   const poolAdults = num(((formData.get("poolAdults") as string | null) ?? "").trim(), 200);
@@ -123,7 +122,6 @@ export async function submitTopchanRequest(formData: FormData): Promise<TopchanR
     { label: "Дрова, пучок", qty: firewood, rate: firewoodRate },
     { label: "Уголь, кг", qty: charcoal, rate: charcoalRate },
     { label: "Полотенце", qty: towels, rate: live.pool.extras.towel },
-    { label: "Парковочное место", qty: cars, rate: live.parking },
   ].filter((l) => l.qty > 0);
 
   const total = lines.reduce((sum, l) => sum + l.qty * l.rate, 0);
