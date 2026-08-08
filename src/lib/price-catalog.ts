@@ -3,6 +3,7 @@ import {
   depositPricing,
   extraGuestPricing,
   parkingPricing,
+  poolFacts,
   poolPricing,
   priceList,
   topchanPricing,
@@ -93,15 +94,15 @@ export function fields(): PriceField[] {
     {
       key: "pool.extra.bungalow4",
       group: "Бассейн",
-      label: "Бунгало на 4 гостей",
-      hint: "входные билеты не включены",
+      label: `Бунгало ${poolFacts.bungalows.small.name} (до ${poolFacts.bungalows.small.capacity} чел.)`,
+      hint: `${poolFacts.bungalows.small.count} шт. на территории · входные билеты не включены`,
       value: poolPricing.extras.bungalow4,
     },
     {
       key: "pool.extra.bungalow10",
       group: "Бассейн",
-      label: "Бунгало на 10 гостей",
-      hint: "входные билеты не включены",
+      label: `Бунгало ${poolFacts.bungalows.large.name} (до ${poolFacts.bungalows.large.capacity} чел.)`,
+      hint: `${poolFacts.bungalows.large.count} шт. на территории · входные билеты не включены`,
       value: poolPricing.extras.bungalow10,
     },
     {

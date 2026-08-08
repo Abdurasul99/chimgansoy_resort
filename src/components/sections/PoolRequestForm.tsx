@@ -15,6 +15,16 @@ import { text } from "@/lib/localize";
 import { isWeekendISO, money } from "@/lib/tariff";
 import type { Locale } from "@/i18n/config";
 
+/**
+ * Имя, вместимость и наличный фонд каждого типа бунгало.
+ *
+ * Через сокращение, потому что подписи полей и примечание под формой печатают
+ * все три числа по три раза — по разу на локаль. Написать «8 Standard» руками
+ * значило бы завести четвёртое место, где живёт лимит брони, и разойтись с
+ * тремя остальными: max у поля, потолок в серверном экшене и брифинг ИИ.
+ */
+const B = poolFacts.bungalows;
+
 const COPY: Record<
   Locale,
   {
@@ -67,13 +77,16 @@ const COPY: Record<
     kids: "Дети 5–15 лет",
     toddlers: "Дети до 5 лет",
     towels: "Полотенца (30 000)",
-    bungalowSmall: `Бунгало до ${poolFacts.bungalows.small.capacity} чел. (всего ${poolFacts.bungalows.small.count})`,
-    bungalowLarge: `Бунгало до ${poolFacts.bungalows.large.capacity} чел. (всего ${poolFacts.bungalows.large.count})`,
+    // Название типа впереди, вместимость сразу за ним, наличие — в скобках:
+    // подпись читается слева направо ровно в том порядке, в каком гость решает
+    // «какой мне нужен» → «сколько влезет» → «сколько их вообще есть».
+    bungalowSmall: `Бунгало ${B.small.name}, до ${B.small.capacity} чел. (${B.small.count} шт.)`,
+    bungalowLarge: `Бунгало ${B.large.name}, до ${B.large.capacity} чел. (${B.large.count} шт.)`,
     // Kept short on purpose: the select is the third cell of a three-column
     // row inside a max-w-3xl card, so it never gets more than ~170 px of text
     // room — the old labels had their price cut off at every screen width.
     total: "Предварительно к оплате",
-    freeNote: "Вход и парковка для посетителей бассейна БЕСПЛАТНЫ. Гостям, проживающим в шале и глэмпинге, вход тоже бесплатный. Дети до 5 лет — бесплатно в сопровождении взрослых. Аренда бунгало не включает входные билеты. Бассейн работает ежедневно 08:00–20:00. Со своей едой и напитками в зону бассейна нельзя — на территории работают пул-бар и ресторан.",
+    freeNote: `Вход и парковка для посетителей бассейна БЕСПЛАТНЫ. Гостям, проживающим в шале и глэмпинге, вход тоже бесплатный. Дети до 5 лет — бесплатно в сопровождении взрослых. Бунгало ${B.small.name} (до ${B.small.capacity} чел.) на территории ${B.small.count}, ${B.large.name} (до ${B.large.capacity} чел.) — ${B.large.count}; больше этого числа заказать нельзя. Аренда бунгало не включает входные билеты. Бассейн работает ежедневно 08:00–20:00. Со своей едой и напитками в зону бассейна нельзя — на территории работают пул-бар и ресторан.`,
   },
   uz: {
     eyebrow: "Basseyn · yozgi mavsum",
@@ -97,10 +110,10 @@ const COPY: Record<
     kids: "5–15 yoshli bolalar",
     toddlers: "5 yoshgacha bolalar",
     towels: "Sochiq (30 000)",
-    bungalowSmall: `${poolFacts.bungalows.small.capacity} kishilik bungalo (jami ${poolFacts.bungalows.small.count})`,
-    bungalowLarge: `${poolFacts.bungalows.large.capacity} kishilik bungalo (jami ${poolFacts.bungalows.large.count})`,
+    bungalowSmall: `${B.small.name} bungalo, ${B.small.capacity} kishigacha (${B.small.count} ta)`,
+    bungalowLarge: `${B.large.name} bungalo, ${B.large.capacity} kishigacha (${B.large.count} ta)`,
     total: "Taxminiy to'lov",
-    freeNote: "Basseyn mehmonlari uchun kirish va parkovka BEPUL. Shale va glempingda turuvchilar uchun kirish ham bepul. 5 yoshgacha bolalar — kattalar bilan bepul. Bungalo ijarasi kirish chiptalarini o'z ichiga olmaydi. Basseyn har kuni 08:00–20:00. Basseyn hududiga o'z ovqatingiz va ichimliklaringiz bilan kirish mumkin emas — hududda pul-bar va restoran ishlaydi.",
+    freeNote: `Basseyn mehmonlari uchun kirish va parkovka BEPUL. Shale va glempingda turuvchilar uchun kirish ham bepul. 5 yoshgacha bolalar — kattalar bilan bepul. Hududda ${B.small.count} ta ${B.small.name} bungalo (${B.small.capacity} kishigacha) va ${B.large.count} ta ${B.large.name} (${B.large.capacity} kishigacha) bor; bundan ko'pini buyurtma qilib bo'lmaydi. Bungalo ijarasi kirish chiptalarini o'z ichiga olmaydi. Basseyn har kuni 08:00–20:00. Basseyn hududiga o'z ovqatingiz va ichimliklaringiz bilan kirish mumkin emas — hududda pul-bar va restoran ishlaydi.`,
   },
   en: {
     eyebrow: "The pool · summer season",
@@ -124,10 +137,10 @@ const COPY: Record<
     kids: "Children 5–15",
     toddlers: "Children under 5",
     towels: "Towels (30 000)",
-    bungalowSmall: `Bungalow for ${poolFacts.bungalows.small.capacity} (${poolFacts.bungalows.small.count} total)`,
-    bungalowLarge: `Bungalow for ${poolFacts.bungalows.large.capacity} (${poolFacts.bungalows.large.count} total)`,
+    bungalowSmall: `${B.small.name} bungalow, up to ${B.small.capacity} (${B.small.count} total)`,
+    bungalowLarge: `${B.large.name} bungalow, up to ${B.large.capacity} (${B.large.count} total)`,
     total: "Estimated total",
-    freeNote: "Entry and parking are FREE for pool visitors. Chalet and glamping guests get in free too. Under-fives free with an adult. Bungalow rental does not include entry tickets. The pool is open daily 08:00–20:00. Outside food and drink are not allowed in the pool area — the pool bar and the restaurant are on site.",
+    freeNote: `Entry and parking are FREE for pool visitors. Chalet and glamping guests get in free too. Under-fives free with an adult. There are ${B.small.count} ${B.small.name} bungalows (up to ${B.small.capacity} guests) and ${B.large.count} ${B.large.name} ones (up to ${B.large.capacity}) on site; you cannot book more than that. Bungalow rental does not include entry tickets. The pool is open daily 08:00–20:00. Outside food and drink are not allowed in the pool area — the pool bar and the restaurant are on site.`,
   },
 };
 
@@ -319,18 +332,18 @@ export function PoolRequestForm({
             <span className={labelCls}>
               {t.bungalowSmall} ({money(live.pool.extras.bungalow4)})
             </span>
-            <input name="bungalowSmall" type="number" min={0} max={poolFacts.bungalows.small.count} step={1}
+            <input name="bungalowSmall" type="number" min={0} max={B.small.count} step={1}
               inputMode="numeric" value={bungalowSmall}
-              onChange={(e) => setBungalowSmall(clamp(+e.target.value || 0, poolFacts.bungalows.small.count))}
+              onChange={(e) => setBungalowSmall(clamp(+e.target.value || 0, B.small.count))}
               className={field} />
           </label>
           <label className="block">
             <span className={labelCls}>
               {t.bungalowLarge} ({money(live.pool.extras.bungalow10)})
             </span>
-            <input name="bungalowLarge" type="number" min={0} max={poolFacts.bungalows.large.count} step={1}
+            <input name="bungalowLarge" type="number" min={0} max={B.large.count} step={1}
               inputMode="numeric" value={bungalowLarge}
-              onChange={(e) => setBungalowLarge(clamp(+e.target.value || 0, poolFacts.bungalows.large.count))}
+              onChange={(e) => setBungalowLarge(clamp(+e.target.value || 0, B.large.count))}
               className={field} />
           </label>
         </div>

@@ -99,19 +99,19 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
   const largePrice = bungalowLarge * live.pool.extras.bungalow10;
   const bungalowPrice = smallPrice + largePrice;
 
-  /** Short form for the e-mail and the archive: «Бунгало до 4 чел. ×2». */
+  /** Short form for the e-mail and the archive: «Бунгало Standard (до 4 чел.) ×2». */
   const bungalowSummary = [
-    ...(bungalowSmall ? [`Бунгало до ${poolFacts.bungalows.small.capacity} чел. ×${bungalowSmall}`] : []),
-    ...(bungalowLarge ? [`Бунгало до ${poolFacts.bungalows.large.capacity} чел. ×${bungalowLarge}`] : []),
+    ...(bungalowSmall ? [`Бунгало ${poolFacts.bungalows.small.name} (до ${poolFacts.bungalows.small.capacity} чел.) ×${bungalowSmall}`] : []),
+    ...(bungalowLarge ? [`Бунгало ${poolFacts.bungalows.large.name} (до ${poolFacts.bungalows.large.capacity} чел.) ×${bungalowLarge}`] : []),
   ];
 
   /** Lines for the message — only the types actually asked for. */
   const bungalowLines = [
     ...(bungalowSmall
-      ? [`<b>Бунгало до ${poolFacts.bungalows.small.capacity} чел.:</b> ${bungalowSmall} × ${money(live.pool.extras.bungalow4)} = ${money(smallPrice)} сум`]
+      ? [`<b>Бунгало ${poolFacts.bungalows.small.name} (до ${poolFacts.bungalows.small.capacity} чел.):</b> ${bungalowSmall} × ${money(live.pool.extras.bungalow4)} = ${money(smallPrice)} сум`]
       : []),
     ...(bungalowLarge
-      ? [`<b>Бунгало до ${poolFacts.bungalows.large.capacity} чел.:</b> ${bungalowLarge} × ${money(live.pool.extras.bungalow10)} = ${money(largePrice)} сум`]
+      ? [`<b>Бунгало ${poolFacts.bungalows.large.name} (до ${poolFacts.bungalows.large.capacity} чел.):</b> ${bungalowLarge} × ${money(live.pool.extras.bungalow10)} = ${money(largePrice)} сум`]
       : []),
   ];
 

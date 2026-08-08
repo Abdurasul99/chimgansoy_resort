@@ -101,8 +101,18 @@ export const tubingPricing = {
  */
 export const poolFacts = {
   areaSqm: 680,
-  /** 8 small (up to 4 people) and 4 large (up to 10) — see poolPricing.extras. */
-  bungalows: { small: { count: 8, capacity: 4 }, large: { count: 4, capacity: 10 } },
+  /**
+   * Два типа бунгало, названия от оператора (2026-08-08): Standard до 4 гостей
+   * и Family до 10. `count` — это не справка, а лимит брони: форма ставит его
+   * в max, а серверный экшен обрезает по нему присланное число.
+   *
+   * Имена латиницей во всех локалях — так они звучат у оператора и на табличках
+   * на территории; переводить «Стандарт» значило бы развести сайт с реальностью.
+   */
+  bungalows: {
+    small: { name: "Standard", count: 8, capacity: 4 },
+    large: { name: "Family", count: 4, capacity: 10 },
+  },
 };
 
 export const priceList: PriceItem[] = [

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { isWeekendISO, money } from "../tariff";
-import { parkingPricing, poolPricing, priceList, topchanPricing, tubingPricing } from "@/content/pricing";
+import { parkingPricing, poolFacts, poolPricing, priceList, topchanPricing, tubingPricing } from "@/content/pricing";
 
 /**
  * These pin the two rules that cost real money if they drift.
@@ -90,6 +90,25 @@ describe("day-product tariffs match the operator's posters", () => {
     expect(rate("mangal")).toMatchObject({ weekday: 50_000, weekend: 50_000 });
     expect(rate("firewood")).toMatchObject({ weekday: 50_000, weekend: 50_000 });
     expect(rate("charcoal")).toMatchObject({ weekday: 30_000, weekend: 30_000 });
+  });
+});
+
+describe("бунгало: имена и наличный фонд", () => {
+  // Названия дал оператор 2026-08-08. Они печатаются в подписи поля, в письме,
+  // в телеграме, в каталоге админки и в брифинге ИИ — все читают poolFacts,
+  // поэтому опечатка здесь разъедется сразу по пяти поверхностям.
+  it("Standard до 4 (8 шт.) и Family до 10 (4 шт.)", () => {
+    expect(poolFacts.bungalows).toEqual({
+      small: { name: "Standard", count: 8, capacity: 4 },
+      large: { name: "Family", count: 4, capacity: 10 },
+    });
+  });
+
+  it("count — это лимит брони, а не справка", () => {
+    // Тот же потолок, что стоит в max у поля и обрезает присланное в экшене.
+    const cap = (asked: number, max: number) => Math.min(Math.max(asked, 0), max);
+    expect(cap(99, poolFacts.bungalows.small.count)).toBe(8);
+    expect(cap(99, poolFacts.bungalows.large.count)).toBe(4);
   });
 });
 

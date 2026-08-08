@@ -306,18 +306,18 @@ export const rooms: Room[] = [
     capacity: { ru: "без ограничения по гостям", uz: "mehmonlar soni cheklanmagan", en: "any group size" },
     size: { ru: "Открытый бассейн 680 м²", uz: "680 m² ochiq basseyn", en: "680 m² outdoor pool" },
     amenities: {
-      ru: ["Открытый бассейн 680 м²", "Детский бассейн", "Пул-бар с посадочными местами", "Бунгало у воды", "Панорама гор"],
-      uz: ["680 m² ochiq basseyn", "Bolalar basseyni", "O'tirish joylari bilan pul-bar", "Suv bo'yida bungalolar", "Tog' panoramasi"],
-      en: ["680 m² outdoor pool", "Children's pool", "Pool bar with seating", "Bungalows by the water", "Mountain panorama"],
+      ru: ["Открытый бассейн 680 м²", "Детский бассейн", "Пул-бар с посадочными местами", "Бунгало Standard и Family у воды", "Панорама гор"],
+      uz: ["680 m² ochiq basseyn", "Bolalar basseyni", "O'tirish joylari bilan pul-bar", "Suv bo'yida Standard va Family bungalolar", "Tog' panoramasi"],
+      en: ["680 m² outdoor pool", "Children's pool", "Pool bar with seating", "Standard and Family bungalows by the water", "Mountain panorama"],
     },
     features: {
       // 8 small bungalows seat up to 4, 4 large seat up to 10 — see poolFacts.
       // The VIP/DJ deck above the bar is NOT built yet and is deliberately
       // absent from this list: a guest paying for a day pass on the strength of
       // it would arrive to scaffolding.
-      ru: ["Включён в проживание в шале и глэмпинге", "Или бронь на день, гостей без лимита", "8 малых бунгало до 4 человек и 4 больших до 10", "Работает ежедневно 08:00–20:00"],
-      uz: ["Shale va glempingda yashashga kiritilgan", "Yoki bir kunlik bron, mehmonlar soni cheklanmagan", "4 kishilik 8 ta kichik va 10 kishilik 4 ta katta bungalo", "Har kuni 08:00–20:00"],
-      en: ["Included with chalet and glamping stays", "Or a day booking, any group size", "8 small bungalows for up to 4 and 4 large for up to 10", "Open daily 08:00–20:00"],
+      ru: ["Включён в проживание в шале и глэмпинге", "Или бронь на день, гостей без лимита", "8 бунгало Standard до 4 человек и 4 бунгало Family до 10", "Работает ежедневно 08:00–20:00"],
+      uz: ["Shale va glempingda yashashga kiritilgan", "Yoki bir kunlik bron, mehmonlar soni cheklanmagan", "4 kishilik 8 ta Standard va 10 kishilik 4 ta Family bungalo", "Har kuni 08:00–20:00"],
+      en: ["Included with chalet and glamping stays", "Or a day booking, any group size", "8 Standard bungalows for up to 4 and 4 Family ones for up to 10", "Open daily 08:00–20:00"],
     },
     relatedServices: ["outdoor-cooking", "restaurant", "picnic-zone"],
   },
