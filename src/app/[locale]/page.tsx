@@ -471,7 +471,11 @@ export default async function HomePage({ params }: PageProps) {
               frames that were already spoken for had to move. */}
           {([
             { image: "aframeBed", caption: locale === "uz" ? "Tog'larda\nuyg'onish" : locale === "en" ? "Waking up\nin the mountains" : "Просыпаться\nв горах" },
-            { image: "chaletKitchen", caption: locale === "uz" ? "Shalede\nnonushta" : locale === "en" ? "Breakfast\nin the chalet" : "Завтрак\nв шале" },
+            // Подпись говорила «Завтрак в шале», а в кадре чайник, вода, чипсы
+            // и холодильник — минибар, а не завтрак. Завтрак у нас и правда
+            // включён, но показывать его этим снимком значит обещать не то:
+            // гость ждёт накрытый стол, а получает набор снеков.
+            { image: "chaletKitchen", caption: locale === "uz" ? "Shalede\nsneklar" : locale === "en" ? "Snacks\nin the chalet" : "Снеки\nв шале" },
             { image: "galTopchanSwing", caption: locale === "uz" ? "Topchanda\nkun" : locale === "en" ? "A day\non the topchan" : "День\nна топчане" },
             { image: "galMangalFire", caption: locale === "uz" ? "Mangal\nyonida kecha" : locale === "en" ? "An evening\nat the grill" : "Вечер\nу мангала" },
             // Was galKidsSwing — a stranger sitting on a swing looking at his
