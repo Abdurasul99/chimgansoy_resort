@@ -35,6 +35,17 @@ describe("concierge — the promise it must never make", () => {
     expect(prompt).toMatch(/free cancellation/i);
     expect(prompt).toMatch(/предоплата невозвратная/i);
   });
+
+  it("не обещает свободный топчан или место у бассейна по приезде", () => {
+    // Модель не видит загрузку дня — у неё нет инструмента наличия для дневных
+    // услуг, только цены. Без прямого запрета она отвечает «приезжайте, места
+    // есть», потому что так звучит услужливее, и гость приезжает в выходной
+    // на полный курорт.
+    const prompt = buildSystemPrompt("ru");
+    expect(prompt).toMatch(/НАЛИЧИЕ МЕСТ/);
+    expect(prompt).toMatch(/приезжайте, места есть/i);
+    expect(prompt).toMatch(/НЕ ГАРАНТИРОВАН/);
+  });
 });
 
 describe("concierge — formatting", () => {
