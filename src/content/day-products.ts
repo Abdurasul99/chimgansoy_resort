@@ -138,18 +138,18 @@ export const dayProducts: DayProduct[] = [
       en: "All year round",
     },
     lead: {
-      ru: "Всесезонная трасса 150 метров с автоматическим подъёмом — работает круглый год, не только по снегу.",
-      uz: "Avtomatik ko'targichli 150 metrlik butun mavsumga mo'ljallangan trassa — faqat qorda emas, yil davomida ishlaydi.",
-      en: "A 150-metre all-season track with a powered lift — open year-round, not just on snow.",
+      ru: "Всесезонная трасса 160 метров с автоматическим подъёмом — работает круглый год, не только по снегу.",
+      uz: "Avtomatik ko'targichli 160 metrlik butun mavsumga mo'ljallangan trassa — faqat qorda emas, yil davomida ishlaydi.",
+      en: "A 160-metre all-season track with a powered lift — open year-round, not just on snow.",
     },
     description: {
-      ru: "Трасса длиной 150 метров и шириной 6 метров, всесезонная — кататься можно круглый год. Подъём автоматический: наверх тюбинг поднимает обратной тягой, идти пешком в горку не нужно. Одновременно спускаться могут до 5 человек, внизу предусмотрена безопасная остановка. Все правила безопасности учтены в конструкции трассы. Тюбинг берётся пакетами: 2 или 4 спуска, цена одинаковая в будни и в выходные. Вход на территорию бесплатный; для гостей тюбинга отдельно оплачивается парковочное место — за автомобиль.",
-      uz: "Trassa uzunligi 150 metr, kengligi 6 metr, butun mavsumga mo'ljallangan — yil davomida uchish mumkin. Ko'tarilish avtomatik: tubingni yuqoriga teskari tortish ko'taradi, tepalikka piyoda chiqish shart emas. Bir vaqtning o'zida 5 kishigacha tusha oladi, pastda xavfsiz to'xtash joyi bor. Barcha xavfsizlik qoidalari trassa konstruksiyasida hisobga olingan. Tubing paketlar bilan olinadi: 2 yoki 4 marta uchish, narx ish kunlari va dam olish kunlarida bir xil. Hududga kirish bepul; tubing mehmonlari uchun parkovka joyi alohida — avtomobil uchun to'lanadi.",
-      en: "The track is 150 metres long and 6 metres wide, and runs all year — not only in snow. The lift is powered: the tube is pulled back to the top, so nobody walks up. Up to 5 people can descend at once, and there is a controlled stop at the bottom. Safety requirements are built into the track itself. Tubing is sold in packages of 2 or 4 rides, at the same price on weekdays and weekends. Entry to the grounds is free; tubing visitors pay separately for a parking space, per car.",
+      ru: "Трасса длиной 160 метров и шириной 6 метров, всесезонная — кататься можно круглый год. Подъём автоматический: наверх тюбинг поднимает обратной тягой, идти пешком в горку не нужно. Одновременно спускаться могут до 5 человек, внизу предусмотрена безопасная остановка. Все правила безопасности учтены в конструкции трассы. Тюбинг берётся пакетами: 2 или 4 спуска, цена одинаковая в будни и в выходные. Вход на территорию бесплатный; для гостей тюбинга отдельно оплачивается парковочное место — за автомобиль.",
+      uz: "Trassa uzunligi 160 metr, kengligi 6 metr, butun mavsumga mo'ljallangan — yil davomida uchish mumkin. Ko'tarilish avtomatik: tubingni yuqoriga teskari tortish ko'taradi, tepalikka piyoda chiqish shart emas. Bir vaqtning o'zida 5 kishigacha tusha oladi, pastda xavfsiz to'xtash joyi bor. Barcha xavfsizlik qoidalari trassa konstruksiyasida hisobga olingan. Tubing paketlar bilan olinadi: 2 yoki 4 marta uchish, narx ish kunlari va dam olish kunlarida bir xil. Hududga kirish bepul; tubing mehmonlari uchun parkovka joyi alohida — avtomobil uchun to'lanadi.",
+      en: "The track is 160 metres long and 6 metres wide, and runs all year — not only in snow. The lift is powered: the tube is pulled back to the top, so nobody walks up. Up to 5 people can descend at once, and there is a controlled stop at the bottom. Safety requirements are built into the track itself. Tubing is sold in packages of 2 or 4 rides, at the same price on weekdays and weekends. Entry to the grounds is free; tubing visitors pay separately for a parking space, per car.",
     },
     highlights: {
       ru: [
-        "Всесезонная трасса: 150 м длиной, 6 м шириной",
+        "Всесезонная трасса: 160 м длиной, 6 м шириной",
         "Автоматический подъём — пешком наверх идти не нужно",
         "До 5 человек спускаются одновременно",
         "Безопасная остановка внизу",
@@ -157,7 +157,7 @@ export const dayProducts: DayProduct[] = [
         "Ватрушка выдаётся на месте",
       ],
       uz: [
-        "Butun mavsumga trassa: 150 m uzunlik, 6 m kenglik",
+        "Butun mavsumga trassa: 160 m uzunlik, 6 m kenglik",
         "Avtomatik ko'targich — piyoda chiqish shart emas",
         "Bir vaqtda 5 kishigacha tushadi",
         "Pastda xavfsiz to'xtash joyi",
@@ -165,7 +165,7 @@ export const dayProducts: DayProduct[] = [
         "Tubing joyida beriladi",
       ],
       en: [
-        "All-season track: 150 m long, 6 m wide",
+        "All-season track: 160 m long, 6 m wide",
         "Powered lift — nobody walks back up",
         "Up to 5 people descend at once",
         "Controlled stop at the bottom",

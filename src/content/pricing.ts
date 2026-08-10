@@ -87,7 +87,7 @@ export const tubingPricing = {
    */
   allSeason: true,
   /** Track dimensions, metres. */
-  length: 150,
+  length: 160,
   width: 6,
   /** How many can descend at once. */
   simultaneous: 5,
