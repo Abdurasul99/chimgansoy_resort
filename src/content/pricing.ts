@@ -277,10 +277,23 @@ export const cabinOccupancy = {
  * the water, this is a bed. Do not merge them.
  */
 export const extraGuestPricing = {
-  /** An additional adult (13+), per night, in sum. Same in both cabin types. */
-  adult: 400_000,
-  /** An additional child aged childFrom..childTo, per night, in sum. */
-  child: 300_000,
+  /**
+   * Доп. место за ночь — ЕДИНАЯ ставка для любого гостя от 4 лет (оператор,
+   * 2026-08-10). Возрастной вилки больше нет: раньше было 400 000 за взрослого
+   * и 300 000 за ребёнка 4–12 лет.
+   *
+   * Ключ админки остался `extraGuest.adult` — под ним лежит правка оператора,
+   * и переименование её осиротило бы. Читать для доплаты нужно именно его.
+   */
+  adult: 500_000,
+  /**
+   * Легаси. Возрастной ставки больше не существует, ни один текст это поле не
+   * печатает. Держится равным основному, чтобы старый сохранённый патч не
+   * показал где-нибудь 300 000, и не удаляется, чтобы не ломать форму данных.
+   */
+  child: 500_000,
+  /** С этого возраста место платное. Младше — бесплатно. */
+  chargedFromAge: 4,
   childFrom: 4,
   childTo: 12,
   /** Children of this age and younger are not charged an extra place at all. */

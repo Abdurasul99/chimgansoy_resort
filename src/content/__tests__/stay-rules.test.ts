@@ -103,20 +103,27 @@ describe("stay rules — check-in hour", () => {
 });
 
 describe("stay rules — the extra-person charge", () => {
-  it("has coherent age bands", () => {
-    const { childFrom, childTo, freeThroughAge, adult, child } = extraGuestPricing;
-    // No gap and no overlap between "free" and "child": a four-year-old must
-    // fall in exactly one band.
-    expect(freeThroughAge + 1).toBe(childFrom);
-    expect(childFrom).toBeLessThan(childTo);
-    expect(child).toBeLessThan(adult);
+  /**
+   * С 2026-08-10 ставка ОДНА: 500 000 за любого гостя от четырёх лет, младше —
+   * бесплатно. Возрастной вилки «взрослый / ребёнок 4–12» больше нет; до этого
+   * было 400 000 и 300 000.
+   */
+  it("has one rate from the charged age, and free below it", () => {
+    const { chargedFromAge, freeThroughAge, adult } = extraGuestPricing;
+    // Без зазора и без нахлёста: четырёхлетний должен попадать ровно в одну
+    // полосу — платную.
+    expect(freeThroughAge + 1).toBe(chargedFromAge);
+    expect(adult).toBe(500_000);
   });
 
   it("is editable from the admin panel", () => {
     const keys = fields().map((f) => f.key);
     expect(keys).toContain("extraGuest.adult");
-    expect(keys).toContain("extraGuest.child");
     expect(keys).toContain("extraGuest.guestVisitCottage");
+    // Детской ставки в админке быть не должно: поле осталось в модели данных
+    // ради старого патча, но строка, которую не читает ни один текст, — это
+    // приглашение вписать число и не понять, почему оно никуда не попало.
+    expect(keys).not.toContain("extraGuest.child");
     // The old shape charged by cabin type. It was live for hours and is gone;
     // if it ever reappears the two schemes will disagree about the same guest.
     expect(keys).not.toContain("extraGuest.glamping");
