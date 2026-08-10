@@ -703,6 +703,103 @@ export const resortImages = {
       en: "Chimgan mountains near the resort",
     },
   },
+
+  /* ── Тюбинг-горка, съёмка 10 августа 2026 ─────────────────────────────────
+     До этой даты фотографий трассы не существовало вовсе: страница тюбинга,
+     карточка услуги и визитка показывали окружающие горы, а тексты обещали
+     ровно то, что было видно на тех кадрах. Теперь есть сама горка — две
+     полосы с подъёмником между ними, покрытие с орнаментом и фирменные
+     зелёные тюбинги. */
+  tubingTubeStart: {
+    src: "/images/resort/tubing-2026-08/tube-start-valley.jpg",
+    localSrc: "/images/resort/tubing-2026-08/tube-start-valley.jpg",
+    position: "center",
+    alt: {
+      ru: "Тюбинг на старте трассы, которая уходит вниз к долине",
+      uz: "Vodiyga tushuvchi trassa boshidagi tubing",
+      en: "A tube at the top of the track, which runs down towards the valley",
+    },
+  },
+  tubingTwoLanes: {
+    src: "/images/resort/tubing-2026-08/two-lanes-wide.jpg",
+    localSrc: "/images/resort/tubing-2026-08/two-lanes-wide.jpg",
+    position: "center",
+    alt: {
+      ru: "Две полосы тюбинг-горки и подъёмник между ними",
+      uz: "Tubing gorkasining ikki yo'lagi va ular orasidagi ko'targich",
+      en: "The two tubing lanes with the lift running between them",
+    },
+  },
+  tubingTwoLanesValley: {
+    src: "/images/resort/tubing-2026-08/two-lanes-valley.jpg",
+    localSrc: "/images/resort/tubing-2026-08/two-lanes-valley.jpg",
+    position: "center",
+    alt: {
+      ru: "Полосы трассы уходят вниз, за ними долина и горы",
+      uz: "Trassa yo'laklari pastga tushadi, orqasida vodiy va tog'lar",
+      en: "The lanes run downhill with the valley and the mountains behind",
+    },
+  },
+  tubingTrackTop: {
+    src: "/images/resort/tubing-2026-08/track-from-top.jpg",
+    localSrc: "/images/resort/tubing-2026-08/track-from-top.jpg",
+    position: "center",
+    alt: {
+      ru: "Вид со старта вдоль трассы тюбинга",
+      uz: "Tubing trassasi bo'ylab startdan ko'rinish",
+      en: "The view from the start, down the length of the track",
+    },
+  },
+  tubingTrackPattern: {
+    src: "/images/resort/tubing-2026-08/track-pattern.jpg",
+    localSrc: "/images/resort/tubing-2026-08/track-pattern.jpg",
+    position: "center",
+    alt: {
+      ru: "Покрытие трассы с национальным орнаментом крупным планом",
+      uz: "Milliy naqshli trassa qoplamasi yaqindan",
+      en: "The patterned track surface, close up",
+    },
+  },
+  tubingTubeMats: {
+    src: "/images/resort/tubing-2026-08/tube-on-mats.jpg",
+    localSrc: "/images/resort/tubing-2026-08/tube-on-mats.jpg",
+    position: "center",
+    alt: {
+      ru: "Фирменный тюбинг на покрытии трассы",
+      uz: "Trassa qoplamasidagi firma tubingi",
+      en: "A branded tube resting on the track surface",
+    },
+  },
+  tubingTubesTrack: {
+    src: "/images/resort/tubing-2026-08/tubes-and-track.jpg",
+    localSrc: "/images/resort/tubing-2026-08/tubes-and-track.jpg",
+    position: "center",
+    alt: {
+      ru: "Стойка с тюбингами на старте и трасса за ней",
+      uz: "Startdagi tubinglar javoni va orqasidagi trassa",
+      en: "The rack of tubes at the top, with the track behind it",
+    },
+  },
+  tubingTubesCanopy: {
+    src: "/images/resort/tubing-2026-08/tubes-canopy.jpg",
+    localSrc: "/images/resort/tubing-2026-08/tubes-canopy.jpg",
+    position: "center",
+    alt: {
+      ru: "Тюбинги под навесом на пункте выдачи",
+      uz: "Berish nuqtasida soyabon ostidagi tubinglar",
+      en: "Tubes stacked under the canopy at the handout point",
+    },
+  },
+  tubingTubesStacked: {
+    src: "/images/resort/tubing-2026-08/tubes-stacked.jpg",
+    localSrc: "/images/resort/tubing-2026-08/tubes-stacked.jpg",
+    position: "center",
+    alt: {
+      ru: "Штабели тюбингов, за ними горы",
+      uz: "Tubinglar uyumi, orqasida tog'lar",
+      en: "Stacks of tubes with the mountains behind",
+    },
+  },
   cableCars: {
     src: "/images/resort/kanatnaya_doroga.jpg",
     localSrc: "/images/resort/kanatnaya_doroga.jpg",

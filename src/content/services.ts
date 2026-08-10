@@ -187,12 +187,9 @@ export const services: Service[] = [
     category: "activity",
     /** Своя страница с пакетами спусков, правилами и видео трассы. */
     href: "/tubing",
-    /**
-     * Фотографий самой горки не существует — в day-products.ts это записано
-     * отдельно. До съёмки карточка показывает Чимган, а не выдуманный кадр.
-     */
-    image: "chimganMountains",
-    secondImage: "galTerritoryPanorama",
+    /** Съёмка горки от 10.08.2026 — до неё карточка показывала Чимган. */
+    image: "tubingTwoLanes",
+    secondImage: "tubingTubeStart",
     title: { ru: "Тюбинг-горка", uz: "Tubing gorkasi", en: "Tubing hill" },
     shortDescription: {
       ru: "Всесезонная трасса 160 метров с автоматическим подъёмом — работает круглый год, не только по снегу.",

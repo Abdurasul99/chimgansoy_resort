@@ -119,17 +119,27 @@ export const dayProducts: DayProduct[] = [
   {
     slug: "tubing",
     /**
-     * NO TUBING PHOTOGRAPHY EXISTS.
+     * Съёмка горки от 10 августа 2026 года.
      *
-     * There used to be a `tubing` key in images.ts, but it resolved to a night
-     * render of the master plan rather than a track; it went with the rest of
-     * the CGI set. Until the operator shoots the hill, the archive carries the
-     * real surroundings instead, the copy promises only what those photos
-     * actually show, and the one piece of genuine footage — the first-person
-     * run in content/videos.ts — does the selling.
+     * До неё фотографий трассы не существовало: здесь стоял `chimganMountains`
+     * и виды окрестностей, а текст обещал ровно то, что было на тех кадрах.
+     * Ещё раньше был ключ `tubing`, который вёл на ночной рендер генплана — он
+     * ушёл вместе со всем набором визуализаций.
+     *
+     * Первым кадром — тюбинг на старте: гость видит, что именно он получит и
+     * куда поедет, а не общий план склона.
      */
-    image: "chimganMountains",
-    gallery: ["chimganMountains", "mountainRidge", "galMountainView"],
+    image: "tubingTubeStart",
+    gallery: [
+      "tubingTwoLanes",
+      "tubingTwoLanesValley",
+      "tubingTrackTop",
+      "tubingTubeMats",
+      "tubingTrackPattern",
+      "tubingTubesTrack",
+      "tubingTubesCanopy",
+      "tubingTubesStacked",
+    ],
     videos: [],
     title: { ru: "Тюбинг-горка", uz: "Tubing gorkasi", en: "Tubing hill" },
     eyebrow: {
