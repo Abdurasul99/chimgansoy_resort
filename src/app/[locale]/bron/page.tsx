@@ -65,16 +65,16 @@ async function StayLevyNote({ locale }: { locale: Locale }) {
 
   const copy = {
     ru: {
-      title: "Туристский сбор оплачивается отдельно",
-      body: `Сбор не входит в стоимость проживания и не оплачивается онлайн: его вносят при заселении, за каждую ночь с каждого гостя. Граждане и резиденты Узбекистана — ${money(live.touristTax.resident)} сум, иностранные граждане — ${money(live.touristTax.nonResident)} сум. Ставка установлена законодательством Республики Узбекистан.`,
+      title: "Туристский сбор — с иностранных гостей, отдельно от проживания",
+      body: `Сбор взимается с иностранных граждан и лиц без гражданства при заселении в глэмпинг и шале — ${money(live.touristTax.nonResident)} сум за ночь с человека по ставке, действующей на дату заезда. Он не входит в стоимость проживания и не оплачивается онлайн: его вносят на ресепшене. С граждан и резидентов Узбекистана сбор не взимается.`,
     },
     uz: {
-      title: "Turistik yig'im alohida to'lanadi",
-      body: `Yig'im yashash narxiga kirmaydi va onlayn to'lanmaydi: u joylashuvda, har bir kecha uchun har bir mehmondan olinadi. O'zbekiston fuqarolari va rezidentlari — ${money(live.touristTax.resident)} so'm, chet el fuqarolari — ${money(live.touristTax.nonResident)} so'm. Stavka O'zbekiston Respublikasi qonunchiligi bilan belgilangan.`,
+      title: "Turistik yig'im — chet ellik mehmonlardan, yashashdan alohida",
+      body: `Yig'im glemping va shalega joylashayotgan chet el fuqarolari hamda fuqaroligi bo'lmagan shaxslardan olinadi — kirish sanasida amal qiluvchi stavka bo'yicha bir kecha uchun har bir mehmondan ${money(live.touristTax.nonResident)} so'm. U yashash narxiga kirmaydi va onlayn to'lanmaydi: resepshnda to'lanadi. O'zbekiston fuqarolari va rezidentlaridan yig'im olinmaydi.`,
     },
     en: {
-      title: "The tourist levy is paid separately",
-      body: `The levy is not part of the room rate and is not charged online: it is paid at check-in, per person per night. Uzbek citizens and residents pay ${money(live.touristTax.resident)} UZS, foreign nationals ${money(live.touristTax.nonResident)} UZS. The rate is set by the law of the Republic of Uzbekistan.`,
+      title: "The tourist levy — foreign guests only, paid separately",
+      body: `The levy is charged to foreign nationals and stateless persons checking into the glamping cabins and chalets — ${money(live.touristTax.nonResident)} UZS per person per night, at the rate in force on the arrival date. It is not part of the room rate and is not paid online: it is collected at reception. Uzbek citizens and residents are not charged.`,
     },
   }[locale];
 

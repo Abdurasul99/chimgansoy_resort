@@ -236,9 +236,13 @@ describe("stay rules — what the AI is briefed on", () => {
     it(`${name}() carries the hours, the levy and the passport rule`, () => {
       expect(text).toContain(`Заезд с ${stayRules.checkIn}`);
       expect(text).toMatch(/туристский сбор/i);
-      // Both rates, because they differ 36-fold and quoting one is misleading.
-      expect(text).toContain(money(touristTax.resident));
+      // Ставка одна — иностранная. С граждан и резидентов Узбекистана сбор не
+      // взимается (уточнение оператора 2026-08-11), и брифинг обязан говорить
+      // об этом прямо: иначе консьерж назовёт узбекистанцу платёж, которого
+      // нет, и гость приедет с лишними деньгами в кармане и претензией.
       expect(text).toContain(money(touristTax.nonResident));
+      expect(text).toMatch(/иностранн/i);
+      expect(text).toMatch(/не взимается|не платят/i);
       expect(text).toMatch(/паспорт/i);
       // The two briefings word it differently — "ранний заезд" in the compact
       // one, "раннее заселение" in the full one — but both must say PAID.

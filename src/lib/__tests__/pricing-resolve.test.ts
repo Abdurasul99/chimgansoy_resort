@@ -108,7 +108,7 @@ describe("каталог админки и резолвер описывают �
       "parking.flat",
       "pool.adult.weekday",
       "pool.extra.towel",
-      "touristTax.resident",
+      // touristTax.resident в каталоге больше нет: с резидентов сбор не берут.
       "touristTax.nonResident",
     ]) {
       expect(keys, `нет в админке: ${key}`).toContain(key);

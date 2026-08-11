@@ -158,7 +158,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
           ...(room.slug === "cottage"
             ? [`Гостевой визит в шале (без ночёвки) — ${group(livePricing.extraGuest.guestVisitCottage)} сум.`]
             : []),
-          `Туристский сбор за каждую ночь с человека: граждане Узбекистана — ${group(livePricing.touristTax.resident)} сум, иностранцы — ${group(livePricing.touristTax.nonResident)} сум. Платится при заселении сверх стоимости.`,
+          `Туристский сбор платят только иностранные граждане и лица без гражданства — ${group(livePricing.touristTax.nonResident)} сум за ночь с человека по действующей ставке. Вносится при заселении, отдельно от стоимости проживания. С граждан и резидентов Узбекистана сбор не взимается.`,
           "При заселении нужны паспорта всех проживающих.",
         ],
         uz: [
@@ -168,7 +168,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
           ...(room.slug === "cottage"
             ? [`Shalega mehmon tashrifi (tunab qolmasdan) — ${group(livePricing.extraGuest.guestVisitCottage)} so'm.`]
             : []),
-          `Har bir kecha uchun har bir mehmondan turistik yig'im: O'zbekiston fuqarolari — ${group(livePricing.touristTax.resident)} so'm, chet el fuqarolari — ${group(livePricing.touristTax.nonResident)} so'm. Joylashuvda narx ustiga to'lanadi.`,
+          `Turistik yig'imni faqat chet el fuqarolari va fuqaroligi bo'lmagan shaxslar to'laydi — amaldagi stavka bo'yicha bir kecha uchun har bir mehmondan ${group(livePricing.touristTax.nonResident)} so'm. Joylashuvda, yashash narxidan alohida to'lanadi. O'zbekiston fuqarolari va rezidentlaridan yig'im olinmaydi.`,
           "Joylashuvda barcha yashovchilarning pasporti kerak bo'ladi.",
         ],
         en: [
@@ -178,7 +178,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
           ...(room.slug === "cottage"
             ? [`A guest visit to a chalet (no overnight stay) — ${group(livePricing.extraGuest.guestVisitCottage)} UZS.`]
             : []),
-          `A tourist levy per person per night: Uzbek citizens — ${group(livePricing.touristTax.resident)} UZS, foreign nationals — ${group(livePricing.touristTax.nonResident)} UZS. Paid at check-in on top of the rate.`,
+          `The tourist levy is paid only by foreign nationals and stateless persons — ${group(livePricing.touristTax.nonResident)} UZS per person per night at the rate in force. It is collected at check-in, separately from the room rate. Uzbek citizens and residents are not charged.`,
           "Passports of every guest are required at check-in.",
         ],
       }[locale];
