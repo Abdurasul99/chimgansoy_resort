@@ -108,8 +108,27 @@ const TOOLS = [
   },
 ];
 
+/**
+ * Бюджет токенов на ответ — 2000, а не 700.
+ *
+ * У gpt-oss рассуждение тратит ТОТ ЖЕ бюджет, что и текст ответа: в замере на
+ * 400 токенов 103 ушли в рассуждение и лишь 19 в ответ. Гость, спросивший
+ * «сколько стоят бассейн, тюбинг, глэмпинг, шале, топчан и парковка, и
+ * посчитайте на 15 человек», получал обрыв на первой же услуге — 700 токенов
+ * кончались на бассейне. В телеграм-боте тот же бюджет заканчивался ещё до
+ * первой строки ответа, и бот отвечал «Помощник сейчас недоступен».
+ *
+ * 2000 хватает на разбор шести услуг со сметой и всё ещё далеко от контекста
+ * модели (131 072). Платим за это только на шлюзе и только по факту.
+ */
+const ANSWER_BUDGET = 2000;
+
 async function callModel(target: AiTarget, messages: GroqMsg[], withTools: boolean): Promise<Response> {
-  const body: Record<string, unknown> = { messages, temperature: 0.15, max_tokens: 700 };
+  const body: Record<string, unknown> = {
+    messages,
+    temperature: 0.15,
+    max_tokens: ANSWER_BUDGET,
+  };
   if (withTools) {
     body.tools = TOOLS;
     body.tool_choice = "auto";

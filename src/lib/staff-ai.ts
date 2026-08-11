@@ -179,8 +179,32 @@ function systemPrompt(live: LivePricing = resolvePricing()): string {
 
 // ── model loop ────────────────────────────────────────────────────────────────
 
-function callModel(target: AiTarget, messages: GroqMsg[], withTools: boolean) {
-  const body: Record<string, unknown> = { messages, temperature: 0.2, max_tokens: 700 };
+/**
+ * Бюджет токенов на ответ.
+ *
+ * У gpt-oss рассуждение тратит тот же бюджет, что и текст: на 400 токенов в
+ * замере 103 ушли в рассуждение. При 700 гость, спросивший цены на шесть услуг
+ * и смету на группу из 15 человек, получал от бота «Помощник сейчас
+ * недоступен» — модель истратила бюджет на размышление, вернула пустой content,
+ * и код честно счёл это отказом. Телеграм всё равно режет сообщение на 3800
+ * символах, так что 1600 — это примерно то, что влезет целиком.
+ */
+const ANSWER_BUDGET = 1600;
+/** Второй заход, когда бюджет съело рассуждение: думать меньше, дописать ответ. */
+const RETRY_BUDGET = 2400;
+
+function callModel(
+  target: AiTarget,
+  messages: GroqMsg[],
+  withTools: boolean,
+  opts: { budget?: number; effort?: "low" | "medium" | "high" } = {},
+) {
+  const body: Record<string, unknown> = {
+    messages,
+    temperature: 0.2,
+    max_tokens: opts.budget ?? ANSWER_BUDGET,
+  };
+  if (opts.effort) body.reasoning_effort = opts.effort;
   if (withTools) {
     body.tools = TOOLS;
     body.tool_choice = "auto";
@@ -197,13 +221,32 @@ async function callFirstAvailable(
   targets: AiTarget[],
   messages: GroqMsg[],
   withTools: boolean,
+  opts: { budget?: number; effort?: "low" | "medium" | "high" } = {},
 ): Promise<{ res: Response; target: AiTarget } | null> {
   for (const target of targets) {
-    const res = await callModel(target, messages, withTools);
+    const res = await callModel(target, messages, withTools, opts);
     if (!shouldFallThrough(res.status)) return { res, target };
     console.warn(`[guest-ai] ${target.label} ${target.model} unavailable (${res.status})`);
   }
   return null;
+}
+
+/**
+ * Ответ пустой, потому что бюджет съело рассуждение — дать второй шанс.
+ *
+ * Пустой content и «сервис недоступен» выглядят в коде одинаково, но для гостя
+ * это разные вещи: во втором случае помочь нельзя, а в первом — можно, надо
+ * лишь дать больше места и попросить думать короче. Без этого тяжёлый вопрос
+ * («посчитайте на 15 человек») получал телефон администратора вместо ответа.
+ */
+async function retryForText(targets: AiTarget[], messages: GroqMsg[]): Promise<string | null> {
+  const picked = await callFirstAvailable(targets, messages, false, {
+    budget: RETRY_BUDGET,
+    effort: "low",
+  });
+  if (!picked?.res.ok) return null;
+  const text = ((await picked.res.json()) as GroqResponse).choices?.[0]?.message?.content?.trim();
+  return text || null;
 }
 
 export type GuestAiResult = { ok: true; text: string } | { ok: false; error: string };
@@ -278,14 +321,21 @@ export async function answerGuestQuestion(
 
       const text = msg.content?.trim();
       if (text) return finish(question, text, opts.chatId);
-      return { ok: false, error: "ai_empty" };
+      // Пусто — почти наверняка бюджет ушёл в рассуждение. Это не отказ
+      // сервиса, и телефон администратора здесь показывать рано.
+      const second = await retryForText(targets, messages);
+      return second
+        ? finish(question, second, opts.chatId)
+        : { ok: false, error: "ai_empty" };
     }
 
     // Tool budget exhausted — force a final answer from what's gathered.
     const picked = await callFirstAvailable(targets, messages, false);
     if (!picked?.res.ok) return { ok: false, error: `ai_${picked?.res.status ?? "unavailable"}` };
     const text = ((await picked.res.json()) as GroqResponse).choices?.[0]?.message?.content?.trim();
-    return text ? finish(question, text, opts.chatId) : { ok: false, error: "ai_empty" };
+    if (text) return finish(question, text, opts.chatId);
+    const second = await retryForText(targets, messages);
+    return second ? finish(question, second, opts.chatId) : { ok: false, error: "ai_empty" };
   } catch (e) {
     console.error("[guest-ai] threw:", e);
     return { ok: false, error: "ai_failed" };

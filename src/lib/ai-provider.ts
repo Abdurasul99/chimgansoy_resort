@@ -141,8 +141,15 @@ export function callAiModel(
       ...body,
       ...(target.bodyExtra ?? {}),
       model: target.model,
-      // "low" starved the language and price-formatting rules of attention.
-      reasoning_effort: "medium",
+      /**
+       * "low" starved the language and price-formatting rules of attention, so
+       * medium is the default — но именно default, а не жёсткая настройка.
+       * Раньше это поле стояло последним и затирало всё, что передал вызывающий;
+       * теперь оно уступает, потому что у рассуждения и ответа ОДИН бюджет
+       * токенов, и на тяжёлом вопросе бывает выгоднее думать меньше, но успеть
+       * дописать ответ.
+       */
+      reasoning_effort: body.reasoning_effort ?? "medium",
     }),
     signal: AbortSignal.timeout(timeoutMs),
   });
