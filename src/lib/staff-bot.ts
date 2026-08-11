@@ -817,6 +817,26 @@ export async function handleGuestUpdate(update: TgUpdate): Promise<void> {
         reply_markup: { inline_keyboard: backRow() },
       });
     } else {
+      /**
+       * Гость видит вежливую заглушку, администратор — причину.
+       *
+       * Без этого «Помощник сейчас недоступен» — тупик: оператор видит отказ,
+       * а код ошибки остаётся в логах Vercel, куда он не ходит. Один и тот же
+       * симптом уже дважды означал разное (истёкший бюджет токенов и 400 из-за
+       * пропавших tools), и оба раза разбор начинался с угадывания.
+       */
+      const adminChat =
+        process.env.TELEGRAM_ADMIN_CHAT_ID?.trim().split(",")[0]?.trim() || "";
+      if (adminChat && String(adminChat) !== String(chatId)) {
+        await sendMessage(
+          adminChat,
+          [
+            "⚠️ <b>ИИ-помощник не ответил гостю</b>",
+            `Код: <code>${esc(ai.error)}</code>`,
+            `Вопрос: ${esc(text.slice(0, 300))}`,
+          ].join("\n"),
+        ).catch(() => {});
+      }
       const phoneDigits = contacts.phone.replaceAll(" ", "");
       await sendMessage(
         chatId,
