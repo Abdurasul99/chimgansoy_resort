@@ -54,10 +54,13 @@ export const dayProducts: DayProduct[] = [
     ],
     videos: [],
     title: { ru: "Топчан", uz: "Topchan", en: "Topchan" },
+    // «Пикник-зона» стоит первым словом на экране: гости путали топчан с
+    // бунгало у бассейна — обе услуги про «крытое место на день», и без места
+    // проведения различить их неоткуда.
     eyebrow: {
-      ru: "Отдых на день, без ночёвки",
-      uz: "Bir kunlik dam, tunamasdan",
-      en: "A day out, no overnight stay",
+      ru: "Пикник-зона · отдых на день, без ночёвки",
+      uz: "Piknik zonasi · bir kunlik dam, tunamasdan",
+      en: "Picnic zone · a day out, no overnight stay",
     },
     lead: {
       ru: "Свой топчан с курпачами на весь день — с видом на Чимганский хребет, мангалом рядом и кухней в двух шагах.",

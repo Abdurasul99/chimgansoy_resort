@@ -46,7 +46,7 @@ const COPY: Record<
   }
 > = {
   ru: {
-    eyebrow: `Топчан · ${topchanPricing.hours}`,
+    eyebrow: `Топчан в пикник-зоне · ${topchanPricing.hours}`,
     title: "Оставить заявку",
     lead: "Выберите дату и число гостей — администратор перезвонит, подтвердит свободный топчан и забронирует его.",
     date: "Дата визита",
@@ -64,7 +64,7 @@ const COPY: Record<
     note: "Заявка — это ещё не оплата. Место закрепляет администратор: пока он не подтвердил, топчан не забронирован. Приехавшим без заявки свободный топчан не гарантирован.",
     failed: `Не удалось отправить заявку. Позвоните нам: ${contacts.phone}`,
     priceTitle: "Стоимость",
-    topchan: `Топчан (до ${topchanPricing.capacity} чел.)`,
+    topchan: `Топчан в пикник-зоне (до ${topchanPricing.capacity} чел.)`,
     allWeek: "всю неделю",
     extrasTitle: "Добавить к отдыху",
     poolTitle: "Доступ в бассейн",
@@ -72,10 +72,10 @@ const COPY: Record<
     poolKids: "Дети 5–15 лет",
     towels: "Полотенца",
     total: "Предварительно к оплате",
-    freeNote: `Топчан оплачивается целиком, не с человека: один вмещает до ${topchanPricing.capacity} гостей. Свои продукты и свой мангал привозить можно. Работаем ежедневно ${topchanPricing.hours}. Парковка бесплатная, но не гарантированная — место предоставляется при наличии свободных.`,
+    freeNote: `Топчан — крытая площадка с курпачами в пикник-зоне, рядом мангал и казан; это НЕ бунгало у бассейна, они бронируются отдельно на странице бассейна. Топчан оплачивается целиком, не с человека: один вмещает до ${topchanPricing.capacity} гостей. Свои продукты и свой мангал привозить можно. Работаем ежедневно ${topchanPricing.hours}. Парковка бесплатная, но не гарантированная — место предоставляется при наличии свободных.`,
   },
   uz: {
-    eyebrow: `Topchan · ${topchanPricing.hours}`,
+    eyebrow: `Piknik zonasidagi topchan · ${topchanPricing.hours}`,
     title: "Ariza qoldiring",
     lead: "Sana va mehmonlar sonini tanlang — administrator qo'ng'iroq qilib, bo'sh topchanni tasdiqlaydi va band qiladi.",
     date: "Tashrif sanasi",
@@ -93,7 +93,7 @@ const COPY: Record<
     note: "Ariza — bu hali to'lov emas. Joyni administrator biriktiradi: u tasdiqlamaguncha topchan band qilinmagan. Arizasiz kelganlarga bo'sh topchan kafolatlanmaydi.",
     failed: `Arizani yuborib bo'lmadi. Bizga qo'ng'iroq qiling: ${contacts.phone}`,
     priceTitle: "Narxi",
-    topchan: `Topchan (${topchanPricing.capacity} kishigacha)`,
+    topchan: `Piknik zonasidagi topchan (${topchanPricing.capacity} kishigacha)`,
     allWeek: "butun hafta",
     extrasTitle: "Dam olishga qo'shish",
     poolTitle: "Basseynga kirish",
@@ -101,10 +101,10 @@ const COPY: Record<
     poolKids: "5–15 yoshli bolalar",
     towels: "Sochiqlar",
     total: "Taxminiy to'lov",
-    freeNote: `Topchan bir kishidan emas, butunlay to'lanadi: bittasiga ${topchanPricing.capacity} kishigacha sig'adi. O'z mahsulotlaringiz va mangalingizni olib kelish mumkin. Har kuni ${topchanPricing.hours} ishlaymiz. Avtoturargoh bepul, lekin kafolatlanmagan — joy bo'sh bo'lsa taqdim etiladi.`,
+    freeNote: `Topchan — piknik zonasidagi kurpachali soyabonli maydoncha, yonida mangal va qozon; bu basseyn yonidagi bungalo EMAS, ular basseyn sahifasida alohida bron qilinadi. Topchan bir kishidan emas, butunlay to'lanadi: bittasiga ${topchanPricing.capacity} kishigacha sig'adi. O'z mahsulotlaringiz va mangalingizni olib kelish mumkin. Har kuni ${topchanPricing.hours} ishlaymiz. Avtoturargoh bepul, lekin kafolatlanmagan — joy bo'sh bo'lsa taqdim etiladi.`,
   },
   en: {
-    eyebrow: `Topchan · ${topchanPricing.hours}`,
+    eyebrow: `Topchan in the picnic zone · ${topchanPricing.hours}`,
     title: "Send a request",
     lead: "Pick a date and the number of guests — our administrator will call back, confirm a free topchan and hold it for you.",
     date: "Visit date",
@@ -122,7 +122,7 @@ const COPY: Record<
     note: "A request is not a payment. The administrator holds the platform: until they confirm, nothing is booked. If you arrive without a request, a free topchan is not guaranteed.",
     failed: `We couldn't send your request. Please call us: ${contacts.phone}`,
     priceTitle: "Price",
-    topchan: `Topchan (up to ${topchanPricing.capacity} people)`,
+    topchan: `Topchan in the picnic zone (up to ${topchanPricing.capacity} people)`,
     allWeek: "all week",
     extrasTitle: "Add to your day",
     poolTitle: "Pool access",
@@ -130,7 +130,7 @@ const COPY: Record<
     poolKids: "Children 5–15",
     towels: "Towels",
     total: "Estimated total",
-    freeNote: `A topchan is charged as a whole, not per person: one seats up to ${topchanPricing.capacity} guests. You may bring your own food and your own grill. Open daily ${topchanPricing.hours}. Parking is free but not guaranteed — a space is given if one is available.`,
+    freeNote: `A topchan is a covered platform with kurpacha cushions in the picnic zone, with a grill and a kazan beside it — it is NOT a poolside bungalow; those are booked separately on the pool page. A topchan is charged as a whole, not per person: one seats up to ${topchanPricing.capacity} guests. You may bring your own food and your own grill. Open daily ${topchanPricing.hours}. Parking is free but not guaranteed — a space is given if one is available.`,
   },
 };
 
