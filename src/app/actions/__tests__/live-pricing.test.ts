@@ -160,6 +160,41 @@ describe("бунгало: сервер не даёт заказать больш
   });
 });
 
+/** Текст, который администратор читает в телеграме. */
+function sentTelegram(): string {
+  const call = deliverRequest.mock.calls.at(-1)?.[0] as { telegramHtml?: string } | undefined;
+  return call?.telegramHtml ?? "";
+}
+
+describe("подписи в сообщении администратору", () => {
+  const base = { locale: "ru", name: "Тест", phone: "+998901234567" };
+
+  /**
+   * Оператор увидел в заявке на топчан строку «(до 8 чел.)» и прочитал её как
+   * бунгало — у которого вместимость 4. Вместимость топчана и правда 8, счёт
+   * был верный, но подпись рядом с суммой сбивала с толку. Эти два теста
+   * держат обе строки такими, чтобы их нельзя было спутать.
+   */
+  it("строка топчана не называет вместимость рядом с суммой", async () => {
+    await submitTopchanRequest(form({ ...base, guests: "8", date: nextMonday() }));
+    const html = sentTelegram();
+    expect(html).toContain("Аренда топчана");
+    expect(html, "вместимость рядом с ценой читается как характеристика бунгало")
+      .not.toMatch(/Топчан \(до \d+ чел\.\)/);
+  });
+
+  it("строки бунгало называют СВОЮ вместимость: 4 и 10", async () => {
+    await submitPoolRequest(
+      form({ ...base, guests: "1", date: nextMonday(), bungalowSmall: "1", bungalowLarge: "1" }),
+    );
+    const html = sentTelegram();
+    expect(html).toContain(`Бунгало ${poolFacts.bungalows.small.name} (до ${poolFacts.bungalows.small.capacity} чел.)`);
+    expect(html).toContain(`Бунгало ${poolFacts.bungalows.large.name} (до ${poolFacts.bungalows.large.capacity} чел.)`);
+    // Восьмёрка — это топчан, и в заявке на бассейн ей делать нечего.
+    expect(html).not.toMatch(/Бунгало[^:]*до 8 чел/);
+  });
+});
+
 describe("топчан: парковка НЕ попадает в счёт", () => {
   const base = { locale: "ru", name: "Тест", phone: "+998901234567", guests: "4" };
 

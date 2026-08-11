@@ -114,7 +114,15 @@ export async function submitTopchanRequest(formData: FormData): Promise<TopchanR
   const poolKidRate = weekend ? live.pool.child.weekend : live.pool.child.weekday;
 
   const lines: { label: string; qty: number; rate: number }[] = [
-    { label: `Топчан (до ${topchanPricing.capacity} чел.)`, qty: topchans, rate: rent },
+    /**
+     * «Аренда топчана», а не «Топчан (до 8 чел.)».
+     *
+     * Оператор прочитал в телеграме строку «(до 8 чел.)» и решил, что бот
+     * посчитал бунгало — у которого вместимость 4. Вместимость топчана и так
+     * стоит строкой выше, в «Гостей: 8 · топчанов: 1», а рядом с суммой она
+     * читается как характеристика оплаченного объекта и путает.
+     */
+    { label: "Аренда топчана", qty: topchans, rate: rent },
     { label: "Бассейн, взрослые и 15+", qty: poolAdults, rate: poolAdultRate },
     { label: "Бассейн, дети 5–15", qty: poolKids, rate: poolKidRate },
     { label: "Аренда казана", qty: kazan, rate: kazanRate },
