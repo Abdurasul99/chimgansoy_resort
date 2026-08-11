@@ -2,12 +2,12 @@
 
 import { Fragment, useActionState, useEffect, useState } from "react";
 
-/** Держит счётчик в [0, max]: браузер пускает и минус, и что угодно сверху. */
-const clamp = (value: number, max: number) => Math.min(Math.max(value, 0), max);
+// Обрезка по [0, max] переехала внутрь CountInput вместе с самими счётчиками.
 import { submitPoolRequest } from "@/app/actions/pool";
 import { poolFacts, poolPricing, priceLabels } from "@/content/pricing";
 import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 import { contacts } from "@/content/contacts";
+import { CountInput } from "@/components/ui/CountInput";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Icon } from "@/components/ui/Icon";
 import { trackEvent } from "@/lib/analytics";
@@ -303,21 +303,15 @@ export function PoolRequestForm({
             <span className={labelCls}>{t.adults}</span>
             {/* No defaultValue beside a controlled value — React ignores it and
                 warns; the initial number comes from useState above. */}
-            <input name="guests" type="number" min={1} max={200} step={1}
-              inputMode="numeric" value={adults} onChange={(e) => setAdults(+e.target.value || 0)}
-              className={field} />
+            <CountInput name="guests" min={1} max={200} value={adults} onValue={setAdults} className={field} />
           </label>
           <label className="block">
             <span className={labelCls}>{t.kids}</span>
-            <input name="kids" type="number" min={0} max={200} step={1}
-              inputMode="numeric" value={kids} onChange={(e) => setKids(+e.target.value || 0)}
-              className={field} />
+            <CountInput name="kids" max={200} value={kids} onValue={setKids} className={field} />
           </label>
           <label className="block">
             <span className={labelCls}>{t.toddlers}</span>
-            <input name="toddlers" type="number" min={0} max={50} step={1}
-              inputMode="numeric" value={toddlers} onChange={(e) => setToddlers(+e.target.value || 0)}
-              className={field} />
+            <CountInput name="toddlers" max={50} value={toddlers} onValue={setToddlers} className={field} />
           </label>
         </div>
 
@@ -327,9 +321,7 @@ export function PoolRequestForm({
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block">
             <span className={labelCls}>{t.towels}</span>
-            <input name="towels" type="number" min={0} max={50} step={1}
-              inputMode="numeric" value={towels} onChange={(e) => setTowels(+e.target.value || 0)}
-              className={field} />
+            <CountInput name="towels" max={50} value={towels} onValue={setTowels} className={field} />
           </label>
           {/* Два счётчика вместо «одно из»: ограничить нечего, пока заказать
               можно ровно одно. max — подсказка, настоящий потолок в экшене. */}
@@ -337,19 +329,13 @@ export function PoolRequestForm({
             <span className={labelCls}>
               {t.bungalowSmall} ({money(live.pool.extras.bungalow4)})
             </span>
-            <input name="bungalowSmall" type="number" min={0} max={B.small.count} step={1}
-              inputMode="numeric" value={bungalowSmall}
-              onChange={(e) => setBungalowSmall(clamp(+e.target.value || 0, B.small.count))}
-              className={field} />
+            <CountInput name="bungalowSmall" max={B.small.count} value={bungalowSmall} onValue={setBungalowSmall} className={field} />
           </label>
           <label className="block">
             <span className={labelCls}>
               {t.bungalowLarge} ({money(live.pool.extras.bungalow10)})
             </span>
-            <input name="bungalowLarge" type="number" min={0} max={B.large.count} step={1}
-              inputMode="numeric" value={bungalowLarge}
-              onChange={(e) => setBungalowLarge(clamp(+e.target.value || 0, B.large.count))}
-              className={field} />
+            <CountInput name="bungalowLarge" max={B.large.count} value={bungalowLarge} onValue={setBungalowLarge} className={field} />
           </label>
         </div>
 

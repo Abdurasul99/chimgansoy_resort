@@ -5,6 +5,7 @@ import { submitTubingRequest } from "@/app/actions/tubing";
 import { priceLabels, tubingPricing } from "@/content/pricing";
 import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 import { contacts } from "@/content/contacts";
+import { CountInput } from "@/components/ui/CountInput";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Icon } from "@/components/ui/Icon";
 import { trackEvent } from "@/lib/analytics";
@@ -246,17 +247,11 @@ export function TubingRequestForm({
               <span className={labelCls}>
                 {t.packLabel(p.rides)} ({money(p.price)})
               </span>
-              <input
+              <CountInput
                 name={`pack${i}`}
-                type="number"
-                min={0}
                 max={100}
-                step={1}
-                inputMode="numeric"
                 value={packs[i] ?? 0}
-                onChange={(e) =>
-                  setPacks((prev) => prev.map((v, j) => (j === i ? +e.target.value || 0 : v)))
-                }
+                onValue={(v) => setPacks((prev) => prev.map((old, j) => (j === i ? v : old)))}
                 className={field}
               />
             </label>
@@ -266,15 +261,11 @@ export function TubingRequestForm({
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block">
             <span className={labelCls}>{t.guests}</span>
-            <input name="guests" type="number" min={1} max={200} step={1}
-              inputMode="numeric" value={guests} onChange={(e) => setGuests(+e.target.value || 0)}
-              className={field} />
+            <CountInput name="guests" min={1} max={200} value={guests} onValue={setGuests} className={field} />
           </label>
           <label className="block">
             <span className={labelCls}>{t.cars}</span>
-            <input name="cars" type="number" min={0} max={60} step={1}
-              inputMode="numeric" value={cars} onChange={(e) => setCars(+e.target.value || 0)}
-              className={field} />
+            <CountInput name="cars" max={60} value={cars} onValue={setCars} className={field} />
           </label>
         </div>
 

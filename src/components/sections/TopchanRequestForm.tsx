@@ -5,6 +5,7 @@ import { submitTopchanRequest } from "@/app/actions/topchan";
 import { priceLabels, priceList, topchanPricing } from "@/content/pricing";
 import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 import { contacts } from "@/content/contacts";
+import { CountInput } from "@/components/ui/CountInput";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Icon } from "@/components/ui/Icon";
 import { trackEvent } from "@/lib/analytics";
@@ -344,9 +345,7 @@ export function TopchanRequestForm({
         <div className="grid gap-3">
           <label className="block">
             <span className={labelCls}>{t.guests}</span>
-            <input name="guests" type="number" min={1} max={240} step={1}
-              inputMode="numeric" value={guests} onChange={(e) => setGuests(+e.target.value || 0)}
-              className={field} />
+            <CountInput name="guests" min={1} max={240} value={guests} onValue={setGuests} className={field} />
             <span className="mt-1.5 block text-xs font-semibold text-[var(--accent-strong)]">
               {t.guestsHint(topchans)}
             </span>
@@ -367,15 +366,11 @@ export function TopchanRequestForm({
                   <span className={labelCls}>
                     {item.title[locale]} ({money(band(item))})
                   </span>
-                  <input
+                  <CountInput
                     name={key}
-                    type="number"
-                    min={0}
                     max={50}
-                    step={1}
-                    inputMode="numeric"
                     value={extras[key] ?? 0}
-                    onChange={(e) => setExtras((x) => ({ ...x, [key]: +e.target.value || 0 }))}
+                    onValue={(v) => setExtras((x) => ({ ...x, [key]: v }))}
                     className={field}
                   />
                 </label>
@@ -387,21 +382,15 @@ export function TopchanRequestForm({
           <div className="mt-3 grid gap-3 sm:grid-cols-3">
             <label className="block">
               <span className={labelCls}>{t.poolAdults} ({money(band(live.pool.adult))})</span>
-              <input name="poolAdults" type="number" min={0} max={200} step={1}
-                inputMode="numeric" value={poolAdults} onChange={(e) => setPoolAdults(+e.target.value || 0)}
-                className={field} />
+              <CountInput name="poolAdults" max={200} value={poolAdults} onValue={setPoolAdults} className={field} />
             </label>
             <label className="block">
               <span className={labelCls}>{t.poolKids} ({money(band(live.pool.child))})</span>
-              <input name="poolKids" type="number" min={0} max={200} step={1}
-                inputMode="numeric" value={poolKids} onChange={(e) => setPoolKids(+e.target.value || 0)}
-                className={field} />
+              <CountInput name="poolKids" max={200} value={poolKids} onValue={setPoolKids} className={field} />
             </label>
             <label className="block">
               <span className={labelCls}>{t.towels} ({money(live.pool.extras.towel)})</span>
-              <input name="towels" type="number" min={0} max={50} step={1}
-                inputMode="numeric" value={towels} onChange={(e) => setTowels(+e.target.value || 0)}
-                className={field} />
+              <CountInput name="towels" max={50} value={towels} onValue={setTowels} className={field} />
             </label>
 
           </div>
