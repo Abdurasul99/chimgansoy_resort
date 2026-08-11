@@ -31,8 +31,42 @@ const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
  */
 const GROQ_MODELS = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "llama-3.3-70b-versatile"];
 
-/** One model + account the assistants may call. */
-export type AiTarget = { label: string; url: string; key: string; model: string };
+/**
+ * Шлюз Vercel AI Gateway — платный запас, когда бесплатные аккаунты выбраны.
+ *
+ * Свободный тариф Groq упирается в 8 000 токенов в минуту, а один вопрос
+ * гостя стоит около 3 700: в выходной день это две-три реплики в минуту на
+ * весь курорт, после чего консьерж начинает отвечать «попробуйте позже».
+ * Шлюз берёт те же модели, но по счёту, и ограничения у него другие.
+ *
+ * ТОЛЬКО GROQ, И ЭТО НЕ ФОРМАЛЬНОСТЬ. У шлюза модель и провайдер разведены:
+ * `openai/gpt-oss-120b` — это модель, а обслужить её могут baseten, bedrock,
+ * cerebras, fireworks, groq, nebius, parasail, togetherai. Без закрепления
+ * запрос ушёл бы к любому из них. Поле `only` шлюз действительно уважает —
+ * проверено: с чужой моделью он отвечает «No available providers match the
+ * 'only' filter: groq», а не молча подставляет другого.
+ *
+ * Имена моделей у шлюза свои: llama называется meta/llama-3.3-70b, а не
+ * llama-3.3-70b-versatile, как в прямом API Groq.
+ */
+const GATEWAY_URL = "https://ai-gateway.vercel.sh/v1/chat/completions";
+const GATEWAY_MODELS = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "meta/llama-3.3-70b"];
+const GATEWAY_ONLY_GROQ = { providerOptions: { gateway: { only: ["groq"] } } };
+
+/**
+ * One model + account the assistants may call.
+ *
+ * `bodyExtra` — то, что добавляется к телу запроса именно для этого адресата.
+ * Нужен шлюзу: закрепление провайдера живёт в теле, а не в заголовке, и
+ * прямой API Groq на такое поле ответил бы ошибкой.
+ */
+export type AiTarget = {
+  label: string;
+  url: string;
+  key: string;
+  model: string;
+  bodyExtra?: Record<string, unknown>;
+};
 
 /**
  * Every configured account, best model first. Blank or missing keys drop out,
@@ -51,6 +85,27 @@ export function aiTargets(): AiTarget[] {
   const out: AiTarget[] = [];
   for (const model of GROQ_MODELS) {
     keys.forEach((key, i) => out.push({ label: `groq/key${i + 1}`, url: GROQ_URL, key, model }));
+  }
+
+  /**
+   * Шлюз идёт последним, а не первым, и это осознанно: свои ключи бесплатны,
+   * шлюз — по счёту. Пока бесплатная минута не выбрана, платить незачем; как
+   * только выбрана — гость не должен этого заметить.
+   *
+   * Модели перечислены тем же порядком «сильная → запасная», так что если
+   * бесплатные аккаунты кончились на 120b, шлюз начнёт с неё же, а не с 20b.
+   */
+  const gatewayKey = process.env.AI_GATEWAY_API_KEY?.trim();
+  if (gatewayKey) {
+    for (const model of GATEWAY_MODELS) {
+      out.push({
+        label: `gateway/${model}`,
+        url: GATEWAY_URL,
+        key: gatewayKey,
+        model,
+        bodyExtra: GATEWAY_ONLY_GROQ,
+      });
+    }
   }
   return out;
 }
@@ -84,6 +139,7 @@ export function callAiModel(
     headers: { Authorization: `Bearer ${target.key}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       ...body,
+      ...(target.bodyExtra ?? {}),
       model: target.model,
       // "low" starved the language and price-formatting rules of attention.
       reasoning_effort: "medium",
