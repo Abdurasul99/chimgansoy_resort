@@ -11,7 +11,7 @@ import { checkAvailability } from "./exely";
 import { getChimganWeather, weatherInfo } from "./bot-weather";
 import { venueFacts } from "./venue-facts";
 import { contacts } from "@/content/contacts";
-import { aiTargets, tryCallAiModel, shouldFallThrough, type AiTarget } from "./ai-provider";
+import { aiTargets, isHardQuestion, tryCallAiModel, shouldFallThrough, type AiTarget } from "./ai-provider";
 import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
@@ -210,10 +210,21 @@ function callModel(
     max_tokens: opts.budget ?? ANSWER_BUDGET,
   };
   if (opts.effort) body.reasoning_effort = opts.effort;
-  if (withTools) {
-    body.tools = TOOLS;
-    body.tool_choice = "auto";
-  }
+  /**
+   * Инструменты объявляются ВСЕГДА, даже когда вызывать их уже нельзя.
+   *
+   * Здесь пряталась причина «Помощник сейчас недоступен» на тяжёлых вопросах.
+   * После раундов с инструментами в истории остаются сообщения с tool_calls, и
+   * если следующий запрос уходит БЕЗ поля tools, совместимый с OpenAI API
+   * отвечает 400 — история ссылается на инструменты, которых в запросе нет.
+   * А 400 не считается поводом идти дальше по цепочке, так что перебор
+   * обрывался, и гость получал телефон администратора.
+   *
+   * Правильный способ запретить новые вызовы — не убирать tools, а сказать
+   * tool_choice: "none".
+   */
+  body.tools = TOOLS;
+  body.tool_choice = withTools ? "auto" : "none";
   /**
    * 12 секунд, а не 25.
    *
@@ -302,7 +313,9 @@ export async function answerGuestQuestion(
 ): Promise<GuestAiResult> {
   // Same provider order as the site concierge, for the same reason: whichever
   // one is answering the website right now is the one that will answer here.
-  const targets = aiTargets();
+  // Смету на группу считает 120b, «во сколько заезд» — 20b. Решение оператора:
+  // старшая модель только там, где действительно считают.
+  const targets = aiTargets(isHardQuestion(question));
   if (targets.length === 0) return { ok: false, error: "no_ai_key" };
 
   const messages: GroqMsg[] = [{ role: "system", content: systemPrompt() }];

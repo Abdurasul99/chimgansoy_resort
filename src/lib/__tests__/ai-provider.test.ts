@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach, afterEach, vi } from "vitest";
-import { aiTargets, callAiModel, shouldFallThrough } from "../ai-provider";
+import { aiTargets, callAiModel, isHardQuestion, shouldFallThrough } from "../ai-provider";
 
 /**
  * Цепочка «кто отвечает гостю» — то место, где тихая поломка стоит дороже
@@ -45,10 +45,19 @@ describe("цепочка адресатов", () => {
     expect(firstGateway).toBeGreaterThan(lastGroq);
   });
 
-  it("шлюз зовёт те же модели и ни одной чужой", () => {
+  it("шлюз зовёт те же модели и ни одной чужой, в том же порядке", () => {
     process.env.AI_GATEWAY_API_KEY = "vck_test";
-    const gateway = aiTargets().filter((t) => t.label.startsWith("gateway/"));
-    expect(gateway.map((t) => t.model)).toEqual([
+    const models = (hard: boolean) =>
+      aiTargets(hard).filter((t) => t.label.startsWith("gateway/")).map((t) => t.model);
+
+    // Порядок у шлюза повторяет порядок своих ключей: если бесплатные аккаунты
+    // кончились на 20b, платный запас начнёт с неё же, а не со 120b.
+    expect(models(false)).toEqual([
+      "openai/gpt-oss-20b",
+      "openai/gpt-oss-120b",
+      "meta/llama-3.3-70b",
+    ]);
+    expect(models(true)).toEqual([
       "openai/gpt-oss-120b",
       "openai/gpt-oss-20b",
       "meta/llama-3.3-70b",
@@ -97,6 +106,52 @@ describe("только Groq", () => {
 
     expect(seen[0].url).toContain("api.groq.com");
     expect(seen[0].body.providerOptions).toBeUndefined();
+  });
+});
+
+describe("какая модель отвечает первой", () => {
+  /**
+   * Решение оператора 2026-08-11: обычные вопросы — 20b, 120b только на
+   * настоящие расчёты. Обе остаются в цепочке; порядок решает, кого спросят
+   * первым, а не кого исключат.
+   */
+  it("обычный вопрос начинает с 20b", () => {
+    expect(aiTargets(false)[0].model).toBe("openai/gpt-oss-20b");
+  });
+
+  it("расчёт начинает со 120b", () => {
+    expect(aiTargets(true)[0].model).toBe("openai/gpt-oss-120b");
+  });
+
+  it("обе модели остаются в цепочке в любом случае", () => {
+    for (const hard of [false, true]) {
+      const models = aiTargets(hard).map((t) => t.model);
+      expect(models).toContain("openai/gpt-oss-20b");
+      expect(models).toContain("openai/gpt-oss-120b");
+    }
+  });
+
+  it("узнаёт вопрос, ради которого нужна старшая модель", () => {
+    for (const q of [
+      "Посчитай стоимость на 15 человек",
+      "Рассчитайте общую стоимость на одну ночь",
+      "Сколько всего выйдет за два домика и бассейн?",
+      "Please calculate the total cost for our group",
+      "Jami qancha bo'ladi, hisoblab bering",
+    ]) {
+      expect(isHardQuestion(q), q).toBe(true);
+    }
+  });
+
+  it("не будит её на простом", () => {
+    for (const q of [
+      "Во сколько заезд?",
+      "Сколько стоит бассейн?",
+      "Есть ли Wi-Fi?",
+      "Salom, glemping narxi qancha?",
+    ]) {
+      expect(isHardQuestion(q), q).toBe(false);
+    }
   });
 });
 

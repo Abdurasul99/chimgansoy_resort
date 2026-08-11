@@ -4,7 +4,7 @@ import { getPricing } from "@/lib/pricing-live";
 import { checkAvailability } from "@/lib/exely";
 import { getChimganWeather, weatherInfo } from "@/lib/bot-weather";
 import { venueTopic, type Topic } from "@/lib/venue-topics";
-import { aiTargets, tryCallAiModel, shouldFallThrough, type AiTarget } from "@/lib/ai-provider";
+import { aiTargets, isHardQuestion, tryCallAiModel, shouldFallThrough, type AiTarget } from "@/lib/ai-provider";
 
 /**
  * Live weather for the concierge, shaped for a model rather than a chat card.
@@ -133,10 +133,17 @@ async function callModel(
     temperature: 0.15,
     max_tokens: ANSWER_BUDGET,
   };
-  if (withTools) {
-    body.tools = TOOLS;
-    body.tool_choice = "auto";
-  }
+  /**
+   * Инструменты объявляются ВСЕГДА, даже во втором проходе, где вызывать их
+   * уже нельзя.
+   *
+   * После первого прохода в истории остаются сообщения с tool_calls. Запрос
+   * без поля tools совместимый с OpenAI API отвергает с 400 — история ссылается
+   * на инструменты, которых в запросе нет. Правильный запрет — не убирать
+   * tools, а поставить tool_choice: "none".
+   */
+  body.tools = TOOLS;
+  body.tool_choice = withTools ? "auto" : "none";
   const res = await tryCallAiModel(target, body, 15_000);
 
   /**
@@ -245,8 +252,10 @@ function stripDisclaimer(reply: string, toolsUsed: Set<string>): string {
  * error the client turns into a "message us" fallback if the key/network fail.
  */
 export async function POST(req: NextRequest) {
-  const targets = aiTargets();
-  if (targets.length === 0) {
+  // Порядок моделей зависит от вопроса — см. ниже, после разбора тела: сначала
+  // нужно узнать, о чём спросили. Здесь только проверка, что отвечать вообще
+  // есть кому.
+  if (aiTargets().length === 0) {
     return Response.json({ error: "ai_not_configured" }, { status: 503 });
   }
 
@@ -275,9 +284,14 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "empty" }, { status: 400 });
   }
 
+  const lastUser = history[history.length - 1].content;
+  // 20b на обычный вопрос, 120b — на расчёт. Решение оператора: старшая модель
+  // только там, где действительно считают.
+  const targets = aiTargets(isHardQuestion(lastUser));
+
   const langDirective: GroqMsg = {
     role: "system",
-    content: languageDirective(history[history.length - 1].content, locale),
+    content: languageDirective(lastUser, locale),
   };
   const messages: GroqMsg[] = [
     { role: "system", content: buildSystemPrompt(locale, await getPricing()) },

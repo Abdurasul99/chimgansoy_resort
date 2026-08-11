@@ -29,7 +29,40 @@ const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
  * rate-limited", and a fallback that fails for the same reason as the primary
  * is not a fallback.
  */
-const GROQ_MODELS = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "llama-3.3-70b-versatile"];
+/**
+ * Порядок моделей: 20b первой, 120b — только на сложное.
+ *
+ * Решение оператора (2026-08-11). 20b быстрее и дешевле, и на обычных вопросах
+ * («сколько стоит бассейн», «во сколько заезд») она отвечает не хуже. 120b
+ * достаётся то, ради чего она нужна: сметы на группу, сравнение вариантов
+ * размещения, многошаговые расчёты.
+ *
+ * Историческая оговорка, чтобы её не потеряли: 20b при reasoning_effort "low"
+ * не удерживала правило языка — русским гостям приходили ответы по-казахски.
+ * Сейчас во всех вызовах стоит "medium", на нём эта беда не воспроизводится.
+ * Понизите усилие — вернётся.
+ *
+ * llama идёт последней и намеренно из другого семейства: у неё СВОЙ лимит в
+ * минуту, а запасной вариант, упирающийся в тот же потолок, что и основной, —
+ * не запасной.
+ */
+const MODELS_LIGHT = ["openai/gpt-oss-20b", "openai/gpt-oss-120b", "llama-3.3-70b-versatile"];
+const MODELS_HARD = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "llama-3.3-70b-versatile"];
+
+/**
+ * Похоже ли на расчёт, ради которого стоит будить старшую модель.
+ *
+ * Грубо и намеренно: цена ошибки несимметрична. Отправить простой вопрос к 120b
+ * — потратить лишние полсекунды и десятую цента. Отправить смету на группу к
+ * 20b — получить арифметику, за которую потом извиняется администратор.
+ */
+export function isHardQuestion(text: string): boolean {
+  const t = text.toLowerCase();
+  if (t.length > 320) return true; // длинный список требований — почти всегда смета
+  return /посчита|рассчита|расчёт|расчет|смет|итог|сколько (?:всего|выйдет|обойд)|общая стоимость|hisobla|jami|calculate|total cost/.test(
+    t,
+  );
+}
 
 /**
  * Шлюз Vercel AI Gateway — платный запас, когда бесплатные аккаунты выбраны.
@@ -77,13 +110,17 @@ export type AiTarget = {
  * asking 120b again on the other account beats dropping to 20b on the
  * exhausted one. Dropping a tier happens only when every account is out.
  */
-export function aiTargets(): AiTarget[] {
+export function aiTargets(hard = false): AiTarget[] {
   const keys = [process.env.GROQ_API_KEY, process.env.GROQ_API_KEY_2]
     .map((k) => k?.trim())
     .filter((k): k is string => Boolean(k));
 
+  // Обычный вопрос начинает с 20b, расчёт — с 120b. Обе остаются в цепочке:
+  // порядок решает, кого спрашивают первым, а не кого исключают.
+  const models = hard ? MODELS_HARD : MODELS_LIGHT;
+
   const out: AiTarget[] = [];
-  for (const model of GROQ_MODELS) {
+  for (const model of models) {
     keys.forEach((key, i) => out.push({ label: `groq/key${i + 1}`, url: GROQ_URL, key, model }));
   }
 
@@ -97,7 +134,11 @@ export function aiTargets(): AiTarget[] {
    */
   const gatewayKey = process.env.AI_GATEWAY_API_KEY?.trim();
   if (gatewayKey) {
-    for (const model of GATEWAY_MODELS) {
+    // Тот же порядок, что и у своих ключей: имена у шлюза свои, смысл тот же.
+    const gwModels = hard
+      ? GATEWAY_MODELS
+      : [GATEWAY_MODELS[1], GATEWAY_MODELS[0], ...GATEWAY_MODELS.slice(2)];
+    for (const model of gwModels) {
       out.push({
         label: `gateway/${model}`,
         url: GATEWAY_URL,
