@@ -1,60 +1,77 @@
 /**
- * Which model answers, and in what order, for BOTH assistants.
+ * Кто отвечает гостю: xAI напрямую, а при отказе — через шлюз Vercel.
  *
- * The site concierge (app/api/chat) and the Telegram bot (lib/staff-ai) ask
- * different questions with different tools, but they must agree on where the
- * answer comes from. Kept in one file because the alternative is the failure
- * that hides for a week: a key is rotated, the site adapts, and the bot — with
- * its own copy of the list — keeps calling the dead account. Before this the
- * bot had exactly that: a single hardcoded 20b and no use of the second key.
+ * Оба ассистента — консьерж на сайте (app/api/chat) и телеграм-бот
+ * (lib/staff-ai) — ходят сюда. Раньше у каждого был свой цикл перебора, и это
+ * дважды кончалось одинаково: правишь один, забываешь второй. Теперь порядок,
+ * повторы и разбор ошибок живут в одном месте, а вызывающий получает готовый
+ * ответ.
+ *
+ * ТРИ ПРОВАЙДЕРА, В ЭТОМ ПОРЯДКЕ
+ *   1. Groq — api.groq.com, ключ GROQ_API_KEY, модель llama-3.1-8b-instant.
+ *      Берёт на себя обычные вопросы: цены, услуги, часы, бронирование. Быстрая
+ *      и бесплатная в рамках тарифа, поэтому стоит первой.
+ *   2. xAI напрямую — api.x.ai, ключ XAI_API_KEY. Платим xAI без посредника.
+ *   3. Шлюз Vercel — ai-gateway.vercel.sh, ключ AI_GATEWAY_API_KEY. Та же
+ *      модель Grok, но счёт идёт через Vercel.
+ *
+ * Groq участвует ТОЛЬКО в простых вопросах. Смету на группу 8b-модель не
+ * потянет, и подсовывать её туда — это арифметика, за которую потом извиняется
+ * администратор; расчёты сразу уходят к Grok.
+ *
+ * Никакого grok.com, cookies и веб-сессий: только официальные API по ключу.
+ * Все три ключа читаются из process.env на сервере и в браузер не попадают —
+ * ни один не помечен NEXT_PUBLIC_.
  */
 
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+const XAI_URL = "https://api.x.ai/v1/chat/completions";
+const GATEWAY_URL = "https://ai-gateway.vercel.sh/v1/chat/completions";
 
 /**
- * The tiers, best first.
+ * Самая дешёвая подходящая текстовая модель Grok — на 2026-08-11 это
+ * grok-4.1-fast. Вход $0.20, выход $0.50 за миллион токенов; следующая по
+ * цене (grok-4.20 / 4.3) стоит в шесть раз дороже на входе.
  *
- * 20b at reasoning_effort "low" could not hold the language instruction:
- * guests writing Russian got answers in Kazakh, and digit grouping came out as
- * "320 0000 сум" for a 3 200 000 rate.
+ * Вариантов у неё два, и разница не в цене за токен, а в том, сколько токенов
+ * модель потратит: reasoning тратит их на размышление. Замер на одном и том же
+ * «скажи ок»: non-reasoning $0.0000363, reasoning $0.0001044 — втрое дороже
+ * за одинаковый ответ. Поэтому обычные вопросы идут в non-reasoning, а
+ * размышляющая версия достаётся расчётам.
  *
- * 120b fixes both — but the free tier caps it at 8 000 tokens per minute and
- * one question costs ~3 700 (the venue briefing is a big system prompt). That
- * is barely two guests a minute, so it cannot be the only model. On a 429 we
- * drop to 20b, which has a far larger allowance, rather than showing a failure.
- *
- * The third is from a different family on purpose — it has its OWN per-minute
- * bucket. The old two-model chain shared a ceiling: the log for the 502s read
- * "primary rate-limited, falling back to gpt-oss-20b" and then "both models
- * rate-limited", and a fallback that fails for the same reason as the primary
- * is not a fallback.
+ * Имена у прямого API и у шлюза различаются приставкой. Оба вынесены в env на
+ * случай, если xAI переименует модель раньше, чем мы соберёмся её обновить.
  */
 /**
- * Порядок моделей: 20b первой, 120b — только на сложное.
+ * Groq для простых вопросов — llama-3.1-8b-instant.
  *
- * Решение оператора (2026-08-11). 20b быстрее и дешевле, и на обычных вопросах
- * («сколько стоит бассейн», «во сколько заезд») она отвечает не хуже. 120b
- * достаётся то, ради чего она нужна: сметы на группу, сравнение вариантов
- * размещения, многошаговые расчёты.
- *
- * Историческая оговорка, чтобы её не потеряли: 20b при reasoning_effort "low"
- * не удерживала правило языка — русским гостям приходили ответы по-казахски.
- * Сейчас во всех вызовах стоит "medium", на нём эта беда не воспроизводится.
- * Понизите усилие — вернётся.
- *
- * llama идёт последней и намеренно из другого семейства: у неё СВОЙ лимит в
- * минуту, а запасной вариант, упирающийся в тот же потолок, что и основной, —
- * не запасной.
+ * Не размышляющая модель: для «сколько стоит бассейн» размышление это чистая
+ * трата токенов и секунды ожидания.
  */
-const MODELS_LIGHT = ["openai/gpt-oss-20b", "openai/gpt-oss-120b", "llama-3.3-70b-versatile"];
-const MODELS_HARD = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "llama-3.3-70b-versatile"];
+const GROQ_MODEL_FAQ = process.env.GROQ_MODEL_FAQ?.trim() || "llama-3.1-8b-instant";
+
+const XAI_MODEL_FAQ = process.env.XAI_MODEL_FAQ?.trim() || "grok-4.1-fast-non-reasoning";
+const XAI_MODEL_HARD = process.env.XAI_MODEL_HARD?.trim() || "grok-4.1-fast-reasoning";
+const GW_MODEL_FAQ = "xai/grok-4.1-fast-non-reasoning";
+const GW_MODEL_HARD = "xai/grok-4.1-fast-reasoning";
+
+/** Простой вопрос или расчёт: от этого зависят модель и бюджет ответа. */
+export type AiKind = "faq" | "hard";
+
+export type AiTarget = {
+  label: string;
+  url: string;
+  key: string;
+  model: string;
+};
 
 /**
- * Похоже ли на расчёт, ради которого стоит будить старшую модель.
+ * Похоже ли на расчёт, ради которого стоит будить размышляющую модель.
  *
- * Грубо и намеренно: цена ошибки несимметрична. Отправить простой вопрос к 120b
- * — потратить лишние полсекунды и десятую цента. Отправить смету на группу к
- * 20b — получить арифметику, за которую потом извиняется администратор.
+ * Грубо и намеренно: цена ошибки несимметрична. Отправить простой вопрос в
+ * размышляющую модель — потратить лишние полсекунды и десятую цента. Отправить
+ * смету на группу в быструю — получить арифметику, за которую потом извиняется
+ * администратор.
  */
 export function isHardQuestion(text: string): boolean {
   const t = text.toLowerCase();
@@ -65,186 +82,199 @@ export function isHardQuestion(text: string): boolean {
 }
 
 /**
- * Шлюз Vercel AI Gateway — платный запас, когда бесплатные аккаунты выбраны.
+ * Бюджет ответа в токенах.
  *
- * Свободный тариф Groq упирается в 8 000 токенов в минуту, а один вопрос
- * гостя стоит около 3 700: в выходной день это две-три реплики в минуту на
- * весь курорт, после чего консьерж начинает отвечать «попробуйте позже».
- * Шлюз берёт те же модели, но по счёту, и ограничения у него другие.
- *
- * ТОЛЬКО GROQ, И ЭТО НЕ ФОРМАЛЬНОСТЬ. У шлюза модель и провайдер разведены:
- * `openai/gpt-oss-120b` — это модель, а обслужить её могут baseten, bedrock,
- * cerebras, fireworks, groq, nebius, parasail, togetherai. Без закрепления
- * запрос ушёл бы к любому из них. Поле `only` шлюз действительно уважает —
- * проверено: с чужой моделью он отвечает «No available providers match the
- * 'only' filter: groq», а не молча подставляет другого.
- *
- * Имена моделей у шлюза свои: llama называется meta/llama-3.3-70b, а не
- * llama-3.3-70b-versatile, как в прямом API Groq.
+ * Для обычного FAQ — 400: этого хватает на цену с оговоркой и ссылку, а
+ * платим мы именно за токены. Для расчётов — 2000: смета на шесть услуг в 400
+ * не помещается, и раньше ответ обрывался на полуслове.
  */
-const GATEWAY_URL = "https://ai-gateway.vercel.sh/v1/chat/completions";
-const GATEWAY_MODELS = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "meta/llama-3.3-70b"];
-const GATEWAY_ONLY_GROQ = { providerOptions: { gateway: { only: ["groq"] } } };
+export function answerBudget(kind: AiKind): number {
+  return kind === "hard" ? 2000 : 400;
+}
 
-/**
- * One model + account the assistants may call.
- *
- * `bodyExtra` — то, что добавляется к телу запроса именно для этого адресата.
- * Нужен шлюзу: закрепление провайдера живёт в теле, а не в заголовке, и
- * прямой API Groq на такое поле ответил бы ошибкой.
- */
-export type AiTarget = {
-  label: string;
-  url: string;
-  key: string;
-  model: string;
-  bodyExtra?: Record<string, unknown>;
-};
-
-/**
- * Every configured account, best model first. Blank or missing keys drop out,
- * so deleting GROQ_API_KEY_2 in Vercel is all it takes to go back to one.
- *
- * Keys are the INNER loop and models the outer one: the per-minute allowance is
- * per account, so a second key is a second allowance rather than a spare, and
- * asking 120b again on the other account beats dropping to 20b on the
- * exhausted one. Dropping a tier happens only when every account is out.
- */
-export function aiTargets(hard = false): AiTarget[] {
-  const keys = [process.env.GROQ_API_KEY, process.env.GROQ_API_KEY_2]
-    .map((k) => k?.trim())
-    .filter((k): k is string => Boolean(k));
-
-  // Обычный вопрос начинает с 20b, расчёт — с 120b. Обе остаются в цепочке:
-  // порядок решает, кого спрашивают первым, а не кого исключают.
-  const models = hard ? MODELS_HARD : MODELS_LIGHT;
-
+/** Адресаты по порядку. Пустой ключ выпадает из цепочки молча. */
+export function aiTargets(kind: AiKind = "faq"): AiTarget[] {
   const out: AiTarget[] = [];
-  for (const model of models) {
-    keys.forEach((key, i) => out.push({ label: `groq/key${i + 1}`, url: GROQ_URL, key, model }));
-  }
+  const groqKey = process.env.GROQ_API_KEY?.trim();
+  const xaiKey = process.env.XAI_API_KEY?.trim();
+  const gwKey = process.env.AI_GATEWAY_API_KEY?.trim();
 
-  /**
-   * Шлюз идёт последним, а не первым, и это осознанно: свои ключи бесплатны,
-   * шлюз — по счёту. Пока бесплатная минута не выбрана, платить незачем; как
-   * только выбрана — гость не должен этого заметить.
-   *
-   * Модели перечислены тем же порядком «сильная → запасная», так что если
-   * бесплатные аккаунты кончились на 120b, шлюз начнёт с неё же, а не с 20b.
-   */
-  const gatewayKey = process.env.AI_GATEWAY_API_KEY?.trim();
-  if (gatewayKey) {
-    // Тот же порядок, что и у своих ключей: имена у шлюза свои, смысл тот же.
-    const gwModels = hard
-      ? GATEWAY_MODELS
-      : [GATEWAY_MODELS[1], GATEWAY_MODELS[0], ...GATEWAY_MODELS.slice(2)];
-    for (const model of gwModels) {
-      out.push({
-        label: `gateway/${model}`,
-        url: GATEWAY_URL,
-        key: gatewayKey,
-        model,
-        bodyExtra: GATEWAY_ONLY_GROQ,
-      });
-    }
+  // Только простые вопросы: 8b-модель хороша на «сколько стоит» и беспомощна
+  // на смете для группы из пятнадцати человек.
+  if (groqKey && kind === "faq") {
+    out.push({ label: "groq", url: GROQ_URL, key: groqKey, model: GROQ_MODEL_FAQ });
+  }
+  if (xaiKey) {
+    out.push({
+      label: "xai",
+      url: XAI_URL,
+      key: xaiKey,
+      model: kind === "hard" ? XAI_MODEL_HARD : XAI_MODEL_FAQ,
+    });
+  }
+  if (gwKey) {
+    out.push({
+      label: "gateway",
+      url: GATEWAY_URL,
+      key: gwKey,
+      model: kind === "hard" ? GW_MODEL_HARD : GW_MODEL_FAQ,
+    });
   }
   return out;
 }
 
+// ── разбор ответа ────────────────────────────────────────────────────────────
+
+/** Что делать с полученным ответом. */
+export type Verdict =
+  | "ok" // отдаём вызывающему
+  | "retry" // подождать и повторить у ЭТОГО же провайдера
+  | "fallback" // этот не может — идём к следующему
+  | "credits"; // у этого кончились деньги — идём к следующему и не возвращаемся
+
 /**
- * "This account cannot serve the request — try the next one."
+ * КОДЫ ОШИБОК И ЧТО ЗНАЧАТ.
  *
- * 429 is the per-minute ceiling, the case this chain was built for. 401/403
- * are here because of an incident while testing it: one bad credential in the
- * environment made every single guest question return a 502 while healthy
- * accounts sat idle one entry below. A wrong or rotated key is an operator
- * problem and it belongs in the log, but there is no version of it the guest
- * should have to see.
+ * Оговорка, которая важнее остального: у xAI **429 означает и то и другое**.
+ * Это и «слишком часто», и «кончились кредиты» — различает их только текст
+ * ответа («purchase more credits», «monthly spending limit»). Поэтому 429 сам
+ * по себе поводом уходить не считается, как и просили: сначала пауза и
+ * повтор, и лишь по словам в теле — немедленный уход на шлюз.
+ *
+ *   200        ok        ответ есть
+ *   402        credits   Payment Required — денег нет, повторять бессмысленно
+ *   429 + «credit / billing / spend / balance / purchase» → credits
+ *   429 прочее retry     лимит частоты: пауза с ростом, потом fallback
+ *   401 / 403  fallback  ключ не тот или нет прав — руками, не в рантайме
+ *   400 / 404 / 422      fallback: провайдеры расходятся в мелочах, и то, что
+ *                        отверг один, второй нередко принимает
+ *   408 / 5xx  fallback  временная беда на их стороне
  */
-export function shouldFallThrough(status: number): boolean {
-  /**
-   * «Этот адресат не ответил — спроси следующего».
-   *
-   * 413 — «Request too large». Так Groq отвечает, когда запрос вместе с
-   * зарезервированным ответом не влезает в оставшийся лимит токенов за минуту.
-   * Именно этот код бот показал администратору на вопросе «сколько стоит
-   * тюбинг»: брифинг о курорте занимает около четырёх тысяч токенов, и в узкую
-   * бесплатную минуту он перестаёт помещаться. У второго аккаунта своя минута,
-   * у младшей модели — свой лимит, у платного шлюза такого потолка нет вовсе,
-   * так что следующий в очереди почти наверняка ответит.
-   *
-   * 400 — потому что провайдеры расходятся в мелочах: один принимает поле,
-   * другой отвергает запрос целиком.
-   *
-   * Общий принцип: пока код означал «конец перебора», ОДИН такой ответ гасил
-   * всю цепочку из девяти адресатов, и гость получал телефон администратора при
-   * живых моделях. Девять быстрых попыток дешевле одного несостоявшегося
-   * разговора; если дело в нашем теле запроса, цепочка всё равно закончится
-   * отказом — только чуть позже и с записью в логе по каждому адресату.
-   */
-  return (
-    status === 400 ||
-    status === 401 ||
-    status === 403 ||
-    status === 408 ||
-    status === 413 ||
-    status === 429 ||
-    status >= 500
-  );
+const CREDIT_WORDS =
+  /credit|billing|balance|spend(ing)?[ _-]?limit|purchase|payment|insufficient|out of funds|top ?up/i;
+
+export function classify(status: number, body: string): Verdict {
+  if (status >= 200 && status < 300) return "ok";
+  if (status === 402) return "credits";
+  if (status === 429) return CREDIT_WORDS.test(body) ? "credits" : "retry";
+  return "fallback";
 }
 
 /**
- * One call. The caller owns the body — tools, temperature and token budget
- * differ between the site and the bot — this only adds what is account-specific
- * and puts the request on the wire.
- */
-/**
- * Тот же вызов, но упавший считается «этот аккаунт не ответил», а не концом света.
+ * Пауза перед повтором при 429.
  *
- * Из-за отсутствия этой обёртки бот отвечал «Помощник сейчас недоступен» при
- * девяти живых адресатах: тяжёлый вопрос заставлял первую модель думать дольше
- * таймаута, AbortSignal бросал исключение — и оно вылетало мимо цикла перебора,
- * прерывая его на первом же адресате. Остальные восемь так и не пробовались.
- *
- * Сюда попадают только сетевые сбои и таймаут. HTTP-коды по-прежнему разбирает
- * shouldFallThrough: 429 — это ответ сервера, а не сбой связи.
+ * Уважаем Retry-After, если он есть: провайдер знает лучше. Иначе растущая
+ * задержка. Потолок в три секунды — за этой чертой гость в чате решает, что
+ * бот умер, и уходит; лучше ответить со шлюза.
  */
-export async function tryCallAiModel(
-  target: AiTarget,
-  body: Record<string, unknown>,
-  timeoutMs: number,
-): Promise<Response | null> {
-  try {
-    return await callAiModel(target, body, timeoutMs);
-  } catch (e) {
-    const why = e instanceof Error ? e.name : String(e);
-    console.warn(`[ai] ${target.label} ${target.model} не ответил (${why}) — пробуем следующий`);
-    return null;
-  }
+function backoffMs(attempt: number, retryAfter: string | null): number {
+  const told = Number(retryAfter) * 1000;
+  if (Number.isFinite(told) && told > 0) return Math.min(told, 3_000);
+  return Math.min(400 * 3 ** attempt, 3_000); // 400 мс → 1200 мс → 3000 мс
 }
 
-export function callAiModel(
-  target: AiTarget,
-  body: Record<string, unknown>,
-  timeoutMs: number,
-): Promise<Response> {
+/**
+ * Сколько раз повторять при 429, прежде чем уйти к следующему.
+ *
+ * У Groq — одна короткая попытка: он бесплатный и первый в очереди, ждать у
+ * него дольше секунды незачем, за ним стоят двое платных. У xAI — две: там уже
+ * заплачено, и вернуться к нему выгоднее, чем уходить на шлюз.
+ *
+ * Ни в одном случае это не «бесконечные повторы»: после исчерпания попыток
+ * адресат меняется, а не опрашивается снова.
+ */
+function maxRetriesFor(label: string): number {
+  return label === "groq" ? 1 : 2;
+}
+
+/**
+ * Кредиты у xAI кончились — не долбиться в него каждым запросом.
+ *
+ * Без этого каждый гость оплачивал бы одну лишнюю ходку в сеть, чтобы получить
+ * тот же отказ. Память живёт в процессе: на холодном старте забудется, и это
+ * ровно то, что нужно — пополнили баланс, и через несколько минут прод сам
+ * начнёт снова пробовать xAI без деплоя.
+ */
+const CREDIT_PAUSE_MS = 10 * 60_000;
+let xaiBlockedUntil = 0;
+
+/** Для тестов и диагностики: когда xAI снова будет опрошен. */
+export function xaiPausedUntil(): number {
+  return xaiBlockedUntil;
+}
+export function resetXaiPause(): void {
+  xaiBlockedUntil = 0;
+}
+
+// ── сам вызов ────────────────────────────────────────────────────────────────
+
+function post(target: AiTarget, body: Record<string, unknown>, timeoutMs: number) {
   return fetch(target.url, {
     method: "POST",
     headers: { Authorization: `Bearer ${target.key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      ...body,
-      ...(target.bodyExtra ?? {}),
-      model: target.model,
-      /**
-       * "low" starved the language and price-formatting rules of attention, so
-       * medium is the default — но именно default, а не жёсткая настройка.
-       * Раньше это поле стояло последним и затирало всё, что передал вызывающий;
-       * теперь оно уступает, потому что у рассуждения и ответа ОДИН бюджет
-       * токенов, и на тяжёлом вопросе бывает выгоднее думать меньше, но успеть
-       * дописать ответ.
-       */
-      reasoning_effort: body.reasoning_effort ?? "medium",
-    }),
+    body: JSON.stringify({ ...body, model: target.model }),
     signal: AbortSignal.timeout(timeoutMs),
   });
+}
+
+export type AiAnswer = { res: Response; target: AiTarget } | null;
+
+/**
+ * Один запрос — с повторами и переходом на второго провайдера.
+ *
+ * Возвращает первый ответ, который можно отдать вызывающему, либо null, если
+ * не смог никто. Тело ответа не читается: его читает вызывающий, а здесь берётся
+ * только клон для разбора ошибки — иначе поток был бы уже израсходован.
+ */
+export async function askAi(
+  kind: AiKind,
+  body: Record<string, unknown>,
+  timeoutMs = 15_000,
+): Promise<AiAnswer> {
+  const targets = aiTargets(kind);
+  if (targets.length === 0) {
+    console.error("[ai] нет ключей: ни XAI_API_KEY, ни AI_GATEWAY_API_KEY");
+    return null;
+  }
+
+  for (const target of targets) {
+    // xAI на паузе из-за кредитов — не тратим на него время гостя.
+    if (target.label === "xai" && Date.now() < xaiBlockedUntil) {
+      console.warn("[ai] xai пропущен: кредиты кончились, пауза до " + new Date(xaiBlockedUntil).toISOString());
+      continue;
+    }
+
+    for (let attempt = 0; ; attempt++) {
+      let res: Response;
+      try {
+        res = await post(target, body, timeoutMs);
+      } catch (e) {
+        // Таймаут или обрыв связи — это «он не ответил», а не «никто не ответит».
+        console.warn(`[ai] ${target.label} ${target.model} не ответил (${e instanceof Error ? e.name : e})`);
+        break;
+      }
+
+      const verdict = classify(res.status, res.ok ? "" : await res.clone().text().catch(() => ""));
+
+      if (verdict === "ok") return { res, target };
+
+      if (verdict === "credits") {
+        if (target.label === "xai") xaiBlockedUntil = Date.now() + CREDIT_PAUSE_MS;
+        console.error(`[ai] ${target.label}: кончились кредиты (${res.status}) — уходим к следующему`);
+        break;
+      }
+
+      if (verdict === "retry" && attempt < maxRetriesFor(target.label)) {
+        const wait = backoffMs(attempt, res.headers.get("retry-after"));
+        console.warn(`[ai] ${target.label} 429 (лимит частоты), повтор через ${wait} мс`);
+        await new Promise((r) => setTimeout(r, wait));
+        continue;
+      }
+
+      console.warn(`[ai] ${target.label} ${target.model} отдал ${res.status} — идём к следующему`);
+      break;
+    }
+  }
+
+  return null;
 }

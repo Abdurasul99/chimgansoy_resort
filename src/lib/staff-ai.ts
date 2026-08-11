@@ -9,9 +9,10 @@
 
 import { checkAvailability } from "./exely";
 import { getChimganWeather, weatherInfo } from "./bot-weather";
-import { venueFacts } from "./venue-facts";
+import { venueCore } from "./venue-facts";
+import { venueTopic, TOPICS, TOPIC_LABEL, type Topic } from "./venue-topics";
 import { contacts } from "@/content/contacts";
-import { aiTargets, isHardQuestion, tryCallAiModel, shouldFallThrough, type AiTarget } from "./ai-provider";
+import { answerBudget, askAi, isHardQuestion, type AiKind } from "./ai-provider";
 import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
@@ -48,6 +49,25 @@ const TOOLS = [
   {
     type: "function",
     function: {
+      name: "lookup_facts",
+      description:
+        "Подробности, которых нет в кратком брифинге: полный тариф бассейна с бунгало и полотенцами (pool), меню ресторана и правила своей еды (menu), дорога и координаты (directions), отмена, перенос, предоплата, депозит, животные (policy), аренда мангала и казана, дрова, уголь, парковка (extras), подробный состав шале и глэмпинга (rooms). Вызывай ВМЕСТО того, чтобы отвечать «уточните у администратора».",
+      parameters: {
+        type: "object",
+        properties: {
+          topic: {
+            type: "string",
+            enum: [...TOPICS],
+            description: "Тема, по которой нужны подробности",
+          },
+        },
+        required: ["topic"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
       name: "get_weather",
       description:
         "Живая погода на территории курорта (1700 м): сейчас, минимум/максимум сегодня и завтра. Вызывай, когда спрашивают про погоду, температуру, холодно ли, что надеть. Без вызова температуру не называй.",
@@ -74,6 +94,11 @@ async function runTool(name: string, rawArgs: string): Promise<unknown> {
         checkout: str("checkout") || undefined,
         adults: typeof a.adults === "number" ? (a.adults as number) : undefined,
       });
+    case "lookup_facts": {
+      const topic = str("topic") as Topic;
+      if (!TOPICS.includes(topic)) return { ok: false, error: "unknown_topic" };
+      return { ok: true, topic: TOPIC_LABEL[topic], facts: venueTopic(topic) };
+    }
     case "get_weather": {
       const r = await getChimganWeather();
       if (!r.ok) return { ok: false, error: "weather_unavailable" };
@@ -118,7 +143,7 @@ function systemPrompt(live: LivePricing = resolvePricing()): string {
     calendarLines(),
     "",
     "═══ ЗНАНИЯ О КОМПЛЕКСЕ (отвечай по ним напрямую) ═══",
-    venueFacts(live),
+    venueCore(live),
     "═══════════════════════════════════════════════════════════════════",
     "",
     "ЖИВЫЕ ДАННЫЕ: public_prices — реальные цены и доступность ПРОЖИВАНИЯ (Глэмпинг/Шале) на",
@@ -185,31 +210,25 @@ function systemPrompt(live: LivePricing = resolvePricing()): string {
 // ── model loop ────────────────────────────────────────────────────────────────
 
 /**
- * Бюджет токенов на ответ.
+ * Второй заход, когда ответ пришёл пустым.
  *
- * У gpt-oss рассуждение тратит тот же бюджет, что и текст: на 400 токенов в
- * замере 103 ушли в рассуждение. При 700 гость, спросивший цены на шесть услуг
- * и смету на группу из 15 человек, получал от бота «Помощник сейчас
- * недоступен» — модель истратила бюджет на размышление, вернула пустой content,
- * и код честно счёл это отказом. Телеграм всё равно режет сообщение на 3800
- * символах, так что 1600 — это примерно то, что влезет целиком.
+ * Обычный бюджет назначает answerBudget() по виду вопроса: 400 токенов на FAQ,
+ * 2000 на расчёт. Здесь потолок выше обоих — это попытка вытащить ответ у
+ * модели, которая в первый раз израсходовала место и вернула пустоту.
  */
-const ANSWER_BUDGET = 1600;
-/** Второй заход, когда бюджет съело рассуждение: думать меньше, дописать ответ. */
 const RETRY_BUDGET = 2400;
 
 function callModel(
-  target: AiTarget,
+  kind: AiKind,
   messages: GroqMsg[],
   withTools: boolean,
-  opts: { budget?: number; effort?: "low" | "medium" | "high" } = {},
+  opts: { budget?: number } = {},
 ) {
   const body: Record<string, unknown> = {
     messages,
     temperature: 0.2,
-    max_tokens: opts.budget ?? ANSWER_BUDGET,
+    max_tokens: opts.budget ?? answerBudget(kind),
   };
-  if (opts.effort) body.reasoning_effort = opts.effort;
   /**
    * Инструменты объявляются ВСЕГДА, даже когда вызывать их уже нельзя.
    *
@@ -233,7 +252,7 @@ function callModel(
    * модель съедала почти весь бюджет функции, и на запасные аккаунты времени
    * не оставалось — гость получал «Помощник недоступен» при живой цепочке.
    */
-  return tryCallAiModel(target, body, 12_000);
+  return askAi(kind, body, 12_000);
 }
 
 /**
@@ -241,21 +260,12 @@ function callModel(
  * them is rate-limited, out of balance or down — the caller then falls back to
  * the admin's phone number, which is the one route that never fails.
  */
-async function callFirstAvailable(
-  targets: AiTarget[],
-  messages: GroqMsg[],
-  withTools: boolean,
-  opts: { budget?: number; effort?: "low" | "medium" | "high" } = {},
-): Promise<{ res: Response; target: AiTarget } | null> {
-  for (const target of targets) {
-    const res = await callModel(target, messages, withTools, opts);
-    // null — таймаут или сеть. Не ответил этот, спрашиваем следующего.
-    if (!res) continue;
-    if (!shouldFallThrough(res.status)) return { res, target };
-    console.warn(`[guest-ai] ${target.label} ${target.model} unavailable (${res.status})`);
-  }
-  return null;
-}
+/**
+ * Раньше здесь был свой перебор провайдеров. Теперь порядок, повторы при 429 и
+ * разбор кодов живут в ai-provider.askAi — один на бота и на сайт, чтобы правка
+ * не приходилась дважды и не забывалась во второй раз.
+ */
+const callFirstAvailable = callModel;
 
 /**
  * Ответ пустой, потому что бюджет съело рассуждение — дать второй шанс.
@@ -265,11 +275,8 @@ async function callFirstAvailable(
  * лишь дать больше места и попросить думать короче. Без этого тяжёлый вопрос
  * («посчитайте на 15 человек») получал телефон администратора вместо ответа.
  */
-async function retryForText(targets: AiTarget[], messages: GroqMsg[]): Promise<string | null> {
-  const picked = await callFirstAvailable(targets, messages, false, {
-    budget: RETRY_BUDGET,
-    effort: "low",
-  });
+async function retryForText(kind: AiKind, messages: GroqMsg[]): Promise<string | null> {
+  const picked = await callFirstAvailable(kind, messages, false, { budget: RETRY_BUDGET });
   if (!picked?.res.ok) return null;
   const text = ((await picked.res.json()) as GroqResponse).choices?.[0]?.message?.content?.trim();
   return text || null;
@@ -281,7 +288,9 @@ export type GuestAiResult = { ok: true; text: string } | { ok: false; error: str
 // In-process only: survives while the lambda/process is warm, resets on cold
 // start — an acceptable trade-off vs. adding a store.
 const HISTORY_TTL_MS = 30 * 60_000;
-const HISTORY_MAX_TURNS = 8; // user+assistant messages kept per chat
+// Четыре, а не восемь: за историю платят токенами на КАЖДОМ запросе, а
+// дальше двух пар реплик гость обычно уже не ссылается.
+const HISTORY_MAX_TURNS = 4; // user+assistant messages kept per chat
 const history = new Map<number, { at: number; msgs: GroqMsg[] }>();
 
 function chatHistory(chatId: number): GroqMsg[] {
@@ -311,22 +320,20 @@ export async function answerGuestQuestion(
   question: string,
   opts: { chatId?: number; repliedTo?: string } = {},
 ): Promise<GuestAiResult> {
-  // Same provider order as the site concierge, for the same reason: whichever
-  // one is answering the website right now is the one that will answer here.
-  // Смету на группу считает 120b, «во сколько заезд» — 20b. Решение оператора:
-  // старшая модель только там, где действительно считают.
-  const targets = aiTargets(isHardQuestion(question));
-  if (targets.length === 0) return { ok: false, error: "no_ai_key" };
+  // Порядок провайдеров общий с сайтом: тот, кто сейчас отвечает на сайте,
+  // отвечает и здесь. Вид вопроса решает, кого зовём и с каким бюджетом:
+  // простое — Groq llama-3.1-8b, расчёт — сразу Grok.
+  const kind: AiKind = isHardQuestion(question) ? "hard" : "faq";
 
   const messages: GroqMsg[] = [{ role: "system", content: systemPrompt() }];
   if (opts.chatId != null) messages.push(...chatHistory(opts.chatId));
   if (opts.repliedTo?.trim())
-    messages.push({ role: "assistant", content: opts.repliedTo.slice(0, 1500) });
+    messages.push({ role: "assistant", content: opts.repliedTo.slice(0, 600) });
   messages.push({ role: "user", content: question.slice(0, 1000) });
 
   try {
     for (let round = 0; round < 3; round++) {
-      const picked = await callFirstAvailable(targets, messages, true);
+      const picked = await callFirstAvailable(kind, messages, true);
       if (!picked) return { ok: false, error: "ai_unavailable" };
       const { res, target } = picked;
       if (!res.ok) {
@@ -351,18 +358,18 @@ export async function answerGuestQuestion(
       if (text) return finish(question, text, opts.chatId);
       // Пусто — почти наверняка бюджет ушёл в рассуждение. Это не отказ
       // сервиса, и телефон администратора здесь показывать рано.
-      const second = await retryForText(targets, messages);
+      const second = await retryForText(kind, messages);
       return second
         ? finish(question, second, opts.chatId)
         : { ok: false, error: "ai_empty" };
     }
 
     // Tool budget exhausted — force a final answer from what's gathered.
-    const picked = await callFirstAvailable(targets, messages, false);
+    const picked = await callFirstAvailable(kind, messages, false);
     if (!picked?.res.ok) return { ok: false, error: `ai_${picked?.res.status ?? "unavailable"}` };
     const text = ((await picked.res.json()) as GroqResponse).choices?.[0]?.message?.content?.trim();
     if (text) return finish(question, text, opts.chatId);
-    const second = await retryForText(targets, messages);
+    const second = await retryForText(kind, messages);
     return second ? finish(question, second, opts.chatId) : { ok: false, error: "ai_empty" };
   } catch (e) {
     console.error("[guest-ai] threw:", e);

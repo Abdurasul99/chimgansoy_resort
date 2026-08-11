@@ -4,7 +4,7 @@ import { getPricing } from "@/lib/pricing-live";
 import { checkAvailability } from "@/lib/exely";
 import { getChimganWeather, weatherInfo } from "@/lib/bot-weather";
 import { venueTopic, type Topic } from "@/lib/venue-topics";
-import { aiTargets, isHardQuestion, tryCallAiModel, shouldFallThrough, type AiTarget } from "@/lib/ai-provider";
+import { aiTargets, answerBudget, askAi, isHardQuestion, type AiKind, type AiTarget } from "@/lib/ai-provider";
 
 /**
  * Live weather for the concierge, shaped for a model rather than a chat card.
@@ -124,14 +124,14 @@ const TOOLS = [
 const ANSWER_BUDGET = 2000;
 
 async function callModel(
-  target: AiTarget,
+  kind: AiKind,
   messages: GroqMsg[],
   withTools: boolean,
-): Promise<Response | null> {
+): Promise<{ res: Response; target: AiTarget } | null> {
   const body: Record<string, unknown> = {
     messages,
     temperature: 0.15,
-    max_tokens: ANSWER_BUDGET,
+    max_tokens: answerBudget(kind),
   };
   /**
    * Инструменты объявляются ВСЕГДА, даже во втором проходе, где вызывать их
@@ -144,7 +144,7 @@ async function callModel(
    */
   body.tools = TOOLS;
   body.tool_choice = withTools ? "auto" : "none";
-  const res = await tryCallAiModel(target, body, 15_000);
+  const picked = await askAi(kind, body, 15_000);
 
   /**
    * The quota, in the log, on every call.
@@ -155,7 +155,8 @@ async function callModel(
    * line per call makes "how close are we" answerable before it breaks, and
    * makes the case for a paid tier a measurement rather than an argument.
    */
-  if (!res) return null; // таймаут или сеть — квоту читать не с чего
+  if (!picked) return null; // никто не ответил — квоту читать не с чего
+  const { res, target } = picked;
   const remaining = res.headers.get("x-ratelimit-remaining-tokens");
   const limit = res.headers.get("x-ratelimit-limit-tokens");
   if (limit) {
@@ -165,55 +166,15 @@ async function callModel(
     );
   }
 
-  return res;
+  return picked;
 }
 
 /**
- * Walks the provider list until one answers. A guest waiting on a price should
- * never see an error because another guest asked a question ten seconds ago,
- * nor because a prepaid balance ran dry overnight.
+ * Перебор провайдеров живёт в ai-provider.askAi: Groq → xAI → шлюз Vercel, с
+ * короткой паузой на 429 и переходом дальше по остальным кодам. Здесь остаётся
+ * только имя, к которому привык остальной файл.
  */
-async function callWithFallback(
-  targets: AiTarget[],
-  messages: GroqMsg[],
-  withTools: boolean,
-): Promise<{ res: Response; target: AiTarget }> {
-  let last: Response | null = null;
-
-  for (const target of targets) {
-    const res = await callModel(target, messages, withTools);
-    // null — таймаут или обрыв связи. Это «не ответил он», а не «не ответит
-    // никто»: раньше исключение вылетало мимо цикла и обрывало перебор на
-    // первом же адресате, оставляя остальные восемь непроверенными.
-    if (!res) continue;
-    if (!shouldFallThrough(res.status)) return { res, target };
-    last = res;
-    console.warn(`[chat] ${target.label} ${target.model} unavailable (${res.status})`);
-  }
-
-  /**
-   * Every provider is out at once.
-   *
-   * Groq says how long to wait in Retry-After; honouring it once turns a visible
-   * failure into a slower answer, which is what a guest waiting on a price would
-   * choose. Capped so nobody stares at a spinner — past that the caller shows
-   * the "call us" fallback.
-   */
-  // 20b on purpose, not the best model and not merely the last one tried: by
-  // this point the goal is an answer at all, and it has by far the largest
-  // per-minute allowance of the three.
-  const retry = targets.find((t) => t.model.includes("gpt-oss-20b")) ?? targets[targets.length - 1];
-  const wait = Math.min((Number(last?.headers.get("retry-after")) || 4) * 1000, 6_000);
-  console.error(`[chat] every account unavailable, retrying ${retry.model} in ${wait}ms`);
-  await new Promise((r) => setTimeout(r, wait));
-  const again = await callModel(retry, messages, withTools);
-  // Даже последняя попытка может не ответить по таймауту. Отдаём наверх
-  // синтетический 503 — вызывающий покажет гостю телефон, а не упадёт.
-  return {
-    res: again ?? new Response("{}", { status: 503, headers: { "content-type": "application/json" } }),
-    target: retry,
-  };
-}
+const callWithFallback = callModel;
 
 /**
  * The "I may be wrong — the administrator will confirm" line belongs on prices
@@ -252,9 +213,8 @@ function stripDisclaimer(reply: string, toolsUsed: Set<string>): string {
  * error the client turns into a "message us" fallback if the key/network fail.
  */
 export async function POST(req: NextRequest) {
-  // Порядок моделей зависит от вопроса — см. ниже, после разбора тела: сначала
-  // нужно узнать, о чём спросили. Здесь только проверка, что отвечать вообще
-  // есть кому.
+  // Кого именно спрашивать, решает вид вопроса — это ниже, после разбора тела.
+  // Здесь только проверка, что отвечать вообще есть кому.
   if (aiTargets().length === 0) {
     return Response.json({ error: "ai_not_configured" }, { status: 503 });
   }
@@ -277,17 +237,21 @@ export async function POST(req: NextRequest) {
         typeof m.content === "string" &&
         m.content.trim().length > 0,
     )
-    .slice(-10)
-    .map((m) => ({ role: m.role, content: m.content.slice(0, 2000) }));
+    // Шесть последних, а не десять, и по 700 символов, а не по 2000: за
+    // историю платят токенами на КАЖДОМ запросе, а дальше третьей пары реплик
+    // гость обычно уже не ссылается. «А на субботу?» после двух вопросов о
+    // ценах по-прежнему понятно.
+    .slice(-6)
+    .map((m) => ({ role: m.role, content: m.content.slice(0, 700) }));
 
   if (history.length === 0 || history[history.length - 1].role !== "user") {
     return Response.json({ error: "empty" }, { status: 400 });
   }
 
   const lastUser = history[history.length - 1].content;
-  // 20b на обычный вопрос, 120b — на расчёт. Решение оператора: старшая модель
-  // только там, где действительно считают.
-  const targets = aiTargets(isHardQuestion(lastUser));
+  // Простой вопрос — Groq llama-3.1-8b и бюджет 400 токенов; расчёт — сразу
+  // Grok с бюджетом 2000. Разбор в ai-provider.isHardQuestion.
+  const kind: AiKind = isHardQuestion(lastUser) ? "hard" : "faq";
 
   const langDirective: GroqMsg = {
     role: "system",
@@ -301,7 +265,12 @@ export async function POST(req: NextRequest) {
 
   try {
     // First pass — the model may ask to check live availability.
-    let { res, target } = await callWithFallback(targets, messages, true);
+    const first = await callWithFallback(kind, messages, true);
+    if (!first) {
+      console.error("[chat] ни один провайдер не ответил");
+      return Response.json({ error: "ai_failed" }, { status: 502 });
+    }
+    let { res, target } = first;
     if (!res.ok) {
       const detail = await res.text().catch(() => "");
       console.error(`[chat] ${target.label} ${res.status}: ${detail.slice(0, 300)}`);
@@ -343,23 +312,13 @@ export async function POST(req: NextRequest) {
       // mid-conversation.
       // null здесь — таймаут; тогда сразу идём дальше по цепочке, как и при
       // 429: ответ, которого гость уже ждёт, дороже верности одному аккаунту.
-      let second = await callModel(target, messages, false);
-      if (!second || shouldFallThrough(second.status)) {
-        // Second pass has no tools, so it is cheap; walk the rest of the chain
-        // rather than losing an answer the guest has already waited for.
-        for (const next of targets) {
-          if (next === target) continue;
-          const attempt = await callModel(next, messages, false);
-          target = next;
-          if (attempt) {
-            second = attempt;
-            if (!shouldFallThrough(attempt.status)) break;
-          }
-        }
-      }
+      // Второй проход — превратить результат инструмента в текст. Перебор
+      // провайдеров внутри askAi, поэтому здесь один вызов.
+      const second = await callModel(kind, messages, false);
       res =
-        second ??
+        second?.res ??
         new Response("{}", { status: 503, headers: { "content-type": "application/json" } });
+      if (second) target = second.target;
       if (!res.ok) {
         const detail = await res.text().catch(() => "");
         console.error(`[chat] ${target.label}(2) ${res.status}: ${detail.slice(0, 300)}`);
