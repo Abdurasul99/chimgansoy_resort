@@ -149,7 +149,11 @@ export const rooms: Room[] = [
         highlight: true,
       },
       {
-        label: { ru: "Завтрак", uz: "Nonushta", en: "Breakfast" },
+        label: {
+          ru: "Завтрак 08:00–11:00",
+          uz: "Nonushta 08:00–11:00",
+          en: "Breakfast 08:00–11:00",
+        },
         highlight: true,
       },
       {
@@ -244,7 +248,11 @@ export const rooms: Room[] = [
         highlight: true,
       },
       {
-        label: { ru: "Завтрак", uz: "Nonushta", en: "Breakfast" },
+        label: {
+          ru: "Завтрак 08:00–11:00",
+          uz: "Nonushta 08:00–11:00",
+          en: "Breakfast 08:00–11:00",
+        },
         highlight: true,
       },
       {

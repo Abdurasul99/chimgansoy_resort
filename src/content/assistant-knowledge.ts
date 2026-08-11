@@ -140,9 +140,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "restaurant",
     keywords: ["ресторан", "еда", "питание", "кухня", "завтрак", "обед", "ужин", "restoran", "ovqat", "nonushta", "tushlik", "kechki", "restaurant", "food", "breakfast", "lunch", "dinner", "menu"],
     answer: {
-      ru: "🍽️ На территории работает ресторан с уютной верандой и видом на горы. Подаются европейские и узбекские блюда. Завтрак — по запросу, ужин — по основному меню. Возможны банкеты для групп.",
-      uz: "🍽️ Hududda tog'larga qarashli ayvonli qulay restoran ishlaydi. Yevropa va o'zbek taomlari beriladi. Nonushta — so'rov bo'yicha, kechki ovqat — asosiy menyu bo'yicha. Guruhlar uchun banketlar mumkin.",
-      en: "🍽️ There's a restaurant on site with a cozy veranda and mountain views, serving European and Uzbek cuisine. Breakfast on request, dinner from the main menu. Banquets available for groups.",
+      ru: "🍽️ На территории работает ресторан с уютной верандой и видом на горы. Подаются европейские и узбекские блюда. Завтрак — ежедневно с 08:00 до 11:00, для гостей глэмпинга и шале он включён в стоимость проживания. Обед и ужин — по основному меню. Возможны банкеты для групп.",
+      uz: "🍽️ Hududda tog'larga qarashli ayvonli qulay restoran ishlaydi. Yevropa va o'zbek taomlari beriladi. Nonushta — har kuni 08:00 dan 11:00 gacha, glemping va shale mehmonlari uchun u yashash narxiga kiritilgan. Tushlik va kechki ovqat — asosiy menyu bo'yicha. Guruhlar uchun banketlar mumkin.",
+      en: "🍽️ There's a restaurant on site with a cozy veranda and mountain views, serving European and Uzbek cuisine. Breakfast is served daily from 08:00 to 11:00 and is included in the rate for glamping and chalet guests. Lunch and dinner are from the main menu. Banquets available for groups.",
     },
   },
 

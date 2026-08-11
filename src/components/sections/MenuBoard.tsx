@@ -97,6 +97,9 @@ export function MenuBoard({ locale }: { locale: Locale }) {
             {text(menuCopy.title, locale)}
           </h2>
           <p className="mt-4 text-base leading-7 text-[var(--muted)]">{text(menuCopy.lead, locale)}</p>
+          <p className="mt-4 inline-flex rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] px-4 py-3 text-sm font-semibold leading-6 text-[var(--ink)]">
+            {text(menuCopy.breakfastNote, locale)}
+          </p>
         </div>
 
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

@@ -111,6 +111,14 @@ export const menuCopy = {
     uz: "Har kuni hududda tayyorlaymiz. Ayrim taomlar — oldindan buyurtma asosida; joriy narxlarni ofitsiant yoki administrator aytadi.",
     en: "Cooked on site every day. Some dishes are by pre-order; the waiter or the administrator will tell you today's prices.",
   },
+  // The kitchen serves breakfast on a fixed window, and it is the one meal
+  // already paid for by anyone staying the night — worth saying above the
+  // dish list, because a guest who reads only the menu never learns it.
+  breakfastNote: {
+    ru: "Завтрак — ежедневно с 08:00 до 11:00. Гостям глэмпинга и шале он включён в стоимость проживания.",
+    uz: "Nonushta — har kuni 08:00 dan 11:00 gacha. Glemping va shale mehmonlari uchun u yashash narxiga kiritilgan.",
+    en: "Breakfast is served daily from 08:00 to 11:00 — included in the rate for glamping and chalet guests.",
+  },
   priceNote: {
     ru: "Цены не публикуем на сайте, чтобы они всегда были актуальными — уточните их на месте или по телефону.",
     uz: "Narxlar doim dolzarb bo'lishi uchun saytda e'lon qilinmaydi — joyida yoki telefon orqali aniqlashtiring.",
