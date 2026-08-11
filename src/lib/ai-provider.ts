@@ -130,7 +130,9 @@ export type Verdict =
   | "ok" // отдаём вызывающему
   | "retry" // подождать и повторить у ЭТОГО же провайдера
   | "fallback" // этот не может — идём к следующему
-  | "credits"; // у этого кончились деньги — идём к следующему и не возвращаемся
+  | "credits" // у этого кончились деньги — идём к следующему и не возвращаемся
+  | "shrink" // запрос велик — повторить у него же, но с урезанным контекстом
+  | "stop"; // виноват наш запрос — перебор бессмыслен, отдаём управляемую ошибку
 
 /**
  * КОДЫ ОШИБОК И ЧТО ЗНАЧАТ.
@@ -153,11 +155,61 @@ export type Verdict =
 const CREDIT_WORDS =
   /credit|billing|balance|spend(ing)?[ _-]?limit|purchase|payment|insufficient|out of funds|top ?up/i;
 
+/**
+ * 404 бывает про разное, и разница существенная.
+ *
+ * «Модели нет у этого провайдера» — повод спросить следующего: у него она
+ * может быть. «Нет такого пути» — это наша ошибка в URL, и следующий ответит
+ * тем же. Различаем по телу.
+ */
+const MODEL_GONE =
+  /model|provider|deprecated|decommission|does not exist|not found|unavailable|no such/i;
+
 export function classify(status: number, body: string): Verdict {
   if (status >= 200 && status < 300) return "ok";
+
+  // Наш запрос кривой. Тот же кривой запрос у другого провайдера даст тот же
+  // ответ — перебор только потратит секунды гостя и деньги на попытки.
+  if (status === 400) return "stop";
+
+  if (status === 401 || status === 403) return "fallback";
   if (status === 402) return "credits";
+  if (status === 404) return MODEL_GONE.test(body) ? "fallback" : "stop";
+  if (status === 408) return "fallback";
+
+  // Слишком большой запрос: сначала урезаем контекст и пробуем ещё раз здесь же.
+  if (status === 413) return "shrink";
+
   if (status === 429) return CREDIT_WORDS.test(body) ? "credits" : "retry";
+  if (status >= 500) return "fallback";
   return "fallback";
+}
+
+/** Критичное в лог отдельной строкой: это чинит человек, а не рантайм. */
+function critical(label: string, status: number, body: string) {
+  console.error(
+    `[ai] КРИТИЧНО: ${label} отдал ${status} — проверьте ключ и права доступа. ${body.slice(0, 200)}`,
+  );
+}
+
+/**
+ * Урезанный контекст для повтора после 413.
+ *
+ * Оставляем системную часть и последнюю реплику гостя — то, без чего ответа не
+ * будет вовсе. Выбрасывается история: именно она растёт от разговора к
+ * разговору и именно она обычно и переполняет запрос. Бюджет ответа тоже
+ * прижимается: 413 считает и его тоже.
+ */
+function shrinkBody(body: Record<string, unknown>): Record<string, unknown> | null {
+  const msgs = body.messages;
+  if (!Array.isArray(msgs) || msgs.length <= 2) return null; // резать уже нечего
+
+  const system = msgs.filter((m) => (m as { role?: string }).role === "system").slice(0, 1);
+  const lastUser = [...msgs].reverse().find((m) => (m as { role?: string }).role === "user");
+  if (!lastUser) return null;
+
+  const budget = typeof body.max_tokens === "number" ? Math.min(body.max_tokens, 600) : 600;
+  return { ...body, messages: [...system, lastUser], max_tokens: budget };
 }
 
 /**
@@ -217,52 +269,91 @@ function post(target: AiTarget, body: Record<string, unknown>, timeoutMs: number
   });
 }
 
-export type AiAnswer = { res: Response; target: AiTarget } | null;
-
 /**
- * Один запрос — с повторами и переходом на второго провайдера.
+ * Итог обращения к ИИ.
  *
- * Возвращает первый ответ, который можно отдать вызывающему, либо null, если
- * не смог никто. Тело ответа не читается: его читает вызывающий, а здесь берётся
- * только клон для разбора ошибки — иначе поток был бы уже израсходован.
+ * Отказ бывает разный, и вызывающему важно, какой именно: «никто не ответил» —
+ * повод показать телефон администратора, а `bad_request` — наша собственная
+ * ошибка, которую надо чинить в коде, а не показывать гостю как перегрузку.
  */
+export type AiOutcome =
+  | { ok: true; res: Response; target: AiTarget }
+  | { ok: false; error: AiError; status?: number; detail?: string };
+
+export type AiError =
+  | "no_keys" // ключей нет вовсе
+  | "bad_request" // 400 или «неизвестный путь» 404 — виноват наш запрос
+  | "too_large" // 413 не ушёл даже после урезания контекста
+  | "unavailable"; // все провайдеры по очереди отказались
+
 export async function askAi(
   kind: AiKind,
   body: Record<string, unknown>,
   timeoutMs = 15_000,
-): Promise<AiAnswer> {
+): Promise<AiOutcome> {
   const targets = aiTargets(kind);
   if (targets.length === 0) {
-    console.error("[ai] нет ключей: ни XAI_API_KEY, ни AI_GATEWAY_API_KEY");
-    return null;
+    console.error("[ai] нет ни одного ключа: GROQ_API_KEY, XAI_API_KEY, AI_GATEWAY_API_KEY");
+    return { ok: false, error: "no_keys" };
   }
 
   for (const target of targets) {
     // xAI на паузе из-за кредитов — не тратим на него время гостя.
     if (target.label === "xai" && Date.now() < xaiBlockedUntil) {
-      console.warn("[ai] xai пропущен: кредиты кончились, пауза до " + new Date(xaiBlockedUntil).toISOString());
+      console.warn(
+        "[ai] xai пропущен: кредиты кончились, пауза до " + new Date(xaiBlockedUntil).toISOString(),
+      );
       continue;
     }
+
+    let payload = body;
+    let shrunk = false;
 
     for (let attempt = 0; ; attempt++) {
       let res: Response;
       try {
-        res = await post(target, body, timeoutMs);
+        res = await post(target, payload, timeoutMs);
       } catch (e) {
-        // Таймаут или обрыв связи — это «он не ответил», а не «никто не ответит».
-        console.warn(`[ai] ${target.label} ${target.model} не ответил (${e instanceof Error ? e.name : e})`);
+        // Таймаут или обрыв связи — «он не ответил», а не «никто не ответит».
+        console.warn(
+          `[ai] ${target.label} ${target.model} не ответил (${e instanceof Error ? e.name : e})`,
+        );
         break;
       }
 
-      const verdict = classify(res.status, res.ok ? "" : await res.clone().text().catch(() => ""));
+      const detail = res.ok ? "" : await res.clone().text().catch(() => "");
+      const verdict = classify(res.status, detail);
 
-      if (verdict === "ok") return { res, target };
+      if (verdict === "ok") return { ok: true, res, target };
+
+      if (verdict === "stop") {
+        console.error(
+          `[ai] ${target.label} ${res.status}: запрос отвергнут — перебор не поможет. ${detail.slice(0, 300)}`,
+        );
+        return { ok: false, error: "bad_request", status: res.status, detail: detail.slice(0, 300) };
+      }
+
+      if (verdict === "shrink") {
+        const smaller = !shrunk ? shrinkBody(payload) : null;
+        if (smaller) {
+          console.warn(`[ai] ${target.label} 413 — повтор с урезанным контекстом`);
+          payload = smaller;
+          shrunk = true;
+          continue;
+        }
+        // Урезать больше нечего: дальше по цепочке, а если никто не возьмёт —
+        // вызывающий получит too_large и покажет гостю телефон.
+        console.error(`[ai] ${target.label} 413 и после урезания — идём к следующему`);
+        break;
+      }
 
       if (verdict === "credits") {
         if (target.label === "xai") xaiBlockedUntil = Date.now() + CREDIT_PAUSE_MS;
-        console.error(`[ai] ${target.label}: кончились кредиты (${res.status}) — уходим к следующему`);
+        console.error(`[ai] ${target.label}: кончились кредиты (${res.status}) — к следующему`);
         break;
       }
+
+      if (res.status === 401 || res.status === 403) critical(target.label, res.status, detail);
 
       if (verdict === "retry" && attempt < maxRetriesFor(target.label)) {
         const wait = backoffMs(attempt, res.headers.get("retry-after"));
@@ -271,10 +362,10 @@ export async function askAi(
         continue;
       }
 
-      console.warn(`[ai] ${target.label} ${target.model} отдал ${res.status} — идём к следующему`);
+      console.warn(`[ai] ${target.label} ${target.model} отдал ${res.status} — к следующему`);
       break;
     }
   }
 
-  return null;
+  return { ok: false, error: "unavailable" };
 }

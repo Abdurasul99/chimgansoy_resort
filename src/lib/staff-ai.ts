@@ -276,9 +276,9 @@ const callFirstAvailable = callModel;
  * («посчитайте на 15 человек») получал телефон администратора вместо ответа.
  */
 async function retryForText(kind: AiKind, messages: GroqMsg[]): Promise<string | null> {
-  const picked = await callFirstAvailable(kind, messages, false, { budget: RETRY_BUDGET });
-  if (!picked?.res.ok) return null;
-  const text = ((await picked.res.json()) as GroqResponse).choices?.[0]?.message?.content?.trim();
+  const out = await callFirstAvailable(kind, messages, false, { budget: RETRY_BUDGET });
+  if (!out.ok) return null;
+  const text = ((await out.res.json()) as GroqResponse).choices?.[0]?.message?.content?.trim();
   return text || null;
 }
 
@@ -333,14 +333,11 @@ export async function answerGuestQuestion(
 
   try {
     for (let round = 0; round < 3; round++) {
-      const picked = await callFirstAvailable(kind, messages, true);
-      if (!picked) return { ok: false, error: "ai_unavailable" };
-      const { res, target } = picked;
-      if (!res.ok) {
-        console.error(`[guest-ai] ${target.label} ${res.status}:`, (await res.text().catch(() => "")).slice(0, 200));
-        return { ok: false, error: `ai_${res.status}` };
-      }
-      const msg = ((await res.json()) as GroqResponse).choices?.[0]?.message;
+      const out = await callFirstAvailable(kind, messages, true);
+      // Ошибку различаем по виду: bad_request чинит разработчик, unavailable —
+      // это «все заняты». Администратору уйдёт именно этот код.
+      if (!out.ok) return { ok: false, error: out.error };
+      const msg = ((await out.res.json()) as GroqResponse).choices?.[0]?.message;
       if (!msg) return { ok: false, error: "ai_empty" };
 
       if (msg.tool_calls?.length) {
@@ -365,9 +362,9 @@ export async function answerGuestQuestion(
     }
 
     // Tool budget exhausted — force a final answer from what's gathered.
-    const picked = await callFirstAvailable(kind, messages, false);
-    if (!picked?.res.ok) return { ok: false, error: `ai_${picked?.res.status ?? "unavailable"}` };
-    const text = ((await picked.res.json()) as GroqResponse).choices?.[0]?.message?.content?.trim();
+    const out = await callFirstAvailable(kind, messages, false);
+    if (!out.ok) return { ok: false, error: out.error };
+    const text = ((await out.res.json()) as GroqResponse).choices?.[0]?.message?.content?.trim();
     if (text) return finish(question, text, opts.chatId);
     const second = await retryForText(kind, messages);
     return second ? finish(question, second, opts.chatId) : { ok: false, error: "ai_empty" };

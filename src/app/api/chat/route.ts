@@ -4,7 +4,7 @@ import { getPricing } from "@/lib/pricing-live";
 import { checkAvailability } from "@/lib/exely";
 import { getChimganWeather, weatherInfo } from "@/lib/bot-weather";
 import { venueTopic, type Topic } from "@/lib/venue-topics";
-import { aiTargets, answerBudget, askAi, isHardQuestion, type AiKind, type AiTarget } from "@/lib/ai-provider";
+import { aiTargets, answerBudget, askAi, isHardQuestion, type AiKind, type AiOutcome, type AiTarget } from "@/lib/ai-provider";
 
 /**
  * Live weather for the concierge, shaped for a model rather than a chat card.
@@ -127,7 +127,7 @@ async function callModel(
   kind: AiKind,
   messages: GroqMsg[],
   withTools: boolean,
-): Promise<{ res: Response; target: AiTarget } | null> {
+): Promise<AiOutcome> {
   const body: Record<string, unknown> = {
     messages,
     temperature: 0.15,
@@ -155,7 +155,7 @@ async function callModel(
    * line per call makes "how close are we" answerable before it breaks, and
    * makes the case for a paid tier a measurement rather than an argument.
    */
-  if (!picked) return null; // никто не ответил — квоту читать не с чего
+  if (!picked.ok) return picked; // никто не ответил — квоту читать не с чего
   const { res, target } = picked;
   const remaining = res.headers.get("x-ratelimit-remaining-tokens");
   const limit = res.headers.get("x-ratelimit-limit-tokens");
@@ -266,16 +266,13 @@ export async function POST(req: NextRequest) {
   try {
     // First pass — the model may ask to check live availability.
     const first = await callWithFallback(kind, messages, true);
-    if (!first) {
-      console.error("[chat] ни один провайдер не ответил");
-      return Response.json({ error: "ai_failed" }, { status: 502 });
+    if (!first.ok) {
+      // Управляемая ошибка: гостю — вежливый отказ, в лог — вид беды.
+      // bad_request чинит разработчик, unavailable — это «все заняты».
+      console.error(`[chat] провайдеры не ответили: ${first.error} ${first.status ?? ""}`);
+      return Response.json({ error: first.error }, { status: 502 });
     }
     let { res, target } = first;
-    if (!res.ok) {
-      const detail = await res.text().catch(() => "");
-      console.error(`[chat] ${target.label} ${res.status}: ${detail.slice(0, 300)}`);
-      return Response.json({ error: "ai_failed" }, { status: 502 });
-    }
     let data = (await res.json()) as GroqResponse;
     logUsage("pass1", target.model, data.usage);
     let msg = data.choices?.[0]?.message;
@@ -315,10 +312,12 @@ export async function POST(req: NextRequest) {
       // Второй проход — превратить результат инструмента в текст. Перебор
       // провайдеров внутри askAi, поэтому здесь один вызов.
       const second = await callModel(kind, messages, false);
-      res =
-        second?.res ??
-        new Response("{}", { status: 503, headers: { "content-type": "application/json" } });
-      if (second) target = second.target;
+      if (!second.ok) {
+        console.error(`[chat] второй проход не удался: ${second.error} ${second.status ?? ""}`);
+        return Response.json({ error: second.error }, { status: 502 });
+      }
+      res = second.res;
+      target = second.target;
       if (!res.ok) {
         const detail = await res.text().catch(() => "");
         console.error(`[chat] ${target.label}(2) ${res.status}: ${detail.slice(0, 300)}`);

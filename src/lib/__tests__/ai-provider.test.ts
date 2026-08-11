@@ -109,8 +109,28 @@ describe("разбор кодов ошибок", () => {
     }
   });
 
-  it("остальное — уходим к следующему", () => {
-    for (const code of [400, 401, 403, 404, 408, 413, 500, 502, 503]) {
+  it("401 и 403 — к следующему (плюс критичная запись в лог)", () => {
+    expect(classify(401, "")).toBe("fallback");
+    expect(classify(403, "")).toBe("fallback");
+  });
+
+  it("400 — наш кривой запрос: перебор не поможет, отдаём управляемую ошибку", () => {
+    expect(classify(400, "invalid tool_choice")).toBe("stop");
+  });
+
+  it("404 — к следующему, только если дело в модели", () => {
+    expect(classify(404, "The model `grok-9` does not exist")).toBe("fallback");
+    expect(classify(404, "provider unavailable")).toBe("fallback");
+    // А «нет такого пути» — это опечатка в URL, у следующего будет то же самое.
+    expect(classify(404, "Cannot POST /v1/chatcompletions")).toBe("stop");
+  });
+
+  it("413 — сначала урезать контекст, а не бежать к следующему", () => {
+    expect(classify(413, "request too large")).toBe("shrink");
+  });
+
+  it("408 и пятисотые — к следующему", () => {
+    for (const code of [408, 500, 502, 503]) {
       expect(classify(code, ""), String(code)).toBe("fallback");
     }
   });
@@ -120,7 +140,7 @@ describe("askAi — что происходит на самом деле", () =>
   it("Groq ответил — никого больше не зовём", async () => {
     const seen = mockSequence([[200]]);
     const out = await askAi("faq", { messages: [] });
-    expect(out?.target.label).toBe("groq");
+    expect(out.ok && out.target.label).toBe("groq");
     expect(seen).toHaveLength(1);
   });
 
@@ -138,7 +158,7 @@ describe("askAi — что происходит на самом деле", () =>
       "api.groq.com",
       "api.x.ai",
     ]);
-    expect(out?.target.label).toBe("xai");
+    expect(out.ok && out.target.label).toBe("xai");
   });
 
   it("у xAI кончились кредиты — уходим на шлюз и не возвращаемся", async () => {
@@ -148,7 +168,7 @@ describe("askAi — что происходит на самом деле", () =>
       [200], // шлюз
     ]);
     const out = await askAi("faq", { messages: [] });
-    expect(out?.target.label).toBe("gateway");
+    expect(out.ok && out.target.label).toBe("gateway");
     expect(seen).toHaveLength(3);
     expect(xaiPausedUntil()).toBeGreaterThan(Date.now());
 
@@ -159,7 +179,7 @@ describe("askAi — что происходит на самом деле", () =>
       "api.groq.com",
       "ai-gateway.vercel.sh",
     ]);
-    expect(out2?.target.label).toBe("gateway");
+    expect(out2.ok && out2.target.label).toBe("gateway");
   });
 
   it("таймаут у одного не отменяет остальных", async () => {
@@ -176,20 +196,56 @@ describe("askAi — что происходит на самом деле", () =>
       }),
     );
     const out = await askAi("faq", { messages: [] });
-    expect(out?.target.label).toBe("xai");
+    expect(out.ok && out.target.label).toBe("xai");
   });
 
-  it("никто не ответил — null, вызывающий покажет телефон", async () => {
+  it("никто не ответил — unavailable, вызывающий покажет телефон", async () => {
     mockSequence([[500]]);
-    expect(await askAi("faq", { messages: [] })).toBeNull();
+    expect(await askAi("faq", { messages: [] })).toEqual({ ok: false, error: "unavailable" });
   });
 
-  it("нет ни одного ключа — null без единого запроса", async () => {
+  it("400 останавливает перебор на первом же провайдере", async () => {
+    const seen = mockSequence([[400, "invalid request"]]);
+    const out = await askAi("faq", { messages: [] });
+    expect(out).toMatchObject({ ok: false, error: "bad_request", status: 400 });
+    // Именно один запрос: кривое тело у следующего будет таким же кривым.
+    expect(seen).toHaveLength(1);
+  });
+
+  it("413: повтор с урезанным контекстом у того же провайдера", async () => {
+    const bodies: Array<{ msgs: number; budget: number }> = [];
+    let call = 0;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (_url: string, init: RequestInit) => {
+        const b = JSON.parse(String(init.body));
+        bodies.push({ msgs: b.messages.length, budget: b.max_tokens });
+        return new Response("{}", { status: ++call === 1 ? 413 : 200 });
+      }),
+    );
+    const out = await askAi("faq", {
+      messages: [
+        { role: "system", content: "правила" },
+        { role: "user", content: "первый" },
+        { role: "assistant", content: "ответ" },
+        { role: "user", content: "второй" },
+      ],
+      max_tokens: 400,
+    });
+
+    expect(out.ok && out.target.label).toBe("groq"); // тот же провайдер
+    expect(bodies[0].msgs).toBe(4);
+    // Осталось системное правило и последняя реплика гостя — история ушла.
+    expect(bodies[1].msgs).toBe(2);
+    expect(bodies[1].budget).toBeLessThanOrEqual(400);
+  });
+
+  it("нет ни одного ключа — no_keys без единого запроса", async () => {
     delete process.env.GROQ_API_KEY;
     delete process.env.XAI_API_KEY;
     delete process.env.AI_GATEWAY_API_KEY;
     const seen = mockSequence([[200]]);
-    expect(await askAi("faq", { messages: [] })).toBeNull();
+    expect(await askAi("faq", { messages: [] })).toEqual({ ok: false, error: "no_keys" });
     expect(seen).toHaveLength(0);
   });
 });
