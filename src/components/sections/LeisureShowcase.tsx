@@ -49,9 +49,28 @@ const CATEGORY_LABEL: Record<string, LocalizedString> = {
  * frame was the last of the shashlik story on the homepage. The service itself
  * is untouched and still listed in full on /services.
  */
-export function LeisureShowcase({ locale, limit }: { locale: Locale; limit?: number }) {
+export function LeisureShowcase({
+  locale,
+  limit,
+  hiddenSlugs = [],
+}: {
+  locale: Locale;
+  limit?: number;
+  /**
+   * Услуги, выключенные оператором в /admin/uslugi.
+   *
+   * Без этого выключатель гасил услугу только в каталоге: карточка оставалась
+   * на главной и вела на страницу, которая уже отдавала 404. Отсеиваем ДО
+   * обрезки по limit — иначе выключенная услуга съедала бы одно из трёх мест
+   * и на главной оказывалось две карточки вместо трёх.
+   */
+  hiddenSlugs?: string[];
+}) {
   const t = COPY[locale];
-  const visible = typeof limit === "number" ? services.slice(0, limit) : services;
+  const shown = hiddenSlugs.length
+    ? services.filter((s) => !hiddenSlugs.includes(s.slug))
+    : services;
+  const visible = typeof limit === "number" ? shown.slice(0, limit) : shown;
 
   return (
     <section className="bg-[var(--surface)] px-4 py-16 sm:px-6 sm:py-24 lg:px-8" aria-labelledby="leisure-title">

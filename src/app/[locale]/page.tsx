@@ -27,6 +27,7 @@ import { imageStyle } from "@/lib/images";
 import { text } from "@/lib/localize";
 import { localizePath } from "@/i18n/routing";
 import { getRoomPrices, priceChip } from "@/lib/room-price";
+import { getServices } from "@/lib/services-live";
 
 /**
  * Revalidated every six hours because the «от …» chip is a LIVE price.
@@ -123,6 +124,11 @@ export default async function HomePage({ params }: PageProps) {
   // Live "от …" prices from the booking engine, resolved on the server because
   // RoomCatalog is a client component. Six-hour cache, and an unreachable
   // engine simply yields no chip — see lib/room-price.ts.
+  // Услуги, выключенные оператором в /admin/uslugi, не должны висеть на
+  // главной: их страницы уже отдают 404.
+  const hiddenServiceSlugs = (await getServices())
+    .filter((s) => s.hidden)
+    .map((s) => s.slug);
   const prices = await getRoomPrices();
   const priceChips = Object.fromEntries(
     Object.entries(prices).map(([slug, value]) => [slug, priceChip(value, locale)]),
@@ -414,7 +420,7 @@ export default async function HomePage({ params }: PageProps) {
 
       {/* ── На территории — three cards; the BBQ one is last in services[] and
              is deliberately cut here, staying on /services ── */}
-      <LeisureShowcase locale={locale} limit={3} />
+      <LeisureShowcase locale={locale} limit={3} hiddenSlugs={hiddenServiceSlugs} />
 
       {/* A "Что мы строим" section used to sit here — three CGI renders of the
           master plan, the padel courts and the mini-football pitch, framed as
