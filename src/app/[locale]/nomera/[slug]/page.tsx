@@ -7,7 +7,7 @@ import { VideoReel } from "@/components/sections/VideoReel";
 import { chaletVideos, glampingVideos } from "@/content/videos";
 import { getRoomPrices, priceChip } from "@/lib/room-price";
 import { getRoom as getLiveRoom } from "@/lib/rooms-live";
-import { getServices } from "@/lib/services-live";
+import { hiddenServiceSlugs } from "@/lib/services-live";
 import { getPricing } from "@/lib/pricing-live";
 import type { LivePricing } from "@/lib/pricing-resolve";
 import { Icon } from "@/components/ui/Icon";
@@ -140,7 +140,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
    */
   const livePricing = await getPricing();
   // Выключенные услуги не показываем и в блоке «связанные».
-  const hiddenServices = (await getServices()).filter((s) => s.hidden).map((s) => s.slug);
+  const hiddenServices = await hiddenServiceSlugs();
   // Operator edits for this page: lists, gallery, price line.
   const live = await getLiveRoom(room.slug);
   // Resolved once: either the operator's selection or the code's gallery,

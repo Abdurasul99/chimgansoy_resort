@@ -76,6 +76,19 @@ export const getServices = cache(async (): Promise<LiveService[]> => {
   return visibleServices(await readOverrides());
 });
 
+/**
+ * Slugs the operator switched off.
+ *
+ * For grids that render from the code's `services` list rather than from
+ * `getServices()` — they need to know what to drop, and `getServices()` cannot
+ * tell them: it has already dropped it.
+ */
+export const hiddenServiceSlugs = cache(async (): Promise<string[]> => {
+  return resolveServices(await readOverrides())
+    .filter((s) => s.hidden)
+    .map((s) => s.slug);
+});
+
 /** One service by slug, or null when it does not exist or is switched off. */
 export const getService = cache(async (slug: string): Promise<LiveService | null> => {
   return (await getServices()).find((s) => s.slug === slug) ?? null;
