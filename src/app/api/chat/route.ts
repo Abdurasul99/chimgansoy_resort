@@ -4,7 +4,7 @@ import { getPricing } from "@/lib/pricing-live";
 import { checkAvailability } from "@/lib/exely";
 import { getChimganWeather, weatherInfo } from "@/lib/bot-weather";
 import { venueTopic, type Topic } from "@/lib/venue-topics";
-import { aiTargets, callAiModel, shouldFallThrough, type AiTarget } from "@/lib/ai-provider";
+import { aiTargets, tryCallAiModel, shouldFallThrough, type AiTarget } from "@/lib/ai-provider";
 
 /**
  * Live weather for the concierge, shaped for a model rather than a chat card.
@@ -123,7 +123,11 @@ const TOOLS = [
  */
 const ANSWER_BUDGET = 2000;
 
-async function callModel(target: AiTarget, messages: GroqMsg[], withTools: boolean): Promise<Response> {
+async function callModel(
+  target: AiTarget,
+  messages: GroqMsg[],
+  withTools: boolean,
+): Promise<Response | null> {
   const body: Record<string, unknown> = {
     messages,
     temperature: 0.15,
@@ -133,7 +137,7 @@ async function callModel(target: AiTarget, messages: GroqMsg[], withTools: boole
     body.tools = TOOLS;
     body.tool_choice = "auto";
   }
-  const res = await callAiModel(target, body, 30_000);
+  const res = await tryCallAiModel(target, body, 15_000);
 
   /**
    * The quota, in the log, on every call.
@@ -144,6 +148,7 @@ async function callModel(target: AiTarget, messages: GroqMsg[], withTools: boole
    * line per call makes "how close are we" answerable before it breaks, and
    * makes the case for a paid tier a measurement rather than an argument.
    */
+  if (!res) return null; // таймаут или сеть — квоту читать не с чего
   const remaining = res.headers.get("x-ratelimit-remaining-tokens");
   const limit = res.headers.get("x-ratelimit-limit-tokens");
   if (limit) {
@@ -170,6 +175,10 @@ async function callWithFallback(
 
   for (const target of targets) {
     const res = await callModel(target, messages, withTools);
+    // null — таймаут или обрыв связи. Это «не ответил он», а не «не ответит
+    // никто»: раньше исключение вылетало мимо цикла и обрывало перебор на
+    // первом же адресате, оставляя остальные восемь непроверенными.
+    if (!res) continue;
     if (!shouldFallThrough(res.status)) return { res, target };
     last = res;
     console.warn(`[chat] ${target.label} ${target.model} unavailable (${res.status})`);
@@ -190,7 +199,13 @@ async function callWithFallback(
   const wait = Math.min((Number(last?.headers.get("retry-after")) || 4) * 1000, 6_000);
   console.error(`[chat] every account unavailable, retrying ${retry.model} in ${wait}ms`);
   await new Promise((r) => setTimeout(r, wait));
-  return { res: await callModel(retry, messages, withTools), target: retry };
+  const again = await callModel(retry, messages, withTools);
+  // Даже последняя попытка может не ответить по таймауту. Отдаём наверх
+  // синтетический 503 — вызывающий покажет гостю телефон, а не упадёт.
+  return {
+    res: again ?? new Response("{}", { status: 503, headers: { "content-type": "application/json" } }),
+    target: retry,
+  };
 }
 
 /**
@@ -312,17 +327,25 @@ export async function POST(req: NextRequest) {
       // Second pass — model turns the tool result into a natural answer. Stay
       // on whichever model answered the first pass so the voice doesn't switch
       // mid-conversation.
-      res = await callModel(target, messages, false);
-      if (shouldFallThrough(res.status)) {
+      // null здесь — таймаут; тогда сразу идём дальше по цепочке, как и при
+      // 429: ответ, которого гость уже ждёт, дороже верности одному аккаунту.
+      let second = await callModel(target, messages, false);
+      if (!second || shouldFallThrough(second.status)) {
         // Second pass has no tools, so it is cheap; walk the rest of the chain
         // rather than losing an answer the guest has already waited for.
         for (const next of targets) {
           if (next === target) continue;
-          res = await callModel(next, messages, false);
+          const attempt = await callModel(next, messages, false);
           target = next;
-          if (!shouldFallThrough(res.status)) break;
+          if (attempt) {
+            second = attempt;
+            if (!shouldFallThrough(attempt.status)) break;
+          }
         }
       }
+      res =
+        second ??
+        new Response("{}", { status: 503, headers: { "content-type": "application/json" } });
       if (!res.ok) {
         const detail = await res.text().catch(() => "");
         console.error(`[chat] ${target.label}(2) ${res.status}: ${detail.slice(0, 300)}`);

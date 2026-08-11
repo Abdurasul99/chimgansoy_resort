@@ -129,6 +129,31 @@ export function shouldFallThrough(status: number): boolean {
  * differ between the site and the bot — this only adds what is account-specific
  * and puts the request on the wire.
  */
+/**
+ * Тот же вызов, но упавший считается «этот аккаунт не ответил», а не концом света.
+ *
+ * Из-за отсутствия этой обёртки бот отвечал «Помощник сейчас недоступен» при
+ * девяти живых адресатах: тяжёлый вопрос заставлял первую модель думать дольше
+ * таймаута, AbortSignal бросал исключение — и оно вылетало мимо цикла перебора,
+ * прерывая его на первом же адресате. Остальные восемь так и не пробовались.
+ *
+ * Сюда попадают только сетевые сбои и таймаут. HTTP-коды по-прежнему разбирает
+ * shouldFallThrough: 429 — это ответ сервера, а не сбой связи.
+ */
+export async function tryCallAiModel(
+  target: AiTarget,
+  body: Record<string, unknown>,
+  timeoutMs: number,
+): Promise<Response | null> {
+  try {
+    return await callAiModel(target, body, timeoutMs);
+  } catch (e) {
+    const why = e instanceof Error ? e.name : String(e);
+    console.warn(`[ai] ${target.label} ${target.model} не ответил (${why}) — пробуем следующий`);
+    return null;
+  }
+}
+
 export function callAiModel(
   target: AiTarget,
   body: Record<string, unknown>,

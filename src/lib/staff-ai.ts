@@ -11,7 +11,7 @@ import { checkAvailability } from "./exely";
 import { getChimganWeather, weatherInfo } from "./bot-weather";
 import { venueFacts } from "./venue-facts";
 import { contacts } from "@/content/contacts";
-import { aiTargets, callAiModel, shouldFallThrough, type AiTarget } from "./ai-provider";
+import { aiTargets, tryCallAiModel, shouldFallThrough, type AiTarget } from "./ai-provider";
 import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
@@ -214,7 +214,15 @@ function callModel(
     body.tools = TOOLS;
     body.tool_choice = "auto";
   }
-  return callAiModel(target, body, 25_000);
+  /**
+   * 12 секунд, а не 25.
+   *
+   * У вебхука есть общий потолок (maxDuration), и внутри него должны помещаться
+   * несколько попыток, а не одна. Со старым таймаутом первая же задумавшаяся
+   * модель съедала почти весь бюджет функции, и на запасные аккаунты времени
+   * не оставалось — гость получал «Помощник недоступен» при живой цепочке.
+   */
+  return tryCallAiModel(target, body, 12_000);
 }
 
 /**
@@ -230,6 +238,8 @@ async function callFirstAvailable(
 ): Promise<{ res: Response; target: AiTarget } | null> {
   for (const target of targets) {
     const res = await callModel(target, messages, withTools, opts);
+    // null — таймаут или сеть. Не ответил этот, спрашиваем следующего.
+    if (!res) continue;
     if (!shouldFallThrough(res.status)) return { res, target };
     console.warn(`[guest-ai] ${target.label} ${target.model} unavailable (${res.status})`);
   }

@@ -5,7 +5,16 @@ import { aiTargets } from "@/lib/ai-provider";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 // The AI path (Groq tool loop + booking-engine calls) can take 10-20s.
-export const maxDuration = 30;
+/**
+ * 60 секунд, а не 30.
+ *
+ * Внутри должны помещаться НЕСКОЛЬКО попыток: у консьержа девять адресатов и до
+ * трёх раундов с инструментами. При 30 секундах одна задумавшаяся модель съедала
+ * весь бюджет функции, и гость получал «Помощник сейчас недоступен» при живой
+ * цепочке. Сам вызов модели ограничен 12 секундами — то есть в минуту укладывается
+ * несколько заходов подряд.
+ */
+export const maxDuration = 60;
 
 /**
  * Telegram webhook for the guest-facing bot (@chimgandarbaza_bot).
