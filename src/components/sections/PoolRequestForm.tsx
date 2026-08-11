@@ -77,11 +77,16 @@ const COPY: Record<
     kids: "Дети 5–15 лет",
     toddlers: "Дети до 5 лет",
     towels: "Полотенца (30 000)",
-    // Название типа впереди, вместимость сразу за ним, наличие — в скобках:
-    // подпись читается слева направо ровно в том порядке, в каком гость решает
-    // «какой мне нужен» → «сколько влезет» → «сколько их вообще есть».
-    bungalowSmall: `Бунгало ${B.small.name}, до ${B.small.capacity} чел. (${B.small.count} шт.)`,
-    bungalowLarge: `Бунгало ${B.large.name}, до ${B.large.capacity} чел. (${B.large.count} шт.)`,
+    /**
+     * Название и вместимость — и всё.
+     *
+     * Раньше в подписи было ещё и наличие: «Бунгало Standard, до 4 чел.
+     * (8 шт.) (300 000)». Рядом с ценой это читается как четыре числа подряд,
+     * из которых гостю в момент выбора нужны два. Сколько их всего, сказано
+     * ниже в примечании и всё равно жёстко ограничено полем ввода.
+     */
+    bungalowSmall: `Бунгало ${B.small.name}, до ${B.small.capacity} чел.`,
+    bungalowLarge: `Бунгало ${B.large.name}, до ${B.large.capacity} чел.`,
     // Kept short on purpose: the select is the third cell of a three-column
     // row inside a max-w-3xl card, so it never gets more than ~170 px of text
     // room — the old labels had their price cut off at every screen width.
@@ -110,8 +115,8 @@ const COPY: Record<
     kids: "5–15 yoshli bolalar",
     toddlers: "5 yoshgacha bolalar",
     towels: "Sochiq (30 000)",
-    bungalowSmall: `${B.small.name} bungalo, ${B.small.capacity} kishigacha (${B.small.count} ta)`,
-    bungalowLarge: `${B.large.name} bungalo, ${B.large.capacity} kishigacha (${B.large.count} ta)`,
+    bungalowSmall: `${B.small.name} bungalo, ${B.small.capacity} kishigacha`,
+    bungalowLarge: `${B.large.name} bungalo, ${B.large.capacity} kishigacha`,
     total: "Taxminiy to'lov",
     freeNote: `Basseyn mehmonlari uchun kirish va parkovka BEPUL. Shale va glempingda turuvchilar uchun kirish ham bepul. 5 yoshgacha bolalar — kattalar bilan bepul. Hududda ${B.small.count} ta ${B.small.name} bungalo (${B.small.capacity} kishigacha) va ${B.large.count} ta ${B.large.name} (${B.large.capacity} kishigacha) bor; bundan ko'pini buyurtma qilib bo'lmaydi. Bungalo ijarasi kirish chiptalarini o'z ichiga olmaydi. Basseyn har kuni 08:00–20:00. Basseyn hududiga o'z ovqatingiz va ichimliklaringiz bilan kirish mumkin emas — hududda pul-bar va restoran ishlaydi.`,
   },
@@ -137,8 +142,8 @@ const COPY: Record<
     kids: "Children 5–15",
     toddlers: "Children under 5",
     towels: "Towels (30 000)",
-    bungalowSmall: `${B.small.name} bungalow, up to ${B.small.capacity} (${B.small.count} total)`,
-    bungalowLarge: `${B.large.name} bungalow, up to ${B.large.capacity} (${B.large.count} total)`,
+    bungalowSmall: `${B.small.name} bungalow, up to ${B.small.capacity}`,
+    bungalowLarge: `${B.large.name} bungalow, up to ${B.large.capacity}`,
     total: "Estimated total",
     freeNote: `Entry and parking are FREE for pool visitors. Chalet and glamping guests get in free too. Under-fives free with an adult. There are ${B.small.count} ${B.small.name} bungalows (up to ${B.small.capacity} guests) and ${B.large.count} ${B.large.name} ones (up to ${B.large.capacity}) on site; you cannot book more than that. Bungalow rental does not include entry tickets. The pool is open daily 08:00–20:00. Outside food and drink are not allowed in the pool area — the pool bar and the restaurant are on site.`,
   },
