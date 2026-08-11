@@ -31,7 +31,9 @@ import { getRoomPrices, priceChip } from "@/lib/room-price";
  * requests — it only decides how long a bad build stays visible. Six hours of
  * «Цена при бронировании» on a page the engine is happily quoting is too long.
  */
-export const revalidate = 900;
+// Одна минута, а не пятнадцать: страница слушается выключателя в /admin/uslugi.
+// Оператор гасит услугу и идёт проверять — ждать четверть часа он не станет.
+export const revalidate = 60;
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string }>;

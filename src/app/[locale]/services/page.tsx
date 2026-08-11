@@ -20,6 +20,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return buildMetadata(locale, pageSeo.services, "/services");
 }
 
+// Каталог зависит от выключателей в /admin/uslugi. Без этой строки страница
+// полностью статична: она печётся при сборке и живёт до следующего деплоя —
+// оператор гасит услугу, карточка остаётся висеть, и никакое сохранение её не
+// убирает. Минута — столько, сколько оператор готов ждать, проверяя себя.
+export const revalidate = 60;
+
 
 /**
  * The operator switches, resolved once per render.
