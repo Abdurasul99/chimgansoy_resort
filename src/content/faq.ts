@@ -39,6 +39,8 @@ export function faqItems(live: LivePricing = resolvePricing()): FaqItem[] {
     ride2: money(live.tubing.packages.find((p) => p.rides === 2)?.price ?? 0),
     ride4: money(live.tubing.packages.find((p) => p.rides === 4)?.price ?? 0),
     deposit: money(live.deposit),
+    taxResident: money(live.touristTax.resident),
+    taxForeign: money(live.touristTax.nonResident),
   };
 
   return [
@@ -73,9 +75,9 @@ export function faqItems(live: LivePricing = resolvePricing()): FaqItem[] {
       en: "How does booking work?",
     },
     answer: {
-      ru: "Выберите даты и забронируйте онлайн на странице «Бронирование» или оставьте заявку — администратор подтвердит бронь в ближайшее время. После подтверждения в течение 24 часов вносится предоплата 100% стоимости (при брони менее чем за сутки — сразу). Предоплата невозвратная. Можно также написать в WhatsApp или Telegram.",
-      uz: "Sanalarni tanlab, «Bron qilish» sahifasida onlayn bron qiling yoki so'rov qoldiring — administrator bronni tez orada tasdiqlaydi. Tasdiqlangandan keyin 24 soat ichida narxning 100% oldindan to'lovi amalga oshiriladi (bir kundan kam qolganda — darhol). Oldindan to'lov qaytarilmaydi. WhatsApp yoki Telegram orqali ham yozishingiz mumkin.",
-      en: "Pick your dates and book online on the Booking page, or send a request — the administrator will confirm shortly. Payment in full is due within 24 hours of confirmation (immediately for bookings made less than a day ahead). The prepayment is non-refundable. You can also message us on WhatsApp or Telegram.",
+      ru: `Выберите даты и забронируйте онлайн на странице «Бронирование» или оставьте заявку — администратор подтвердит бронь в ближайшее время. После подтверждения в течение 24 часов вносится предоплата 100% стоимости (при брони менее чем за сутки — сразу). Предоплата невозвратная. Туристский сбор в стоимость не входит и оплачивается отдельно при заселении: ${P.taxResident} сум с гражданина или резидента Узбекистана и ${P.taxForeign} сум с иностранного гражданина за каждую ночь. Можно также написать в WhatsApp или Telegram.`,
+      uz: `Sanalarni tanlab, «Bron qilish» sahifasida onlayn bron qiling yoki so'rov qoldiring — administrator bronni tez orada tasdiqlaydi. Tasdiqlangandan keyin 24 soat ichida narxning 100% oldindan to'lovi amalga oshiriladi (bir kundan kam qolganda — darhol). Oldindan to'lov qaytarilmaydi. Turistik yig'im narxga kirmaydi va joylashuvda alohida to'lanadi: har bir kecha uchun O'zbekiston fuqarosi yoki rezidentidan ${P.taxResident} so'm, chet el fuqarosidan ${P.taxForeign} so'm. WhatsApp yoki Telegram orqali ham yozishingiz mumkin.`,
+      en: `Pick your dates and book online on the Booking page, or send a request — the administrator will confirm shortly. Payment in full is due within 24 hours of confirmation (immediately for bookings made less than a day ahead). The prepayment is non-refundable. The tourist levy is not included in the rate and is paid separately at check-in: ${P.taxResident} UZS per Uzbek citizen or resident and ${P.taxForeign} UZS per foreign national, per night. You can also message us on WhatsApp or Telegram.`,
     },
   },
   {
