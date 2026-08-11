@@ -236,6 +236,24 @@ export const resortImages = {
       en: "The Chimgan ridge seen from the resort terrace",
     },
   },
+  /**
+   * Тот же хребет, но кадр шире и с перилами террасы внизу — видно, что снято
+   * с территории, а не взято из фотобанка.
+   *
+   * Заведён 11.08.2026 взамен стоковых кадров: карточка «Горные прогулки»
+   * показывала двух туристов с рюкзаками на фоне заснеженных пиков (снято не
+   * в Чимгане и не летом), а промо-полоса — всадников в конкурной экипировке.
+   */
+  ridgeTerrace: {
+    src: "/images/resort/hero/hero-ridge.jpg",
+    localSrc: "/images/resort/hero/hero-ridge.jpg",
+    position: "center",
+    alt: {
+      ru: "Горный хребет над территорией курорта",
+      uz: "Kurort hududi tepasidagi tog' tizmasi",
+      en: "The mountain ridge above the resort grounds",
+    },
+  },
   aframeTerraceView: {
     src: "/images/resort/rooms/aframe-terrace-view.jpg",
     localSrc: "/images/resort/rooms/aframe-terrace-view.jpg",

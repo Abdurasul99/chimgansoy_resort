@@ -77,7 +77,11 @@ export const services: Service[] = [
     // up the homepage also uses for the very same pitch ("горы начинаются за
     // террасой") — the same photo twice for the same idea. This is the walking
     // route itself, which is what the card is actually selling.
-    image: "mountainWalks",
+    // 11.08.2026: был mountainWalks — двое с рюкзаками на фоне заснеженных
+    // пиков. Это фотобанк, снятый не здесь: у нас 1700 м, летом снега нет, и
+    // гость, приехавший за таким пейзажем, его не найдёт. Ровно та же болезнь,
+    // из-за которой убрали рендеры, только вид сбоку.
+    image: "ridgeTerrace",
     secondImage: "chimganMountains",
     title: { ru: "Горные прогулки рядом", uz: "Atrofdagi tog' sayrlari", en: "Mountain walks nearby" },
     shortDescription: {

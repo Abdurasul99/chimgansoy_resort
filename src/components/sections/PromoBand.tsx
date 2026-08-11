@@ -20,10 +20,15 @@ export function PromoBand({ locale }: PromoBandProps) {
       {/* Texture, not a subject: 50% opacity under a 0.92→0.44 dark gradient.
           It was aframeLawnBanner, which is the glamping room card higher up
           the homepage — the one place a repeat costs nothing to fix, since
-          almost nothing of this frame survives the overlay anyway. */}
+          almost nothing of this frame survives the overlay anyway.
+
+          Затем здесь стоял horseRiding — всадники в европейской конкурной
+          экипировке из фотобанка. Под градиентом от него не оставалось ничего,
+          но чужой кадр в вёрстке рано или поздно всплывает где-то ещё, поэтому
+          заменён нашей же трассой тюбинга. */}
       <div
         className="absolute inset-0 -z-20 bg-cover opacity-50"
-        style={imageStyle(resortImages.horseRiding)}
+        style={imageStyle(resortImages.tubingTwoLanesValley)}
         aria-hidden="true"
       />
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(12,18,14,0.92),rgba(12,18,14,0.62),rgba(12,18,14,0.44))]" />
