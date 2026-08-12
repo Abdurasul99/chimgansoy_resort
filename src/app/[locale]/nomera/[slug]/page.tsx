@@ -9,6 +9,7 @@ import { getRoomPrices, priceChip } from "@/lib/room-price";
 import { getRoom as getLiveRoom } from "@/lib/rooms-live";
 import { serviceCards } from "@/lib/service-cards";
 import { BookingTermsNotice } from "@/components/sections/BookingTermsNotice";
+import { StayRequestForm } from "@/components/sections/StayRequestForm";
 import { getPricing } from "@/lib/pricing-live";
 import type { LivePricing } from "@/lib/pricing-resolve";
 import { Icon } from "@/components/ui/Icon";
@@ -350,6 +351,14 @@ export default async function RoomDetailPage({ params }: PageProps) {
                   гость дочитал, сколько будет стоить ночь, и следующее, что ему
                   нужно знать, — что домик закрепляется за ним только оплатой. */}
               <BookingTermsNotice locale={locale} className="mt-6" />
+
+              {/* Форма заявки прямо здесь: кнопка с карточки ведёт сюда, а не в
+                  движок. Якорь zayavka — на него указывает RoomCatalog. */}
+              {room.slug !== "pool" && (
+                <div id="zayavka" className="mt-10 scroll-mt-28">
+                  <StayRequestForm locale={locale} room={room.slug} maxGuests={occ?.max ?? 8} />
+                </div>
+              )}
 
               {/* Amenities + Features */}
               <div className="mt-12 grid gap-10 sm:grid-cols-2 motion-reveal" data-delay="100">

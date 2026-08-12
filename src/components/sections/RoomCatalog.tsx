@@ -33,6 +33,13 @@ function roomGalleryOf(room: (typeof rooms)[number]) {
   return [...new Set(keys)].map((k) => resortImages[k]);
 }
 
+/** «Забронировать в один клик» — обещание короткой формы, а не движка. */
+const ONE_CLICK: Record<string, string> = {
+  ru: "Забронировать в один клик",
+  uz: "Bir marta bosib bron qilish",
+  en: "Book in one click",
+};
+
 export function RoomCatalog({ locale, limit, priceChips = {} }: RoomCatalogProps) {
   const [filter, setFilter] = useState<Filter>("all");
   // Which room the viewer is showing, by slug — null when closed.
@@ -193,20 +200,19 @@ export function RoomCatalog({ locale, limit, priceChips = {} }: RoomCatalogProps
                   <ButtonLink href={localizePath(locale, `/nomera/${room.slug}`)} variant="secondary" className="btn-press">
                     {dict.details}
                   </ButtonLink>
-                  {/* The pool isn't in the booking engine — its request form
-                      lives on its own page, so send the guest there instead of
-                      to /bron with an empty room-type. */}
+                  {/* Ведёт к форме заявки на самой странице домика, а не в движок
+                      Exely: гость попадал в чужой интерфейс, где нужно разобраться
+                      с тарифами и заполнить длинную форму. Бассейн всегда так и
+                      работал — теперь так работают все. */}
                   <ButtonLink
-                    href={
-                      room.slug === "pool"
-                        ? localizePath(locale, "/nomera/pool#pool-request")
-                        : localizePath(locale, `/bron?room-type=${EXELY_ROOM_TYPE[room.slug] ?? ""}`)
-                    }
+                    href={localizePath(
+                      locale,
+                      room.slug === "pool" ? "/nomera/pool#pool-request" : `/nomera/${room.slug}#zayavka`,
+                    )}
                     variant="ghost"
-                    reload={room.slug !== "pool"}
                     className="btn-press"
                   >
-                    {dict.book}
+                    {ONE_CLICK[locale]}
                   </ButtonLink>
                 </div>
               </div>
