@@ -5,6 +5,7 @@ import { rooms } from "@/content/rooms";
 import { esc } from "@/lib/telegram";
 import { text } from "@/lib/localize";
 import { deliverRequest, dialable, todayTashkent } from "@/lib/request-delivery";
+import { insertBooking } from "@/lib/db";
 
 export type StayRequestState = { ok?: boolean; error?: string };
 
@@ -160,6 +161,22 @@ export async function submitStayRequest(
     console.error("[stay-request] delivery failed:", e);
     return { error: t.failed };
   }
+
+  // База — ПОСЛЕ доставки и намеренно без await на успех: гость уже получил
+  // подтверждение, письмо и сообщение в Telegram ушли. Недоступная база должна
+  // стоить строки в журнале, а не потерянного лида.
+  await insertBooking({
+    roomSlug: slug,
+    checkin,
+    checkout: checkout || undefined,
+    guestName: name,
+    phone,
+    email: email || undefined,
+    adults,
+    kids,
+    comment: comment || undefined,
+    locale,
+  });
 
   return { ok: true };
 }

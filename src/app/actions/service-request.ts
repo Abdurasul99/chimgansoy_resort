@@ -4,6 +4,7 @@ import { contacts } from "@/content/contacts";
 import { esc } from "@/lib/telegram";
 import { deliverRequest, dialable, todayTashkent } from "@/lib/request-delivery";
 import { readOverrides, type FormField } from "@/lib/site-overrides";
+import { insertServiceRequest } from "@/lib/db";
 
 export type ServiceRequestState = { ok?: boolean; error?: string };
 
@@ -167,6 +168,17 @@ export async function submitServiceRequest(
     console.error("[service-request] delivery failed:", e);
     return { error: t.failed };
   }
+
+  // Как и у броней: запись в базу не может стоить гостю заявки.
+  await insertServiceRequest({
+    serviceSlug: slug,
+    serviceName: title,
+    visitDate: dateField ? date : undefined,
+    guestName: name,
+    phone,
+    answers: Object.fromEntries(answers.map((x) => [x.label, x.value])),
+    locale,
+  });
 
   return { ok: true };
 }
