@@ -90,6 +90,7 @@ export function RoomForm({
             disabled={!storeReady}
             className={field}
           />
+          <span className="mt-1 block text-xs normal-case text-[var(--muted)]">Показывается на русской странице. Узбекская и английская берут перевод из кода — напишите мне, если правку нужно показать и там.</span>
         </label>
 
         <label className="mt-4 block">
@@ -104,6 +105,7 @@ export function RoomForm({
             disabled={!storeReady}
             className={field}
           />
+          <span className="mt-1 block text-xs normal-case text-[var(--muted)]">Показывается на русской странице — как и удобства.</span>
         </label>
 
         <label className="mt-4 block">

@@ -104,8 +104,20 @@ export function resolveRoom(room: Room, data: OverrideData): LiveRoom {
 
   return {
     base: room,
-    amenities: (locale) => patch.amenities ?? room.amenities[locale],
-    features: (locale) => patch.features ?? room.features[locale],
+    /**
+     * Список оператора применяется только к русской странице.
+     *
+     * Он одноязычный — в панели одно поле на строку, — и раньше подменял собой
+     * все три языка сразу: узбекская страница показывала русский текст под
+     * узбекскими заголовками, хотя перевод в content/rooms.ts есть и он верный.
+     * Оператор правит по-русски, и его правка должна быть видна там, где он её
+     * писал, а не ломать перевод для гостя, который читает на другом языке.
+     *
+     * Когда правку нужно показать на всех языках, перевод дописывается в код —
+     * это ровно тот случай, когда одно поле на три языка обмануть нельзя.
+     */
+    amenities: (locale) => (locale === "ru" ? patch.amenities ?? room.amenities.ru : room.amenities[locale]),
+    features: (locale) => (locale === "ru" ? patch.features ?? room.features.ru : room.features[locale]),
     gallery: gallery.list,
     galleryKeys: gallery.keys,
     priceNote: patch.priceNote,
