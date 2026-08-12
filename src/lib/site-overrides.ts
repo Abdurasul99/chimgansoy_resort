@@ -430,20 +430,27 @@ export async function readForEditWithRev(): Promise<{ rev: number; data: Overrid
  * страницей и присылает его обратно. Поэтому здесь мы просто ждём, пока
  * хранилище догонит то, что оператор уже видел своими глазами.
  */
-export async function readAtLeast(minRev: number): Promise<OverrideData> {
+export async function readAtLeast(minRev: number): Promise<OverrideData | null> {
   if (!Number.isFinite(minRev) || minRev <= 0) return fetchOverrides();
 
-  for (let attempt = 0; attempt < 6; attempt++) {
+  // Десять попыток с нарастающей паузой — около четырёх секунд. Дольше держать
+  // оператора у крутящейся кнопки хуже, чем попросить повторить.
+  for (let attempt = 0; attempt < 10; attempt++) {
     const { rev, data } = await fetchDoc();
     if (rev >= minRev) return data;
-    await new Promise((r) => setTimeout(r, 250));
+    await new Promise((r) => setTimeout(r, 150 + attempt * 80));
   }
 
-  // Хранилище так и не догнало. Отдаём что есть: отказать в правке хуже, чем
-  // применить её к чуть более старому документу — но в лог это попадёт.
-  console.error(`[overrides] store still behind rev ${minRev} after 6 tries`);
-  return fetchOverrides();
+  /**
+   * Хранилище так и не догнало. Записывать НЕЛЬЗЯ: мы применили бы правку к
+   * документу без предыдущей и тихо стёрли бы её — ровно то, из-за чего из
+   * четырёх полей подряд доезжали два, а каждое сохранение отвечало «Сохранено».
+   * Честный отказ оператор повторит; потерю он не заметит.
+   */
+  console.error(`[overrides] store still behind rev ${minRev} after 10 tries`);
+  return null;
 }
+
 
 /** Успешная запись возвращает свой номер: форма запомнит его и пришлёт со
  *  следующей правкой, чтобы та не легла поверх этой. */

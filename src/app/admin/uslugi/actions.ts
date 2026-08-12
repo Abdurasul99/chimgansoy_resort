@@ -8,6 +8,9 @@ import { services } from "@/content/services";
 /** Версия, которую видел оператор: правка ложится не на документ постарше. */
 const revOf = (form: FormData) => Number(String(form.get("rev") ?? "0"));
 
+/** Хранилище не догнало предыдущую правку — писать поверх нельзя. */
+const BEHIND = "Хранилище не успело обновиться. Нажмите ещё раз — правка не потеряется.";
+
 /** rev — см. FormState: номер только что сделанной записи. */
 export type ServicesFormState = { ok?: boolean; error?: string; rev?: number };
 
@@ -42,7 +45,8 @@ export async function saveServices(
 ): Promise<ServicesFormState> {
   await requireAdmin();
 
-  const data: OverrideData = await readAtLeast(revOf(formData));
+  const data: OverrideData | null = await readAtLeast(revOf(formData));
+  if (!data) return { error: BEHIND };
   const next: OverrideData["services"] = {};
 
   /** Номер места. Пусто или мусор — значит место определяет код. */
@@ -114,6 +118,7 @@ export async function addService(
   if (!slug) return { error: "Из названия не получается адрес. Добавьте латиницу или цифры." };
 
   const data = await readAtLeast(revOf(formData));
+  if (!data) return { error: BEHIND };
   if (services.some((s) => s.slug === slug) || data.customServices.some((c) => c.slug === slug)) {
     return { error: "Услуга с таким названием уже есть." };
   }
@@ -154,6 +159,7 @@ export async function deleteService(
 
   const slug = String(formData.get("slug") ?? "").trim();
   const data = await readAtLeast(revOf(formData));
+  if (!data) return { error: BEHIND };
   const res = await saveOverrides({
     ...data,
     customServices: data.customServices.filter((c) => c.slug !== slug),

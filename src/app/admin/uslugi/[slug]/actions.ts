@@ -43,15 +43,20 @@ function keyOf(label: string, taken: string[]): string {
  */
 async function withService(slug: string, minRev: number) {
   const data = await readAtLeast(minRev);
+  // null — хранилище отстаёт; писать поверх старого документа нельзя.
+  if (!data) return { data: null, index: -1 };
   const index = data.customServices.findIndex((c) => c.slug === slug);
   return { data, index };
 }
+
+const BEHIND = "Хранилище не успело обновиться. Нажмите ещё раз — правка не потеряется.";
 
 /** Номер ревизии, который прислала форма. */
 const revOf = (form: FormData) => Number(String(form.get("rev") ?? "0"));
 
 async function persist(slug: string, fields: FormField[], minRev: number): Promise<FormState> {
   const { data, index } = await withService(slug, minRev);
+  if (!data) return { error: BEHIND };
   if (index < 0) return { error: "Услуга не найдена." };
 
   const next = [...data.customServices];
@@ -92,6 +97,7 @@ export async function addField(_prev: FormState, form: FormData): Promise<FormSt
   }
 
   const { data, index } = await withService(slug, revOf(form));
+  if (!data) return { error: BEHIND };
   if (index < 0) return { error: "Услуга не найдена." };
   const fields = data.customServices[index].formFields ?? [];
   if (fields.length >= 20) return { error: "Двадцати полей хватит любой заявке." };
@@ -117,6 +123,7 @@ export async function removeField(_prev: FormState, form: FormData): Promise<For
   const slug = String(form.get("slug") ?? "").trim();
   const key = String(form.get("key") ?? "").trim();
   const { data, index } = await withService(slug, revOf(form));
+  if (!data) return { error: BEHIND };
   if (index < 0) return { error: "Услуга не найдена." };
 
   return persist(slug, (data.customServices[index].formFields ?? []).filter((f) => f.key !== key), revOf(form));
@@ -132,6 +139,7 @@ export async function moveField(_prev: FormState, form: FormData): Promise<FormS
   const dir = String(form.get("dir") ?? "") === "up" ? -1 : 1;
 
   const { data, index } = await withService(slug, revOf(form));
+  if (!data) return { error: BEHIND };
   if (index < 0) return { error: "Услуга не найдена." };
 
   const fields = [...(data.customServices[index].formFields ?? [])];
