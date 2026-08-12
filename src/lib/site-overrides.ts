@@ -1,5 +1,5 @@
 import { head, put } from "@vercel/blob";
-import { unstable_cache, revalidateTag } from "next/cache";
+import { unstable_cache, revalidateTag, updateTag } from "next/cache";
 
 /**
  * Operator edits, layered over the TypeScript content modules.
@@ -320,10 +320,24 @@ export async function saveOverrides(data: OverrideData, by = "admin"): Promise<S
     return { ok: false, error: "Не удалось сохранить. Попробуйте ещё раз." };
   }
 
-  // Public pages read through the tagged cache; without this the change would
-  // not appear for up to five minutes and the operator would save again.
-  // Next 16 requires a cache profile as the second argument — "max" expires the
-  // entry immediately rather than scheduling it, which is what a save means.
-  revalidateTag(OVERRIDES_TAG, "max");
+  /**
+   * Публичные страницы читают через тегированный кеш, и без сброса правка
+   * оператора доходила бы до сайта минутами — он успевал сохранить второй раз.
+   *
+   * updateTag, а не revalidateTag: второй в Next 16 принимает профиль и лишь
+   * ПЛАНИРУЕТ истечение записи, а updateTag сбрасывает её здесь и сейчас, ради
+   * чего и сделан — «читай то, что сам только что записал». Проверено на проде:
+   * с revalidateTag("max") удалённая услуга оставалась на сайте и после
+   * сохранения, до конца пятиминутного TTL.
+   *
+   * Вызывать его можно только из серверного действия. Все правки приходят
+   * оттуда, но если однажды придут не оттуда — падать из-за сброса кеша сохранение
+   * не должно, поэтому запасной путь оставлен.
+   */
+  try {
+    updateTag(OVERRIDES_TAG);
+  } catch {
+    revalidateTag(OVERRIDES_TAG, "max");
+  }
   return { ok: true };
 }
