@@ -45,6 +45,10 @@ export function ServicesForm({
   const [addState, add, adding] = useActionState<ServicesFormState, FormData>(addService, {});
   const [delState, del, deleting] = useActionState<ServicesFormState, FormData>(deleteService, {});
 
+  /** Самая свежая известная версия — см. FormBuilder: пропа приходит позже,
+   *  чем оператор успевает нажать «сохранить» второй раз. */
+  const seen = Math.max(rev, saveState.rev ?? 0, addState.rev ?? 0, delState.rev ?? 0);
+
   return (
     <div className="space-y-10">
       {!storeReady && (
@@ -56,7 +60,7 @@ export function ServicesForm({
 
       {/* ── Что показывать ─────────────────────────────────────────────── */}
       <form action={save}>
-        <input type="hidden" name="rev" value={rev} />
+        <input type="hidden" name="rev" value={seen} />
         <div className="overflow-hidden rounded-2xl border border-[color:var(--line)]">
           <table className="w-full text-left text-sm">
             <thead className="bg-[var(--surface-warm)] text-[var(--muted)]">
@@ -180,13 +184,13 @@ export function ServicesForm({
 
       {/* Цель кнопок «удалить» в таблице: своя форма, вне сетки. */}
       <form action={del} id="delete-service">
-        <input type="hidden" name="rev" value={rev} />
+        <input type="hidden" name="rev" value={seen} />
         <Result state={delState} pending={deleting} />
       </form>
 
       {/* ── Добавить свою ──────────────────────────────────────────────── */}
       <form action={add} className="rounded-2xl border border-[color:var(--line)] p-5">
-        <input type="hidden" name="rev" value={rev} />
+        <input type="hidden" name="rev" value={seen} />
         <h2 className="font-serif text-xl font-semibold text-[var(--ink)]">Добавить услугу</h2>
         <p className="mt-1 text-sm text-[var(--muted)]">
           Появится в каталоге услуг, а на главной — если поставить галочку. Текст

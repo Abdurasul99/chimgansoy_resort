@@ -8,7 +8,8 @@ import { services } from "@/content/services";
 /** Версия, которую видел оператор: правка ложится не на документ постарше. */
 const revOf = (form: FormData) => Number(String(form.get("rev") ?? "0"));
 
-export type ServicesFormState = { ok?: boolean; error?: string };
+/** rev — см. FormState: номер только что сделанной записи. */
+export type ServicesFormState = { ok?: boolean; error?: string; rev?: number };
 
 /** Latin/digit/hyphen slug, so it is safe in a URL and readable in the store. */
 function slugify(raw: string): string {
@@ -87,7 +88,7 @@ export async function saveServices(
   if (!res.ok) return { error: res.error };
 
   revalidatePath("/", "layout");
-  return { ok: true };
+  return { ok: true, rev: res.rev };
 }
 
 /** Create one operator-authored service. */
@@ -141,7 +142,7 @@ export async function addService(
   if (!res.ok) return { error: res.error };
 
   revalidatePath("/", "layout");
-  return { ok: true };
+  return { ok: true, rev: res.rev };
 }
 
 /** Remove an operator-authored service. Code services are hidden, never deleted. */
@@ -160,5 +161,5 @@ export async function deleteService(
   if (!res.ok) return { error: res.error };
 
   revalidatePath("/", "layout");
-  return { ok: true };
+  return { ok: true, rev: res.rev };
 }

@@ -4,7 +4,9 @@ import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/admin-auth";
 import { readAtLeast, saveOverrides, type FieldType, type FormField } from "@/lib/site-overrides";
 
-export type FormState = { ok?: boolean; error?: string };
+/** rev — номер записи, которую только что сделали. Форма запомнит его и
+ *  пришлёт со следующей правкой: страница может не успеть перерисоваться. */
+export type FormState = { ok?: boolean; error?: string; rev?: number };
 
 const TYPES: FieldType[] = ["text", "textarea", "number", "phone", "date", "select", "checkbox"];
 
@@ -59,7 +61,7 @@ async function persist(slug: string, fields: FormField[], minRev: number): Promi
   if (!res.ok) return { error: res.error };
 
   revalidatePath("/", "layout");
-  return { ok: true };
+  return { ok: true, rev: res.rev };
 }
 
 /** Добавляет одно поле в конец формы. */

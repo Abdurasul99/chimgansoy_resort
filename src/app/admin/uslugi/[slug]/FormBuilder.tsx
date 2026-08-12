@@ -56,6 +56,17 @@ export function FormBuilder({
   // оператор не гадал, какие поля к чему относятся.
   const [type, setType] = useState<FieldType>("text");
 
+  /**
+   * Самая свежая версия, о которой мы знаем.
+   *
+   * Пропа rev недостаточно: она приходит с перерисовкой страницы, а оператор
+   * успевает нажать «добавить» второй раз раньше — и присылает номер, который
+   * видел ДО первой правки. Тогда сервер считает, что хранилище догнало, читает
+   * документ без первой правки и затирает её. Действие возвращает номер своей
+   * записи, и следующая правка уезжает уже с ним.
+   */
+  const seen = Math.max(rev, addState.rev ?? 0, rmState.rev ?? 0, mvState.rev ?? 0);
+
   return (
     <div className="space-y-8">
       <div className="rounded-2xl border border-[color:var(--line)] p-5">
@@ -90,7 +101,7 @@ export function FormBuilder({
                 <span className="ml-auto flex items-center gap-1">
                   <form action={mv}>
                     <input type="hidden" name="slug" value={slug} />
-                    <input type="hidden" name="rev" value={rev} />
+                    <input type="hidden" name="rev" value={seen} />
                     <input type="hidden" name="key" value={f.key} />
                     <input type="hidden" name="dir" value="up" />
                     <button
@@ -104,7 +115,7 @@ export function FormBuilder({
                   </form>
                   <form action={mv}>
                     <input type="hidden" name="slug" value={slug} />
-                    <input type="hidden" name="rev" value={rev} />
+                    <input type="hidden" name="rev" value={seen} />
                     <input type="hidden" name="key" value={f.key} />
                     <input type="hidden" name="dir" value="down" />
                     <button
@@ -118,7 +129,7 @@ export function FormBuilder({
                   </form>
                   <form action={rm}>
                     <input type="hidden" name="slug" value={slug} />
-                    <input type="hidden" name="rev" value={rev} />
+                    <input type="hidden" name="rev" value={seen} />
                     <input type="hidden" name="key" value={f.key} />
                     <button
                       type="submit"
@@ -140,7 +151,7 @@ export function FormBuilder({
       <form action={add} className="rounded-2xl border border-[color:var(--line)] p-5">
         <h2 className="font-serif text-xl font-semibold text-[var(--ink)]">Добавить поле</h2>
         <input type="hidden" name="slug" value={slug} />
-        <input type="hidden" name="rev" value={rev} />
+        <input type="hidden" name="rev" value={seen} />
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <label className="block">

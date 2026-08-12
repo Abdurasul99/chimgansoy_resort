@@ -445,7 +445,9 @@ export async function readAtLeast(minRev: number): Promise<OverrideData> {
   return fetchOverrides();
 }
 
-export type SaveResult = { ok: true } | { ok: false; error: string };
+/** Успешная запись возвращает свой номер: форма запомнит его и пришлёт со
+ *  следующей правкой, чтобы та не легла поверх этой. */
+export type SaveResult = { ok: true; rev: number } | { ok: false; error: string };
 
 /**
  * Writes the whole document.
@@ -516,5 +518,5 @@ export async function saveOverrides(data: OverrideData, by = "admin"): Promise<S
   } catch {
     revalidateTag(OVERRIDES_TAG, "max");
   }
-  return { ok: true };
+  return { ok: true, rev };
 }
