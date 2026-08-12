@@ -8,6 +8,7 @@ import { chaletVideos, glampingVideos } from "@/content/videos";
 import { getRoomPrices, priceChip } from "@/lib/room-price";
 import { getRoom as getLiveRoom } from "@/lib/rooms-live";
 import { serviceCards } from "@/lib/service-cards";
+import { BookingTermsNotice } from "@/components/sections/BookingTermsNotice";
 import { getPricing } from "@/lib/pricing-live";
 import type { LivePricing } from "@/lib/pricing-resolve";
 import { Icon } from "@/components/ui/Icon";
@@ -344,6 +345,11 @@ export default async function RoomDetailPage({ params }: PageProps) {
                   )}
                 </div>
               )}
+
+              {/* Заявка — ещё не бронь. Ставится сразу после условий проживания:
+                  гость дочитал, сколько будет стоить ночь, и следующее, что ему
+                  нужно знать, — что домик закрепляется за ним только оплатой. */}
+              <BookingTermsNotice locale={locale} className="mt-6" />
 
               {/* Amenities + Features */}
               <div className="mt-12 grid gap-10 sm:grid-cols-2 motion-reveal" data-delay="100">

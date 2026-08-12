@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/sections/PageHero";
 import { ExelyBookingEngine } from "@/components/sections/ExelyBookingEngine";
+import { BookingTermsNotice } from "@/components/sections/BookingTermsNotice";
 import { resortImages } from "@/content/images";
 import { dictionaries } from "@/content/translations";
 import { pageSeo } from "@/content/seo";
@@ -41,6 +42,14 @@ export default async function BookingPage({ params }: PageProps) {
       />
 
       <ExelyBookingEngine locale={locale} />
+
+      {/* Условия — сразу под движком, до сбора: гость дочитал цену и должен
+          понимать, что домик держится за ним оплатой, а не выбором даты. */}
+      <section className="px-4 pb-6 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-3xl">
+          <BookingTermsNotice locale={locale} variant="booking" />
+        </div>
+      </section>
 
       <StayLevyNote locale={locale} />
     </>
