@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { BookingWidget } from "@/components/sections/BookingWidget";
+import { DynamicRequestForm } from "@/components/sections/DynamicRequestForm";
 import { MenuBoard } from "@/components/sections/MenuBoard";
 import { PageHero } from "@/components/sections/PageHero";
 import { RoomCatalog } from "@/components/sections/RoomCatalog";
@@ -96,6 +97,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
    */
   if (live.isCustom) {
     const card = (await serviceCard(slug, locale))!;
+    const fields = live.custom?.formFields ?? [];
     return (
       <>
         <PageHero
@@ -114,14 +116,24 @@ export default async function ServiceDetailPage({ params }: PageProps) {
             {card.priceNote ? (
               <p className="mt-6 text-lg font-bold text-[var(--sun-dark)]">{card.priceNote}</p>
             ) : null}
-            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href={localizePath(locale, "/bron")} variant="primary" reload>
-                {dict.bookNow}
-              </ButtonLink>
-              <ButtonLink href={localizePath(locale, "/services")} variant="ghost">
-                {dict.pages.services.title}
-              </ButtonLink>
-            </div>
+
+            {/* Форма — только если оператор её собрал. Пустая форма без полей
+                хуже её отсутствия: гость заполняет имя и телефон, не понимая,
+                на что подписывается. Без неё остаются кнопки брони и телефон. */}
+            {fields.length ? (
+              <div className="mt-10">
+                <DynamicRequestForm locale={locale} slug={slug} title={card.title} fields={fields} />
+              </div>
+            ) : (
+              <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+                <ButtonLink href={localizePath(locale, "/bron")} variant="primary" reload>
+                  {dict.bookNow}
+                </ButtonLink>
+                <ButtonLink href={localizePath(locale, "/services")} variant="ghost">
+                  {dict.pages.services.title}
+                </ButtonLink>
+              </div>
+            )}
           </div>
         </section>
       </>

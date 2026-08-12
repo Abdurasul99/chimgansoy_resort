@@ -52,6 +52,30 @@ export type UploadedPhoto = {
 export type ServiceCategory = "relax" | "food" | "activity";
 const CATEGORIES: ServiceCategory[] = ["relax", "food", "activity"];
 
+/**
+ * Поле формы заявки, настроенное оператором.
+ *
+ * Типов ровно столько, сколько оператор может осмысленно объяснить гостю и
+ * сколько сервер умеет проверить. Расширять этот список дешевле, чем чинить
+ * форму, где половина типов рисуется, но не проверяется.
+ */
+export type FieldType = "text" | "textarea" | "number" | "phone" | "date" | "select" | "checkbox";
+const FIELD_TYPES: FieldType[] = ["text", "textarea", "number", "phone", "date", "select", "checkbox"];
+
+export type FormField = {
+  /** Ключ, под которым ответ попадает в заявку. Латиница, задаётся из названия. */
+  key: string;
+  label: string;
+  type: FieldType;
+  required?: boolean;
+  placeholder?: string;
+  /** Только для select. */
+  options?: string[];
+  /** Только для number. */
+  min?: number;
+  max?: number;
+};
+
 export type NewsItem = {
   id: string;
   /** YYYY-MM-DD, the date shown to a guest. */
@@ -92,6 +116,11 @@ export type OverrideData = {
     hidden?: boolean;
     showOnHome?: boolean;
     order?: number;
+    /**
+     * Форма заявки этой услуги. Пусто — формы нет, страница показывает
+     * телефон и общую кнопку брони: пустая форма без полей хуже её отсутствия.
+     */
+    formFields?: FormField[];
   }>;
   /**
    * Per-room patch for /nomera/<slug>: the lists a guest reads, the photos in
@@ -141,8 +170,14 @@ function configured(): boolean {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
 }
 
-/** Shape-checks a parsed document. Anything unexpected degrades to empty. */
-function coerce(raw: unknown): OverrideData {
+/**
+ * Shape-checks a parsed document. Anything unexpected degrades to empty.
+ *
+ * Экспортируется ради тестов: это единственное место, где решается, переживёт
+ * ли сайт кривой документ, и проверять это через хранилище значило бы не
+ * проверять вовсе.
+ */
+export function coerce(raw: unknown): OverrideData {
   if (!raw || typeof raw !== "object") return EMPTY;
   const doc = raw as Partial<Overrides>;
   if (doc.version !== VERSION) return EMPTY;
@@ -165,6 +200,45 @@ function coerce(raw: unknown): OverrideData {
     typeof x === "string" && x.trim() ? x.trim() : undefined;
   const category = (x: unknown): ServiceCategory | undefined =>
     typeof x === "string" && (CATEGORIES as string[]).includes(x) ? (x as ServiceCategory) : undefined;
+  const num = (x: unknown): number | undefined =>
+    typeof x === "number" && Number.isFinite(x) ? x : undefined;
+
+  /**
+   * Поля формы. Поле без ключа, названия или с незнакомым типом выбрасывается
+   * целиком: отрисовать его нечем, а проверить на сервере — тем более.
+   */
+  const fields = (x: unknown): FormField[] | undefined => {
+    if (!Array.isArray(x)) return undefined;
+    const out: FormField[] = [];
+    for (const raw of x) {
+      if (!raw || typeof raw !== "object") continue;
+      const f = raw as Record<string, unknown>;
+      const key = str(f.key);
+      const label = str(f.label);
+      const type = typeof f.type === "string" && (FIELD_TYPES as string[]).includes(f.type)
+        ? (f.type as FieldType)
+        : null;
+      if (!key || !label || !type) continue;
+      // Два поля с одним ключом перетёрли бы ответ друг друга в заявке.
+      if (out.some((o) => o.key === key)) continue;
+      const options = Array.isArray(f.options)
+        ? f.options.filter((o): o is string => typeof o === "string" && o.trim().length > 0).map((o) => o.trim())
+        : undefined;
+      // Список без вариантов — это поле, которое гость не сможет заполнить.
+      if (type === "select" && (!options || options.length === 0)) continue;
+      out.push({
+        key,
+        label,
+        type,
+        required: Boolean(f.required),
+        placeholder: str(f.placeholder),
+        options,
+        min: num(f.min),
+        max: num(f.max),
+      });
+    }
+    return out.length ? out : undefined;
+  };
 
   const services: OverrideData["services"] = {};
   for (const [k, v] of Object.entries(d.services ?? {})) {
@@ -195,6 +269,7 @@ function coerce(raw: unknown): OverrideData {
           hidden: Boolean(s.hidden),
           showOnHome: flag(s.showOnHome),
           order: order(s.order),
+          formFields: fields((s as { formFields?: unknown }).formFields),
         }))
     : [];
 

@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { services, type Service } from "@/content/services";
 import { readOverrides } from "@/lib/site-overrides";
-import type { OverrideData, ServiceCategory } from "@/lib/site-overrides";
+import type { FormField, OverrideData, ServiceCategory } from "@/lib/site-overrides";
 
 /**
  * The service list the site shows, with the operator's edits applied.
@@ -39,6 +39,8 @@ export type LiveService = {
     shortDescription?: string;
     image?: string;
     category?: ServiceCategory;
+    /** Поля формы заявки, если оператор её собрал. */
+    formFields?: FormField[];
   };
   priceNote?: string;
   hidden: boolean;
@@ -77,6 +79,7 @@ export function resolveServices(data: OverrideData): LiveService[] {
         shortDescription: c.shortDescription,
         image: c.image,
         category: c.category,
+        formFields: c.formFields,
       },
       priceNote: c.priceNote || undefined,
       hidden: Boolean(c.hidden),

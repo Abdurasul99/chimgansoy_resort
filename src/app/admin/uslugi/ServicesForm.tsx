@@ -129,6 +129,14 @@ export function ServicesForm({
                   </td>
                   <td className="px-4 py-3 text-right">
                     {s.isCustom && (
+                      <a
+                        href={`/admin/uslugi/${s.slug}`}
+                        className="mr-3 text-xs font-semibold text-[var(--muted)] underline underline-offset-2 transition hover:text-[var(--ink)]"
+                      >
+                        форма заявки
+                      </a>
+                    )}
+                    {s.isCustom && (
                       /**
                        * Кнопка принадлежит отдельной форме ниже, а не этой.
                        *
