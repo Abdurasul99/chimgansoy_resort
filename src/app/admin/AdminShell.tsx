@@ -11,7 +11,9 @@ import { signOut } from "./actions";
 
 const NAV = [
   { href: "/admin", label: "Сводка" },
-  { href: "/admin/zayavki", label: "Заявки" },
+  { href: "/admin/broni", label: "Брони" },
+  { href: "/admin/uslugi-zayavki", label: "Заявки услуг" },
+  { href: "/admin/zayavki", label: "Журнал" },
   { href: "/admin/analitika", label: "Аналитика" },
   { href: "/admin/tseny", label: "Цены" },
   { href: "/admin/uslugi", label: "Услуги" },
