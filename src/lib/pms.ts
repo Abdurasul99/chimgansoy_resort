@@ -252,3 +252,36 @@ export async function occupancy(from: string, to: string): Promise<BookingRow[]>
     (b) => b.unit_id && b.status !== "cancelled" && b.status !== "declined",
   );
 }
+
+/**
+ * Сколько единиц этого типа свободно на даты.
+ *
+ * Считает только те брони, за которыми закреплён номер: заявка без номера
+ * инвентарь не занимает — иначе десять неподтверждённых заявок закрыли бы
+ * продажи на месяц.
+ *
+ * Никогда не бросает: недоступная база не должна мешать гостю оставить заявку.
+ * В этом случае возвращает число единиц как есть — пусть лучше оператор
+ * разберётся с пересечением руками, чем сайт откажет реальному гостю.
+ */
+export async function freeUnits(roomSlug: string, checkin: string, checkout: string | null): Promise<number> {
+  const out = checkout ?? checkin;
+  try {
+    const rows = (await sql().query(
+      `SELECT count(*)::int AS n FROM units u
+        WHERE u.room_slug = $1 AND u.active
+          AND NOT EXISTS (
+            SELECT 1 FROM bookings b
+             WHERE b.unit_id = u.id
+               AND b.status NOT IN ('cancelled', 'declined')
+               AND b.checkin < $3::date
+               AND coalesce(b.checkout, b.checkin + 1) > $2::date
+          )`,
+      [roomSlug, checkin, out],
+    )) as { n: number }[];
+    return rows[0]?.n ?? 0;
+  } catch (e) {
+    console.error("[pms] проверка занятости не удалась:", e);
+    return 99;
+  }
+}

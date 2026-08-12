@@ -6,6 +6,7 @@ import { esc } from "@/lib/telegram";
 import { text } from "@/lib/localize";
 import { deliverRequest, dialable, todayTashkent } from "@/lib/request-delivery";
 import { insertBooking } from "@/lib/db";
+import { freeUnits } from "@/lib/pms";
 
 export type StayRequestState = { ok?: boolean; error?: string };
 
@@ -31,6 +32,7 @@ const MESSAGES = {
     guestsWrong: "Укажите хотя бы одного гостя",
     emailInvalid: "Проверьте адрес почты",
     unknown: "Домик больше не доступен",
+    noRooms: "На эти даты всё занято. Выберите другие — или позвоните нам, подскажем ближайшие свободные.",
     failed: `Не удалось отправить заявку. Позвоните нам: ${contacts.phone}`,
   },
   uz: {
@@ -43,6 +45,7 @@ const MESSAGES = {
     guestsWrong: "Kamida bitta mehmonni ko'rsating",
     emailInvalid: "Pochta manzilini tekshiring",
     unknown: "Bu uycha endi mavjud emas",
+    noRooms: "Bu sanalarga hammasi band. Boshqa sanani tanlang yoki bizga qo'ng'iroq qiling.",
     failed: `Arizani yuborib bo'lmadi. Bizga qo'ng'iroq qiling: ${contacts.phone}`,
   },
   en: {
@@ -55,6 +58,7 @@ const MESSAGES = {
     guestsWrong: "Please add at least one guest",
     emailInvalid: "Please check the email address",
     unknown: "This cabin is no longer available",
+    noRooms: "Everything is booked for those dates. Please pick others, or call us and we will suggest the nearest free ones.",
     failed: `Could not send the request. Please call us: ${contacts.phone}`,
   },
 } as const;
@@ -103,6 +107,18 @@ export async function submitStayRequest(
   // Даты в ISO сравниваются строками корректно.
   if (checkout && (!ISO.test(checkout) || checkout <= checkin)) return { error: t.orderWrong };
   if (adults + kids < 1) return { error: t.guestsWrong };
+
+  /**
+   * Занято ли всё на эти даты.
+   *
+   * Проверка перед отправкой, а не после: заявку, которую всё равно придётся
+   * отклонить, лучше не принимать вовсе — иначе гость ждёт звонка, а оператор
+   * звонит отказывать. Считаются только домики с закреплённым номером, поэтому
+   * чужие неподтверждённые заявки продажи не блокируют.
+   */
+  if ((await freeUnits(slug, checkin, checkout || null)) === 0) {
+    return { error: t.noRooms };
+  }
 
   const title = text(room.title, "ru");
   const nights = checkout
