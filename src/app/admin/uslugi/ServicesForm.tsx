@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { addService, deleteService, saveServices, type ServicesFormState } from "./actions";
 import type { LiveService } from "@/lib/services-live";
+import type { UploadedPhoto } from "@/lib/site-overrides";
 
 const input =
   "w-full rounded-xl border border-[color:var(--line)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--sun)] focus:ring-2 focus:ring-[var(--sun)]/30 disabled:opacity-50";
@@ -29,9 +30,12 @@ function Result({ state, pending }: { state: ServicesFormState; pending: boolean
  */
 export function ServicesForm({
   items,
+  photos,
   storeReady,
 }: {
   items: LiveService[];
+  /** Загруженные фотографии — из них выбирается обложка своей услуги. */
+  photos: UploadedPhoto[];
   storeReady: boolean;
 }) {
   const [saveState, save, saving] = useActionState<ServicesFormState, FormData>(saveServices, {});
@@ -55,6 +59,8 @@ export function ServicesForm({
               <tr>
                 <th className="px-4 py-3 font-semibold">Услуга</th>
                 <th className="px-4 py-3 font-semibold">Строка с ценой на карточке</th>
+                <th className="px-4 py-3 text-center font-semibold">На главной</th>
+                <th className="px-4 py-3 text-center font-semibold">Место</th>
                 <th className="px-4 py-3 text-center font-semibold">Показывать</th>
                 <th className="px-4 py-3" />
               </tr>
@@ -79,6 +85,31 @@ export function ServicesForm({
                       maxLength={120}
                       disabled={!storeReady}
                       className={input}
+                    />
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    {/* Главная и каталог — разные решения: услугу можно снять с
+                        главной, оставив её на странице услуг и на своей. */}
+                    <input
+                      type="checkbox"
+                      name={`home:${s.slug}`}
+                      defaultChecked={s.showOnHome}
+                      disabled={!storeReady}
+                      className="h-5 w-5 accent-[var(--sun)]"
+                      aria-label={`Показывать услугу ${s.slug} на главной`}
+                    />
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    {/* Меньше число — выше карточка. На главную помещается три. */}
+                    <input
+                      type="number"
+                      min={0}
+                      max={99}
+                      name={`order:${s.slug}`}
+                      defaultValue={s.order}
+                      disabled={!storeReady}
+                      className={`${input} w-20 text-center`}
+                      aria-label={`Место услуги ${s.slug}`}
                     />
                   </td>
                   <td className="px-4 py-3 text-center">
@@ -129,8 +160,9 @@ export function ServicesForm({
       <form action={add} className="rounded-2xl border border-[color:var(--line)] p-5">
         <h2 className="font-serif text-xl font-semibold text-[var(--ink)]">Добавить услугу</h2>
         <p className="mt-1 text-sm text-[var(--muted)]">
-          Появится на странице услуг и на главной. Текст показывается на всех трёх языках
-          одинаково — если нужен перевод, напишите его в описании сами.
+          Появится в каталоге услуг, а на главной — если поставить галочку. Текст
+          показывается на всех трёх языках одинаково: если нужен перевод, напишите его
+          в описании сами.
         </p>
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -154,6 +186,46 @@ export function ServicesForm({
           </label>
         </div>
 
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <label className="block">
+            <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
+              Раздел
+            </span>
+            <select name="category" defaultValue="relax" disabled={!storeReady} className={input}>
+              <option value="relax">Отдых</option>
+              <option value="food">Еда</option>
+              <option value="activity">Активности</option>
+            </select>
+          </label>
+          <label className="block">
+            <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
+              Фото на карточке
+            </span>
+            {/* Только из загруженных: свой файл сюда не вписать, и это намеренно
+                — иначе сохранённый адрес мог бы указать сайт на чужой сервер. */}
+            <select name="image" defaultValue="" disabled={!storeReady} className={input}>
+              <option value="">— выбрать позже —</option>
+              {photos.map((p) => (
+                <option key={p.id} value={p.url}>
+                  {p.alt || p.id}
+                </option>
+              ))}
+            </select>
+            {photos.length === 0 && (
+              <span className="mt-1 block text-xs text-[var(--muted)]">
+                Пока нечего выбрать: загрузите фотографии в разделе «Домики».
+              </span>
+            )}
+          </label>
+        </div>
+
+        <label className="mt-4 block">
+          <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
+            Короткое описание <span className="font-normal normal-case">— строка под названием на карточке</span>
+          </span>
+          <input name="shortDescription" maxLength={180} disabled={!storeReady} className={input} />
+        </label>
+
         <label className="mt-4 block">
           <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
             Описание
@@ -166,6 +238,18 @@ export function ServicesForm({
             disabled={!storeReady}
             className={input}
           />
+        </label>
+
+        <label className="mt-4 flex items-center gap-3">
+          <input
+            type="checkbox"
+            name="showOnHome"
+            disabled={!storeReady}
+            className="h-5 w-5 accent-[var(--sun)]"
+          />
+          <span className="text-sm text-[var(--ink)]">
+            Показывать на главной <span className="text-[var(--muted)]">— там три места, лишние уйдут в каталог</span>
+          </span>
         </label>
 
         <button type="submit" disabled={adding || !storeReady} className={`${button} mt-5`}>

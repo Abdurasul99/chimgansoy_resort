@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { services, type Service } from "@/content/services";
 import { readOverrides } from "@/lib/site-overrides";
-import type { OverrideData } from "@/lib/site-overrides";
+import type { OverrideData, ServiceCategory } from "@/lib/site-overrides";
 
 /**
  * The service list the site shows, with the operator's edits applied.
@@ -33,20 +33,34 @@ export type LiveService = {
   /** Present for services that ship in the code; absent for operator ones. */
   base?: Service;
   /** Operator's own copy — only set for custom services. */
-  custom?: { title: string; description: string; image?: string };
+  custom?: {
+    title: string;
+    description: string;
+    shortDescription?: string;
+    image?: string;
+    category?: ServiceCategory;
+  };
   priceNote?: string;
   hidden: boolean;
+  /** Показывать ли карточку на главной. */
+  showOnHome: boolean;
+  /** Место в общем порядке: чем меньше, тем выше. */
+  order: number;
   /** true for a service the operator created, false for one in the repo. */
   isCustom: boolean;
 };
 
 /** Everything, hidden included — what the admin screen lists. */
 export function resolveServices(data: OverrideData): LiveService[] {
-  const fromCode: LiveService[] = services.map((s) => ({
+  const fromCode: LiveService[] = services.map((s, i) => ({
     slug: s.slug,
     base: s,
     priceNote: data.services[s.slug]?.priceNote || undefined,
     hidden: Boolean(data.services[s.slug]?.hidden),
+    // Услуга из кода по умолчанию претендует на главную: так было до того, как
+    // переключатель появился, и молча снимать её оттуда деплой не должен.
+    showOnHome: data.services[s.slug]?.showOnHome ?? true,
+    order: data.services[s.slug]?.order ?? i,
     isCustom: false,
   }));
 
@@ -55,15 +69,41 @@ export function resolveServices(data: OverrideData): LiveService[] {
     // render two cards under one URL. The code wins; the admin refuses to
     // create the collision in the first place, this is the second line.
     .filter((c) => !services.some((s) => s.slug === c.slug))
-    .map((c) => ({
+    .map((c, i) => ({
       slug: c.slug,
-      custom: { title: c.title, description: c.description, image: c.image },
+      custom: {
+        title: c.title,
+        description: c.description,
+        shortDescription: c.shortDescription,
+        image: c.image,
+        category: c.category,
+      },
       priceNote: c.priceNote || undefined,
       hidden: Boolean(c.hidden),
+      // Своя услуга по умолчанию идёт в каталог, но не на главную: там три
+      // места, и занимать одно из них без спроса оператора нельзя.
+      showOnHome: c.showOnHome ?? false,
+      order: c.order ?? services.length + i,
       isCustom: true,
     }));
 
-  return [...fromCode, ...fromOperator];
+  /**
+   * Номер, введённый оператором, при совпадении бьёт порядок из кода.
+   *
+   * Без этого «поставить 0, чтобы услуга была первой» не работало: ноль сходился
+   * с местом первой услуги в коде, и та оставалась впереди — оператор набирал
+   * номер, сохранял и не видел никакой разницы. При равных номерах внутри одной
+   * группы порядок остаётся тем, в котором услуги перечислены в коде.
+   */
+  const explicit = (s: LiveService) =>
+    s.isCustom
+      ? data.customServices.find((c) => c.slug === s.slug)?.order !== undefined
+      : data.services[s.slug]?.order !== undefined;
+
+  return [...fromCode, ...fromOperator]
+    .map((s, i) => ({ s, i, first: explicit(s) ? 0 : 1 }))
+    .sort((a, b) => a.s.order - b.s.order || a.first - b.first || a.i - b.i)
+    .map(({ s }) => s);
 }
 
 /** What a guest sees: hidden ones dropped. */

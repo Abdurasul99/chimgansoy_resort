@@ -12,6 +12,7 @@ import { resortImages } from "@/content/images";
 import { dictionaries } from "@/content/translations";
 import { getLocaleParam, getService } from "@/lib/content";
 import { getService as getLiveService } from "@/lib/services-live";
+import { serviceCard } from "@/lib/service-cards";
 import { buildMetadata } from "@/lib/metadata";
 import { list, text } from "@/lib/localize";
 import { localizePath } from "@/i18n/routing";
@@ -44,7 +45,10 @@ type PageProps = {
 // retired with the day visit but already indexed, kept returning a live URL.
 // (nomera/[slug] has always set this; services/[slug] never did, which means
 // every invalid service URL has been answering 200.)
-export const dynamicParams = false;
+// true, а не false: у услуги, созданной оператором в панели, слага в коде нет,
+// и со старым значением её страница не появлялась бы вовсе. Неизвестный адрес
+// по-прежнему не отвечает — его отсеивает проверка ниже, по данным.
+export const dynamicParams = true;
 
 export function generateStaticParams() {
   // Услуги со своим href живут на собственных страницах — /services/<slug>
@@ -55,6 +59,16 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const locale = await getLocaleParam(params);
+
+  // У услуги оператора нет записи в коде: getService() на ней вызвал бы
+  // notFound() прямо из метаданных, до того как страница успеет отрисоваться.
+  const card = await serviceCard(slug, locale);
+  if (card && !services.some((s) => s.slug === slug)) {
+    const one = { ru: card.title, uz: card.title, en: card.title };
+    const lead = { ru: card.shortDescription, uz: card.shortDescription, en: card.shortDescription };
+    return buildMetadata(locale, { title: one, description: lead }, `/services/${slug}`);
+  }
+
   const service = getService(slug);
 
   return buildMetadata(
@@ -82,15 +96,59 @@ export default async function ServiceDetailPage({ params }: PageProps) {
   const priceChips = Object.fromEntries(
     Object.entries(prices).map(([slug, value]) => [slug, priceChip(value, locale)]),
   );
-  const service = getService(slug);
   // A service the operator switched off must not keep answering on its own URL.
   //
   // Не notFound(): страница предрендерена, и Next отдаёт такой «не найдено»
   // с кодом 200 — мягкая 404, худшее из двух состояний. Отправляем в каталог:
   // гость по старой ссылке из поиска попадает к тому, что работает, а услуга
-  // вернётся одной галочкой и адрес снова оживёт.
-  if (!(await getLiveService(slug))) redirect(localizePath(locale, "/services"));
+  // вернётся одной галочкой и адрес снова оживёт. Сюда же приходит выдуманный
+  // адрес: услуги с таким слагом нет ни в коде, ни у оператора.
+  const live = await getLiveService(slug);
+  if (!live) redirect(localizePath(locale, "/services"));
   const dict = dictionaries[locale];
+
+  /**
+   * Услуга, созданная оператором в панели.
+   *
+   * Своя вёрстка, а не общая: у неё нет ни второго кадра, ни списка тезисов, ни
+   * фразы «кому подойдёт» — оператор пишет заголовок, описание и, если хочет,
+   * строку цены. Делать вид, что поля есть, значило бы рисовать пустые блоки.
+   */
+  if (live.isCustom) {
+    const card = (await serviceCard(slug, locale))!;
+    return (
+      <>
+        <PageHero
+          locale={locale}
+          title={card.title}
+          lead={card.shortDescription}
+          frame={card.frame}
+          frameAlt={card.alt}
+          eyebrow="CHIMGAN DARBAZA"
+        />
+        <BookingWidget locale={locale} />
+
+        <section className="px-4 py-14 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl">
+            <SectionHeader title={card.title} text={live.custom!.description} />
+            {card.priceNote ? (
+              <p className="mt-6 text-lg font-bold text-[var(--sun-dark)]">{card.priceNote}</p>
+            ) : null}
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <ButtonLink href={localizePath(locale, "/bron")} variant="primary" reload>
+                {dict.bookNow}
+              </ButtonLink>
+              <ButtonLink href={localizePath(locale, "/services")} variant="ghost">
+                {dict.pages.services.title}
+              </ButtonLink>
+            </div>
+          </div>
+        </section>
+      </>
+    );
+  }
+
+  const service = getService(slug);
 
   return (
     <>

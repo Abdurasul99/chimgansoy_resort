@@ -107,3 +107,50 @@ describe("услуги — список выключенных для сеток
     expect(hidden).toEqual([a.slug, c.slug]);
   });
 });
+
+describe("услуги — главная и порядок", () => {
+  it("услуга из кода по умолчанию претендует на главную", () => {
+    // Иначе деплой с новым полем молча очистил бы блок «чем занять день».
+    expect(resolveServices(EMPTY).every((s) => s.showOnHome)).toBe(true);
+  });
+
+  it("своя услуга по умолчанию идёт в каталог, но не на главную", () => {
+    const data = patch({
+      customServices: [{ slug: "sauna", title: "Сауна", description: "Частная сауна на дровах" }],
+    });
+    const sauna = visibleServices(data).find((s) => s.slug === "sauna")!;
+    expect(sauna.showOnHome).toBe(false);
+    expect(sauna.hidden).toBe(false);
+  });
+
+  it("снятая с главной остаётся в каталоге", () => {
+    const slug = services[1].slug;
+    const data = patch({ services: { [slug]: { showOnHome: false } } });
+    const one = visibleServices(data).find((s) => s.slug === slug)!;
+    expect(one.showOnHome).toBe(false);
+    expect(one.hidden).toBe(false);
+  });
+
+  it("номер поднимает услугу выше остальных", () => {
+    // Оператор ставит новую услугу на место убранной — без правки кода.
+    const last = services[services.length - 1].slug;
+    const data = patch({ services: { [last]: { order: 0 } } });
+    expect(visibleServices(data)[0].slug).toBe(last);
+  });
+
+  it("своя услуга может встать между услугами из кода", () => {
+    const data = patch({
+      customServices: [
+        { slug: "horse-riding", title: "Конные прогулки", description: "Прогулки верхом", order: 1, showOnHome: true },
+      ],
+    });
+    expect(visibleServices(data)[1].slug).toBe("horse-riding");
+  });
+
+  it("при равных номерах порядок остаётся как в коде", () => {
+    const [a, b] = services;
+    const data = patch({ services: { [a.slug]: { order: 5 }, [b.slug]: { order: 5 } } });
+    const order = visibleServices(data).map((s) => s.slug);
+    expect(order.indexOf(a.slug)).toBeLessThan(order.indexOf(b.slug));
+  });
+});

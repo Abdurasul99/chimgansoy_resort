@@ -1,46 +1,40 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { resortImages } from "@/content/images";
-import { serviceCategories, services } from "@/content/services";
+import { serviceCategories } from "@/content/services";
 import { dictionaries } from "@/content/translations";
 import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
-import { imageStyle } from "@/lib/images";
+import { frameStyle } from "@/lib/images";
 import { text } from "@/lib/localize";
+import type { ServiceCard } from "@/lib/service-cards";
 
 type ServicesGridProps = {
   locale: Locale;
+  /**
+   * Готовые карточки от сервера: услуги из кода и услуги, созданные оператором
+   * в панели, уже в одном виде и в заданном им порядке.
+   *
+   * Раньше сетка брала список прямо из content/services.ts, и услуга, добавленная
+   * оператором, не появлялась на сайте вообще — она была видна только в самой
+   * админке. Скрытые сюда не попадают: их отсеивает getServices().
+   */
+  items: ServiceCard[];
   limit?: number;
   showFilters?: boolean;
+  /** Подмножество по слагам — для блока «связанные услуги» на странице домика. */
   slugs?: string[];
-  /**
-   * Slugs the operator switched off in the admin. Passed in rather than read
-   * here: this is a client component, and the store lives behind Blob.
-   */
-  hiddenSlugs?: string[];
-  /** Free-text price line per slug, also from the admin. */
-  priceNotes?: Record<string, string>;
 };
 
-export function ServicesGrid({
-  locale,
-  limit,
-  showFilters = true,
-  slugs,
-  hiddenSlugs,
-  priceNotes,
-}: ServicesGridProps) {
+export function ServicesGrid({ locale, items, limit, showFilters = true, slugs }: ServicesGridProps) {
   const [filter, setFilter] = useState("all");
   const dict = dictionaries[locale];
-  const visibleServices = useMemo(() => {
-    const shown = hiddenSlugs?.length
-      ? services.filter((service) => !hiddenSlugs.includes(service.slug))
-      : services;
-    const source = slugs ? shown.filter((service) => slugs.includes(service.slug)) : shown;
-    const filtered = filter === "all" ? source : source.filter((service) => service.category === filter);
+
+  const visible = useMemo(() => {
+    const source = slugs ? items.filter((s) => slugs.includes(s.slug)) : items;
+    const filtered = filter === "all" ? source : source.filter((s) => s.category === filter);
     return typeof limit === "number" ? filtered.slice(0, limit) : filtered;
-  }, [filter, limit, slugs, hiddenSlugs]);
+  }, [filter, items, limit, slugs]);
 
   return (
     <div>
@@ -66,25 +60,24 @@ export function ServicesGrid({
       {/* Brand-styled cream cards — image on top, cream info block with a gold
           category chip and a forest-green link. Matches LeisureShowcase / rooms. */}
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {visibleServices.map((service, index) => {
-          const image = resortImages[service.image];
+        {visible.map((service, index) => {
           const catLabel = serviceCategories.find((c) => c.id === service.category)?.label;
 
           return (
             <a
               key={service.slug}
-              href={localizePath(locale, service.href ?? `/services/${service.slug}`)}
+              href={localizePath(locale, service.href)}
               className="motion-reveal group flex flex-col overflow-hidden rounded-3xl border border-[color:var(--line)] bg-[var(--paper)] shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[var(--shadow-card-hover)]"
               data-delay={String((index % 3) * 80)}
-              aria-label={text(service.title, locale)}
+              aria-label={service.title}
             >
               {/* Photo + gold category chip */}
               <div className="relative h-56 overflow-hidden">
                 <div
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-[1.3s] ease-out group-hover:scale-[1.05]"
-                  style={imageStyle(image)}
+                  style={frameStyle(service.frame)}
                   role="img"
-                  aria-label={text(image.alt, locale)}
+                  aria-label={service.alt}
                 />
                 <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(31,42,51,0.30)_0%,transparent_55%)]" />
                 {catLabel ? (
@@ -96,15 +89,13 @@ export function ServicesGrid({
 
               {/* Cream info block */}
               <div className="flex flex-1 flex-col p-5 sm:p-6">
-                <h3 className="font-serif text-2xl font-bold leading-tight text-[var(--ink)]">{text(service.title, locale)}</h3>
-                <p className="mt-2 flex-1 text-sm leading-6 text-[var(--muted)]">{text(service.shortDescription, locale)}</p>
+                <h3 className="font-serif text-2xl font-bold leading-tight text-[var(--ink)]">{service.title}</h3>
+                <p className="mt-2 flex-1 text-sm leading-6 text-[var(--muted)]">{service.shortDescription}</p>
                 {/* Operator price line, when they wrote one. Free text, not a
                     number: «от 150 000 сум», «по запросу» and «включено в
                     проживание» are all answers they need to be able to give. */}
-                {priceNotes?.[service.slug] ? (
-                  <p className="mt-3 text-sm font-bold text-[var(--sun-dark)]">
-                    {priceNotes[service.slug]}
-                  </p>
+                {service.priceNote ? (
+                  <p className="mt-3 text-sm font-bold text-[var(--sun-dark)]">{service.priceNote}</p>
                 ) : null}
                 <span className="mt-5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--forest-dark)] transition-colors group-hover:text-[var(--accent-strong)]">
                   {dict.details}

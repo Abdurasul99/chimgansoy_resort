@@ -12,14 +12,16 @@ export default async function Page() {
   const overrides = await readForEdit();
   const items: LiveService[] = resolveServices(overrides);
   const storeReady = Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
+  // Фото для своей услуги выбираются из того, что уже загружено в «Домиках».
+  const photos = overrides.photos;
 
   return (
     <>
       <AdminHeading
         title="Услуги"
-        hint="Что показывать на сайте, какую цену писать на карточке, и свои услуги в дополнение к тем, что уже есть."
+        hint="Что показывать на сайте и на главной, в каком порядке, какую цену писать на карточке — и свои услуги в дополнение к тем, что уже есть."
       />
-      <ServicesForm items={items} storeReady={storeReady} />
+      <ServicesForm items={items} photos={photos} storeReady={storeReady} />
       <p className="mt-8 text-xs leading-6 text-[var(--muted)]">
         Услуги из кода не удаляются — их можно только скрыть. Так фотографии и текст
         остаются на месте, и вернуть услугу весной это одна галочка, а не переписывание

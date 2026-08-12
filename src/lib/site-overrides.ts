@@ -48,6 +48,10 @@ export type UploadedPhoto = {
   uploadedAt: string;
 };
 
+/** Раздел карточки. Совпадает с категориями в content/services.ts. */
+export type ServiceCategory = "relax" | "food" | "activity";
+const CATEGORIES: ServiceCategory[] = ["relax", "food", "activity"];
+
 export type NewsItem = {
   id: string;
   /** YYYY-MM-DD, the date shown to a guest. */
@@ -62,16 +66,32 @@ export type NewsItem = {
 export type OverrideData = {
   /** Flat price overrides, keyed by a dotted path the price page defines. */
   prices: Record<string, number>;
-  /** Per-service-slug patch: hidden, and a price line the card shows. */
-  services: Record<string, { hidden?: boolean; priceNote?: string }>;
+  /**
+   * Per-service-slug patch: hidden, a price line the card shows, и место
+   * услуги — на главной ли она и в каком порядке идёт.
+   *
+   * `showOnHome` отсутствует, пока оператор не трогал переключатель: услуга из
+   * кода по умолчанию претендует на главную, как было до появления этого поля.
+   * `order` отсутствует — значит место определяет порядок в services.ts.
+   */
+  services: Record<
+    string,
+    { hidden?: boolean; priceNote?: string; showOnHome?: boolean; order?: number }
+  >;
   /** Services the operator added. Kept separate from the code's own list. */
   customServices: Array<{
     slug: string;
     title: string;
     description: string;
+    /** Строка под заголовком карточки. Без неё карточка берёт начало описания. */
+    shortDescription?: string;
     priceNote?: string;
+    /** Ключ resortImages или адрес загруженного фото. */
     image?: string;
+    category?: ServiceCategory;
     hidden?: boolean;
+    showOnHome?: boolean;
+    order?: number;
   }>;
   /**
    * Per-room patch for /nomera/<slug>: the lists a guest reads, the photos in
@@ -136,20 +156,46 @@ function coerce(raw: unknown): OverrideData {
     if (typeof v === "number" && Number.isFinite(v) && v >= 0) prices[k] = Math.round(v);
   }
 
+  /** Порядковый номер: неотрицательное целое, иначе поля просто нет. */
+  const order = (x: unknown): number | undefined =>
+    typeof x === "number" && Number.isFinite(x) && x >= 0 ? Math.round(x) : undefined;
+  /** Трёхзначный переключатель: не трогали — undefined, а не false. */
+  const flag = (x: unknown): boolean | undefined => (typeof x === "boolean" ? x : undefined);
+  const str = (x: unknown): string | undefined =>
+    typeof x === "string" && x.trim() ? x.trim() : undefined;
+  const category = (x: unknown): ServiceCategory | undefined =>
+    typeof x === "string" && (CATEGORIES as string[]).includes(x) ? (x as ServiceCategory) : undefined;
+
   const services: OverrideData["services"] = {};
   for (const [k, v] of Object.entries(d.services ?? {})) {
     if (!v || typeof v !== "object") continue;
+    const s = v as Record<string, unknown>;
     services[k] = {
-      hidden: Boolean((v as { hidden?: unknown }).hidden),
-      priceNote: typeof (v as { priceNote?: unknown }).priceNote === "string" ? (v as { priceNote: string }).priceNote : undefined,
+      hidden: Boolean(s.hidden),
+      priceNote: typeof s.priceNote === "string" ? s.priceNote : undefined,
+      showOnHome: flag(s.showOnHome),
+      order: order(s.order),
     };
   }
 
   const customServices = Array.isArray(d.customServices)
-    ? d.customServices.filter(
-        (s): s is OverrideData["customServices"][number] =>
-          !!s && typeof s === "object" && typeof s.slug === "string" && typeof s.title === "string",
-      )
+    ? d.customServices
+        .filter(
+          (s): s is OverrideData["customServices"][number] =>
+            !!s && typeof s === "object" && typeof s.slug === "string" && typeof s.title === "string",
+        )
+        .map((s) => ({
+          slug: s.slug,
+          title: s.title,
+          description: typeof s.description === "string" ? s.description : "",
+          shortDescription: str(s.shortDescription),
+          priceNote: str(s.priceNote),
+          image: str(s.image),
+          category: category(s.category),
+          hidden: Boolean(s.hidden),
+          showOnHome: flag(s.showOnHome),
+          order: order(s.order),
+        }))
     : [];
 
   const news = Array.isArray(d.news)

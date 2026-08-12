@@ -7,8 +7,7 @@ import { resortImages } from "@/content/images";
 import { dictionaries } from "@/content/translations";
 import { pageSeo } from "@/content/seo";
 import { getLocaleParam } from "@/lib/content";
-import { resolveServices } from "@/lib/services-live";
-import { readOverrides } from "@/lib/site-overrides";
+import { serviceCards } from "@/lib/service-cards";
 import { buildMetadata } from "@/lib/metadata";
 
 type PageProps = {
@@ -27,25 +26,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export const revalidate = 60;
 
 
-/**
- * The operator switches, resolved once per render.
- *
- * Hidden services drop out of the grid AND their own page 404s — a card that
- * vanishes while its URL still sells the thing is worse than either state.
- */
-async function operatorServices() {
-  const overrides = await readOverrides();
-  const all = resolveServices(overrides);
-  return {
-    hiddenSlugs: all.filter((s) => s.hidden).map((s) => s.slug),
-    priceNotes: Object.fromEntries(
-      all.filter((s) => s.priceNote).map((s) => [s.slug, s.priceNote as string]),
-    ),
-  };
-}
 export default async function ServicesPage({ params }: PageProps) {
-  const { hiddenSlugs, priceNotes } = await operatorServices();
   const locale = await getLocaleParam(params);
+  /**
+   * Каталог целиком приходит из данных: услуги из кода и услуги, созданные
+   * оператором, в одном списке и в заданном им порядке. Выключенные сюда не
+   * попадают, а их адреса уводят в этот же каталог.
+   */
+  const cards = await serviceCards(locale);
   const dict = dictionaries[locale];
 
   return (
@@ -67,7 +55,7 @@ export default async function ServicesPage({ params }: PageProps) {
         <div className="mx-auto max-w-7xl">
           <SectionHeader title={dict.home.thingsTitle} text={dict.home.thingsText} />
           <div className="mt-8">
-            <ServicesGrid locale={locale} hiddenSlugs={hiddenSlugs} priceNotes={priceNotes} />
+            <ServicesGrid locale={locale} items={cards} />
           </div>
         </div>
       </section>

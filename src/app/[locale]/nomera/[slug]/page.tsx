@@ -7,7 +7,7 @@ import { VideoReel } from "@/components/sections/VideoReel";
 import { chaletVideos, glampingVideos } from "@/content/videos";
 import { getRoomPrices, priceChip } from "@/lib/room-price";
 import { getRoom as getLiveRoom } from "@/lib/rooms-live";
-import { hiddenServiceSlugs } from "@/lib/services-live";
+import { serviceCards } from "@/lib/service-cards";
 import { getPricing } from "@/lib/pricing-live";
 import type { LivePricing } from "@/lib/pricing-resolve";
 import { Icon } from "@/components/ui/Icon";
@@ -139,8 +139,8 @@ export default async function RoomDetailPage({ params }: PageProps) {
    * "1" / "000 000" in the narrow column this sits in.
    */
   const livePricing = await getPricing();
-  // Выключенные услуги не показываем и в блоке «связанные».
-  const hiddenServices = await hiddenServiceSlugs();
+  // Блок «связанные услуги» рисуется из того же списка, что и каталог.
+  const cards = await serviceCards(locale);
   // Operator edits for this page: lists, gallery, price line.
   const live = await getLiveRoom(room.slug);
   // Resolved once: either the operator's selection or the code's gallery,
@@ -456,7 +456,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
           <ServicesGrid
             locale={locale}
             slugs={room.relatedServices}
-            hiddenSlugs={hiddenServices}
+            items={cards}
             showFilters={false}
           />
         </div>

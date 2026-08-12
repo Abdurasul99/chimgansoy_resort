@@ -1,9 +1,8 @@
-import { services } from "@/content/services";
-import { resortImages } from "@/content/images";
 import type { Locale } from "@/i18n/config";
 import type { LocalizedString } from "@/content/types";
 import { localizePath } from "@/i18n/routing";
-import { imageStyle } from "@/lib/images";
+import { frameStyle } from "@/lib/images";
+import type { ServiceCard } from "@/lib/service-cards";
 import { text } from "@/lib/localize";
 
 /**
@@ -51,26 +50,22 @@ const CATEGORY_LABEL: Record<string, LocalizedString> = {
  */
 export function LeisureShowcase({
   locale,
+  items,
   limit,
-  hiddenSlugs = [],
 }: {
   locale: Locale;
-  limit?: number;
   /**
-   * Услуги, выключенные оператором в /admin/uslugi.
+   * Карточки от сервера: состав и порядок задаёт оператор в /admin/uslugi.
    *
-   * Без этого выключатель гасил услугу только в каталоге: карточка оставалась
-   * на главной и вела на страницу, которая уже отдавала 404. Отсеиваем ДО
-   * обрезки по limit — иначе выключенная услуга съедала бы одно из трёх мест
-   * и на главной оказывалось две карточки вместо трёх.
+   * Раньше блок брал список из кода и показывал первые три — ни выключить
+   * услугу, ни поставить на её место другую было нельзя, и услуга, созданная
+   * оператором, сюда не попадала вовсе.
    */
-  hiddenSlugs?: string[];
+  items: ServiceCard[];
+  limit?: number;
 }) {
   const t = COPY[locale];
-  const shown = hiddenSlugs.length
-    ? services.filter((s) => !hiddenSlugs.includes(s.slug))
-    : services;
-  const visible = typeof limit === "number" ? shown.slice(0, limit) : shown;
+  const visible = typeof limit === "number" ? items.slice(0, limit) : items;
 
   return (
     <section className="bg-[var(--surface)] px-4 py-16 sm:px-6 sm:py-24 lg:px-8" aria-labelledby="leisure-title">
@@ -99,14 +94,13 @@ export function LeisureShowcase({
         {/* Cards */}
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {visible.map((s, index) => {
-            const image = resortImages[s.image];
             return (
               <a
                 key={s.slug}
-                href={localizePath(locale, `/services/${s.slug}`)}
+                href={localizePath(locale, s.href)}
                 className="motion-reveal group flex flex-col overflow-hidden rounded-3xl border border-[color:var(--line)] bg-[var(--paper)] shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[var(--shadow-card-hover)]"
                 data-delay={String((index % 3) * 80)}
-                aria-label={text(s.title, locale)}
+                aria-label={s.title}
               >
                 {/* Photo + gold category chip */}
                 <div className="relative h-56 overflow-hidden">
@@ -115,9 +109,9 @@ export function LeisureShowcase({
                     // without ever exposing an edge inside the rounded card.
                     data-parallax="0.04"
                     className="absolute -inset-y-[18%] inset-x-0 bg-cover bg-center transition-transform duration-[1.3s] ease-out group-hover:scale-[1.05]"
-                    style={imageStyle(image)}
+                    style={frameStyle(s.frame)}
                     role="img"
-                    aria-label={text(image.alt, locale)}
+                    aria-label={s.alt}
                   />
                   <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(31,42,51,0.30)_0%,transparent_55%)]" />
                   <span className="absolute left-4 top-4 rounded-full bg-[var(--sun)] px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[var(--on-accent)] shadow-[var(--shadow-float)]">
@@ -127,8 +121,8 @@ export function LeisureShowcase({
 
                 {/* Cream info block */}
                 <div className="flex flex-1 flex-col p-5 sm:p-6">
-                  <h3 className="font-serif text-2xl font-bold leading-tight text-[var(--ink)]">{text(s.title, locale)}</h3>
-                  <p className="mt-2 flex-1 text-sm leading-6 text-[var(--muted)]">{text(s.shortDescription, locale)}</p>
+                  <h3 className="font-serif text-2xl font-bold leading-tight text-[var(--ink)]">{s.title}</h3>
+                  <p className="mt-2 flex-1 text-sm leading-6 text-[var(--muted)]">{s.shortDescription}</p>
                   <span className="mt-5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--forest-dark)] transition-colors group-hover:text-[var(--accent-strong)]">
                     {t.details}
                     <svg className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
