@@ -159,6 +159,8 @@ export type OverrideData = {
 
 export type Overrides = {
   version: number;
+  /** Монотонный номер записи. Отсутствует в документах, записанных до его появления. */
+  rev?: number;
   updatedAt: string;
   updatedBy: string;
   data: OverrideData;
@@ -331,32 +333,36 @@ export function coerce(raw: unknown): OverrideData {
  * Память процессная, поэтому спасает не всегда: другой инстанс её не видит.
  * Но правки идут одна за другой из одной вкладки, и это ровно тот случай.
  */
-let lastWritten: { at: number; data: OverrideData } | null = null;
+let lastWritten: { rev: number; data: OverrideData } | null = null;
+/** Самый большой номер, который этот процесс видел или писал. */
+let lastSeenRev = 0;
 
 async function fetchOverrides(): Promise<OverrideData> {
   if (!configured()) return EMPTY;
   try {
     const meta = await head(OVERRIDES_PATH);
     /**
-     * Метка последней записи в адресе — иначе читается прошлая версия файла.
+     * Обход кеша меткой времени ЗАПРОСА, а не записи.
      *
      * Адрес документа не меняется при перезаписи, и CDN хранилища какое-то время
-     * отдаёт по нему прежнее тело: cache: "no-store" запрещает кеш нам, а не
-     * ему. Проверено на проде: услуга, добавленная в панели, пропадала из списка
-     * при следующем открытии экрана и появлялась на сайте минутой позже —
-     * выглядело как «сохранение не сработало», хотя запись прошла. Хуже того,
-     * следующая правка читала устаревший документ и затирала ею же созданное.
+     * отдаёт по нему прежнее тело: cache: "no-store" запрещает кеш нам, а не ему.
+     * Здесь стояла метка из head().uploadedAt — и лечило это ровно наполовину:
+     * head() сам может отдать прежние метаданные, тогда адрес не меняется и CDN
+     * во второй раз отдаёт тот же устаревший файл. Проверено на проде: из
+     * четырёх полей, добавленных подряд, доезжали два.
      *
-     * uploadedAt приходит из head(), а он ходит в API, а не в CDN, и меняется на
-     * каждую запись — значит и адрес на каждую запись новый.
+     * Уникальный адрес на каждый запрос — гарантированный промах мимо кеша.
+     * Документ занимает килобайты, а читается через unstable_cache, так что до
+     * origin доходят единицы запросов в минуту.
      */
-    const url = `${meta.url}?v=${meta.uploadedAt.getTime()}`;
-    const res = await fetch(url, {
+    const res = await fetch(`${meta.url}?t=${Date.now()}`, {
       cache: "no-store",
       signal: AbortSignal.timeout(5_000),
     });
-    if (!res.ok) return fresher(EMPTY, meta.uploadedAt.getTime());
-    return fresher(coerce(await res.json()), meta.uploadedAt.getTime());
+    if (!res.ok) return fresher(EMPTY, 0);
+    const raw = await res.json();
+    const rev = typeof raw?.rev === "number" && Number.isFinite(raw.rev) ? raw.rev : 0;
+    return fresher(coerce(raw), rev);
   } catch {
     // Includes the very common case of the blob not existing yet, which is not
     // an error — it is simply an operator who has not edited anything.
@@ -364,9 +370,16 @@ async function fetchOverrides(): Promise<OverrideData> {
   }
 }
 
-/** Отдаёт свою же запись, если хранилище ещё не догнало её. */
-function fresher(fetched: OverrideData, uploadedAtMs: number): OverrideData {
-  if (lastWritten && lastWritten.at > uploadedAtMs) return lastWritten.data;
+/**
+ * Отдаёт свою же запись, если хранилище ещё не догнало её.
+ *
+ * Сравнение по номеру ревизии, а не по времени: время записи приходит из тех же
+ * метаданных, которые могут отстать, а номер лежит внутри самого документа —
+ * если мы читаем документ, мы читаем и его номер.
+ */
+function fresher(fetched: OverrideData, rev: number): OverrideData {
+  if (lastWritten && lastWritten.rev > rev) return lastWritten.data;
+  lastSeenRev = Math.max(lastSeenRev, rev);
   return fetched;
 }
 
@@ -404,8 +417,18 @@ export type SaveResult = { ok: true } | { ok: false; error: string };
 export async function saveOverrides(data: OverrideData, by = "admin"): Promise<SaveResult> {
   if (!configured()) return { ok: false, error: "Хранилище не подключено (BLOB_READ_WRITE_TOKEN)." };
 
+  /**
+   * Номер ревизии — то, по чему видно, догнало ли хранилище нашу запись.
+   *
+   * Растёт монотонно от самого большого, что процесс видел или писал сам.
+   * Без него «свежесть» приходилось определять по времени из метаданных,
+   * которые отстают ровно тогда, когда это важнее всего.
+   */
+  const rev = Math.max(lastSeenRev, lastWritten?.rev ?? 0) + 1;
+
   const doc: Overrides = {
     version: VERSION,
+    rev,
     updatedAt: new Date(Date.now() + 5 * 3600_000).toISOString().replace("Z", "+05:00"),
     updatedBy: by,
     data,
@@ -442,7 +465,8 @@ export async function saveOverrides(data: OverrideData, by = "admin"): Promise<S
    * не должно, поэтому запасной путь оставлен.
    */
   // То, что записали, помним у себя: хранилище отдаст его не сразу.
-  lastWritten = { at: Date.now(), data };
+  lastWritten = { rev, data };
+  lastSeenRev = rev;
 
   try {
     updateTag(OVERRIDES_TAG);
