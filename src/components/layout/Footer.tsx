@@ -5,6 +5,7 @@ import { dictionaries } from "@/content/translations";
 import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
 import { text } from "@/lib/localize";
+import { hiddenServiceSlugs } from "@/lib/services-live";
 import { ContactForm } from "@/components/layout/ContactForm";
 
 type FooterProps = {
@@ -39,8 +40,16 @@ const SERVICES_HINT = {
   en: "Rentals, activities and services — prices and requests",
 };
 
-export function Footer({ locale }: FooterProps) {
+export async function Footer({ locale }: FooterProps) {
   const dict = dictionaries[locale];
+  // Услуга, выключенная в /admin/uslugi, не должна оставаться ссылкой в подвале:
+  // её страница уже не отвечает, и гость упирается в тупик на каждой странице
+  // сайта сразу. Подвал — единственное место, где эти адреса записаны руками.
+  const hidden = await hiddenServiceSlugs();
+  const isHidden = (href: string) => {
+    const slug = href.startsWith("/services/") ? href.slice("/services/".length) : null;
+    return slug !== null && hidden.includes(slug);
+  };
 
   return (
     <footer className="relative overflow-hidden bg-[var(--mountain)]">
@@ -136,7 +145,7 @@ export function Footer({ locale }: FooterProps) {
                 <div key={text(group.title, locale)}>
                   <h3 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">{text(group.title, locale)}</h3>
                   <ul className="mt-4 space-y-2.5">
-                    {group.links.map((item) => (
+                    {group.links.filter((item) => !isHidden(item.href)).map((item) => (
                       <li key={item.href}>
                         <Link
                           href={localizePath(locale, item.href)}

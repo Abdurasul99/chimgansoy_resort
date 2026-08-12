@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import { BookingWidget } from "@/components/sections/BookingWidget";
 import { MenuBoard } from "@/components/sections/MenuBoard";
 import { PageHero } from "@/components/sections/PageHero";
@@ -84,7 +84,12 @@ export default async function ServiceDetailPage({ params }: PageProps) {
   );
   const service = getService(slug);
   // A service the operator switched off must not keep answering on its own URL.
-  if (!(await getLiveService(slug))) notFound();
+  //
+  // Не notFound(): страница предрендерена, и Next отдаёт такой «не найдено»
+  // с кодом 200 — мягкая 404, худшее из двух состояний. Отправляем в каталог:
+  // гость по старой ссылке из поиска попадает к тому, что работает, а услуга
+  // вернётся одной галочкой и адрес снова оживёт.
+  if (!(await getLiveService(slug))) redirect(localizePath(locale, "/services"));
   const dict = dictionaries[locale];
 
   return (

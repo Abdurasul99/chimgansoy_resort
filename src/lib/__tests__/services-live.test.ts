@@ -88,3 +88,22 @@ describe("услуги — мусор в сторе", () => {
     expect(visibleServices(data).length).toBe(services.length);
   });
 });
+
+describe("услуги — список выключенных для сеток", () => {
+  // Главная и страницы номеров рисуют карточки из кода, а не из getServices().
+  // Им нужен список того, что оператор погасил; getServices() его дать не может
+  // — он это уже выбросил. Первая версия считала hidden поверх getServices() и
+  // всегда получала пустой список: выключатель гасил только каталог /services.
+  it("visibleServices ничего не знает о скрытых", () => {
+    const slug = services[0].slug;
+    const data = patch({ services: { [slug]: { hidden: true } } });
+    expect(visibleServices(data).filter((s) => s.hidden)).toEqual([]);
+  });
+
+  it("resolveServices отдаёт именно те слаги, что выключены", () => {
+    const [a, , c] = services;
+    const data = patch({ services: { [a.slug]: { hidden: true }, [c.slug]: { hidden: true } } });
+    const hidden = resolveServices(data).filter((s) => s.hidden).map((s) => s.slug);
+    expect(hidden).toEqual([a.slug, c.slug]);
+  });
+});
