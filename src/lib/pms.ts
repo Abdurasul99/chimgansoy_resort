@@ -202,3 +202,53 @@ export async function setServiceStatus(id: number, to: PmsStatus, by = "admin"):
     [id, from, to, by],
   );
 }
+
+export type RateRow = { room_slug: string; day: string; price: number; note: string | null };
+
+/** Цены по датам за окно. Пусто на дату — действует обычный прайс. */
+export async function listRates(from: string, to: string): Promise<RateRow[]> {
+  return (await sql().query(
+    `SELECT room_slug, day::text, price, note FROM rates WHERE day BETWEEN $1 AND $2 ORDER BY day`,
+    [from, to],
+  )) as RateRow[];
+}
+
+/**
+ * Цена на диапазон дат разом.
+ *
+ * По одному дню оператор задавать не станет — «с 1 по 30 сентября столько» это
+ * то, как о ценах думают. Пустая цена стирает запись: тогда на эти даты снова
+ * действует обычный прайс, и это единственный способ отменить праздничную
+ * наценку, не удаляя её по одному дню.
+ */
+export async function setRateRange(
+  roomSlug: string,
+  from: string,
+  to: string,
+  price: number | null,
+  note?: string,
+): Promise<number> {
+  if (price === null) {
+    const res = await sql().query(
+      `DELETE FROM rates WHERE room_slug = $1 AND day BETWEEN $2 AND $3 RETURNING day`,
+      [roomSlug, from, to],
+    );
+    return (res as unknown[]).length;
+  }
+
+  const res = await sql().query(
+    `INSERT INTO rates (room_slug, day, price, note)
+     SELECT $1, d::date, $4, $5 FROM generate_series($2::date, $3::date, '1 day') AS d
+     ON CONFLICT (room_slug, day) DO UPDATE SET price = excluded.price, note = excluded.note
+     RETURNING day`,
+    [roomSlug, from, to, Math.max(0, Math.round(price)), note?.trim() || null],
+  );
+  return (res as unknown[]).length;
+}
+
+/** Занятость: только те брони, за которыми закреплён номер. */
+export async function occupancy(from: string, to: string): Promise<BookingRow[]> {
+  return (await listBookings(from, to)).filter(
+    (b) => b.unit_id && b.status !== "cancelled" && b.status !== "declined",
+  );
+}

@@ -8,6 +8,7 @@ import {
   getBooking,
   setBookingMoney,
   setBookingStatus,
+  setRateRange,
   setServiceStatus,
 } from "@/lib/pms";
 import { sendGuestConfirmation } from "@/lib/guest-mail";
@@ -114,5 +115,28 @@ export async function changeServiceStatus(_prev: BroniState, form: FormData): Pr
     return { ok: "Статус изменён." };
   } catch (e) {
     return { error: e instanceof Error ? e.message : "Не удалось изменить статус." };
+  }
+}
+
+/** Цена за ночь на диапазон дат. Пустая цена возвращает обычный прайс. */
+export async function saveRate(_prev: BroniState, form: FormData): Promise<BroniState> {
+  await requireAdmin();
+
+  const room = String(form.get("room") ?? "").trim();
+  const from = String(form.get("from") ?? "").trim();
+  const to = String(form.get("to") ?? "").trim();
+  const raw = String(form.get("price") ?? "").trim();
+  const price = raw === "" ? null : Number(raw.replace(/\s/g, ""));
+
+  if (!room || !from || !to) return { error: "Заполните тип и даты." };
+  if (to < from) return { error: "«По» раньше, чем «с»." };
+  if (price !== null && (!Number.isFinite(price) || price < 0)) return { error: "Цена должна быть числом." };
+
+  try {
+    const days = await setRateRange(room, from, to, price);
+    revalidatePath("/admin/shahmatka");
+    return { ok: price === null ? `Своя цена снята с ${days} дней.` : `Цена задана на ${days} дней.` };
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "Не удалось сохранить цену." };
   }
 }
