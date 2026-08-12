@@ -7,6 +7,7 @@ import { text } from "@/lib/localize";
 import { deliverRequest, dialable, todayTashkent } from "@/lib/request-delivery";
 import { insertBooking } from "@/lib/db";
 import { freeUnits } from "@/lib/pms";
+import { STAY_OPENS_AT } from "@/lib/stay-window";
 
 export type StayRequestState = { ok?: boolean; error?: string };
 
@@ -28,6 +29,7 @@ const MESSAGES = {
     phoneInvalid: "Проверьте номер телефона",
     dateRequired: "Выберите дату заезда",
     datePast: "Дата заезда уже прошла — выберите другую",
+    tooEarly: "Брони на эти даты пока не принимаем — заезды с 15 августа.",
     orderWrong: "Выезд должен быть позже заезда",
     guestsWrong: "Укажите хотя бы одного гостя",
     emailInvalid: "Проверьте адрес почты",
@@ -41,6 +43,7 @@ const MESSAGES = {
     phoneInvalid: "Telefon raqamini tekshiring",
     dateRequired: "Kirish sanasini tanlang",
     datePast: "Bu sana o'tib ketgan — boshqasini tanlang",
+    tooEarly: "Bu sanalarga bron qabul qilinmaydi — kirish 15-avgustdan.",
     orderWrong: "Chiqish sanasi kirishdan keyin bo'lishi kerak",
     guestsWrong: "Kamida bitta mehmonni ko'rsating",
     emailInvalid: "Pochta manzilini tekshiring",
@@ -54,6 +57,7 @@ const MESSAGES = {
     phoneInvalid: "Please check your phone number",
     dateRequired: "Please pick an arrival date",
     datePast: "That date has passed — please pick another",
+    tooEarly: "We are not taking bookings for those dates — arrivals from 15 August.",
     orderWrong: "Check-out must be after check-in",
     guestsWrong: "Please add at least one guest",
     emailInvalid: "Please check the email address",
@@ -104,6 +108,7 @@ export async function submitStayRequest(
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: t.emailInvalid };
   if (!ISO.test(checkin)) return { error: t.dateRequired };
   if (checkin < todayTashkent()) return { error: t.datePast };
+  if (checkin < STAY_OPENS_AT) return { error: t.tooEarly };
   // Даты в ISO сравниваются строками корректно.
   if (checkout && (!ISO.test(checkout) || checkout <= checkin)) return { error: t.orderWrong };
   if (adults + kids < 1) return { error: t.guestsWrong };

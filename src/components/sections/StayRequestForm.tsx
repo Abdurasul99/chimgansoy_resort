@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { submitStayRequest, type StayRequestState } from "@/app/actions/stay-request";
 import { CountInput } from "@/components/ui/CountInput";
 import { Icon } from "@/components/ui/Icon";
+import { STAY_OPENS_AT } from "@/lib/stay-window";
 import type { Locale } from "@/i18n/config";
 
 /**
@@ -34,6 +35,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     done: "Заявка принята",
     doneLead: "Мы свяжемся с вами, чтобы подтвердить даты и стоимость.",
     note: "Заявка не является бронированием: домик закрепляется за вами после оплаты.",
+    opens: "Заезды принимаем с 15 августа — более ранние даты закрыты.",
   },
   uz: {
     title: "Bir marta bosib bron qilish",
@@ -54,6 +56,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     done: "Ariza qabul qilindi",
     doneLead: "Sanalar va narxni tasdiqlash uchun siz bilan bog'lanamiz.",
     note: "Ariza bron emas: uycha to'lovdan keyin sizga biriktiriladi.",
+    opens: "Kirish 15-avgustdan qabul qilinadi — undan oldingi sanalar yopiq.",
   },
   en: {
     title: "Book in one click",
@@ -74,6 +77,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     done: "Request received",
     doneLead: "We will get in touch to confirm the dates and the price.",
     note: "A request is not a booking: the cabin is held for you once it is paid.",
+    opens: "Arrivals from 15 August — earlier dates are closed.",
   },
 };
 
@@ -101,7 +105,10 @@ export function StayRequestForm({
   const [checkin, setCheckin] = useState("");
   // Считается один раз при монтировании: часы во время рендера — нечистый
   // вызов, и правило react-hooks/purity справедливо на это ругается.
-  const [today] = useState(() => new Date(Date.now() + 5 * 3600_000).toISOString().slice(0, 10));
+  const [now] = useState(() => new Date(Date.now() + 5 * 3600_000).toISOString().slice(0, 10));
+  // Раньше открытия продаж календарь дат не предлагает вовсе — отказ после
+  // заполнения формы гость воспринимает как поломку, а не как правило.
+  const today = now > STAY_OPENS_AT ? now : STAY_OPENS_AT;
 
   if (state.ok) {
     return (
@@ -117,6 +124,13 @@ export function StayRequestForm({
     <form action={action} className="rounded-3xl border border-[color:var(--line)] bg-[var(--paper)] p-6 shadow-[var(--shadow-card)] sm:p-8">
       <h2 className="font-serif text-2xl font-bold text-[var(--ink)] sm:text-3xl">{t.title}</h2>
       <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{t.lead}</p>
+      {/* Правило видно до того, как гость начал заполнять: календарь ранние даты
+          и так не предложит, но человек должен понимать почему. */}
+      {now < STAY_OPENS_AT && (
+        <p className="mt-3 rounded-xl bg-[var(--sun)]/15 px-4 py-2.5 text-sm font-semibold text-[var(--sun-dark)]">
+          {t.opens}
+        </p>
+      )}
 
       <input type="hidden" name="room" value={room} />
       <input type="hidden" name="locale" value={locale} />
