@@ -6,6 +6,7 @@ import { CountInput } from "@/components/ui/CountInput";
 import { Icon } from "@/components/ui/Icon";
 import { STAY_OPENS_AT } from "@/lib/stay-window";
 import type { Locale } from "@/i18n/config";
+import { localizePath } from "@/i18n/routing";
 
 /**
  * Заявка на проживание, прямо на странице домика.
@@ -36,6 +37,11 @@ const COPY: Record<Locale, Record<string, string>> = {
     doneLead: "Мы свяжемся с вами, чтобы подтвердить даты и стоимость.",
     note: "Заявка не является бронированием: домик закрепляется за вами после оплаты.",
     opens: "Заезды принимаем с 15 августа — более ранние даты закрыты.",
+    consentBefore: "Я ознакомился с",
+    consentOffer: "публичной офертой",
+    consentAnd: "и",
+    consentRefund: "правилами отмены и возврата",
+    consentAfter: " и согласен с ними.",
   },
   uz: {
     title: "Bir marta bosib bron qilish",
@@ -57,6 +63,11 @@ const COPY: Record<Locale, Record<string, string>> = {
     doneLead: "Sanalar va narxni tasdiqlash uchun siz bilan bog'lanamiz.",
     note: "Ariza bron emas: uycha to'lovdan keyin sizga biriktiriladi.",
     opens: "Kirish 15-avgustdan qabul qilinadi — undan oldingi sanalar yopiq.",
+    consentBefore: "Men",
+    consentOffer: "ommaviy oferta",
+    consentAnd: "va",
+    consentRefund: "bekor qilish va qaytarish qoidalari",
+    consentAfter: " bilan tanishdim va roziman.",
   },
   en: {
     title: "Book in one click",
@@ -78,11 +89,18 @@ const COPY: Record<Locale, Record<string, string>> = {
     doneLead: "We will get in touch to confirm the dates and the price.",
     note: "A request is not a booking: the cabin is held for you once it is paid.",
     opens: "Arrivals from 15 August — earlier dates are closed.",
+    consentBefore: "I have read the",
+    consentOffer: "public offer",
+    consentAnd: "and the",
+    consentRefund: "cancellation and refund rules",
+    consentAfter: " and I agree to them.",
   },
 };
 
 const field =
   "w-full rounded-xl border border-[color:var(--line)] bg-[var(--paper)] px-4 py-3 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--sun)] focus:ring-2 focus:ring-[var(--sun)]/30";
+const link =
+  "font-semibold text-[var(--accent-strong)] underline underline-offset-2 transition-colors hover:text-[var(--sun-dark)]";
 const labelCls = "mb-1.5 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]";
 
 export function StayRequestForm({
@@ -198,6 +216,29 @@ export function StayRequestForm({
           <textarea name="comment" rows={3} placeholder={t.commentPh} className={`${field} resize-none`} />
         </label>
       </div>
+
+      {/* Галочка перед кнопкой, а не после: согласие даётся до действия.
+          Ссылки открываются в новой вкладке — уходя читать оферту, гость не
+          должен терять заполненную форму. */}
+      <label className="mt-5 flex items-start gap-3">
+        <input
+          type="checkbox"
+          name="consent"
+          required
+          className="mt-0.5 h-5 w-5 shrink-0 accent-[var(--sun)]"
+        />
+        <span className="text-sm leading-6 text-[var(--muted)]">
+          {t.consentBefore}{" "}
+          <a href={localizePath(locale, "/legal/public-offer")} target="_blank" rel="noopener noreferrer" className={link}>
+            {t.consentOffer}
+          </a>{" "}
+          {t.consentAnd}{" "}
+          <a href={localizePath(locale, "/legal/payment-refund")} target="_blank" rel="noopener noreferrer" className={link}>
+            {t.consentRefund}
+          </a>
+          {t.consentAfter}
+        </span>
+      </label>
 
       {state.error ? (
         <p className="mt-4 text-sm font-semibold text-[var(--rose,#b4413c)]">{state.error}</p>

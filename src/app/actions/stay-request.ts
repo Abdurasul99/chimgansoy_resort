@@ -30,6 +30,7 @@ const MESSAGES = {
     dateRequired: "Выберите дату заезда",
     datePast: "Дата заезда уже прошла — выберите другую",
     tooEarly: "Брони на эти даты пока не принимаем — заезды с 15 августа.",
+    consent: "Подтвердите согласие с офертой и правилами отмены",
     orderWrong: "Выезд должен быть позже заезда",
     guestsWrong: "Укажите хотя бы одного гостя",
     emailInvalid: "Проверьте адрес почты",
@@ -44,6 +45,7 @@ const MESSAGES = {
     dateRequired: "Kirish sanasini tanlang",
     datePast: "Bu sana o'tib ketgan — boshqasini tanlang",
     tooEarly: "Bu sanalarga bron qabul qilinmaydi — kirish 15-avgustdan.",
+    consent: "Oferta va bekor qilish qoidalariga roziligingizni tasdiqlang",
     orderWrong: "Chiqish sanasi kirishdan keyin bo'lishi kerak",
     guestsWrong: "Kamida bitta mehmonni ko'rsating",
     emailInvalid: "Pochta manzilini tekshiring",
@@ -58,6 +60,7 @@ const MESSAGES = {
     dateRequired: "Please pick an arrival date",
     datePast: "That date has passed — please pick another",
     tooEarly: "We are not taking bookings for those dates — arrivals from 15 August.",
+    consent: "Please confirm you agree to the offer and the cancellation rules",
     orderWrong: "Check-out must be after check-in",
     guestsWrong: "Please add at least one guest",
     emailInvalid: "Please check the email address",
@@ -100,6 +103,14 @@ export async function submitStayRequest(
   const adults = num(form, "adults");
   const kids = num(form, "kids");
 
+  /**
+   * Согласие проверяется на сервере, а не только атрибутом required.
+   *
+   * Атрибут снимается в консоли за секунду, и тогда «я не соглашался» ничем
+   * не опровергнуть — а вся ценность галочки в том, что её нажатие можно
+   * доказать.
+   */
+  if (form.get("consent") !== "on") return { error: t.consent };
   if (!name) return { error: t.nameRequired };
   if (!phoneRaw) return { error: t.phoneRequired };
   const phone = dialable(phoneRaw);
