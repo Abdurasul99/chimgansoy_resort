@@ -19,42 +19,22 @@ import { localizePath } from "@/i18n/routing";
 import { getRoomPrices, priceChip } from "@/lib/room-price";
 
 /**
- * Revalidated every six hours because the «от …» chip is a LIVE price.
+ * Страница услуги рисуется на каждый запрос.
  *
- * Without this the page is fully static and the price is whatever the booking
- * engine happened to answer during the build. Exely returns an empty offer list
- * often enough — sold out, or simply slow — and when that lands on a build, every
- * room page ships «Цена при бронировании» and stays that way until somebody
- * redeploys. The operator saw exactly that on the chalet page on 2026-08-06.
+ * Раньше здесь стоял ISR: страницы пеклись при сборке и до правок оператора не
+ * доходили — проверено на проде, услуга из панели появлялась только после
+ * следующего деплоя, сколько бы времени ни прошло. У услуги, созданной
+ * оператором, предрендеривать вообще нечего: её нет в коде.
  *
- * Fifteen minutes, not six hours: page revalidation reads the six-hour data
- * cache in lib/room-price.ts, so a short window costs no extra outbound
- * requests — it only decides how long a bad build stays visible. Six hours of
- * «Цена при бронировании» on a page the engine is happily quoting is too long.
+ * Живая цена «от …» из движка по-прежнему берётся из шестичасового кеша в
+ * lib/room-price.ts, так что запрос наружу это не добавляет.
  */
-// Одна минута, а не пятнадцать: страница слушается выключателя в /admin/uslugi.
-// Оператор гасит услугу и идёт проверять — ждать четверть часа он не станет.
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string }>;
 };
 
-// Without this, any slug outside generateStaticParams is rendered on demand and
-// answers 200 with an empty page instead of 404 — so /services/tapchan-zone,
-// retired with the day visit but already indexed, kept returning a live URL.
-// (nomera/[slug] has always set this; services/[slug] never did, which means
-// every invalid service URL has been answering 200.)
-// true, а не false: у услуги, созданной оператором в панели, слага в коде нет,
-// и со старым значением её страница не появлялась бы вовсе. Неизвестный адрес
-// по-прежнему не отвечает — его отсеивает проверка ниже, по данным.
-export const dynamicParams = true;
-
-export function generateStaticParams() {
-  // Услуги со своим href живут на собственных страницах — /services/<slug>
-  // для них не существует, иначе описание пришлось бы держать в двух местах.
-  return services.filter((s) => !s.href).map((service) => ({ slug: service.slug }));
-}
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
