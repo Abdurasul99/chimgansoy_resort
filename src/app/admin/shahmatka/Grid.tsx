@@ -84,6 +84,16 @@ export function Grid({
           </span>
           <input name="price" type="number" min={0} placeholder="напр. 1800000" className={`${input} w-48`} />
         </label>
+        <label className="block">
+          {/* Выходные у оператора — пятница, суббота, воскресенье: это ночи, за
+              которые берут по выходному тарифу, а не дни заезда и выезда. */}
+          <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">Дни</span>
+          <select name="scope" defaultValue="all" className={input}>
+            <option value="all">Все дни</option>
+            <option value="weekend">Выходные: пт, сб, вс</option>
+            <option value="weekday">Будни: пн–чт</option>
+          </select>
+        </label>
         <button
           type="submit"
           disabled={pending}

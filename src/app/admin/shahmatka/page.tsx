@@ -10,7 +10,12 @@ import { listRates, listUnits, occupancy, type BookingRow, type RateRow, type Un
  * меньше не даёт увидеть месяц целиком, ради чего сетку и открывают.
  */
 export const dynamic = "force-dynamic";
-const DAYS = 30;
+/** Ширина окна. Неделя — чтобы разглядеть день, месяц — чтобы увидеть сезон. */
+const WINDOWS = [7, 14, 30] as const;
+
+const pill =
+  "rounded-full border border-[color:var(--line)] px-4 py-2 text-sm font-semibold text-[var(--ink)] transition hover:border-[var(--sun)]";
+const pillOn = "rounded-full border border-[var(--ink)] bg-[var(--ink)] px-4 py-2 text-sm font-semibold text-white";
 
 function shift(days: number): string {
   return new Date(Date.now() + 5 * 3600_000 + days * 86_400_000).toISOString().slice(0, 10);
@@ -19,9 +24,10 @@ function shift(days: number): string {
 export default async function ShahmatkaPage({
   searchParams,
 }: {
-  searchParams: Promise<{ start?: string }>;
+  searchParams: Promise<{ start?: string; w?: string }>;
 }) {
-  const { start } = await searchParams;
+  const { start, w } = await searchParams;
+  const DAYS = WINDOWS.find((x) => String(x) === w) ?? 30;
   const from = /^\d{4}-\d{2}-\d{2}$/.test(start ?? "") ? start! : shift(0);
   const days = Array.from({ length: DAYS }, (_, i) => {
     const d = new Date(`${from}T12:00:00`);
@@ -68,9 +74,37 @@ export default async function ShahmatkaPage({
       ) : (
         <>
           <div className="mb-5 flex flex-wrap items-center gap-3">
-            <Link href={nav(-DAYS)} className="rounded-full border border-[color:var(--line)] px-4 py-2 text-sm font-semibold text-[var(--ink)] transition hover:border-[var(--sun)]">← назад</Link>
-            <Link href="/admin/shahmatka" className="rounded-full border border-[color:var(--line)] px-4 py-2 text-sm font-semibold text-[var(--ink)] transition hover:border-[var(--sun)]">сегодня</Link>
-            <Link href={nav(DAYS)} className="rounded-full border border-[color:var(--line)] px-4 py-2 text-sm font-semibold text-[var(--ink)] transition hover:border-[var(--sun)]">вперёд →</Link>
+            <Link href={nav(-DAYS)} className={pill}>← назад</Link>
+            <Link href={`/admin/shahmatka?w=${DAYS}`} className={pill}>сегодня</Link>
+            <Link href={nav(DAYS)} className={pill}>вперёд →</Link>
+
+            {/* Ширина окна: неделя — разглядеть день, месяц — увидеть сезон. */}
+            <span className="ml-2 flex gap-2">
+              {WINDOWS.map((n) => (
+                <Link
+                  key={n}
+                  href={`/admin/shahmatka?start=${from}&w=${n}`}
+                  className={n === DAYS ? pillOn : pill}
+                >
+                  {n === 7 ? "неделя" : n === 14 ? "две недели" : "месяц"}
+                </Link>
+              ))}
+            </span>
+
+            {/* Переход к произвольной дате: листать до октября кнопками — долго. */}
+            <form className="flex items-center gap-2">
+              <input type="hidden" name="w" value={DAYS} />
+              <input
+                type="date"
+                name="start"
+                defaultValue={from}
+                className="rounded-xl border border-[color:var(--line)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--ink)]"
+              />
+              <button type="submit" className={pill}>
+                перейти
+              </button>
+            </form>
+
             <span className="text-sm text-[var(--muted)]">{from} — {to}</span>
           </div>
           <Grid days={days} units={units} bookings={bookings} rates={rates} basePrice={basePrice} />

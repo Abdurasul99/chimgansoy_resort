@@ -227,21 +227,38 @@ export async function setRateRange(
   to: string,
   price: number | null,
   note?: string,
+  /**
+   * Дни недели, к которым применить цену: 0 — воскресенье, 6 — суббота.
+   * Пусто — все дни диапазона.
+   *
+   * Ради выходных это и сделано: у оператора пятница, суббота и воскресенье
+   * стоят иначе, и задавать их по одному дню на месяц вперёд — двенадцать
+   * заходов в форму вместо одного.
+   */
+  dows?: number[],
 ): Promise<number> {
+  // extract(dow) в Postgres: 0 — воскресенье, как и в JS.
+  const pick = dows && dows.length ? dows : null;
+
   if (price === null) {
     const res = await sql().query(
-      `DELETE FROM rates WHERE room_slug = $1 AND day BETWEEN $2 AND $3 RETURNING day`,
-      [roomSlug, from, to],
+      `DELETE FROM rates
+        WHERE room_slug = $1 AND day BETWEEN $2 AND $3
+          AND ($4::int[] IS NULL OR extract(dow from day)::int = ANY($4))
+        RETURNING day`,
+      [roomSlug, from, to, pick],
     );
     return (res as unknown[]).length;
   }
 
   const res = await sql().query(
     `INSERT INTO rates (room_slug, day, price, note)
-     SELECT $1, d::date, $4, $5 FROM generate_series($2::date, $3::date, '1 day') AS d
+     SELECT $1, d::date, $4, $5
+       FROM generate_series($2::date, $3::date, '1 day') AS d
+      WHERE $6::int[] IS NULL OR extract(dow from d)::int = ANY($6)
      ON CONFLICT (room_slug, day) DO UPDATE SET price = excluded.price, note = excluded.note
      RETURNING day`,
-    [roomSlug, from, to, Math.max(0, Math.round(price)), note?.trim() || null],
+    [roomSlug, from, to, Math.max(0, Math.round(price)), note?.trim() || null, pick],
   );
   return (res as unknown[]).length;
 }

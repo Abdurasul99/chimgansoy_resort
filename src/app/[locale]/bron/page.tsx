@@ -41,10 +41,7 @@ export default async function BookingPage({ params }: PageProps) {
         eyebrow="CHIMGAN DARBAZA"
       />
 
-      {/* Движок Exely временно скрыт по просьбе оператора: пока бронь ведётся
-          заявками, два разных пути к брони на одном сайте путают гостя.
-          Компонент и его страница остаются на месте — вернуть одной строкой. */}
-      {false && <ExelyBookingEngine locale={locale} />}
+            <ExelyBookingEngine locale={locale} />
 
       {/* Условия — сразу под движком, до сбора: гость дочитал цену и должен
           понимать, что домик держится за ним оплатой, а не выбором даты. */}

@@ -1,4 +1,6 @@
+import { EXELY_ROOM_TYPE } from "@/content/rooms";
 import { dictionaries } from "@/content/translations";
+import { localizePath } from "@/i18n/routing";
 import type { Locale } from "@/i18n/config";
 
 type BookingDrawerProps = {
@@ -9,6 +11,13 @@ type BookingDrawerProps = {
 };
 
 /** «В один клик» — обещание короткой формы, до которой один скролл. */
+/** Движок Exely — второй путь: оформить самому, с оплатой на месте. */
+const ENGINE_CTA: Record<string, string> = {
+  ru: "Онлайн-бронирование",
+  uz: "Onlayn bron qilish",
+  en: "Book online",
+};
+
 const ONE_CLICK: Record<string, string> = {
   ru: "Забронировать в один клик",
   uz: "Bir marta bosib bron qilish",
@@ -48,6 +57,10 @@ export function BookingDrawer({ locale, roomTitle, roomSlug, priceFrom }: Bookin
    * перехода, и гость не теряет из вида домик, который только что выбрал.
    */
   const requestHref = roomSlug === "pool" ? "#pool-request" : "#zayavka";
+  const roomType = EXELY_ROOM_TYPE[roomSlug];
+  const engineHref = roomType
+    ? `${localizePath(locale, "/bron")}?room-type=${roomType}`
+    : localizePath(locale, "/bron");
 
   return (
     <div className="rounded-3xl border border-[color:var(--line)] bg-[var(--paper)] p-6 shadow-[var(--shadow-card)]">
@@ -85,6 +98,17 @@ export function BookingDrawer({ locale, roomTitle, roomSlug, priceFrom }: Bookin
           className="btn-press flex w-full items-center justify-center rounded-full bg-[var(--accent)] py-4 text-sm font-bold text-[var(--on-accent)] transition-all duration-300 hover:bg-[var(--accent-strong)] hover:shadow-[var(--shadow-glow)]"
         >
           {ONE_CLICK[locale] ?? dict.bookNow}
+        </a>
+
+        {/* Онлайн-бронирование — вторым, приглушённым: заявка проще и её выбирают
+            чаще, но гостю, который хочет оформить всё сам и сразу, движок нужен.
+            Полная перезагрузка обязательна: Exely поднимается только на свежей
+            загрузке страницы, а не на клиентском переходе. */}
+        <a
+          href={engineHref}
+          className="mt-3 flex w-full items-center justify-center rounded-full border border-[color:var(--line-strong)] py-3 text-sm font-bold text-[var(--ink)] transition-colors hover:border-[var(--sun)]"
+        >
+          {ENGINE_CTA[locale] ?? "Онлайн-бронирование"}
         </a>
       </div>
     </div>

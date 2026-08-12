@@ -134,8 +134,15 @@ export async function saveRate(_prev: BroniState, form: FormData): Promise<Broni
   if (to < from) return { error: "«По» раньше, чем «с»." };
   if (price !== null && (!Number.isFinite(price) || price < 0)) return { error: "Цена должна быть числом." };
 
+  /**
+   * Какие дни задеть. «Выходные» у оператора — пятница, суббота, воскресенье:
+   * это ночи, за которые берут по выходному тарифу, а не дни заезда-выезда.
+   */
+  const scope = String(form.get("scope") ?? "all").trim();
+  const dows = scope === "weekend" ? [5, 6, 0] : scope === "weekday" ? [1, 2, 3, 4] : undefined;
+
   try {
-    const days = await setRateRange(room, from, to, price);
+    const days = await setRateRange(room, from, to, price, undefined, dows);
     revalidatePath("/admin/shahmatka");
     return { ok: price === null ? `Своя цена снята с ${days} дней.` : `Цена задана на ${days} дней.` };
   } catch (e) {
