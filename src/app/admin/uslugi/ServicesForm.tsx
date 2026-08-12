@@ -129,9 +129,20 @@ export function ServicesForm({
                   </td>
                   <td className="px-4 py-3 text-right">
                     {s.isCustom && (
+                      /**
+                       * Кнопка принадлежит отдельной форме ниже, а не этой.
+                       *
+                       * Раньше она стояла здесь же с formAction={del} — и слаг,
+                       * который она несёт, до действия не доезжал: удаление
+                       * отфильтровывало пустую строку, сохраняло всё как было и
+                       * рапортовало «Сохранено». Услуга оставалась на месте.
+                       * Вложить <form> в <form> нельзя, поэтому связь идёт через
+                       * атрибут form — так кнопка становится отправителем именно
+                       * той формы, и её имя со значением уходят вместе с ней.
+                       */
                       <button
                         type="submit"
-                        formAction={del}
+                        form="delete-service"
                         name="slug"
                         value={s.slug}
                         disabled={deleting || !storeReady}
@@ -153,6 +164,10 @@ export function ServicesForm({
           </button>
         </div>
         <Result state={saveState} pending={saving} />
+      </form>
+
+      {/* Цель кнопок «удалить» в таблице: своя форма, вне сетки. */}
+      <form action={del} id="delete-service">
         <Result state={delState} pending={deleting} />
       </form>
 
