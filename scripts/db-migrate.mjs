@@ -102,9 +102,14 @@ const STEPS = [
   // Ключ переноса из Blob: по нему повторный импорт узнаёт своё и не задваивает
   // заявки. Уникальный индекс — это и есть вся защита от двойного нажатия.
   `ALTER TABLE bookings ADD COLUMN IF NOT EXISTS source_id text`,
-  `CREATE UNIQUE INDEX IF NOT EXISTS bookings_source_idx ON bookings (source_id) WHERE source_id IS NOT NULL`,
+  // Обычный, а не частичный: ON CONFLICT не умеет ссылаться на частичный
+  // индекс без повтора его условия, и первая попытка переноса упала на этом.
+  // Пустые source_id друг другу не мешают — NULL в Postgres не конфликтует.
+  `DROP INDEX IF EXISTS bookings_source_idx`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS bookings_source_uidx ON bookings (source_id)`,
   `ALTER TABLE service_requests ADD COLUMN IF NOT EXISTS source_id text`,
-  `CREATE UNIQUE INDEX IF NOT EXISTS requests_source_idx ON service_requests (source_id) WHERE source_id IS NOT NULL`,
+  `DROP INDEX IF EXISTS requests_source_idx`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS requests_source_uidx ON service_requests (source_id)`,
 
   // Кто и когда поменял статус. Без этого «а кто отменил бронь» не ответить.
   `CREATE TABLE IF NOT EXISTS status_log (
