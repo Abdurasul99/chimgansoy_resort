@@ -35,7 +35,28 @@ export function proxy(request: NextRequest) {
     }
 
     if (onAdminHost && !wantsAdmin) {
-      const target = new URL(pathname === "/" ? "/" : pathname, PUBLIC_SITE);
+      /**
+       * Корень админского домена — это панель, а не витрина.
+       *
+       * Здесь стоял общий редирект «всё, что не /admin, — на публичный сайт», и
+       * под него попадал сам корень: chimgansoy.com отвечал 308 на
+       * chimgandarbaza.uz. Адрес панели невозможно было просто открыть — его
+       * приходилось знать целиком, вместе с /admin.
+       *
+       * /login — тот же вход: незалогиненного встречает форма пароля на
+       * /admin, и увести его на публичный сайт означало бы, что человек с
+       * паролем никуда не попадёт.
+       */
+      if (pathname === "/" || pathname === "/login") {
+        const url = request.nextUrl.clone();
+        url.pathname = "/admin";
+        return NextResponse.redirect(url, 307);
+      }
+
+      // Остальное — на публичный сайт: опечатка в адресе должна приводить к
+      // курорту, а не к пустой странице, и второй копии сайта на втором домене
+      // быть не должно.
+      const target = new URL(pathname, PUBLIC_SITE);
       target.search = request.nextUrl.search;
       return NextResponse.redirect(target, 308);
     }
