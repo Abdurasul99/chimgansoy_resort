@@ -39,9 +39,20 @@ export function Header({ locale }: HeaderProps) {
 
   // The request form on every day-product page is anchored #request.
   const dayProduct = DAY_PRODUCT_PATHS.find((p) => pathname.endsWith(localizePath(locale, p)));
-  const bookHref = dayProduct ? `${localizePath(locale, dayProduct)}#request` : localizePath(locale, "/bron");
-  // Only the rooms engine needs a full page load; an in-page anchor must not
-  // reload, or the jump is lost to the navigation.
+  /**
+   * На страницах домиков и услуг — к форме заявки; везде остальное — в каталог
+   * домиков.
+   *
+   * Раньше кнопка вела на /bron, где стоял движок Exely. Движок оператор
+   * попросил скрыть, и /bron превратилась в почти пустую страницу: единственная
+   * золотая кнопка в шапке вела гостя в тупик. Каталог домиков — то место, где
+   * гость выбирает, и откуда уходит в форму «забронировать в один клик».
+   */
+  const bookHref = dayProduct
+    ? `${localizePath(locale, dayProduct)}#request`
+    : localizePath(locale, "/nomera");
+  // Якорь для плавной прокрутки нужен только там, где форма на этой же
+  // странице. Каталогу домиков он ни к чему — прыгать не к чему.
   const bookReload = !dayProduct;
 
   // Scrolling down past the hero tucks the bar away; any upward move brings it
@@ -185,8 +196,8 @@ export function Header({ locale }: HeaderProps) {
               ))}
             </div>
 
-            {/* Book CTA — full navigation so the Exely engine embeds on /bron;
-                on a day-product page it points at that page own request form. */}
+            {/* На странице услуги — к её форме; иначе в каталог домиков, где
+                гость выбирает домик и уходит в «забронировать в один клик». */}
             <a
               href={bookHref}
               {...(bookReload ? {} : { "data-anchor": "request" })}
