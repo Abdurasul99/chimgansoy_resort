@@ -319,6 +319,20 @@ export function coerce(raw: unknown): OverrideData {
   return { prices, services, customServices, rooms, photos, news };
 }
 
+/**
+ * Последнее, что записал этот процесс, — чтобы читать то, что сам сохранил.
+ *
+ * Хранилище отдаёт запись не мгновенно: и тело файла, и метаданные какое-то
+ * время приходят прежние. На проде это стоило потерянных правок — оператор
+ * добавлял поле за полем, каждое сохранение рапортовало об успехе, а в списке
+ * оставалось только первое: следующая правка читала документ без предыдущей и
+ * записывала его обратно.
+ *
+ * Память процессная, поэтому спасает не всегда: другой инстанс её не видит.
+ * Но правки идут одна за другой из одной вкладки, и это ровно тот случай.
+ */
+let lastWritten: { at: number; data: OverrideData } | null = null;
+
 async function fetchOverrides(): Promise<OverrideData> {
   if (!configured()) return EMPTY;
   try {
@@ -341,13 +355,19 @@ async function fetchOverrides(): Promise<OverrideData> {
       cache: "no-store",
       signal: AbortSignal.timeout(5_000),
     });
-    if (!res.ok) return EMPTY;
-    return coerce(await res.json());
+    if (!res.ok) return fresher(EMPTY, meta.uploadedAt.getTime());
+    return fresher(coerce(await res.json()), meta.uploadedAt.getTime());
   } catch {
     // Includes the very common case of the blob not existing yet, which is not
     // an error — it is simply an operator who has not edited anything.
-    return EMPTY;
+    return fresher(EMPTY, 0);
   }
+}
+
+/** Отдаёт свою же запись, если хранилище ещё не догнало её. */
+function fresher(fetched: OverrideData, uploadedAtMs: number): OverrideData {
+  if (lastWritten && lastWritten.at > uploadedAtMs) return lastWritten.data;
+  return fetched;
 }
 
 /**
@@ -421,6 +441,9 @@ export async function saveOverrides(data: OverrideData, by = "admin"): Promise<S
    * оттуда, но если однажды придут не оттуда — падать из-за сброса кеша сохранение
    * не должно, поэтому запасной путь оставлен.
    */
+  // То, что записали, помним у себя: хранилище отдаст его не сразу.
+  lastWritten = { at: Date.now(), data };
+
   try {
     updateTag(OVERRIDES_TAG);
   } catch {
