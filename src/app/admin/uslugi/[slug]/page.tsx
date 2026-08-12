@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdminHeading } from "../../AdminShell";
 import { FormBuilder } from "./FormBuilder";
-import { readForEdit } from "@/lib/site-overrides";
+import { readForEditWithRev } from "@/lib/site-overrides";
 
 /**
  * Форма заявки для услуги, созданной оператором.
@@ -13,7 +13,7 @@ import { readForEdit } from "@/lib/site-overrides";
  */
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const data = await readForEdit();
+  const { rev, data } = await readForEditWithRev();
   const service = data.customServices.find((c) => c.slug === slug);
   if (!service) notFound();
 
@@ -31,7 +31,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         </Link>
       </p>
 
-      <FormBuilder slug={slug} title={service.title} fields={service.formFields ?? []} storeReady={storeReady} />
+      <FormBuilder slug={slug} title={service.title} fields={service.formFields ?? []} rev={rev} storeReady={storeReady} />
 
       <p className="mt-8 text-xs leading-6 text-[var(--muted)]">
         Убранное поле перестаёт показываться гостям, но ответы в уже полученных заявках

@@ -338,7 +338,12 @@ let lastWritten: { rev: number; data: OverrideData } | null = null;
 let lastSeenRev = 0;
 
 async function fetchOverrides(): Promise<OverrideData> {
-  if (!configured()) return EMPTY;
+  return (await fetchDoc()).data;
+}
+
+/** Документ вместе с его номером ревизии. */
+async function fetchDoc(): Promise<{ rev: number; data: OverrideData }> {
+  if (!configured()) return { rev: 0, data: EMPTY };
   try {
     const meta = await head(OVERRIDES_PATH);
     /**
@@ -359,14 +364,14 @@ async function fetchOverrides(): Promise<OverrideData> {
       cache: "no-store",
       signal: AbortSignal.timeout(5_000),
     });
-    if (!res.ok) return fresher(EMPTY, 0);
+    if (!res.ok) return { rev: 0, data: fresher(EMPTY, 0) };
     const raw = await res.json();
     const rev = typeof raw?.rev === "number" && Number.isFinite(raw.rev) ? raw.rev : 0;
-    return fresher(coerce(raw), rev);
+    return { rev, data: fresher(coerce(raw), rev) };
   } catch {
     // Includes the very common case of the blob not existing yet, which is not
     // an error — it is simply an operator who has not edited anything.
-    return fresher(EMPTY, 0);
+    return { rev: 0, data: fresher(EMPTY, 0) };
   }
 }
 
@@ -399,6 +404,44 @@ export const readOverrides = unstable_cache(fetchOverrides, ["site-overrides-v1"
 /** Uncached read for the admin screens — never the cached one, or an operator
  *  would edit a copy up to five minutes old and overwrite their own change. */
 export async function readForEdit(): Promise<OverrideData> {
+  return fetchOverrides();
+}
+
+/**
+ * Чтение вместе с номером ревизии — для экранов панели.
+ *
+ * Экран отдаёт этот номер своим формам, а форма возвращает его серверу. Так
+ * правка знает, какую версию видел оператор.
+ */
+export async function readForEditWithRev(): Promise<{ rev: number; data: OverrideData }> {
+  const { rev, data } = await fetchDoc();
+  return { rev: Math.max(rev, lastWritten?.rev ?? 0), data };
+}
+
+/**
+ * Документ не старше указанной ревизии — основа любой правки в панели.
+ *
+ * Хранилище отдаёт запись не мгновенно, и следующая правка успевала прочитать
+ * документ БЕЗ предыдущей и записать его обратно: оператор добавлял поля одно
+ * за другим, каждое сохранение отвечало «Сохранено», а доезжали не все.
+ *
+ * Память процесса тут не спасает — соседний запрос может обслужить другой
+ * инстанс, который ничего не знает. Знает браузер: он получил номер вместе со
+ * страницей и присылает его обратно. Поэтому здесь мы просто ждём, пока
+ * хранилище догонит то, что оператор уже видел своими глазами.
+ */
+export async function readAtLeast(minRev: number): Promise<OverrideData> {
+  if (!Number.isFinite(minRev) || minRev <= 0) return fetchOverrides();
+
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const { rev, data } = await fetchDoc();
+    if (rev >= minRev) return data;
+    await new Promise((r) => setTimeout(r, 250));
+  }
+
+  // Хранилище так и не догнало. Отдаём что есть: отказать в правке хуже, чем
+  // применить её к чуть более старому документу — но в лог это попадёт.
+  console.error(`[overrides] store still behind rev ${minRev} after 6 tries`);
   return fetchOverrides();
 }
 

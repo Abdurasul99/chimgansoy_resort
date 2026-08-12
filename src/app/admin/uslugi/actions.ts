@@ -2,8 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/admin-auth";
-import { readForEdit, saveOverrides, type OverrideData } from "@/lib/site-overrides";
+import { readAtLeast, saveOverrides, type OverrideData } from "@/lib/site-overrides";
 import { services } from "@/content/services";
+
+/** Версия, которую видел оператор: правка ложится не на документ постарше. */
+const revOf = (form: FormData) => Number(String(form.get("rev") ?? "0"));
 
 export type ServicesFormState = { ok?: boolean; error?: string };
 
@@ -38,7 +41,7 @@ export async function saveServices(
 ): Promise<ServicesFormState> {
   await requireAdmin();
 
-  const data: OverrideData = await readForEdit();
+  const data: OverrideData = await readAtLeast(revOf(formData));
   const next: OverrideData["services"] = {};
 
   /** Номер места. Пусто или мусор — значит место определяет код. */
@@ -109,7 +112,7 @@ export async function addService(
   const slug = slugify(title);
   if (!slug) return { error: "Из названия не получается адрес. Добавьте латиницу или цифры." };
 
-  const data = await readForEdit();
+  const data = await readAtLeast(revOf(formData));
   if (services.some((s) => s.slug === slug) || data.customServices.some((c) => c.slug === slug)) {
     return { error: "Услуга с таким названием уже есть." };
   }
@@ -149,7 +152,7 @@ export async function deleteService(
   await requireAdmin();
 
   const slug = String(formData.get("slug") ?? "").trim();
-  const data = await readForEdit();
+  const data = await readAtLeast(revOf(formData));
   const res = await saveOverrides({
     ...data,
     customServices: data.customServices.filter((c) => c.slug !== slug),

@@ -33,11 +33,20 @@ export function FormBuilder({
   slug,
   title,
   fields,
+  rev,
   storeReady,
 }: {
   slug: string;
   title: string;
   fields: FormField[];
+  /**
+   * Номер версии, которую видит оператор прямо сейчас.
+   *
+   * Уезжает вместе с каждой правкой: сервер по нему дожидается, пока хранилище
+   * отдаст документ не старше этого — иначе правка ложится поверх документа БЕЗ
+   * предыдущей, и та тихо теряется.
+   */
+  rev: number;
   storeReady: boolean;
 }) {
   const [addState, add, adding] = useActionState<FormState, FormData>(addField, {});
@@ -81,6 +90,7 @@ export function FormBuilder({
                 <span className="ml-auto flex items-center gap-1">
                   <form action={mv}>
                     <input type="hidden" name="slug" value={slug} />
+                    <input type="hidden" name="rev" value={rev} />
                     <input type="hidden" name="key" value={f.key} />
                     <input type="hidden" name="dir" value="up" />
                     <button
@@ -94,6 +104,7 @@ export function FormBuilder({
                   </form>
                   <form action={mv}>
                     <input type="hidden" name="slug" value={slug} />
+                    <input type="hidden" name="rev" value={rev} />
                     <input type="hidden" name="key" value={f.key} />
                     <input type="hidden" name="dir" value="down" />
                     <button
@@ -107,6 +118,7 @@ export function FormBuilder({
                   </form>
                   <form action={rm}>
                     <input type="hidden" name="slug" value={slug} />
+                    <input type="hidden" name="rev" value={rev} />
                     <input type="hidden" name="key" value={f.key} />
                     <button
                       type="submit"
@@ -128,6 +140,7 @@ export function FormBuilder({
       <form action={add} className="rounded-2xl border border-[color:var(--line)] p-5">
         <h2 className="font-serif text-xl font-semibold text-[var(--ink)]">Добавить поле</h2>
         <input type="hidden" name="slug" value={slug} />
+        <input type="hidden" name="rev" value={rev} />
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <label className="block">

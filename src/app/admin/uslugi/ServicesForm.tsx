@@ -31,9 +31,12 @@ function Result({ state, pending }: { state: ServicesFormState; pending: boolean
 export function ServicesForm({
   items,
   photos,
+  rev,
   storeReady,
 }: {
   items: LiveService[];
+  /** Версия, которую видит оператор: уезжает с каждой правкой. См. FormBuilder. */
+  rev: number;
   /** Загруженные фотографии — из них выбирается обложка своей услуги. */
   photos: UploadedPhoto[];
   storeReady: boolean;
@@ -53,6 +56,7 @@ export function ServicesForm({
 
       {/* ── Что показывать ─────────────────────────────────────────────── */}
       <form action={save}>
+        <input type="hidden" name="rev" value={rev} />
         <div className="overflow-hidden rounded-2xl border border-[color:var(--line)]">
           <table className="w-full text-left text-sm">
             <thead className="bg-[var(--surface-warm)] text-[var(--muted)]">
@@ -176,11 +180,13 @@ export function ServicesForm({
 
       {/* Цель кнопок «удалить» в таблице: своя форма, вне сетки. */}
       <form action={del} id="delete-service">
+        <input type="hidden" name="rev" value={rev} />
         <Result state={delState} pending={deleting} />
       </form>
 
       {/* ── Добавить свою ──────────────────────────────────────────────── */}
       <form action={add} className="rounded-2xl border border-[color:var(--line)] p-5">
+        <input type="hidden" name="rev" value={rev} />
         <h2 className="font-serif text-xl font-semibold text-[var(--ink)]">Добавить услугу</h2>
         <p className="mt-1 text-sm text-[var(--muted)]">
           Появится в каталоге услуг, а на главной — если поставить галочку. Текст

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/admin-auth";
-import { readForEdit, saveOverrides, type FieldType, type FormField } from "@/lib/site-overrides";
+import { readAtLeast, saveOverrides, type FieldType, type FormField } from "@/lib/site-overrides";
 
 export type FormState = { ok?: boolean; error?: string };
 
@@ -31,15 +31,25 @@ function keyOf(label: string, taken: string[]): string {
   return `${base}_${Date.now().toString(36).slice(-4)}`;
 }
 
-/** Читает услугу оператора и отдаёт её вместе со всем документом. */
-async function withService(slug: string) {
-  const data = await readForEdit();
+/**
+ * Читает услугу оператора вместе со всем документом.
+ *
+ * minRev — номер, который экран отдал форме, а форма вернула серверу: правка
+ * применяется к документу не старше того, что оператор видел на экране.
+ * Без этого хранилище успевало отдать документ БЕЗ предыдущей правки, и она
+ * тихо терялась при следующем сохранении.
+ */
+async function withService(slug: string, minRev: number) {
+  const data = await readAtLeast(minRev);
   const index = data.customServices.findIndex((c) => c.slug === slug);
   return { data, index };
 }
 
-async function persist(slug: string, fields: FormField[]): Promise<FormState> {
-  const { data, index } = await withService(slug);
+/** Номер ревизии, который прислала форма. */
+const revOf = (form: FormData) => Number(String(form.get("rev") ?? "0"));
+
+async function persist(slug: string, fields: FormField[], minRev: number): Promise<FormState> {
+  const { data, index } = await withService(slug, minRev);
   if (index < 0) return { error: "Услуга не найдена." };
 
   const next = [...data.customServices];
@@ -79,7 +89,7 @@ export async function addField(_prev: FormState, form: FormData): Promise<FormSt
     return { error: "«От» больше, чем «до»." };
   }
 
-  const { data, index } = await withService(slug);
+  const { data, index } = await withService(slug, revOf(form));
   if (index < 0) return { error: "Услуга не найдена." };
   const fields = data.customServices[index].formFields ?? [];
   if (fields.length >= 20) return { error: "Двадцати полей хватит любой заявке." };
@@ -95,7 +105,7 @@ export async function addField(_prev: FormState, form: FormData): Promise<FormSt
     max: type === "number" && Number.isFinite(max) ? max : undefined,
   };
 
-  return persist(slug, [...fields, field]);
+  return persist(slug, [...fields, field], revOf(form));
 }
 
 /** Убирает поле. Ответы в уже отправленных заявках это не трогает. */
@@ -104,10 +114,10 @@ export async function removeField(_prev: FormState, form: FormData): Promise<For
 
   const slug = String(form.get("slug") ?? "").trim();
   const key = String(form.get("key") ?? "").trim();
-  const { data, index } = await withService(slug);
+  const { data, index } = await withService(slug, revOf(form));
   if (index < 0) return { error: "Услуга не найдена." };
 
-  return persist(slug, (data.customServices[index].formFields ?? []).filter((f) => f.key !== key));
+  return persist(slug, (data.customServices[index].formFields ?? []).filter((f) => f.key !== key), revOf(form));
 }
 
 /** Двигает поле на одну позицию. Кнопками, а не перетаскиванием: работает и
@@ -119,7 +129,7 @@ export async function moveField(_prev: FormState, form: FormData): Promise<FormS
   const key = String(form.get("key") ?? "").trim();
   const dir = String(form.get("dir") ?? "") === "up" ? -1 : 1;
 
-  const { data, index } = await withService(slug);
+  const { data, index } = await withService(slug, revOf(form));
   if (index < 0) return { error: "Услуга не найдена." };
 
   const fields = [...(data.customServices[index].formFields ?? [])];
@@ -128,5 +138,5 @@ export async function moveField(_prev: FormState, form: FormData): Promise<FormS
   if (at < 0 || to < 0 || to >= fields.length) return { ok: true };
 
   [fields[at], fields[to]] = [fields[to], fields[at]];
-  return persist(slug, fields);
+  return persist(slug, fields, revOf(form));
 }
