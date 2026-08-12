@@ -1,5 +1,6 @@
 import { AdminHeading } from "../AdminShell";
 import { BookingsList } from "./BookingsList";
+import { NewBooking } from "./NewBooking";
 import { listBookings, listUnits, type BookingRow, type UnitRow } from "@/lib/pms";
 
 /**
@@ -76,6 +77,8 @@ export default async function BookingsPage({
               </a>
             ))}
           </div>
+
+          <NewBooking units={units} />
 
           <p className="mb-4 text-sm text-[var(--muted)]">
             {items.length} броней · {live.length} в работе

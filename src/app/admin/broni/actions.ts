@@ -11,6 +11,7 @@ import {
   setRateRange,
   setServiceStatus,
 } from "@/lib/pms";
+import { insertBooking } from "@/lib/db";
 import { sendGuestConfirmation } from "@/lib/guest-mail";
 
 export type BroniState = { ok?: string; error?: string };
@@ -138,5 +139,70 @@ export async function saveRate(_prev: BroniState, form: FormData): Promise<Broni
     return { ok: price === null ? `Своя цена снята с ${days} дней.` : `Цена задана на ${days} дней.` };
   } catch (e) {
     return { error: e instanceof Error ? e.message : "Не удалось сохранить цену." };
+  }
+}
+
+/**
+ * Бронь, заведённая руками — телефонная, с ресепшена, из переписки.
+ *
+ * Номер можно закрепить сразу: в отличие от заявки с сайта, здесь оператор уже
+ * говорит с гостем и знает, куда его селить. Занятый номер не примет — та же
+ * проверка, что и везде.
+ */
+export async function createBooking(_prev: BroniState, form: FormData): Promise<BroniState> {
+  await requireAdmin();
+
+  const roomSlug = String(form.get("room_slug") ?? "").trim();
+  const checkin = String(form.get("checkin") ?? "").trim();
+  const checkout = String(form.get("checkout") ?? "").trim();
+  const name = String(form.get("guest_name") ?? "").trim().slice(0, 120);
+  const phone = String(form.get("phone") ?? "").trim().slice(0, 40);
+  const email = String(form.get("email") ?? "").trim().slice(0, 160);
+  const comment = String(form.get("comment") ?? "").trim().slice(0, 600);
+  const unit = String(form.get("unit") ?? "").trim();
+  const adults = Math.max(0, Number(String(form.get("adults") ?? "2")) || 0);
+  const kids = Math.max(0, Number(String(form.get("kids") ?? "0")) || 0);
+  const total = Math.max(0, Number(String(form.get("total") ?? "0").replace(/\s/g, "")) || 0);
+
+  if (!["glamping", "cottage"].includes(roomSlug)) return { error: "Выберите тип размещения." };
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(checkin)) return { error: "Укажите дату заезда." };
+  if (checkout && checkout <= checkin) return { error: "Выезд должен быть позже заезда." };
+  if (name.length < 2) return { error: "Укажите имя гостя." };
+  if (phone.replace(/\D/g, "").length < 9) return { error: "Проверьте номер телефона." };
+  if (adults + kids < 1) return { error: "Укажите хотя бы одного гостя." };
+
+  try {
+    const id = await insertBooking({
+      roomSlug,
+      checkin,
+      checkout: checkout || undefined,
+      guestName: name,
+      phone,
+      email: email || undefined,
+      adults,
+      kids,
+      comment: comment || undefined,
+      locale: "ru",
+      source: "admin",
+    });
+    if (!id) return { error: "База не приняла запись. Попробуйте ещё раз." };
+
+    if (total > 0) await setBookingMoney(id, total, 0);
+    // Номер — последним: если он занят, бронь уже сохранена, и оператор просто
+    // выберет другой, а не потеряет всё введённое.
+    if (unit) {
+      try {
+        await assignUnit(id, unit);
+      } catch (e) {
+        revalidatePath("/admin/broni");
+        return { ok: `Бронь №${id} создана, но номер не закреплён: ${e instanceof Error ? e.message : ""}` };
+      }
+    }
+
+    revalidatePath("/admin/broni");
+    revalidatePath("/admin/shahmatka");
+    return { ok: `Бронь №${id} создана.` };
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "Не удалось создать бронь." };
   }
 }
