@@ -248,9 +248,21 @@ async function fetchOverrides(): Promise<OverrideData> {
   if (!configured()) return EMPTY;
   try {
     const meta = await head(OVERRIDES_PATH);
-    const res = await fetch(meta.url, {
-      // The document is small and changes on a human timescale; the CDN copy is
-      // bypassed so a save is visible immediately rather than after its TTL.
+    /**
+     * Метка последней записи в адресе — иначе читается прошлая версия файла.
+     *
+     * Адрес документа не меняется при перезаписи, и CDN хранилища какое-то время
+     * отдаёт по нему прежнее тело: cache: "no-store" запрещает кеш нам, а не
+     * ему. Проверено на проде: услуга, добавленная в панели, пропадала из списка
+     * при следующем открытии экрана и появлялась на сайте минутой позже —
+     * выглядело как «сохранение не сработало», хотя запись прошла. Хуже того,
+     * следующая правка читала устаревший документ и затирала ею же созданное.
+     *
+     * uploadedAt приходит из head(), а он ходит в API, а не в CDN, и меняется на
+     * каждую запись — значит и адрес на каждую запись новый.
+     */
+    const url = `${meta.url}?v=${meta.uploadedAt.getTime()}`;
+    const res = await fetch(url, {
       cache: "no-store",
       signal: AbortSignal.timeout(5_000),
     });
