@@ -3,8 +3,9 @@ import { locales } from "@/i18n/config";
 import { languageAlternates, localizedUrl } from "@/i18n/domains";
 import { rooms } from "@/content/rooms";
 import { services } from "@/content/services";
+import { hiddenServiceSlugs } from "@/lib/services-live";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Legal pages are intentionally excluded — they're noindex (placeholder
   // text pending lawyer approval), so they shouldn't be advertised in the sitemap.
   const staticPaths = [
@@ -22,8 +23,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const roomPaths = rooms.map((room) => `/nomera/${room.slug}`);
   // Услуги со своим href живут на собственных страницах — /services/<slug>
   // для них не существует, и класть его в карту сайта значит звать Google на 404.
+  // И то же самое про выключенные оператором в /admin/uslugi: их адреса уводят
+  // в каталог, звать на них поисковик незачем.
+  const hidden = await hiddenServiceSlugs();
   const servicePaths = services
-    .filter((service) => !service.href)
+    .filter((service) => !service.href && !hidden.includes(service.slug))
     .map((service) => `/services/${service.slug}`);
 
   return [...staticPaths, ...roomPaths, ...servicePaths].flatMap((path) =>
