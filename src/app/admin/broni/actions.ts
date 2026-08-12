@@ -12,6 +12,7 @@ import {
   setServiceStatus,
 } from "@/lib/pms";
 import { insertBooking } from "@/lib/db";
+import { importFromBlob } from "@/lib/import-blob";
 import { sendGuestConfirmation } from "@/lib/guest-mail";
 
 export type BroniState = { ok?: string; error?: string };
@@ -204,5 +205,23 @@ export async function createBooking(_prev: BroniState, form: FormData): Promise<
     return { ok: `Бронь №${id} создана.` };
   } catch (e) {
     return { error: e instanceof Error ? e.message : "Не удалось создать бронь." };
+  }
+}
+
+/** Разовый перенос старых заявок из Blob. Повторное нажатие безопасно. */
+export async function runImport(_prev: BroniState, _form: FormData): Promise<BroniState> {
+  await requireAdmin();
+  try {
+    const r = await importFromBlob();
+    revalidatePath("/admin/broni");
+    revalidatePath("/admin/uslugi-zayavki");
+    return {
+      ok:
+        r.bookings + r.services === 0
+          ? `Всё уже перенесено: ${r.total} заявок в архиве, новых нет.`
+          : `Перенесено: ${r.bookings} броней, ${r.services} заявок на услуги. Уже были: ${r.skipped}.`,
+    };
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "Перенос не удался." };
   }
 }

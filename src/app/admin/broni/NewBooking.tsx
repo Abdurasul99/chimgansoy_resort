@@ -1,12 +1,36 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { createBooking, type BroniState } from "./actions";
+import { createBooking, runImport, type BroniState } from "./actions";
 import type { UnitRow } from "@/lib/pms";
 
 const input =
   "w-full rounded-xl border border-[color:var(--line)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--sun)] focus:ring-2 focus:ring-[var(--sun)]/30";
 const label = "mb-1 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]";
+
+/**
+ * Разовый перенос старых заявок из Blob.
+ *
+ * Кнопка живёт здесь, а не отдельным экраном: нажимают её один раз в жизни
+ * проекта, и ради этого заводить пункт меню значило бы навсегда занять место
+ * тем, что больше никогда не понадобится.
+ */
+function ImportButton() {
+  const [state, act, pending] = useActionState<BroniState, FormData>(runImport, {});
+  return (
+    <form action={act} className="flex items-center gap-3">
+      <button
+        type="submit"
+        disabled={pending}
+        className="rounded-xl border border-[color:var(--line)] px-4 py-2.5 text-sm font-semibold text-[var(--muted)] transition hover:border-[var(--sun)] hover:text-[var(--ink)] disabled:opacity-50"
+      >
+        {pending ? "Переносим…" : "Перенести старые заявки"}
+      </button>
+      {state.error && <span className="text-sm font-semibold text-[var(--rose,#b4413c)]">{state.error}</span>}
+      {state.ok && <span className="text-sm font-semibold text-[var(--green,#3f7d52)]">{state.ok}</span>}
+    </form>
+  );
+}
 
 /**
  * Бронь с телефона — свёрнута по умолчанию.
@@ -23,13 +47,16 @@ export function NewBooking({ units }: { units: UnitRow[] }) {
 
   if (!open) {
     return (
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="mb-5 rounded-xl border border-[color:var(--line-strong)] px-5 py-2.5 text-sm font-bold text-[var(--ink)] transition hover:border-[var(--sun)]"
-      >
-        + Бронь с телефона
-      </button>
+      <div className="mb-5 flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="rounded-xl border border-[color:var(--line-strong)] px-5 py-2.5 text-sm font-bold text-[var(--ink)] transition hover:border-[var(--sun)]"
+        >
+          + Бронь с телефона
+        </button>
+        <ImportButton />
+      </div>
     );
   }
 

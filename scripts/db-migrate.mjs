@@ -99,6 +99,13 @@ const STEPS = [
      PRIMARY KEY (room_slug, day)
    )`,
 
+  // Ключ переноса из Blob: по нему повторный импорт узнаёт своё и не задваивает
+  // заявки. Уникальный индекс — это и есть вся защита от двойного нажатия.
+  `ALTER TABLE bookings ADD COLUMN IF NOT EXISTS source_id text`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS bookings_source_idx ON bookings (source_id) WHERE source_id IS NOT NULL`,
+  `ALTER TABLE service_requests ADD COLUMN IF NOT EXISTS source_id text`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS requests_source_idx ON service_requests (source_id) WHERE source_id IS NOT NULL`,
+
   // Кто и когда поменял статус. Без этого «а кто отменил бронь» не ответить.
   `CREATE TABLE IF NOT EXISTS status_log (
      id          bigserial PRIMARY KEY,
