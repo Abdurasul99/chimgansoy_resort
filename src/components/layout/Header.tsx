@@ -30,6 +30,19 @@ type HeaderProps = {
  */
 const DAY_PRODUCT_PATHS = ["/topchan", "/tubing", "/nomera/pool"] as const;
 
+/**
+ * Своя надпись, а не общая dict.bookNow.
+ *
+ * Тот же ключ стоит на кнопках внутри страниц домиков и услуг, где он ведёт в
+ * форму этой страницы; «в один клик» там было бы обещанием, которого кнопка не
+ * даёт. В шапке она ведёт в каталог, откуда путь до формы действительно один.
+ */
+const HEADER_CTA: Record<string, string> = {
+  ru: "Забронировать в один клик",
+  uz: "Bir marta bosib bron qilish",
+  en: "Book in one click",
+};
+
 export function Header({ locale }: HeaderProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
@@ -203,7 +216,7 @@ export function Header({ locale }: HeaderProps) {
               {...(bookReload ? {} : { "data-anchor": "request" })}
               className="btn-press btn-glow-primary inline-flex h-10 items-center justify-center rounded-full px-5 text-[13px] font-bold"
             >
-              {dict.bookNow}
+              {HEADER_CTA[locale] ?? dict.bookNow}
             </a>
           </div>
 

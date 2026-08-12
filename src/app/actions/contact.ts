@@ -1,6 +1,8 @@
 "use server";
 
 import { saveRequest } from "@/lib/requests-store";
+import { adminChatIds } from "@/lib/request-delivery";
+import { esc, sendMessage } from "@/lib/telegram";
 
 export type ContactResult = { ok: true } | { ok: false; error: string };
 
@@ -206,12 +208,41 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
     room: room || undefined,
   });
 
-  const [emailStatus] = await Promise.all([
+  // Заголовок как у остальных заявок: бронь и вопрос различаются с первого
+  // взгляда, оператор читает группу в спешке.
+  const telegramHtml = [
+    formType === "booking" ? "🏡 <b>Новая бронь</b>" : "💬 <b>Новый вопрос</b>",
+    "",
+    `Имя: ${esc(name)}`,
+    `Телефон: ${esc(phone)}`,
+    ...(email ? [`Почта: ${esc(email)}`] : []),
+    ...(checkin ? [`Заезд: ${esc(checkin)}`] : []),
+    ...(checkout ? [`Выезд: ${esc(checkout)}`] : []),
+    ...(guests ? [`Гостей: ${esc(guests)}`] : []),
+    ...(room ? [`Размещение: ${esc(room)}`] : []),
+    ...(message ? ["", `Сообщение: ${esc(message)}`] : []),
+    "",
+    `Язык страницы: ${lang}`,
+  ].join("\n");
+
+  /**
+   * Telegram здесь не было вовсе.
+   *
+   * Форма подвала «Запросить отдых» и форма брони писали только на почту: все
+   * остальные формы сайта ходят через deliverRequest, а эта осталась со времён,
+   * когда Telegram ещё не подключили. Оператор смотрит в группу, а не в ящик —
+   * и заявки отсюда до него доходили в лучшем случае с задержкой.
+   *
+   * Успех по-прежнему решает почта: если Telegram промолчит, а письмо уйдёт,
+   * заявка получена. Обратное неверно — сообщение в группу легко потерять.
+   */
+  const [emailStatus, sent] = await Promise.all([
     sendEmail(subjectParts, emailHtml, emailTo, email || undefined),
+    Promise.all(adminChatIds().map((id) => sendMessage(id, telegramHtml))),
     archived,
   ]);
 
-  const delivered = emailStatus === "sent";
+  const delivered = emailStatus === "sent" || sent.some((r) => r !== null);
 
   console.log(
     `[contact:${formType}] email=${emailStatus} → ${emailTo || "no-email"} | name: ${name}, phone: ${phone}, dates: ${dates || "—"}, guests: ${guests || "—"}, room: ${room || "—"}`,

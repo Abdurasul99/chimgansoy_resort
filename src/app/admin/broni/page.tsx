@@ -14,6 +14,9 @@ import { listBookings, listUnits, type BookingRow, type UnitRow } from "@/lib/pm
  * о деньгах, и кешированный список тут недопустим.
  */
 export const dynamic = "force-dynamic";
+// Перенос читает сотню заявок из Blob по одной — это дольше, чем действие
+// живёт по умолчанию, и первая попытка молча оборвалась на середине.
+export const maxDuration = 300;
 
 /** Окно по датам заезда. По умолчанию — от вчера на три месяца вперёд. */
 const RANGES = [
