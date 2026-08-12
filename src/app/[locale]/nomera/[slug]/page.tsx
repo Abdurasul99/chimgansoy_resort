@@ -48,6 +48,13 @@ type PageProps = {
   params: Promise<{ locale: string; slug: string }>;
 };
 
+/** Та же надпись, что в карточке сбоку: ведёт к форме ниже на странице. */
+const oneClickCta: Record<string, string> = {
+  ru: "Забронировать в один клик",
+  uz: "Bir marta bosib bron qilish",
+  en: "Book in one click",
+};
+
 const poolCta: Record<string, string> = {
   ru: "Забронировать бассейн",
   uz: "Basseynni bron qilish",
@@ -423,14 +430,10 @@ export default async function RoomDetailPage({ params }: PageProps) {
                   its own request form further down this page. */}
               <div className="mt-10 lg:hidden">
                 <a
-                  href={
-                    isPool
-                      ? "#pool-request"
-                      : localizePath(locale, `/bron?room-type=${EXELY_ROOM_TYPE[room.slug] ?? ""}`)
-                  }
+                  href={isPool ? "#pool-request" : "#zayavka"}
                   className="btn-press flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] py-5 text-lg font-bold text-[var(--on-accent)] shadow-[0_10px_30px_-8px_rgba(220,140,0,0.7)] transition-all duration-300 hover:bg-[var(--accent-strong)]"
                 >
-                  {isPool ? poolCta[locale] : dict.bookNow}
+                  {isPool ? poolCta[locale] : oneClickCta[locale]}
                   <span aria-hidden>→</span>
                 </a>
               </div>

@@ -1,13 +1,18 @@
 import { dictionaries } from "@/content/translations";
-import { EXELY_ROOM_TYPE } from "@/content/rooms";
 import type { Locale } from "@/i18n/config";
-import { localizePath } from "@/i18n/routing";
 
 type BookingDrawerProps = {
   locale: Locale;
   roomTitle: string;
   roomSlug: string;
   priceFrom: string;
+};
+
+/** «В один клик» — обещание короткой формы, до которой один скролл. */
+const ONE_CLICK: Record<string, string> = {
+  ru: "Забронировать в один клик",
+  uz: "Bir marta bosib bron qilish",
+  en: "Book in one click",
 };
 
 export function BookingDrawer({ locale, roomTitle, roomSlug, priceFrom }: BookingDrawerProps) {
@@ -35,11 +40,14 @@ export function BookingDrawer({ locale, roomTitle, roomSlug, priceFrom }: Bookin
   const amount = sep === -1 ? priceFrom : priceFrom.slice(0, sep);
   const period = sep === -1 ? null : priceFrom.slice(sep + 3);
 
-  // Exely reads room-type=<id> to open on the right room (not a slug).
-  const roomType = EXELY_ROOM_TYPE[roomSlug];
-  const requestHref = roomType
-    ? `${localizePath(locale, "/bron")}?room-type=${roomType}`
-    : localizePath(locale, "/bron");
+  /**
+   * Вниз, к форме заявки на этой же странице — не в движок Exely.
+   *
+   * Движок скрыт по просьбе оператора, и ссылка на /bron уводила гостя на почти
+   * пустую страницу. Форма стоит здесь же, ниже описания: прокрутка дешевле
+   * перехода, и гость не теряет из вида домик, который только что выбрал.
+   */
+  const requestHref = roomSlug === "pool" ? "#pool-request" : "#zayavka";
 
   return (
     <div className="rounded-3xl border border-[color:var(--line)] bg-[var(--paper)] p-6 shadow-[var(--shadow-card)]">
@@ -71,13 +79,12 @@ export function BookingDrawer({ locale, roomTitle, roomSlug, priceFrom }: Bookin
       </ul>
 
       <div className="mt-6">
-        {/* Full navigation (plain <a>) so the Exely engine embeds on /bron — it
-            only initialises on a fresh page load, not on client-side routing. */}
+        {/* Якорь на этой же странице: форма заявки ниже. */}
         <a
           href={requestHref}
           className="btn-press flex w-full items-center justify-center rounded-full bg-[var(--accent)] py-4 text-sm font-bold text-[var(--on-accent)] transition-all duration-300 hover:bg-[var(--accent-strong)] hover:shadow-[var(--shadow-glow)]"
         >
-          {dict.bookNow}
+          {ONE_CLICK[locale] ?? dict.bookNow}
         </a>
       </div>
     </div>
