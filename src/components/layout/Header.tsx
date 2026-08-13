@@ -230,9 +230,9 @@ export function Header({ locale }: HeaderProps) {
           <a
             href={bookHref}
             {...(bookReload ? {} : { "data-anchor": "request" })}
-            className="btn-press mr-1 inline-flex h-9 items-center justify-center rounded-full bg-[var(--sun)] px-4 text-[12px] font-bold text-[var(--on-accent)] shadow-[0_8px_20px_-8px_rgba(220,140,0,0.8)] lg:hidden"
+            className="btn-press mr-1 inline-flex h-9 shrink-0 items-center justify-center rounded-full bg-[var(--sun)] px-2.5 text-[10px] font-bold leading-tight text-[var(--on-accent)] shadow-[0_8px_20px_-8px_rgba(220,140,0,0.8)] sm:px-4 sm:text-[12px] lg:hidden"
           >
-            {dict.bookNow}
+            {HEADER_CTA[locale] ?? dict.bookNow}
           </a>
 
           {/* Mobile burger */}
