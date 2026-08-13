@@ -220,6 +220,21 @@ export function Header({ locale }: HeaderProps) {
             </a>
           </div>
 
+          {/*
+            Кнопка брони на телефоне.
+            Была только в выпадающем меню — гость на телефоне видел логотип,
+            бургер и ни одной кнопки, ради которой пришёл. Надпись короткая:
+            «Забронировать в один клик» на экране в 360 точек не помещается
+            рядом с логотипом, а перенос в две строки ломает высоту шапки.
+          */}
+          <a
+            href={bookHref}
+            {...(bookReload ? {} : { "data-anchor": "request" })}
+            className="btn-press mr-1 inline-flex h-9 items-center justify-center rounded-full bg-[var(--sun)] px-4 text-[12px] font-bold text-[var(--on-accent)] shadow-[0_8px_20px_-8px_rgba(220,140,0,0.8)] lg:hidden"
+          >
+            {dict.bookNow}
+          </a>
+
           {/* Mobile burger */}
           <button
             type="button"
