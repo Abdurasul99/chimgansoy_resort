@@ -21,10 +21,28 @@ const url = env.DATABASE_URL_UNPOOLED || env.DATABASE_URL;
 if (!url) throw new Error("В .env.local нет DATABASE_URL");
 const sql = neon(url);
 
-/** Единицы размещения: 10 шале + 10 глэмпингов. */
+/**
+ * Единицы: 10 глэмпингов, 10 шале и 12 бунгало у бассейна.
+ *
+ * Бунгало — дневные: их снимают на день вместе с бассейном, ночёвки в них нет.
+ * В шахматке они такие же строки, но бронь занимает один день, а не отрезок
+ * ночей. Восемь Standard до 4 гостей и четыре Family до 10 — числа оператора.
+ */
 const UNITS = [
   ...Array.from({ length: 10 }, (_, i) => ["glamping", `glamping-${String(i + 1).padStart(2, "0")}`, `Глэмпинг A-frame №${i + 1}`, 3]),
   ...Array.from({ length: 10 }, (_, i) => ["cottage", `chalet-${String(i + 1).padStart(2, "0")}`, `Шале №${i + 1}`, 6]),
+  ...Array.from({ length: 8 }, (_, i) => [
+    "bungalow-small",
+    `bungalow-s-${String(i + 1).padStart(2, "0")}`,
+    `Бунгало Standard №${i + 1}`,
+    4,
+  ]),
+  ...Array.from({ length: 4 }, (_, i) => [
+    "bungalow-large",
+    `bungalow-l-${String(i + 1).padStart(2, "0")}`,
+    `Бунгало Family №${i + 1}`,
+    10,
+  ]),
 ];
 
 const STEPS = [

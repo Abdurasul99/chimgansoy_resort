@@ -3,6 +3,7 @@ import { AdminHeading } from "../AdminShell";
 import { Grid } from "./Grid";
 import { listRates, listUnits, occupancy, type BookingRow, type RateRow, type UnitRow } from "@/lib/pms";
 import { exelyOccupancy } from "@/lib/exely-occupancy";
+import { poolPricing } from "@/content/pricing";
 
 /**
  * Шахматка: кто где стоит и почём.
@@ -65,7 +66,13 @@ export default async function ShahmatkaPage({
    * Здесь стоят те же числа, что на карточках домиков, — как ориентир, пока
    * оператор не задал свою цену на конкретные даты.
    */
-  const basePrice: Record<string, number> = { glamping: 1_500_000, cottage: 3_000_000 };
+  const basePrice: Record<string, number> = {
+    glamping: 1_500_000,
+    cottage: 3_000_000,
+    // Бунгало у бассейна — дневная аренда, цифры из прайса оператора.
+    "bungalow-small": poolPricing.extras.bungalow4,
+    "bungalow-large": poolPricing.extras.bungalow10,
+  };
 
   const nav = (offset: number) => {
     const d = new Date(`${from}T12:00:00`);

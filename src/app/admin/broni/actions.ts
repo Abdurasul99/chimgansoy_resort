@@ -172,7 +172,9 @@ export async function createBooking(_prev: BroniState, form: FormData): Promise<
   const kids = Math.max(0, Number(String(form.get("kids") ?? "0")) || 0);
   const total = Math.max(0, Number(String(form.get("total") ?? "0").replace(/\s/g, "")) || 0);
 
-  if (!["glamping", "cottage"].includes(roomSlug)) return { error: "Выберите тип размещения." };
+  if (!["glamping", "cottage", "bungalow-small", "bungalow-large"].includes(roomSlug)) {
+    return { error: "Выберите тип размещения." };
+  }
   if (!/^\d{4}-\d{2}-\d{2}$/.test(checkin)) return { error: "Укажите дату заезда." };
   if (checkout && checkout <= checkin) return { error: "Выезд должен быть позже заезда." };
   if (name.length < 2) return { error: "Укажите имя гостя." };

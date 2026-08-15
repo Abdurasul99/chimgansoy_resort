@@ -22,7 +22,18 @@ const TONE: Record<PmsStatus, string> = {
   declined: "bg-transparent text-[var(--muted)] border-[var(--line)]",
 };
 
-const ROOM_LABEL: Record<string, string> = { glamping: "Глэмпинг A-frame", cottage: "Шале" };
+const ROOM_LABEL: Record<string, string> = {
+  glamping: "Глэмпинг A-frame",
+  cottage: "Шале",
+  "bungalow-small": "Бунгало Standard",
+  "bungalow-large": "Бунгало Family",
+};
+
+/**
+ * У бунгало нет ночей: их снимают на день вместе с бассейном. Строка цен для
+ * них показывает дневной тариф, а бронь занимает ровно одну клетку.
+ */
+const DAY_USE = new Set(["bungalow-small", "bungalow-large"]);
 const money = (n: number) => n.toLocaleString("ru-RU").replaceAll(",", " ");
 const input =
   "rounded-xl border border-[color:var(--line)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--sun)] focus:ring-2 focus:ring-[var(--sun)]/30";
@@ -49,7 +60,9 @@ export function Grid({
 }) {
   const [state, act, pending] = useActionState<BroniState, FormData>(saveRate, {});
   const rateOf = (slug: string, day: string) => rates.find((r) => r.room_slug === slug && r.day === day)?.price;
-  const groups = ["glamping", "cottage"].filter((s) => units.some((u) => u.room_slug === s));
+  const groups = ["glamping", "cottage", "bungalow-small", "bungalow-large"].filter((s) =>
+    units.some((u) => u.room_slug === s),
+  );
 
   const dayLabel = (d: string) => {
     const dt = new Date(`${d}T12:00:00`);
@@ -136,7 +149,7 @@ export function Grid({
                     разная, и одна общая строка врала бы про половину сетки. */}
                 <tr key={`${slug}-rates`}>
                   <th className="sticky left-0 z-10 bg-[var(--mist)] px-4 py-1.5 text-left text-xs font-bold text-[var(--ink)]">
-                    {ROOM_LABEL[slug] ?? slug} · цена
+                    {ROOM_LABEL[slug] ?? slug} · {DAY_USE.has(slug) ? "день" : "цена"}
                   </th>
                   {days.map((d) => {
                     const own = rateOf(slug, d);

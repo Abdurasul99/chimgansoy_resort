@@ -75,6 +75,8 @@ export function NewBooking({ units }: { units: UnitRow[] }) {
           <select name="room_slug" value={room} onChange={(e) => setRoom(e.target.value)} className={input}>
             <option value="glamping">Глэмпинг A-frame</option>
             <option value="cottage">Шале</option>
+            <option value="bungalow-small">Бунгало Standard (до 4)</option>
+            <option value="bungalow-large">Бунгало Family (до 10)</option>
           </select>
         </label>
         <label className="block">
