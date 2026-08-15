@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { changeMoney, changeStatus, changeUnit, type BroniState } from "./actions";
+import { changeMoney, changeStatus, changeUnit, removeBooking, type BroniState } from "./actions";
 import type { PmsStatus } from "@/lib/db";
 import type { BookingRow, UnitRow } from "@/lib/pms";
 
@@ -37,6 +37,8 @@ const ROOM_LABEL: Record<string, string> = {
   glamping: "Глэмпинг A-frame",
   cottage: "Шале",
   pool: "Бассейн",
+  "bungalow-small": "Бунгало Standard",
+  "bungalow-large": "Бунгало Family",
 };
 
 const input =
@@ -62,6 +64,7 @@ function Card({ b, units }: { b: BookingRow; units: UnitRow[] }) {
   const [st, setSt, stPending] = useActionState<BroniState, FormData>(changeStatus, {});
   const [un, setUn, unPending] = useActionState<BroniState, FormData>(changeUnit, {});
   const [mo, setMo, moPending] = useActionState<BroniState, FormData>(changeMoney, {});
+  const [rm, setRm, rmPending] = useActionState<BroniState, FormData>(removeBooking, {});
 
   const free = units.filter((u) => u.room_slug === b.room_slug && u.active);
   const closed = b.status === "done" || b.status === "cancelled" || b.status === "declined";
@@ -82,7 +85,17 @@ function Card({ b, units }: { b: BookingRow; units: UnitRow[] }) {
         {b.unit_id && (
           <span className="rounded-full bg-[var(--ink)] px-3 py-1 text-xs font-bold text-white">{b.unit_id}</span>
         )}
-        <span className="ml-auto text-xs text-[var(--muted)]">заявка №{b.id}</span>
+        <span className="ml-auto flex items-center gap-3 text-xs text-[var(--muted)]">
+          заявка №{b.id}
+          {/* Удаление — для опечаток и дублей. Для «гость передумал» есть
+              статус «Отмена»: он сохраняет запись, а это стирает. */}
+          <form action={setRm} onSubmit={(e) => { if (!confirm("Удалить бронь без следа? Для отказа гостя есть статус «Отмена».")) e.preventDefault(); }}>
+            <input type="hidden" name="id" value={b.id} />
+            <button type="submit" disabled={rmPending} className="underline underline-offset-2 transition hover:text-[var(--rose,#b4413c)] disabled:opacity-50">
+              удалить
+            </button>
+          </form>
+        </span>
       </div>
 
       <div className="mt-3 flex flex-wrap gap-x-8 gap-y-2 text-sm text-[var(--ink)]">
@@ -102,6 +115,8 @@ function Card({ b, units }: { b: BookingRow; units: UnitRow[] }) {
           <b>Сумма</b> {money(b.total)} · внесено {money(b.paid)}
         </span>
       </div>
+
+      <Note state={rm} />
 
       {b.comment && (
         <p className="mt-3 rounded-xl bg-[var(--surface-warm)] p-3 text-sm text-[var(--ink)]">{b.comment}</p>

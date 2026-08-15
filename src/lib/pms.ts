@@ -302,3 +302,21 @@ export async function freeUnits(roomSlug: string, checkin: string, checkout: str
     return 99;
   }
 }
+
+/**
+ * Удаление брони.
+ *
+ * Только своя: чужие приходят из Exely на чтение, и удалять их надо там же,
+ * где завели. Проверка по id — у чужих он отрицательный, — а не по полю
+ * source: подделать поле в форме проще, чем знак числа в базе.
+ *
+ * Совсем удаляем, а не помечаем: у бунгало и домиков нет истории платежей на
+ * нашей стороне, а «Отмена» уже есть отдельным статусом для случая, когда
+ * запись нужно сохранить. Кнопка удаления — для опечаток и дублей.
+ */
+export async function deleteBooking(id: number): Promise<void> {
+  if (!Number.isFinite(id) || id <= 0) throw new Error("Эту бронь удалить нельзя — она из Exely");
+  await sql().query(`DELETE FROM status_log WHERE kind = 'booking' AND entity_id = $1`, [id]);
+  const res = await sql().query(`DELETE FROM bookings WHERE id = $1 RETURNING id`, [id]);
+  if ((res as unknown[]).length === 0) throw new Error("Бронь не найдена");
+}

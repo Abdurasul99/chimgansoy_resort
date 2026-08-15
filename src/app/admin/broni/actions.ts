@@ -8,6 +8,7 @@ import {
   getBooking,
   setBookingMoney,
   setBookingStatus,
+  deleteBooking,
   setRateRange,
   setServiceStatus,
 } from "@/lib/pms";
@@ -253,4 +254,19 @@ export async function refreshExely(): Promise<BroniState> {
   }
   revalidatePath("/admin/shahmatka");
   return { ok: "Обновлено из Exely." };
+}
+
+/** Удалить бронь. Кнопка спрашивает подтверждение на стороне браузера. */
+export async function removeBooking(_prev: BroniState, form: FormData): Promise<BroniState> {
+  await requireAdmin();
+  const id = idOf(form);
+  if (!id) return { error: "Не понял, что удалять." };
+  try {
+    await deleteBooking(id);
+    revalidatePath("/admin/broni");
+    revalidatePath("/admin/shahmatka");
+    return { ok: `Бронь №${id} удалена.` };
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "Не удалось удалить." };
+  }
 }
