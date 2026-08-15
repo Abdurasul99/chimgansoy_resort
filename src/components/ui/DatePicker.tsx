@@ -22,6 +22,16 @@ type DatePickerProps = {
    * tariff, so they need to be told explicitly.
    */
   onChange?: (iso: string) => void;
+  /**
+   * Цена и занятость по дням — «2026-09-20» → { price, free }.
+   *
+   * Необязательно: без него календарь остаётся обычным. С ним гость видит
+   * стоимость ночи прямо в клетке и не может выбрать занятый день — узнавать
+   * об этом после заполнения формы он не должен.
+   */
+  days?: Record<string, { price: number | null; free: boolean }>;
+  /** Месяц, который сейчас на экране — родитель по нему подгружает цены. */
+  onMonthChange?: (month: string) => void;
 };
 
 const monthNames: Record<Locale, string[]> = {
@@ -71,7 +81,7 @@ function displayValue(iso: string, locale: Locale): string {
   return `${p.d} ${monthShort[locale][p.m]} ${p.y}`;
 }
 
-export function DatePicker({ name, label, defaultValue = "", locale, minToday = false, onChange }: DatePickerProps) {
+export function DatePicker({ name, label, defaultValue = "", locale, minToday = false, onChange, days, onMonthChange }: DatePickerProps) {
   const [value, setValue] = useState(defaultValue);
   const [open, setOpen] = useState(false);
   // The calendar renders in a portal (document.body) with fixed positioning, so an
@@ -84,6 +94,12 @@ export function DatePicker({ name, label, defaultValue = "", locale, minToday = 
     const now = new Date();
     return { y: now.getFullYear(), m: now.getMonth() };
   });
+  // Родитель по этому месяцу подгружает цены. Отдельным эффектом, а не в
+  // обработчиках стрелок: месяц меняется ещё и при открытии, и по «сегодня».
+  useEffect(() => {
+    onMonthChange?.(`${view.y}-${String(view.m + 1).padStart(2, "0")}`);
+  }, [view.y, view.m, onMonthChange]);
+
   const wrapperRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
   /**
@@ -281,14 +297,17 @@ export function DatePicker({ name, label, defaultValue = "", locale, minToday = 
             {cells.map((cell, idx) => {
               const isSelected = cell.iso === value;
               const isToday = cell.iso === today;
-              const isDisabled = minToday && today && cell.iso < today;
+              const info = days?.[cell.iso];
+              // Занятый день выбрать нельзя — в этом весь смысл затеи.
+              const isBusy = info ? !info.free : false;
+              const isDisabled = (minToday && today && cell.iso < today) || isBusy;
               return (
                 <button
                   key={`${cell.iso}-${idx}`}
                   type="button"
                   disabled={Boolean(isDisabled)}
                   onClick={() => select(cell.iso)}
-                  className={`flex h-9 w-full items-center justify-center rounded-lg text-sm font-semibold tabular-nums transition-all ${
+                  className={`flex ${days ? "h-12 flex-col gap-0.5" : "h-9"} w-full items-center justify-center rounded-lg text-sm font-semibold tabular-nums transition-all ${
                     isSelected
                       ? "bg-[var(--accent)] text-white shadow-sm"
                       : isDisabled
@@ -298,7 +317,22 @@ export function DatePicker({ name, label, defaultValue = "", locale, minToday = 
                           : "text-[var(--muted)]/40 hover:bg-[var(--surface)]"
                   } ${isToday && !isSelected ? "ring-1 ring-[var(--accent)]/40" : ""}`}
                 >
-                  {cell.day}
+                  <span>{cell.day}</span>
+                  {/* Цена под числом — мелко и приглушённо: гость выбирает
+                      дату, а не читает прайс, но должен видеть, во что она
+                      обойдётся, ещё до того как заполнит форму. */}
+                  {days && info?.price != null && !isBusy && (
+                    <span
+                      className={`text-[9px] font-bold leading-none ${
+                        isSelected ? "text-white/80" : "text-[var(--sun-dark)]"
+                      }`}
+                    >
+                      {Math.round(info.price / 1000)}к
+                    </span>
+                  )}
+                  {days && isBusy && (
+                    <span className="text-[9px] font-bold leading-none text-[var(--muted)]/50">×</span>
+                  )}
                 </button>
               );
             })}

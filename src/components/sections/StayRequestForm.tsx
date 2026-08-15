@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { submitStayRequest, type StayRequestState } from "@/app/actions/stay-request";
 import { CountInput } from "@/components/ui/CountInput";
+import { DatePicker } from "@/components/ui/DatePicker";
 import { Icon } from "@/components/ui/Icon";
 import { LegalConsentFields } from "@/components/ui/LegalConsentFields";
 import { STAY_OPENS_AT } from "@/lib/stay-window";
@@ -130,12 +131,13 @@ export function StayRequestForm({
    */
   const [avail, setAvail] = useState<{ status: string; price?: number } | null>(null);
   const [checking, setChecking] = useState(false);
+  /** Цены и занятость открытого месяца — их календарь рисует прямо в клетках. */
+  const [calendar, setCalendar] = useState<Record<string, { price: number | null; free: boolean }>>({});
+  const [month, setMonth] = useState("");
   // Считается один раз при монтировании: часы во время рендера — нечистый
   // вызов, и правило react-hooks/purity справедливо на это ругается.
   const [now] = useState(() => new Date(Date.now() + 5 * 3600_000).toISOString().slice(0, 10));
-  // Раньше открытия продаж календарь дат не предлагает вовсе — отказ после
-  // заполнения формы гость воспринимает как поломку, а не как правило.
-  const today = now > STAY_OPENS_AT ? now : STAY_OPENS_AT;
+
 
   useEffect(() => {
 
@@ -161,6 +163,36 @@ export function StayRequestForm({
     }, 500);
     return () => clearTimeout(timer);
   }, [room, checkin, checkout, adults]);
+
+  /**
+   * Цены месяца, который гость открыл в календаре.
+   *
+   * Запрашиваются один раз на месяц и остаются в состоянии: гость листает
+   * туда-сюда, и перезапрашивать при каждом движении стрелки значило бы
+   * тридцать обращений к движку на один клик.
+   */
+  useEffect(() => {
+    if (!month) return;
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch(`/api/calendar?room=${room}&month=${month}`, { cache: "no-store" });
+        if (!res.ok || !alive) return;
+        const data = (await res.json()) as { days: { date: string; price: number | null; free: boolean }[] };
+        if (!alive) return;
+        setCalendar((prev) => {
+          const next = { ...prev };
+          for (const d of data.days) next[d.date] = { price: d.price, free: d.free };
+          return next;
+        });
+      } catch {
+        // Календарь без цен всё ещё работает как календарь.
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [room, month]);
 
   /** Занято — единственное состояние, при котором отправка блокируется. */
   const busy = avail?.status === "busy";
@@ -196,27 +228,30 @@ export function StayRequestForm({
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         <label className="block">
           <span className={labelCls}>{t.checkin}</span>
-          <input
+          {/* Свой календарь, а не браузерное поле: в клетках видна цена ночи и
+              занятые дни, которые выбрать нельзя. Браузерный это не умеет. */}
+          <DatePicker
             name="checkin"
-            type="date"
-            required
-            min={today}
-            value={checkin}
-            onChange={(e) => setCheckin(e.target.value)}
-            className={field}
+            label={t.checkin}
+            locale={locale}
+            minToday
+            days={calendar}
+            onMonthChange={setMonth}
+            onChange={setCheckin}
           />
         </label>
         <label className="block">
           <span className={labelCls}>
             {t.checkout} <span className="font-normal normal-case">· {t.optional}</span>
           </span>
-          <input
+          <DatePicker
             name="checkout"
-            type="date"
-            min={checkin || today}
-            value={checkout}
-            onChange={(e) => setCheckout(e.target.value)}
-            className={field}
+            label={t.checkout}
+            locale={locale}
+            minToday
+            days={calendar}
+            onMonthChange={setMonth}
+            onChange={setCheckout}
           />
         </label>
 
