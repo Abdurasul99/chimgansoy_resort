@@ -137,9 +137,11 @@ export function Grid({
         <table className="w-max border-collapse text-sm">
           {/* Даты прилипают под меню: в сетке на тридцать колонок, прокрутив
               вниз, иначе невозможно понять, какой день перед тобой. */}
-          <thead className="sticky top-[107px] z-[3]">
+          {/* sticky живёт на ячейках, а не на <thead>: на самом thead его
+              игнорируют все браузеры, и строка дат уезжала вверх. */}
+          <thead>
             <tr>
-              <th className="sticky left-0 z-[4] bg-[var(--surface-warm)] px-4 py-2 text-left text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
+              <th className="sticky left-0 top-[107px] z-[4] bg-[var(--surface-warm)] px-4 py-2 text-left text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
                 Домик
               </th>
               {days.map((d) => {
@@ -147,7 +149,7 @@ export function Grid({
                 return (
                   <th
                     key={d}
-                    className={`min-w-[46px] px-1 py-2 text-center text-xs font-semibold ${
+                    className={`sticky top-[107px] z-[3] min-w-[46px] px-1 py-2 text-center text-xs font-semibold ${
                       weekend ? "bg-[var(--sun)]/12 text-[var(--sun-dark)]" : "bg-[var(--surface-warm)] text-[var(--muted)]"
                     }`}
                   >
