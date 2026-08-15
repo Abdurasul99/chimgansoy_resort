@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AdminHeading } from "../AdminShell";
 import { Grid } from "./Grid";
 import { listRates, listUnits, occupancy, type BookingRow, type RateRow, type UnitRow } from "@/lib/pms";
+import { exelyOccupancy } from "@/lib/exely-occupancy";
 
 /**
  * Шахматка: кто где стоит и почём.
@@ -41,7 +42,18 @@ export default async function ShahmatkaPage({
   let rates: RateRow[] = [];
   let error: string | null = null;
   try {
-    [units, bookings, rates] = await Promise.all([listUnits(), occupancy(from, to), listRates(from, to)]);
+    const [u, ours, r, theirs] = await Promise.all([
+      listUnits(),
+      occupancy(from, to),
+      listRates(from, to),
+      // Их брони не должны ронять экран: не ответили — покажем свои.
+      exelyOccupancy(from, to).catch(() => [] as BookingRow[]),
+    ]);
+    units = u;
+    rates = r;
+    // Наши первыми: при совпадении номера и дат в клетке окажется наша запись,
+    // которую оператор может открыть и поправить, а не чужая только для чтения.
+    bookings = [...ours, ...theirs];
   } catch (e) {
     error = e instanceof Error ? e.message : "База не отвечает";
   }

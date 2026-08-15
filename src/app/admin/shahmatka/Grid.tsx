@@ -168,8 +168,14 @@ export function Grid({
                         return (
                           <td
                             key={d}
-                            title={`${b.guest_name} · ${b.phone} · ${b.checkin}${b.checkout ? ` → ${b.checkout}` : ""} · ${money(b.total)} сум`}
-                            className={`border-l px-1 py-2 text-center text-[10px] font-bold ${TONE[b.status]}`}
+                            title={`${b.guest_name} · ${b.phone || "без телефона"} · ${b.checkin}${
+                              b.checkout ? ` → ${b.checkout}` : ""
+                            } · ${money(b.total)} сум${b.source === "exely" ? " · из Exely" : ""}`}
+                            className={`border-l px-1 py-2 text-center text-[10px] font-bold ${TONE[b.status]} ${
+                              // Пунктир — «это не наша запись, править её здесь
+                              // нельзя»: она живёт в Exely и оттуда читается.
+                              b.source === "exely" ? "border-dashed opacity-90" : ""
+                            }`}
                           >
                             {first ? b.guest_name.split(" ")[0].slice(0, 6) : "·"}
                           </td>
@@ -187,6 +193,7 @@ export function Grid({
         <span><span className="mr-1.5 inline-block h-3 w-3 rounded bg-[var(--surface-warm)] align-middle ring-1 ring-[var(--line-strong)]" />Заявка</span>
         <span><span className="mr-1.5 inline-block h-3 w-3 rounded bg-[var(--sun)]/60 align-middle" />Подтверждена</span>
         <span><span className="mr-1.5 inline-block h-3 w-3 rounded bg-[var(--green,#3f7d52)] align-middle" />Оплачена</span>
+        <span><span className="mr-1.5 inline-block h-3 w-3 rounded border border-dashed border-[var(--sun)] align-middle" />Из Exely — только для чтения</span>
         <span>Пустая клетка — свободно. Наведите на бронь, чтобы увидеть телефон и сумму.</span>
       </div>
     </div>
