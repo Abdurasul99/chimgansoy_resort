@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag, updateTag } from "next/cache";
 import { requireAdmin } from "@/lib/admin-auth";
 import type { PmsStatus } from "@/lib/db";
 import {
@@ -13,6 +13,7 @@ import {
 } from "@/lib/pms";
 import { insertBooking } from "@/lib/db";
 import { importFromBlob } from "@/lib/import-blob";
+import { EXELY_TAG } from "@/lib/exely-occupancy";
 import { sendGuestConfirmation } from "@/lib/guest-mail";
 
 export type BroniState = { ok?: string; error?: string };
@@ -233,4 +234,23 @@ export async function runImport(_prev: BroniState, _form: FormData): Promise<Bro
   } catch (e) {
     return { error: e instanceof Error ? e.message : "Перенос не удался." };
   }
+}
+
+
+/**
+ * Забрать брони из Exely прямо сейчас.
+ *
+ * Обычно они подтягиваются сами, раз в пять минут. Кнопка нужна для минуты
+ * после того, как оператор завёл бронь у них и тут же открыл нашу шахматку:
+ * ждать, не понимая, ждёшь ты или сломалось, — худшее из состояний.
+ */
+export async function refreshExely(): Promise<BroniState> {
+  await requireAdmin();
+  try {
+    updateTag(EXELY_TAG);
+  } catch {
+    revalidateTag(EXELY_TAG, "max");
+  }
+  revalidatePath("/admin/shahmatka");
+  return { ok: "Обновлено из Exely." };
 }

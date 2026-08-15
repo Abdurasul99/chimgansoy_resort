@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { saveRate, type BroniState } from "../broni/actions";
+import { refreshExely, saveRate, type BroniState } from "../broni/actions";
 import type { PmsStatus } from "@/lib/db";
 import type { BookingRow, RateRow, UnitRow } from "@/lib/pms";
 
@@ -59,6 +59,7 @@ export function Grid({
   basePrice: Record<string, number>;
 }) {
   const [state, act, pending] = useActionState<BroniState, FormData>(saveRate, {});
+  const [ref, refresh, refreshing] = useActionState<BroniState, FormData>(() => refreshExely(), {});
   const rateOf = (slug: string, day: string) => rates.find((r) => r.room_slug === slug && r.day === day)?.price;
   const groups = ["glamping", "cottage", "bungalow-small", "bungalow-large"].filter((s) =>
     units.some((u) => u.room_slug === s),
@@ -116,6 +117,20 @@ export function Grid({
         </button>
         {state.error && <span className="text-sm font-semibold text-[var(--rose,#b4413c)]">{state.error}</span>}
         {state.ok && <span className="text-sm font-semibold text-[var(--green,#3f7d52)]">{state.ok}</span>}
+      </form>
+
+      {/* Брони из Exely подтягиваются сами раз в пять минут. Кнопка — для той
+          минуты, когда оператор только что завёл бронь у них. */}
+      <form action={refresh} className="flex items-center gap-3">
+        <button
+          type="submit"
+          disabled={refreshing}
+          className="rounded-xl border border-[color:var(--line)] px-4 py-2 text-sm font-semibold text-[var(--muted)] transition hover:border-[var(--sun)] hover:text-[var(--ink)] disabled:opacity-50"
+        >
+          {refreshing ? "Обновляем…" : "Обновить из Exely"}
+        </button>
+        {ref.ok && <span className="text-sm font-semibold text-[var(--green,#3f7d52)]">{ref.ok}</span>}
+        {ref.error && <span className="text-sm font-semibold text-[var(--rose,#b4413c)]">{ref.error}</span>}
       </form>
 
       <div className="overflow-x-auto rounded-2xl border border-[color:var(--line)]">

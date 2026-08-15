@@ -136,6 +136,11 @@ async function fetchExely(from: string, to: string): Promise<BookingRow[]> {
  * на каждую. Пять минут — компромисс между «оператор только что завёл бронь в
  * Exely и смотрит нашу шахматку» и «шахматка открывается за секунду».
  */
+export const EXELY_TAG = "exely-occupancy";
+
 export const exelyOccupancy = unstable_cache(fetchExely, ["exely-occupancy-v1"], {
   revalidate: 300,
+  // Тег нужен кнопке «обновить»: оператор завёл бронь в Exely и смотрит нашу
+  // шахматку сейчас, а не через пять минут.
+  tags: [EXELY_TAG],
 });
