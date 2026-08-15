@@ -1,5 +1,5 @@
 import { unstable_cache } from "next/cache";
-import { getBookingsInPeriod, roomTypeName, type PmsRoomStay } from "@/lib/exely-pms";
+import { getBookingsInPeriod, listRooms, roomTypeName, type PmsRoomStay } from "@/lib/exely-pms";
 import type { PmsStatus } from "@/lib/db";
 import type { BookingRow } from "@/lib/pms";
 
@@ -54,8 +54,8 @@ const DAY = /^\d{4}-\d{2}-\d{2}/;
  * привязки к строке: «есть, а где именно — смотрите в Exely» честнее, чем
  * поставить её не в тот домик.
  */
-function unitOf(slug: string, roomId: string | null | undefined): string | null {
-  const n = Number(String(roomId ?? "").replace(/\D/g, ""));
+function unitOf(slug: string, roomNumber: string | null | undefined): string | null {
+  const n = Number(String(roomNumber ?? "").replace(/\D/g, ""));
   if (!Number.isFinite(n) || n < 1 || n > 20) return null;
   if (slug === "glamping") return n <= 10 ? `glamping-${String(n).padStart(2, "0")}` : null;
   return n > 10 ? `chalet-${String(n - 10).padStart(2, "0")}` : null;
@@ -68,12 +68,35 @@ async function fetchExely(from: string, to: string): Promise<BookingRow[]> {
     return [];
   }
 
+  /**
+   * Идентификатор номера → его номер на табличке.
+   *
+   * В брони лежит `roomId` вида «9007199254834751», а человеку и нашей сетке
+   * нужен «01». Первая версия разбирала цифры прямо из идентификатора и
+   * получала шестнадцатизначное число — ни одна бронь не привязывалась к
+   * строке, и шахматка выглядела пустой при 55 бронях в Exely.
+   */
+  const rooms = await listRooms();
+  const nameById = new Map<string, string>();
+  if (rooms.ok) for (const r of rooms.data) nameById.set(String(r.id), r.name);
+
   const rows: BookingRow[] = [];
   for (const b of res.data) {
     for (const stay of b.roomStays) {
       const status = statusOf(stay);
       if (!status) continue;
-      const slug = slugOfRoomType(stay.roomTypeId);
+      /**
+       * Тип домика: сперва по справочнику категорий, иначе по номеру.
+       *
+       * Справочник в exely-pms.ts набран руками и знает не все идентификаторы.
+       * Номера в Exely сквозные — 01–10 глэмпинг, 11–20 шале, — и это надёжнее
+       * списка, который устареет при первом же изменении на их стороне.
+       */
+      const roomNumber = nameById.get(String(stay.roomId ?? ""));
+      const n = Number(String(roomNumber ?? "").replace(/\D/g, ""));
+      const slug =
+        slugOfRoomType(stay.roomTypeId) ??
+        (Number.isFinite(n) && n >= 1 && n <= 20 ? (n <= 10 ? "glamping" : "cottage") : null);
       if (!slug) continue;
       const checkin = String(stay.checkInDateTime ?? "").slice(0, 10);
       const checkout = String(stay.checkOutDateTime ?? "").slice(0, 10);
@@ -84,7 +107,7 @@ async function fetchExely(from: string, to: string): Promise<BookingRow[]> {
         // Отрицательный, чтобы никогда не столкнуться с нашими: это чужая
         // запись, её нельзя открыть на редактирование и не надо пытаться.
         id: -Number(b.number.replace(/\D/g, "") || 1),
-        unit_id: unitOf(slug, stay.roomId),
+        unit_id: unitOf(slug, nameById.get(String(stay.roomId ?? ""))),
         room_slug: slug,
         status,
         checkin,
