@@ -135,9 +135,11 @@ export function Grid({
 
       <div className="overflow-x-auto rounded-2xl border border-[color:var(--line)]">
         <table className="w-max border-collapse text-sm">
-          <thead>
+          {/* Даты прилипают под меню: в сетке на тридцать колонок, прокрутив
+              вниз, иначе невозможно понять, какой день перед тобой. */}
+          <thead className="sticky top-[107px] z-[3]">
             <tr>
-              <th className="sticky left-0 z-10 bg-[var(--surface-warm)] px-4 py-2 text-left text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
+              <th className="sticky left-0 z-[4] bg-[var(--surface-warm)] px-4 py-2 text-left text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
                 Домик
               </th>
               {days.map((d) => {
@@ -163,7 +165,7 @@ export function Grid({
                 {/* Строка цен — над блоком своего типа: цена у глэмпинга и шале
                     разная, и одна общая строка врала бы про половину сетки. */}
                 <tr key={`${slug}-rates`}>
-                  <th className="sticky left-0 z-10 bg-[var(--mist)] px-4 py-1.5 text-left text-xs font-bold text-[var(--ink)]">
+                  <th className="sticky left-0 z-[2] bg-[var(--mist)] px-4 py-1.5 text-left text-xs font-bold text-[var(--ink)]">
                     {ROOM_LABEL[slug] ?? slug} · {DAY_USE.has(slug) ? "день" : "цена"}
                   </th>
                   {days.map((d) => {
@@ -186,7 +188,7 @@ export function Grid({
                   .filter((u) => u.room_slug === slug)
                   .map((u) => (
                     <tr key={u.id} className="border-t border-[color:var(--line)]">
-                      <th className="sticky left-0 z-10 bg-[var(--paper)] px-4 py-2 text-left font-semibold text-[var(--ink)]">
+                      <th className="sticky left-0 z-[2] bg-[var(--paper)] px-4 py-2 text-left font-semibold text-[var(--ink)]">
                         {u.id}
                       </th>
                       {days.map((d) => {
