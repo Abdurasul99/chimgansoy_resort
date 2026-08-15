@@ -39,7 +39,7 @@ function ImportButton() {
  * поверх списка отодвигала бы брони вниз при каждом заходе. Разворачивается
  * одной кнопкой, когда оператор снял трубку.
  */
-export function NewBooking({ units }: { units: UnitRow[] }) {
+export function NewBooking({ units, showImport = true }: { units: UnitRow[]; showImport?: boolean }) {
   const [open, setOpen] = useState(false);
   const [state, act, pending] = useActionState<BroniState, FormData>(createBooking, {});
   // Список номеров зависит от типа: шале в глэмпинг не поселить.
@@ -55,7 +55,9 @@ export function NewBooking({ units }: { units: UnitRow[] }) {
         >
           + Бронь с телефона
         </button>
-        <ImportButton />
+        {/* Перенос старых заявок нужен один раз в жизни проекта и живёт на
+            экране броней. В шахматке он был бы кнопкой-ловушкой. */}
+        {showImport && <ImportButton />}
       </div>
     );
   }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AdminHeading } from "../AdminShell";
 import { Grid } from "./Grid";
+import { NewBooking } from "../broni/NewBooking";
 import { listRates, listUnits, occupancy, type BookingRow, type RateRow, type UnitRow } from "@/lib/pms";
 import { exelyOccupancy } from "@/lib/exely-occupancy";
 import { poolPricing } from "@/content/pricing";
@@ -126,6 +127,13 @@ export default async function ShahmatkaPage({
 
             <span className="text-sm text-[var(--muted)]">{from} — {to}</span>
           </div>
+          {/* Та же форма, что и на экране броней: оператор смотрит сетку,
+              видит свободное бунгало на субботу и заводит бронь здесь же, не
+              уходя на другой экран и не теряя из виду, что свободно. */}
+          <div className="mb-5">
+            <NewBooking units={units} showImport={false} />
+          </div>
+
           <Grid days={days} units={units} bookings={bookings} rates={rates} basePrice={basePrice} />
         </>
       )}
