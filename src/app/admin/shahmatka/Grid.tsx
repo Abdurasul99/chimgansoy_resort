@@ -86,6 +86,16 @@ export function Grid({
   );
 
   /**
+   * Ширина дня зависит от выбранного периода.
+   *
+   * Колонка в 46 пикселей вмещала шесть букв — из пятидесяти одной брони
+   * полностью читались две. Но за неделю на экране семь дней, а не тридцать, и
+   * место есть: на неделе колонка широкая и «OFFICE BAYAN SHIRIN» помещается
+   * целиком, на месяце — узкая, зато весь месяц виден сразу.
+   */
+  const colWidth = days.length <= 8 ? 132 : days.length <= 16 ? 92 : 62;
+
+  /**
    * Клетки одной строки: бронь рисуется одной полосой на все свои дни.
    *
    * Раньше каждый день был отдельной клеткой, имя стояло в дне заезда, а
@@ -139,13 +149,16 @@ export function Grid({
         >
           {/* Клик открывает карточку. Кнопка, а не div с обработчиком:
               клавиатура и читалки должны добираться до брони так же, как мышь.
-              Ширина ограничена отрезком брони, чтобы длинное имя не растянуло
-              колонку и не поехала вся сетка. */}
+
+              Имя переносится на две строки, а не обрывается многоточием:
+              «OFFICE BAYAN SHI…» и «OFFICE BAYAN SHIRIN» — это разные брони для
+              глаза, ищущего гостя в сетке. Ширина ограничена отрезком брони,
+              чтобы длинное имя не растянуло колонку и не поехала вся сетка. */}
           <button
             type="button"
             onClick={() => setPicked(b)}
-            className="block w-full cursor-pointer truncate"
-            style={{ maxWidth: span * 46 }}
+            className="line-clamp-2 block w-full cursor-pointer break-words leading-tight"
+            style={{ maxWidth: span * colWidth }}
             aria-label={`Бронь ${b.guest_name}`}
           >
             {label}
@@ -258,7 +271,8 @@ export function Grid({
                 return (
                   <th
                     key={d}
-                    className={`min-w-[46px] px-1 py-2 text-center text-xs font-semibold ${
+                    style={{ minWidth: colWidth }}
+                    className={`px-1 py-2 text-center text-xs font-semibold ${
                       weekend ? "bg-[var(--sun)]/12 text-[var(--sun-dark)]" : "bg-[var(--surface-warm)] text-[var(--muted)]"
                     }`}
                   >
