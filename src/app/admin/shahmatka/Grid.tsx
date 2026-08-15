@@ -1,7 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
-import { refreshExely, saveRate, type BroniState } from "../broni/actions";
+import { useActionState, useState } from "react";
+import { changeStatus, refreshExely, saveRate, type BroniState } from "../broni/actions";
 import type { PmsStatus } from "@/lib/db";
 import type { BookingRow, RateRow, UnitRow } from "@/lib/pms";
 
@@ -60,6 +60,9 @@ export function Grid({
 }) {
   const [state, act, pending] = useActionState<BroniState, FormData>(saveRate, {});
   const [ref, refresh, refreshing] = useActionState<BroniState, FormData>(() => refreshExely(), {});
+  const [cancel, doCancel, cancelling] = useActionState<BroniState, FormData>(changeStatus, {});
+  /** Бронь, по которой кликнули. Карточка показывается под сеткой. */
+  const [picked, setPicked] = useState<BookingRow | null>(null);
   const rateOf = (slug: string, day: string) => rates.find((r) => r.room_slug === slug && r.day === day)?.price;
   const groups = ["glamping", "cottage", "bungalow-small", "bungalow-large"].filter((s) =>
     units.some((u) => u.room_slug === s),
@@ -224,7 +227,17 @@ export function Grid({
                               b.source === "exely" ? "border-dashed opacity-90" : ""
                             }`}
                           >
-                            {first ? b.guest_name.split(" ")[0].slice(0, 6) : "·"}
+                            {/* Клик открывает карточку. Кнопка, а не div с
+                                обработчиком: клавиатура и читалки должны
+                                добираться до брони так же, как мышь. */}
+                            <button
+                              type="button"
+                              onClick={() => setPicked(b)}
+                              className="w-full cursor-pointer"
+                              aria-label={`Бронь ${b.guest_name}`}
+                            >
+                              {first ? b.guest_name.split(" ")[0].slice(0, 6) : "·"}
+                            </button>
                           </td>
                         );
                       })}
@@ -235,6 +248,87 @@ export function Grid({
           </tbody>
         </table>
       </div>
+
+      {/*
+        Карточка брони по клику.
+
+        Отменить можно только бунгало — так распорядился оператор, и это
+        совпадает с тем, где живут записи. Домики продаются через Exely: их
+        брони приходят к нам на чтение, и отмена здесь создала бы расхождение
+        с системой, которая ими управляет. Кнопки просто нет, а не «есть и
+        ругается»: недоступное действие лучше не показывать вовсе.
+      */}
+      {picked && (
+        <div className="rounded-2xl border border-[color:var(--line-strong)] bg-[var(--paper)] p-5">
+          <div className="flex flex-wrap items-baseline gap-3">
+            <span className="font-serif text-xl font-bold text-[var(--ink)]">{picked.guest_name}</span>
+            {picked.phone && (
+              <a href={`tel:${picked.phone}`} className="font-semibold text-[var(--sun-dark)]">
+                {picked.phone}
+              </a>
+            )}
+            <span className="rounded-full bg-[var(--mist)] px-3 py-1 text-xs font-semibold text-[var(--ink)]">
+              {ROOM_LABEL[picked.room_slug] ?? picked.room_slug}
+            </span>
+            {picked.unit_id && (
+              <span className="rounded-full bg-[var(--ink)] px-3 py-1 text-xs font-bold text-white">
+                {picked.unit_id}
+              </span>
+            )}
+            <button
+              type="button"
+              onClick={() => setPicked(null)}
+              className="ml-auto text-sm text-[var(--muted)] underline underline-offset-2"
+            >
+              закрыть
+            </button>
+          </div>
+
+          <div className="mt-3 flex flex-wrap gap-x-8 gap-y-2 text-sm text-[var(--ink)]">
+            <span>
+              <b>{DAY_USE.has(picked.room_slug) ? "День" : "Заезд"}</b> {picked.checkin}
+              {picked.checkout ? ` → ${picked.checkout}` : ""}
+            </span>
+            <span>
+              <b>Гости</b> {picked.adults} взр{picked.kids > 0 ? ` · ${picked.kids} дет` : ""}
+            </span>
+            <span>
+              <b>Сумма</b> {money(picked.total)} сум
+            </span>
+            <span>
+              <b>Источник</b> {picked.source === "exely" ? "Exely" : "панель"}
+            </span>
+          </div>
+
+          {DAY_USE.has(picked.room_slug) && picked.id > 0 && picked.status !== "cancelled" ? (
+            <form
+              action={doCancel}
+              className="mt-4 flex items-center gap-3 border-t border-[color:var(--line)] pt-4"
+              onSubmit={(e) => {
+                if (!confirm(`Отменить бронь «${picked.guest_name}»?`)) e.preventDefault();
+              }}
+            >
+              <input type="hidden" name="id" value={picked.id} />
+              <input type="hidden" name="status" value="cancelled" />
+              <button
+                type="submit"
+                disabled={cancelling}
+                className="rounded-xl border border-[color:var(--rose,#b4413c)] px-5 py-2 text-sm font-bold text-[var(--rose,#b4413c)] transition hover:bg-[var(--rose,#b4413c)]/8 disabled:opacity-50"
+              >
+                {cancelling ? "Отменяем…" : "Отменить бронь"}
+              </button>
+              {cancel.ok && <span className="text-sm font-semibold text-[var(--green,#3f7d52)]">{cancel.ok}</span>}
+              {cancel.error && <span className="text-sm font-semibold text-[var(--rose,#b4413c)]">{cancel.error}</span>}
+            </form>
+          ) : (
+            <p className="mt-4 border-t border-[color:var(--line)] pt-4 text-sm text-[var(--muted)]">
+              {picked.source === "exely"
+                ? "Бронь живёт в Exely — отменяйте её там же, где завели."
+                : "Отмена домиков идёт через Exely; здесь бронь только показана."}
+            </p>
+          )}
+        </div>
+      )}
 
       <div className="flex flex-wrap gap-4 text-xs text-[var(--muted)]">
         <span><span className="mr-1.5 inline-block h-3 w-3 rounded bg-[var(--surface-warm)] align-middle ring-1 ring-[var(--line-strong)]" />Заявка</span>
