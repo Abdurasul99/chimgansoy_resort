@@ -133,12 +133,12 @@ export function Grid({
         {ref.error && <span className="text-sm font-semibold text-[var(--rose,#b4413c)]">{ref.error}</span>}
       </form>
 
-      {/* Прокрутка в обе стороны внутри самой сетки.
-          Раньше контейнер прокручивался только вбок, и "прилипание" строки дат
-          считалось относительно него — то есть не работало вовсе: по вертикали
-          ему нечего было прокручивать. Теперь высота ограничена, и шапка с
-          датами держится на месте, пока листаешь тридцать две строки. */}
-      <div className="max-h-[70vh] overflow-auto rounded-2xl border border-[color:var(--line)]">
+      {/* Прокрутка вбок — внутри сетки, вниз — как у всей страницы.
+          overflow-y-clip, а не auto: с auto по вертикали появляется своя
+          прокрутка, и "прилипание" дат считается относительно неё — контейнер
+          уезжал под меню целиком, вместе с датами. С clip точкой отсчёта
+          остаётся страница, и даты держатся ровно под меню (104 пикселя). */}
+      <div className="overflow-x-auto overflow-y-clip rounded-2xl border border-[color:var(--line)]">
         <table className="w-max border-collapse text-sm">
           {/* Даты прилипают под меню: в сетке на тридцать колонок, прокрутив
               вниз, иначе невозможно понять, какой день перед тобой. */}
@@ -146,7 +146,7 @@ export function Grid({
               игнорируют все браузеры, и строка дат уезжала вверх. */}
           <thead>
             <tr>
-              <th className="sticky left-0 top-0 z-[4] bg-[var(--surface-warm)] px-4 py-2 text-left text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
+              <th className="sticky left-0 top-[104px] z-[4] bg-[var(--surface-warm)] px-4 py-2 text-left text-xs font-bold uppercase tracking-wide text-[var(--muted)]">
                 Домик
               </th>
               {days.map((d) => {
@@ -154,7 +154,7 @@ export function Grid({
                 return (
                   <th
                     key={d}
-                    className={`sticky top-0 z-[3] min-w-[46px] px-1 py-2 text-center text-xs font-semibold ${
+                    className={`sticky top-[104px] z-[3] min-w-[46px] px-1 py-2 text-center text-xs font-semibold ${
                       weekend ? "bg-[var(--sun)]/12 text-[var(--sun-dark)]" : "bg-[var(--surface-warm)] text-[var(--muted)]"
                     }`}
                   >
