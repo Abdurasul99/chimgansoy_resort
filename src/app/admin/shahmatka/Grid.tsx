@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useState, type ReactNode } from "react";
 import { changeStatus, refreshExely, saveRate, type BroniState } from "../broni/actions";
 import type { PmsStatus } from "@/lib/db";
 import type { BookingRow, RateRow, UnitRow } from "@/lib/pms";
@@ -84,6 +84,80 @@ export function Grid({
   const groups = ["glamping", "cottage", "bungalow-small", "bungalow-large"].filter((s) =>
     units.some((u) => u.room_slug === s),
   );
+
+  /**
+   * Клетки одной строки: бронь рисуется одной полосой на все свои дни.
+   *
+   * Раньше каждый день был отдельной клеткой, имя стояло в дне заезда, а
+   * остальные ночи помечались точкой — и оператор видел в сетке из Exely
+   * россыпь точек вместо броней. Точка не говорит ничего: чья она, докуда
+   * тянется, одна это бронь или две подряд.
+   *
+   * Теперь дни одной брони объединены в одну ячейку: имя стоит по центру
+   * своего отрезка и читается целиком, насколько хватает ширины. Стрелка
+   * слева или справа — бронь началась до окна дат или уходит за него.
+   */
+  const rowCells = (unitId: string) => {
+    const out: ReactNode[] = [];
+
+    for (let i = 0; i < days.length; i++) {
+      const day = days[i];
+      const hits = bookings.filter((x) => x.unit_id === unitId && covers(x, day));
+      const b = hits[0];
+
+      if (!b) {
+        out.push(<td key={day} className="border-l border-[color:var(--line)] px-1 py-2" />);
+        continue;
+      }
+
+      // Докуда тянется эта же бронь внутри показанных дат.
+      let span = 1;
+      let clash = hits.length > 1;
+      while (i + span < days.length && covers(b, days[i + span])) {
+        clash ||= bookings.filter((x) => x.unit_id === unitId && covers(x, days[i + span])).length > 1;
+        span++;
+      }
+
+      const from = b.checkin < days[0];
+      const till = (b.checkout ?? b.checkin) > days[days.length - 1];
+      const label = `${from ? "← " : ""}${b.guest_name}${till ? " →" : ""}`;
+
+      out.push(
+        <td
+          key={day}
+          colSpan={span}
+          title={`${b.guest_name} · ${b.phone || "без телефона"} · ${b.checkin}${
+            b.checkout ? ` → ${b.checkout}` : ""
+          } · ${money(b.total)} сум${b.source === "exely" ? " · из Exely" : ""}${
+            clash ? " · ВНИМАНИЕ: на этот домик есть вторая бронь на те же даты" : ""
+          }`}
+          className={`border-l px-0.5 py-2 text-center text-[11px] font-bold ${TONE[b.status]} ${
+            // Пунктир — «это не наша запись, править её здесь нельзя»: она
+            // живёт в Exely и оттуда читается.
+            b.source === "exely" ? "border-dashed opacity-90" : ""
+          } ${clash ? "ring-2 ring-inset ring-[var(--rose,#b4413c)]" : ""}`}
+        >
+          {/* Клик открывает карточку. Кнопка, а не div с обработчиком:
+              клавиатура и читалки должны добираться до брони так же, как мышь.
+              Ширина ограничена отрезком брони, чтобы длинное имя не растянуло
+              колонку и не поехала вся сетка. */}
+          <button
+            type="button"
+            onClick={() => setPicked(b)}
+            className="block w-full cursor-pointer truncate"
+            style={{ maxWidth: span * 46 }}
+            aria-label={`Бронь ${b.guest_name}`}
+          >
+            {label}
+          </button>
+        </td>,
+      );
+
+      i += span - 1;
+    }
+
+    return out;
+  };
 
   const dayLabel = (d: string) => {
     const dt = new Date(`${d}T12:00:00`);
@@ -235,36 +309,7 @@ export function Grid({
                       <th className="sticky left-0 z-[2] bg-[var(--paper)] px-4 py-2 text-left font-semibold text-[var(--ink)]">
                         {u.id}
                       </th>
-                      {days.map((d) => {
-                        const b = bookings.find((x) => x.unit_id === u.id && covers(x, d));
-                        if (!b) return <td key={d} className="border-l border-[color:var(--line)] px-1 py-2" />;
-                        const first = d === b.checkin;
-                        return (
-                          <td
-                            key={d}
-                            title={`${b.guest_name} · ${b.phone || "без телефона"} · ${b.checkin}${
-                              b.checkout ? ` → ${b.checkout}` : ""
-                            } · ${money(b.total)} сум${b.source === "exely" ? " · из Exely" : ""}`}
-                            className={`border-l px-1 py-2 text-center text-[10px] font-bold ${TONE[b.status]} ${
-                              // Пунктир — «это не наша запись, править её здесь
-                              // нельзя»: она живёт в Exely и оттуда читается.
-                              b.source === "exely" ? "border-dashed opacity-90" : ""
-                            }`}
-                          >
-                            {/* Клик открывает карточку. Кнопка, а не div с
-                                обработчиком: клавиатура и читалки должны
-                                добираться до брони так же, как мышь. */}
-                            <button
-                              type="button"
-                              onClick={() => setPicked(b)}
-                              className="w-full cursor-pointer"
-                              aria-label={`Бронь ${b.guest_name}`}
-                            >
-                              {first ? b.guest_name.split(" ")[0].slice(0, 6) : "·"}
-                            </button>
-                          </td>
-                        );
-                      })}
+                      {rowCells(u.id)}
                     </tr>
                   ))}
               </>
@@ -407,6 +452,8 @@ export function Grid({
         <span><span className="mr-1.5 inline-block h-3 w-3 rounded bg-[var(--sun)]/60 align-middle" />Подтверждена</span>
         <span><span className="mr-1.5 inline-block h-3 w-3 rounded bg-[var(--green,#3f7d52)] align-middle" />Оплачена</span>
         <span><span className="mr-1.5 inline-block h-3 w-3 rounded border border-dashed border-[var(--sun)] align-middle" />Из Exely — только для чтения</span>
+        <span><span className="mr-1.5 inline-block h-3 w-3 rounded align-middle ring-2 ring-inset ring-[var(--rose,#b4413c)]" />Две брони на один домик</span>
+        <span>Полоса — вся бронь целиком; стрелка ← или → значит, что она выходит за показанные даты.</span>
         <span>Пустая клетка — свободно. Наведите на бронь, чтобы увидеть телефон и сумму.</span>
       </div>
     </div>
