@@ -284,15 +284,41 @@ export function Grid({
           }}
         >
           <div
-            className="w-full max-w-xl rounded-2xl border border-[color:var(--line-strong)] bg-[var(--paper)] p-5 shadow-[0_28px_90px_rgba(21,29,24,0.35)]"
+            className="max-h-[85vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-[color:var(--line-strong)] bg-[var(--paper)] p-5 shadow-[0_28px_90px_rgba(21,29,24,0.35)] sm:p-6"
           >
-          <div className="flex flex-wrap items-baseline gap-3">
-            <span className="font-serif text-xl font-bold text-[var(--ink)]">{picked.guest_name}</span>
-            {picked.phone && (
-              <a href={`tel:${picked.phone}`} className="font-semibold text-[var(--sun-dark)]">
-                {picked.phone}
-              </a>
-            )}
+          {/*
+            Заголовок и крестик — разные ряды по смыслу, а не по вёрстке.
+
+            Всё лежало в одном flex-wrap с ml-auto на кнопке: стоило имени
+            гостя стать длинным, ряд переносился, и «закрыть» уезжала на
+            отдельную строку справа — висела в пустоте. Теперь кнопка закреплена
+            в правом верхнем углу и не участвует в переносе.
+          */}
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <p className="font-serif text-xl font-bold leading-tight text-[var(--ink)]">
+                {picked.guest_name}
+              </p>
+              {picked.phone && (
+                <a
+                  href={`tel:${picked.phone}`}
+                  className="mt-1 inline-block font-semibold text-[var(--sun-dark)]"
+                >
+                  {picked.phone}
+                </a>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => setPicked(null)}
+              aria-label="Закрыть"
+              className="-mr-1 -mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-lg text-[var(--muted)] transition hover:bg-[var(--surface)] hover:text-[var(--ink)]"
+            >
+              ×
+            </button>
+          </div>
+
+          <div className="mt-3 flex flex-wrap items-center gap-2">
             <span className="rounded-full bg-[var(--mist)] px-3 py-1 text-xs font-semibold text-[var(--ink)]">
               {ROOM_LABEL[picked.room_slug] ?? picked.room_slug}
             </span>
@@ -301,16 +327,12 @@ export function Grid({
                 {picked.unit_id}
               </span>
             )}
-            <button
-              type="button"
-              onClick={() => setPicked(null)}
-              className="ml-auto text-sm text-[var(--muted)] underline underline-offset-2"
-            >
-              закрыть
-            </button>
+            <span className="rounded-full bg-[var(--surface)] px-3 py-1 text-xs font-semibold text-[var(--muted)]">
+              {picked.source === "exely" ? "из Exely" : "заведена в панели"}
+            </span>
           </div>
 
-          <div className="mt-3 flex flex-wrap gap-x-8 gap-y-2 text-sm text-[var(--ink)]">
+          <div className="mt-4 grid gap-2 border-t border-[color:var(--line)] pt-4 text-sm text-[var(--ink)] sm:grid-cols-2">
             <span>
               <b>{DAY_USE.has(picked.room_slug) ? "День" : "Заезд"}</b> {picked.checkin}
               {picked.checkout ? ` → ${picked.checkout}` : ""}
@@ -321,9 +343,7 @@ export function Grid({
             <span>
               <b>Сумма</b> {money(picked.total)} сум
             </span>
-            <span>
-              <b>Источник</b> {picked.source === "exely" ? "Exely" : "панель"}
-            </span>
+
           </div>
 
           {DAY_USE.has(picked.room_slug) && picked.id > 0 && picked.status !== "cancelled" ? (
