@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { changeStatus, refreshExely, saveRate, type BroniState } from "../broni/actions";
 import type { PmsStatus } from "@/lib/db";
 import type { BookingRow, RateRow, UnitRow } from "@/lib/pms";
@@ -69,6 +69,17 @@ export function Grid({
   const [cancel, doCancel, cancelling] = useActionState<BroniState, FormData>(changeStatus, {});
   /** Бронь, по которой кликнули. Карточка показывается под сеткой. */
   const [picked, setPicked] = useState<BookingRow | null>(null);
+
+  // Esc закрывает окно: рука уже на клавиатуре, когда сверяешь сетку с Exely.
+  useEffect(() => {
+    if (!picked) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setPicked(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [picked]);
+
   const rateOf = (slug: string, day: string) => rates.find((r) => r.room_slug === slug && r.day === day)?.price;
   const groups = ["glamping", "cottage", "bungalow-small", "bungalow-large"].filter((s) =>
     units.some((u) => u.room_slug === s),
@@ -308,13 +319,27 @@ export function Grid({
                 </a>
               )}
             </div>
+            {/*
+              Кнопка нарисована, а не набрана символом: «×» из шрифта выходит
+              тонким и светлым, и оператор писал, что закрытие плохо видно.
+              Обводка, своя подложка и крестик линиями в цвет текста — теперь
+              это кнопка, а не тень от неё.
+            */}
             <button
               type="button"
               onClick={() => setPicked(null)}
               aria-label="Закрыть"
-              className="-mr-1 -mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-lg text-[var(--muted)] transition hover:bg-[var(--surface)] hover:text-[var(--ink)]"
+              title="Закрыть (Esc)"
+              className="-mr-1 -mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[color:var(--line-strong)] bg-[var(--surface)] text-[var(--ink)] transition hover:border-[color:var(--ink)] hover:bg-[var(--ink)] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--sun-dark)]"
             >
-              ×
+              <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                <path
+                  d="M3.5 3.5 12.5 12.5M12.5 3.5 3.5 12.5"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
             </button>
           </div>
 
