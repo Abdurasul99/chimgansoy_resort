@@ -272,7 +272,20 @@ export function Grid({
         ругается»: недоступное действие лучше не показывать вовсе.
       */}
       {picked && (
-        <div className="rounded-2xl border border-[color:var(--line-strong)] bg-[var(--paper)] p-5">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(21,29,24,0.45)] p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Бронь ${picked.guest_name}`}
+          // Клик мимо карточки закрывает её — так ведут себя все окна, и
+          // искать крестик глазами не приходится.
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setPicked(null);
+          }}
+        >
+          <div
+            className="w-full max-w-xl rounded-2xl border border-[color:var(--line-strong)] bg-[var(--paper)] p-5 shadow-[0_28px_90px_rgba(21,29,24,0.35)]"
+          >
           <div className="flex flex-wrap items-baseline gap-3">
             <span className="font-serif text-xl font-bold text-[var(--ink)]">{picked.guest_name}</span>
             {picked.phone && (
@@ -340,6 +353,7 @@ export function Grid({
                 : "Отмена домиков идёт через Exely; здесь бронь только показана."}
             </p>
           )}
+          </div>
         </div>
       )}
 
