@@ -9,10 +9,12 @@ import {
   setBookingMoney,
   setBookingStatus,
   deleteBooking,
+  priceFor,
   setRateRange,
   setServiceStatus,
 } from "@/lib/pms";
 import { insertBooking } from "@/lib/db";
+import { poolPricing } from "@/content/pricing";
 import { importFromBlob } from "@/lib/import-blob";
 import { EXELY_TAG } from "@/lib/exely-occupancy";
 import { sendGuestConfirmation } from "@/lib/guest-mail";
@@ -173,7 +175,7 @@ export async function createBooking(_prev: BroniState, form: FormData): Promise<
   const unit = String(form.get("unit") ?? "").trim();
   const adults = Math.max(0, Number(String(form.get("adults") ?? "2")) || 0);
   const kids = Math.max(0, Number(String(form.get("kids") ?? "0")) || 0);
-  const total = Math.max(0, Number(String(form.get("total") ?? "0").replace(/\s/g, "")) || 0);
+  const totalTyped = Math.max(0, Number(String(form.get("total") ?? "0").replace(/\s/g, "")) || 0);
 
   if (!["glamping", "cottage", "bungalow-small", "bungalow-large"].includes(roomSlug)) {
     return { error: "Выберите тип размещения." };
@@ -200,6 +202,18 @@ export async function createBooking(_prev: BroniState, form: FormData): Promise<
     });
     if (!id) return { error: "База не приняла запись. Попробуйте ещё раз." };
 
+    /**
+     * Сумма. У бунгало её не спрашивают: подставляется тариф на эту дату —
+     * своя цена, если оператор её задал, иначе обычная из прайса. Просить
+     * человека помнить прайс наизусть значит ловить ошибки на выходных.
+     */
+    const total = roomSlug.startsWith("bungalow")
+      ? await priceFor(
+          roomSlug,
+          checkin,
+          roomSlug === "bungalow-large" ? poolPricing.extras.bungalow10 : poolPricing.extras.bungalow4,
+        )
+      : totalTyped;
     if (total > 0) await setBookingMoney(id, total, 0);
     // Номер — последним: если он занят, бронь уже сохранена, и оператор просто
     // выберет другой, а не потеряет всё введённое.

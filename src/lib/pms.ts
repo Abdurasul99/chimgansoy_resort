@@ -320,3 +320,21 @@ export async function deleteBooking(id: number): Promise<void> {
   const res = await sql().query(`DELETE FROM bookings WHERE id = $1 RETURNING id`, [id]);
   if ((res as unknown[]).length === 0) throw new Error("Бронь не найдена");
 }
+
+/**
+ * Цена дня для типа размещения: своя на эту дату, иначе обычная из прайса.
+ *
+ * Нужна там, где сумму не спрашивают у оператора — у бунгало. Спрашивать её
+ * значит просить человека помнить прайс наизусть и ошибаться на выходных.
+ */
+export async function priceFor(roomSlug: string, day: string, fallback: number): Promise<number> {
+  try {
+    const rows = (await sql().query(
+      `SELECT price FROM rates WHERE room_slug = $1 AND day = $2`,
+      [roomSlug, day],
+    )) as { price: number }[];
+    return rows[0]?.price ?? fallback;
+  } catch {
+    return fallback;
+  }
+}

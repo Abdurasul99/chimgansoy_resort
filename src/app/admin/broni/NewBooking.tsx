@@ -121,10 +121,16 @@ export function NewBooking({ units, showImport = true }: { units: UnitRow[]; sho
           <span className={label}>Детей</span>
           <input name="kids" type="number" min={0} defaultValue={0} className={input} />
         </label>
-        <label className="block">
-          <span className={label}>Сумма</span>
-          <input name="total" type="number" min={0} defaultValue={0} className={input} />
-        </label>
+        {dayUse ? (
+          <p className="flex items-end pb-2 text-xs text-[var(--muted)]">
+            Сумма подставится по тарифу на эту дату.
+          </p>
+        ) : (
+          <label className="block">
+            <span className={label}>Сумма</span>
+            <input name="total" type="number" min={0} defaultValue={0} className={input} />
+          </label>
+        )}
 
         <label className="block">
           <span className={label}>
