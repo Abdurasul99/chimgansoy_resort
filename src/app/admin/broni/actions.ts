@@ -164,7 +164,8 @@ export async function createBooking(_prev: BroniState, form: FormData): Promise<
 
   const roomSlug = String(form.get("room_slug") ?? "").trim();
   const checkin = String(form.get("checkin") ?? "").trim();
-  const checkout = String(form.get("checkout") ?? "").trim();
+  // Выезд у бунгало не принимаем даже если он как-то придёт: день — значит день.
+  const checkout = roomSlug.startsWith("bungalow") ? "" : String(form.get("checkout") ?? "").trim();
   const name = String(form.get("guest_name") ?? "").trim().slice(0, 120);
   const phone = String(form.get("phone") ?? "").trim().slice(0, 40);
   const email = String(form.get("email") ?? "").trim().slice(0, 160);

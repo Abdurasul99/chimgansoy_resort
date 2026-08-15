@@ -44,6 +44,8 @@ export function NewBooking({ units, showImport = true }: { units: UnitRow[]; sho
   const [state, act, pending] = useActionState<BroniState, FormData>(createBooking, {});
   // Список номеров зависит от типа: шале в глэмпинг не поселить.
   const [room, setRoom] = useState("glamping");
+  /** У бунгало ночей нет: их снимают на день, и поле выезда только путает. */
+  const dayUse = room.startsWith("bungalow");
 
   if (!open) {
     return (
@@ -85,10 +87,16 @@ export function NewBooking({ units, showImport = true }: { units: UnitRow[]; sho
           <span className={label}>Заезд</span>
           <input name="checkin" type="date" required className={input} />
         </label>
-        <label className="block">
-          <span className={label}>Выезд</span>
-          <input name="checkout" type="date" className={input} />
-        </label>
+        {dayUse ? (
+          <p className="flex items-end pb-2 text-xs text-[var(--muted)]">
+            Бунгало снимают на один день — выезд не нужен.
+          </p>
+        ) : (
+          <label className="block">
+            <span className={label}>Выезд</span>
+            <input name="checkout" type="date" className={input} />
+          </label>
+        )}
 
         <label className="block">
           <span className={label}>Гость</span>
