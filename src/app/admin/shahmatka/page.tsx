@@ -4,6 +4,7 @@ import { Grid } from "./Grid";
 import { NewBooking } from "../broni/NewBooking";
 import { listRates, listUnits, occupancy, type BookingRow, type RateRow, type UnitRow } from "@/lib/pms";
 import { exelyOccupancy } from "@/lib/exely-occupancy";
+import { exelyRates } from "@/lib/exely-rates";
 import { poolPricing } from "@/content/pricing";
 
 /**
@@ -42,6 +43,8 @@ export default async function ShahmatkaPage({
   let units: UnitRow[] = [];
   let bookings: BookingRow[] = [];
   let rates: RateRow[] = [];
+  /** Цены из Exely по датам: то же, что видит гость на сайте. */
+  let live: Record<string, Record<string, number>> = {};
   let error: string | null = null;
   try {
     const [u, ours, r, theirs] = await Promise.all([
@@ -51,6 +54,8 @@ export default async function ShahmatkaPage({
       // Их брони не должны ронять экран: не ответили — покажем свои.
       exelyOccupancy(from, to).catch(() => [] as BookingRow[]),
     ]);
+    // Отдельно и терпимо к сбоям: без цен сетка остаётся сеткой.
+    live = await exelyRates(days).catch(() => ({}));
     units = u;
     rates = r;
     // Наши первыми: при совпадении номера и дат в клетке окажется наша запись,
@@ -134,7 +139,7 @@ export default async function ShahmatkaPage({
             <NewBooking units={units} showImport={false} />
           </div>
 
-          <Grid days={days} units={units} bookings={bookings} rates={rates} basePrice={basePrice} />
+          <Grid days={days} units={units} bookings={bookings} rates={rates} basePrice={basePrice} live={live} />
         </>
       )}
     </>

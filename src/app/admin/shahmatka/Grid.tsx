@@ -50,13 +50,19 @@ export function Grid({
   bookings,
   rates,
   basePrice,
+  live,
 }: {
   days: string[];
   units: UnitRow[];
   bookings: BookingRow[];
   rates: RateRow[];
-  /** Обычная цена из прайса — показывается, когда на дату нет своей. */
+  /** Обычная цена из прайса — последний запасной вариант. */
   basePrice: Record<string, number>;
+  /**
+   * Цены из Exely по датам: date → slug → цена. Это то же число, что видит
+   * гость на сайте, и оператор в их шахматке.
+   */
+  live?: Record<string, Record<string, number>>;
 }) {
   const [state, act, pending] = useActionState<BroniState, FormData>(saveRate, {});
   const [ref, refresh, refreshing] = useActionState<BroniState, FormData>(() => refreshExely(), {});
@@ -189,16 +195,23 @@ export function Grid({
                     {ROOM_LABEL[slug] ?? slug} · {DAY_USE.has(slug) ? "день" : "цена"}
                   </th>
                   {days.map((d) => {
+                    /**
+                     * Порядок важен: своя цена оператора бьёт всё, потом цена
+                     * из Exely — она настоящая и меняется по датам, — и только
+                     * потом число из прайса, как последний ориентир.
+                     */
                     const own = rateOf(slug, d);
+                    const fromExely = live?.[d]?.[slug];
+                    const shown = own ?? fromExely ?? basePrice[slug] ?? 0;
                     return (
                       <td
                         key={d}
-                        title={own ? "Своя цена на эту дату" : "Обычная цена из прайса"}
+                        title={own ? "Своя цена на эту дату" : fromExely ? "Цена из Exely" : "Из прайса — Exely не ответил"}
                         className={`px-1 py-1.5 text-center text-[10px] ${
                           own ? "bg-[var(--sun)]/20 font-bold text-[var(--sun-dark)]" : "text-[var(--muted)]"
                         }`}
                       >
-                        {Math.round((own ?? basePrice[slug] ?? 0) / 1000)}к
+                        {Math.round(shown / 1000)}к
                       </td>
                     );
                   })}
