@@ -48,7 +48,18 @@ const GATEWAY_URL = "https://ai-gateway.vercel.sh/v1/chat/completions";
  * Не размышляющая модель: для «сколько стоит бассейн» размышление это чистая
  * трата токенов и секунды ожидания.
  */
-const GROQ_MODEL_FAQ = process.env.GROQ_MODEL_FAQ?.trim() || "llama-3.1-8b-instant";
+/**
+ * Модель для обычных вопросов.
+ *
+ * Была llama-3.1-8b-instant — Groq снял её с обслуживания и стал отвечать 400
+ * `model_decommissioned`. Код 400 означал «мы прислали кривой запрос», цепочка
+ * на нём останавливалась, и консьерж молчал целиком: ни Groq, ни запасные.
+ *
+ * gpt-oss-20b — та, что оператор выбрал сам для простых ответов, оставив 120b
+ * на действительно сложные расчёты. Переопределяется переменной, чтобы
+ * следующая замена модели не требовала деплоя.
+ */
+const GROQ_MODEL_FAQ = process.env.GROQ_MODEL_FAQ?.trim() || "openai/gpt-oss-20b";
 
 const XAI_MODEL_FAQ = process.env.XAI_MODEL_FAQ?.trim() || "grok-4.1-fast-non-reasoning";
 const XAI_MODEL_HARD = process.env.XAI_MODEL_HARD?.trim() || "grok-4.1-fast-reasoning";
@@ -170,7 +181,16 @@ export function classify(status: number, body: string): Verdict {
 
   // Наш запрос кривой. Тот же кривой запрос у другого провайдера даст тот же
   // ответ — перебор только потратит секунды гостя и деньги на попытки.
-  if (status === 400) return "stop";
+  /**
+   * 400 обычно значит «мы прислали кривой запрос» — чинить это должен я, и
+   * перебирать провайдеров бессмысленно. Но Groq отвечает тем же кодом, когда
+   * снимает модель с обслуживания: `model_decommissioned` приходит как 400, а
+   * не 404. Проверено на проде — концierge молчал целиком, потому что цепочка
+   * останавливалась на первом же провайдере вместо перехода к запасному.
+   *
+   * Поэтому 400 со словами про модель — повод пойти дальше по цепочке.
+   */
+  if (status === 400) return MODEL_GONE.test(body) ? "fallback" : "stop";
 
   if (status === 401 || status === 403) return "fallback";
   if (status === 402) return "credits";

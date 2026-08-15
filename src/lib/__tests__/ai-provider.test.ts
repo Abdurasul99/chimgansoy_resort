@@ -56,8 +56,10 @@ describe("порядок провайдеров", () => {
     expect(aiTargets("hard").map((t) => t.label)).toEqual(["xai", "gateway"]);
   });
 
-  it("простой вопрос идёт в llama-3.1-8b-instant", () => {
-    expect(aiTargets("faq")[0].model).toBe("llama-3.1-8b-instant");
+  it("простой вопрос идёт в лёгкую модель Groq", () => {
+    // llama-3.1-8b-instant сняли с обслуживания: Groq стал отвечать 400
+    // model_decommissioned, и консьерж замолчал целиком.
+    expect(aiTargets("faq")[0].model).toBe("openai/gpt-oss-20b");
   });
 
   it("для FAQ берётся НЕразмышляющий Grok, для расчёта — размышляющий", () => {
@@ -116,6 +118,13 @@ describe("разбор кодов ошибок", () => {
 
   it("400 — наш кривой запрос: перебор не поможет, отдаём управляемую ошибку", () => {
     expect(classify(400, "invalid tool_choice")).toBe("stop");
+  });
+
+  it("400 про снятую модель — к следующему провайдеру", () => {
+    // Groq отвечает 400, а не 404, когда снимает модель с обслуживания.
+    // Из-за этого консьерж молчал целиком: цепочка вставала на первом же.
+    expect(classify(400, "model_decommissioned: llama-3.1-8b-instant")).toBe("fallback");
+    expect(classify(400, "The model has been deprecated")).toBe("fallback");
   });
 
   it("404 — к следующему, только если дело в модели", () => {
