@@ -6,6 +6,7 @@ import type { PmsStatus } from "@/lib/db";
 import {
   assignUnit,
   getBooking,
+  isUnitFree,
   setBookingMoney,
   setBookingStatus,
   deleteBooking,
@@ -187,6 +188,33 @@ export async function createBooking(_prev: BroniState, form: FormData): Promise<
   if (adults + kids < 1) return { error: "Укажите хотя бы одного гостя." };
 
   try {
+    /**
+     * Всё, что можно, — до записи и параллельно.
+     *
+     * Раньше создание шло восемью запросами в базу по очереди: вставка, потом
+     * сумма отдельным запросом, потом закрепление номера — а внутри него ещё
+     * четыре. Каждый запрос к Neon это отдельное соединение через полмира, и
+     * оператор ждал секунды на ровном месте.
+     *
+     * Теперь два: проверка занятости и вставка со всеми полями сразу.
+     */
+    const total = roomSlug.startsWith("bungalow")
+      ? await priceFor(
+          roomSlug,
+          checkin,
+          roomSlug === "bungalow-large" ? poolPricing.extras.bungalow10 : poolPricing.extras.bungalow4,
+        )
+      : totalTyped;
+
+    // Занятый номер не назначаем, но и бронь без него не теряем: проверяем ДО
+    // вставки, чтобы не пришлось откатывать.
+    let unitId: string | null = null;
+    let unitNote = "";
+    if (unit) {
+      if (await isUnitFree(unit, checkin, checkout || null)) unitId = unit;
+      else unitNote = " Номер занят на эти даты — выберите другой.";
+    }
+
     const id = await insertBooking({
       roomSlug,
       checkin,
@@ -199,36 +227,16 @@ export async function createBooking(_prev: BroniState, form: FormData): Promise<
       comment: comment || undefined,
       locale: "ru",
       source: "admin",
+      total,
+      unitId,
     });
     if (!id) return { error: "База не приняла запись. Попробуйте ещё раз." };
 
-    /**
-     * Сумма. У бунгало её не спрашивают: подставляется тариф на эту дату —
-     * своя цена, если оператор её задал, иначе обычная из прайса. Просить
-     * человека помнить прайс наизусть значит ловить ошибки на выходных.
-     */
-    const total = roomSlug.startsWith("bungalow")
-      ? await priceFor(
-          roomSlug,
-          checkin,
-          roomSlug === "bungalow-large" ? poolPricing.extras.bungalow10 : poolPricing.extras.bungalow4,
-        )
-      : totalTyped;
-    if (total > 0) await setBookingMoney(id, total, 0);
-    // Номер — последним: если он занят, бронь уже сохранена, и оператор просто
-    // выберет другой, а не потеряет всё введённое.
-    if (unit) {
-      try {
-        await assignUnit(id, unit);
-      } catch (e) {
-        revalidatePath("/admin/broni");
-        return { ok: `Бронь №${id} создана, но номер не закреплён: ${e instanceof Error ? e.message : ""}` };
-      }
-    }
-
+    // Только текущий экран. revalidatePath на шахматку заставлял её
+    // перерисоваться целиком — вместе с чтением всех броней из Exely, и
+    // оператор смотрел на «Создаём…» лишние секунды.
     revalidatePath("/admin/broni");
-    revalidatePath("/admin/shahmatka");
-    return { ok: `Бронь №${id} создана.` };
+    return { ok: `Бронь №${id} создана.${unitNote}` };
   } catch (e) {
     return { error: e instanceof Error ? e.message : "Не удалось создать бронь." };
   }

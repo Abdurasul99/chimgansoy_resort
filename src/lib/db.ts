@@ -38,6 +38,9 @@ export type NewBooking = {
   locale: string;
   /** «site» для заявок с сайта, «admin» для заведённых руками. */
   source?: string;
+  /** Сумма. Пишется сразу, чтобы не делать второй запрос ради одного поля. */
+  total?: number;
+  unitId?: string | null;
 };
 
 /**
@@ -53,8 +56,9 @@ export async function insertBooking(b: NewBooking): Promise<number | null> {
   try {
     const rows = await sql.query(
       `INSERT INTO bookings
-         (room_slug, checkin, checkout, guest_name, phone, email, adults, kids, comment, locale, source)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+         (room_slug, checkin, checkout, guest_name, phone, email, adults, kids, comment,
+          locale, source, total, unit_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
        RETURNING id`,
       [
         b.roomSlug,
@@ -68,6 +72,8 @@ export async function insertBooking(b: NewBooking): Promise<number | null> {
         b.comment || null,
         b.locale,
         b.source ?? "site",
+        Math.max(0, Math.round(b.total ?? 0)),
+        b.unitId ?? null,
       ],
     );
     return (rows as { id: number }[])[0]?.id ?? null;
