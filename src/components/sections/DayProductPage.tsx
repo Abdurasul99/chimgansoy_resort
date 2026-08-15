@@ -2,6 +2,7 @@ import { PageHero } from "@/components/sections/PageHero";
 import { MediaArchive } from "@/components/sections/MediaArchive";
 import { TopchanRequestForm } from "@/components/sections/TopchanRequestForm";
 import { TubingRequestForm } from "@/components/sections/TubingRequestForm";
+import { TubingSafetyPoster } from "@/components/sections/TubingSafetyPoster";
 import { Icon } from "@/components/ui/Icon";
 import { VideoReel } from "@/components/sections/VideoReel";
 import { getDayProduct } from "@/content/day-products";
@@ -45,6 +46,8 @@ export async function DayProductPage({ locale, slug }: { locale: Locale; slug: "
         lead={text(product.lead, locale)}
         image={resortImages[product.image]}
       />
+
+      {slug === "tubing" && <TubingSafetyPoster locale={locale} />}
 
       <section id="request" className="scroll-mt-24 bg-[var(--surface)] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <div className="mx-auto max-w-3xl">

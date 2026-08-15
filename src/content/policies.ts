@@ -1,5 +1,6 @@
 import type { LocalizedList, LocalizedString } from "./types";
 import { legalPolicies } from "./policies-legal";
+import { tubingLegalPolicy } from "./policies-tubing-legal";
 
 export type PolicyPage = {
   slug: string;
@@ -94,4 +95,6 @@ export const policies: PolicyPage[] = [
   // Real legal documents (Public Offer, Privacy Policy, Return & Cancellation)
   // provided by the operator — see policies-legal.ts.
   ...legalPolicies,
+  // Safety rules generated verbatim from the operator's DOCX.
+  tubingLegalPolicy,
 ];

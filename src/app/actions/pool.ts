@@ -1,9 +1,10 @@
 "use server";
 
 import { contacts } from "@/content/contacts";
-import { poolFacts, poolPricing } from "@/content/pricing";
+import { poolFacts } from "@/content/pricing";
 import { getPricing } from "@/lib/pricing-live";
 import { esc } from "@/lib/telegram";
+import { validateLegalConsents } from "@/lib/legal-consent";
 import {
   deliverRequest,
   dialable,
@@ -57,6 +58,9 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
   const localeRaw = ((formData.get("locale") as string | null) ?? "").trim();
   const lang: Lang = localeRaw === "uz" || localeRaw === "en" ? localeRaw : "ru";
   const m = MESSAGES[lang];
+
+  const legalError = validateLegalConsents(formData, lang);
+  if (legalError) return { ok: false, error: legalError };
 
   const name = ((formData.get("name") as string | null) ?? "").trim();
   const phone = ((formData.get("phone") as string | null) ?? "").trim();

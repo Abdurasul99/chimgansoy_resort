@@ -49,6 +49,19 @@ describe("ContactForm", () => {
     expect(screen.getByLabelText("Сообщение")).not.toHaveAttribute("required");
   });
 
+  it("requires separate public-offer and personal-data consents", () => {
+    const { container } = render(<ContactForm dict={dict} locale="ru" />);
+    const offer = container.querySelector<HTMLInputElement>('input[name="offerConsent"]');
+    const privacy = container.querySelector<HTMLInputElement>('input[name="privacyConsent"]');
+
+    expect(offer).not.toBeNull();
+    expect(privacy).not.toBeNull();
+    expect(offer?.required).toBe(true);
+    expect(privacy?.required).toBe(true);
+    expect(container.querySelector('a[href="/ru/legal/public-offer"]')).not.toBeNull();
+    expect(container.querySelector('a[href="/ru/legal/privacy-policy"]')).not.toBeNull();
+  });
+
   it("phone input uses type=tel for mobile keyboards", () => {
     render(<ContactForm dict={dict} locale="ru" />);
     expect(screen.getByLabelText("Телефон")).toHaveAttribute("type", "tel");
@@ -66,6 +79,8 @@ describe("ContactForm", () => {
     await user.type(screen.getByLabelText("Имя"), "Алексей");
     await user.type(screen.getByLabelText("Телефон"), "+998 90 123 45 67");
     await user.type(screen.getByLabelText("Сообщение"), "Хотел бы забронировать");
+    await user.click(document.querySelector<HTMLInputElement>('input[name="offerConsent"]')!);
+    await user.click(document.querySelector<HTMLInputElement>('input[name="privacyConsent"]')!);
     await user.click(screen.getByRole("button", { name: /Отправить/ }));
 
     await waitFor(() => expect(submitContactMock).toHaveBeenCalledTimes(1));
@@ -80,6 +95,8 @@ describe("ContactForm", () => {
     render(<ContactForm dict={dict} locale="ru" />);
     await user.type(screen.getByLabelText("Имя"), "X");
     await user.type(screen.getByLabelText("Телефон"), "Y");
+    await user.click(document.querySelector<HTMLInputElement>('input[name="offerConsent"]')!);
+    await user.click(document.querySelector<HTMLInputElement>('input[name="privacyConsent"]')!);
     await user.click(screen.getByRole("button", { name: /Отправить/ }));
 
     await waitFor(() => expect(submitContactMock).toHaveBeenCalledTimes(1));
@@ -92,6 +109,8 @@ describe("ContactForm", () => {
     render(<ContactForm dict={dict} locale="ru" />);
     await user.type(screen.getByLabelText("Имя"), "X");
     await user.type(screen.getByLabelText("Телефон"), "Y");
+    await user.click(document.querySelector<HTMLInputElement>('input[name="offerConsent"]')!);
+    await user.click(document.querySelector<HTMLInputElement>('input[name="privacyConsent"]')!);
     await user.click(screen.getByRole("button", { name: /Отправить/ }));
 
     await waitFor(() => {
@@ -105,6 +124,8 @@ describe("ContactForm", () => {
     render(<ContactForm dict={dict} locale="ru" />);
     await user.type(screen.getByLabelText("Имя"), "X");
     await user.type(screen.getByLabelText("Телефон"), "Y");
+    await user.click(document.querySelector<HTMLInputElement>('input[name="offerConsent"]')!);
+    await user.click(document.querySelector<HTMLInputElement>('input[name="privacyConsent"]')!);
     await user.click(screen.getByRole("button", { name: /Отправить/ }));
 
     await waitFor(() => {

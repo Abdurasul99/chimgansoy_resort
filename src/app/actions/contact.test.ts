@@ -14,8 +14,12 @@ import { submitContact } from "./contact";
 
 const VALID_PHONE = "+998 90 123 45 67";
 
-function makeFormData(fields: Record<string, string>): FormData {
+function makeFormData(fields: Record<string, string>, includeLegalConsents = true): FormData {
   const fd = new FormData();
+  if (includeLegalConsents) {
+    fd.set("offerConsent", "on");
+    fd.set("privacyConsent", "on");
+  }
   for (const [k, v] of Object.entries(fields)) fd.set(k, v);
   return fd;
 }
@@ -45,6 +49,22 @@ describe("submitContact server action", () => {
   });
 
   describe("input validation", () => {
+    it("rejects a request without public-offer consent", async () => {
+      const fd = makeFormData({ name: "Alex", phone: VALID_PHONE, locale: "en", privacyConsent: "on" }, false);
+      const result = await submitContact(fd);
+
+      expect(result).toEqual({ ok: false, error: expect.stringMatching(/public offer/i) });
+      expect(resendCalls).toHaveLength(0);
+    });
+
+    it("rejects a request without personal-data consent", async () => {
+      const fd = makeFormData({ name: "Alex", phone: VALID_PHONE, locale: "en", offerConsent: "on" }, false);
+      const result = await submitContact(fd);
+
+      expect(result).toEqual({ ok: false, error: expect.stringMatching(/personal data/i) });
+      expect(resendCalls).toHaveLength(0);
+    });
+
     it("rejects empty name", async () => {
       const fd = makeFormData({ name: "", phone: VALID_PHONE });
       const result = await submitContact(fd);

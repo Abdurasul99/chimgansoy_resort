@@ -1,5 +1,6 @@
 import type { resortImages } from "./images";
 import type { LocalizedList, LocalizedString } from "./types";
+import { tubing100cmPolicySections } from "./tubing-100cm-rules";
 
 /** Same key type the room catalogue uses, so a typo fails the build. */
 export type ImageKey = keyof typeof resortImages;
@@ -163,6 +164,8 @@ export const dayProducts: DayProduct[] = [
     highlights: {
       ru: [
         "Всесезонная трасса: 160 м длиной, 6 м шириной",
+        "Тюбинг диаметром 100 см, максимальная нагрузка — строго до 95 кг",
+        "Самостоятельный спуск ребёнка — при надёжной посадке, обычно от 140 см",
         "Автоматический подъём — пешком наверх идти не нужно",
         "До 5 человек спускаются одновременно",
         "Безопасная остановка внизу",
@@ -171,6 +174,8 @@ export const dayProducts: DayProduct[] = [
       ],
       uz: [
         "Butun mavsumga trassa: 160 m uzunlik, 6 m kenglik",
+        "Tyubing diametri 100 sm, maksimal yuklama — qat'iy 95 kg gacha",
+        "Bola mustaqil uchishi uchun ishonchli o'tirishi kerak — odatda bo'yi 140 sm dan",
         "Avtomatik ko'targich — piyoda chiqish shart emas",
         "Bir vaqtda 5 kishigacha tushadi",
         "Pastda xavfsiz to'xtash joyi",
@@ -179,6 +184,8 @@ export const dayProducts: DayProduct[] = [
       ],
       en: [
         "All-season track: 160 m long, 6 m wide",
+        "100 cm tube, maximum load strictly limited to 95 kg",
+        "A child may ride solo only with a secure fit — normally from 140 cm",
         "Powered lift — nobody walks back up",
         "Up to 5 people descend at once",
         "Controlled stop at the bottom",
@@ -186,6 +193,14 @@ export const dayProducts: DayProduct[] = [
         "Tubes provided on site",
       ],
     },
+    sections: tubing100cmPolicySections.map((section) => ({
+      title: section.title,
+      body: {
+        ru: section.items.ru.join(" "),
+        uz: section.items.uz.join(" "),
+        en: section.items.en.join(" "),
+      },
+    })),
   },
 ];
 

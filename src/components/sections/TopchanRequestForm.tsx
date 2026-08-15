@@ -8,6 +8,7 @@ import { contacts } from "@/content/contacts";
 import { CountInput } from "@/components/ui/CountInput";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Icon } from "@/components/ui/Icon";
+import { LegalConsentFields } from "@/components/ui/LegalConsentFields";
 import { trackEvent } from "@/lib/analytics";
 import { text } from "@/lib/localize";
 import { isWeekendISO, money } from "@/lib/tariff";
@@ -43,6 +44,7 @@ const COPY: Record<
     towels: string;
     total: string;
     freeNote: string;
+    parkingNote: string;
   }
 > = {
   ru: {
@@ -72,7 +74,8 @@ const COPY: Record<
     poolKids: "Дети 5–15 лет",
     towels: "Полотенца",
     total: "Предварительно к оплате",
-    freeNote: `Топчан — крытая площадка с курпачами в пикник-зоне, рядом мангал и казан; это НЕ бунгало у бассейна, они бронируются отдельно на странице бассейна. Топчан оплачивается целиком, не с человека: один вмещает до ${topchanPricing.capacity} гостей. Свои продукты и свой мангал привозить можно. Работаем ежедневно ${topchanPricing.hours}. Парковка бесплатная, но не гарантированная — место предоставляется при наличии свободных.`,
+    freeNote: `Топчан — крытая площадка с курпачами в пикник-зоне, рядом мангал и казан; это НЕ бунгало у бассейна, они бронируются отдельно на странице бассейна. Топчан оплачивается целиком, не с человека: один вмещает до ${topchanPricing.capacity} гостей. Свои продукты и свой мангал привозить можно. Работаем ежедневно ${topchanPricing.hours}.`,
+    parkingNote: "Парковка для гостей топчана бесплатная, но место не гарантировано — предоставляется при наличии.",
   },
   uz: {
     eyebrow: `Piknik zonasidagi topchan · ${topchanPricing.hours}`,
@@ -101,7 +104,8 @@ const COPY: Record<
     poolKids: "5–15 yoshli bolalar",
     towels: "Sochiqlar",
     total: "Taxminiy to'lov",
-    freeNote: `Topchan — piknik zonasidagi kurpachali soyabonli maydoncha, yonida mangal va qozon; bu basseyn yonidagi bungalo EMAS, ular basseyn sahifasida alohida bron qilinadi. Topchan bir kishidan emas, butunlay to'lanadi: bittasiga ${topchanPricing.capacity} kishigacha sig'adi. O'z mahsulotlaringiz va mangalingizni olib kelish mumkin. Har kuni ${topchanPricing.hours} ishlaymiz. Avtoturargoh bepul, lekin kafolatlanmagan — joy bo'sh bo'lsa taqdim etiladi.`,
+    freeNote: `Topchan — piknik zonasidagi kurpachali soyabonli maydoncha, yonida mangal va qozon; bu basseyn yonidagi bungalo EMAS, ular basseyn sahifasida alohida bron qilinadi. Topchan bir kishidan emas, butunlay to'lanadi: bittasiga ${topchanPricing.capacity} kishigacha sig'adi. O'z mahsulotlaringiz va mangalingizni olib kelish mumkin. Har kuni ${topchanPricing.hours} ishlaymiz.`,
+    parkingNote: "Topchan mehmonlari uchun avtoturargoh bepul, lekin joy kafolatlanmaydi — bo'sh joy bo'lsa taqdim etiladi.",
   },
   en: {
     eyebrow: `Topchan in the picnic zone · ${topchanPricing.hours}`,
@@ -130,7 +134,8 @@ const COPY: Record<
     poolKids: "Children 5–15",
     towels: "Towels",
     total: "Estimated total",
-    freeNote: `A topchan is a covered platform with kurpacha cushions in the picnic zone, with a grill and a kazan beside it — it is NOT a poolside bungalow; those are booked separately on the pool page. A topchan is charged as a whole, not per person: one seats up to ${topchanPricing.capacity} guests. You may bring your own food and your own grill. Open daily ${topchanPricing.hours}. Parking is free but not guaranteed — a space is given if one is available.`,
+    freeNote: `A topchan is a covered platform with kurpacha cushions in the picnic zone, with a grill and a kazan beside it — it is NOT a poolside bungalow; those are booked separately on the pool page. A topchan is charged as a whole, not per person: one seats up to ${topchanPricing.capacity} guests. You may bring your own food and your own grill. Open daily ${topchanPricing.hours}.`,
+    parkingNote: "Parking is free for topchan guests, but a space is not guaranteed and is provided subject to availability.",
   },
 };
 
@@ -323,6 +328,10 @@ export function TopchanRequestForm({
         </div>
       </div>
 
+      <p className="mt-4 rounded-2xl border border-[color:var(--sun)]/45 bg-[var(--sun)]/10 px-4 py-3 text-sm leading-6 text-[var(--ink)]">
+        <strong>{t.parkingNote}</strong>
+      </p>
+
       <form action={action} className="mt-7 space-y-4">
         <input type="hidden" name="locale" value={locale} />
         {/* Honeypot — invisible to humans, filled only by bots */}
@@ -430,6 +439,8 @@ export function TopchanRequestForm({
           <span className={labelCls}>{t.message}</span>
           <textarea name="message" rows={3} placeholder={t.messagePh} className={`${field} resize-none`} />
         </label>
+
+        <LegalConsentFields locale={locale} />
 
         {state.status === "error" && state.message && (
           <p role="alert" className="rounded-xl bg-[#c0392b]/10 px-4 py-3 text-sm font-semibold text-[#c0392b]">

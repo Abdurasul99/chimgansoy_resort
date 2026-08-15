@@ -5,6 +5,7 @@ import { esc } from "@/lib/telegram";
 import { deliverRequest, dialable, todayTashkent } from "@/lib/request-delivery";
 import { readOverrides, type FormField } from "@/lib/site-overrides";
 import { insertServiceRequest } from "@/lib/db";
+import { validateLegalConsents } from "@/lib/legal-consent";
 
 export type ServiceRequestState = { ok?: boolean; error?: string };
 
@@ -104,6 +105,9 @@ export async function submitServiceRequest(
   // Ловушка для ботов: заполненное поле — не человек. Отвечаем успехом, чтобы
   // не подсказывать, на чём его поймали.
   if (String(form.get("company") ?? "").trim()) return { ok: true };
+
+  const legalError = validateLegalConsents(form, locale);
+  if (legalError) return { error: legalError };
 
   const slug = String(form.get("slug") ?? "").trim();
   const service = (await readOverrides()).customServices.find((c) => c.slug === slug && !c.hidden);

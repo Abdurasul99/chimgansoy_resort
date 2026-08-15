@@ -91,12 +91,12 @@ export const knowledge: KnowledgeEntry[] = [
     id: "checkin",
     keywords: ["заезд", "выезд", "check-in", "checkin", "checkout", "kirish", "chiqish", "во сколько заезд", "когда заезд"],
     answer: {
-      // 14:00 — Публичная оферта, пп. 1, 2.5, 4.2 и Правила пребывания 4.1.
-      // Побывало 15:00 в течение суток по неформальному списку оператора и
-      // вернулось обратно, когда пришли подписанные документы от 05.08.2026.
+      // Историческая оговорка: в одном из ранних списков от оператора фигурировал
+      // другой час, но подписанные документы и текущий контракт на сайте остаются
+      // на 15:00.
       ru: "🕑 Заезд — с 15:00, выезд — до 12:00. Ресепшн работает круглосуточно, так что приехать можно и поздно вечером. Ранний заезд и поздний выезд предоставляются за доплату и зависят от загрузки — согласуйте с администратором. При заселении понадобятся паспорта всех проживающих. Дополнительно взимается обязательный туристский сбор.",
       uz: "🕑 Kirish — 15:00 dan, chiqish — 12:00 gacha. Resepshn 24 soat ishlaydi, shuning uchun kech kechqurun ham kelish mumkin. Erta kirish va kech chiqish qo'shimcha to'lov evaziga beriladi va bandlikka bog'liq — administrator bilan kelishing. Joylashuvda barcha yashovchilarning pasporti kerak bo'ladi. Qo'shimcha ravishda majburiy turistik yig'im olinadi.",
-      en: "🕑 Check-in from 3:00 PM, check-out by 12:00 PM. Reception is staffed around the clock, so a late-evening arrival is fine. Early check-in and late check-out are charged and depend on occupancy — arrange them with the administrator. Passports of every guest are required at check-in. A mandatory tourist levy is charged on top.",
+      en: "🕑 Check-in from 15:00, check-out by 12:00. Reception is staffed around the clock, so a late-evening arrival is fine. Early check-in and late check-out are charged and depend on occupancy — arrange them with the administrator. Passports of every guest are required at check-in. A mandatory tourist levy is charged on top.",
     },
   },
 

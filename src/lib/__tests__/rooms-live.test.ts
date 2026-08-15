@@ -34,10 +34,14 @@ describe("страница домика — списки", () => {
     expect(live.amenities("ru")).not.toContain(glamping.amenities.ru[0]);
   });
 
-  it("один и тот же список на всех трёх языках", () => {
+  it("список оператора виден на русской странице, перевод — на остальных", () => {
+    // Поле в панели одно, и текст в нём русский. Раньше он подменял собой все
+    // три языка: узбекская страница глэмпинга показывала русские строки под
+    // узбекскими заголовками, хотя перевод в content/rooms.ts есть и он верный.
     const live = resolveRoom(glamping, patch({ glamping: { amenities: ["Мангал по запросу"] } }));
-    expect(live.amenities("uz")).toEqual(["Мангал по запросу"]);
-    expect(live.amenities("en")).toEqual(["Мангал по запросу"]);
+    expect(live.amenities("ru")).toEqual(["Мангал по запросу"]);
+    expect(live.amenities("uz")).toEqual(glamping.amenities.uz);
+    expect(live.amenities("en")).toEqual(glamping.amenities.en);
   });
 
   it("нетронутый список продолжает следовать коду", () => {

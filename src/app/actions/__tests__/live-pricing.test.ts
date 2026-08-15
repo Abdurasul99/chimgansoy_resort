@@ -17,7 +17,10 @@ import { EMPTY } from "@/lib/site-overrides";
 
 const { readOverrides, deliverRequest } = vi.hoisted(() => ({
   readOverrides: vi.fn(),
-  deliverRequest: vi.fn(async (_opts: unknown) => ({ telegramOk: true, emailOk: true })),
+  deliverRequest: vi.fn(async (opts: unknown) => {
+    void opts;
+    return { telegramOk: true, emailOk: true };
+  }),
 }));
 
 vi.mock("@/lib/site-overrides", async (orig) => ({
@@ -33,7 +36,8 @@ vi.mock("@/lib/request-delivery", async (orig) => {
 
 import { submitTopchanRequest } from "@/app/actions/topchan";
 import { submitPoolRequest } from "@/app/actions/pool";
-import { topchanPricing, poolPricing, poolFacts, parkingPricing } from "@/content/pricing";
+import { submitTubingRequest } from "@/app/actions/tubing";
+import { topchanPricing, poolPricing, poolFacts, tubingPricing } from "@/content/pricing";
 
 /** A date that is always in the future and always a Monday — weekday band. */
 function nextMonday(): string {
@@ -42,8 +46,12 @@ function nextMonday(): string {
   return d.toISOString().slice(0, 10);
 }
 
-function form(fields: Record<string, string>): FormData {
+function form(fields: Record<string, string>, includeLegalConsents = true): FormData {
   const fd = new FormData();
+  if (includeLegalConsents) {
+    fd.set("offerConsent", "on");
+    fd.set("privacyConsent", "on");
+  }
   for (const [k, v] of Object.entries(fields)) fd.set(k, v);
   return fd;
 }
@@ -57,6 +65,50 @@ function sentTotal(): number {
 beforeEach(() => {
   deliverRequest.mockClear();
   readOverrides.mockResolvedValue(EMPTY);
+});
+
+describe("серверная проверка обязательных юридических согласий", () => {
+  const base = {
+    locale: "en",
+    name: "Alex",
+    phone: "+998901234567",
+    date: nextMonday(),
+  };
+
+  it("топчан: отклоняет заявку без согласия с публичной офертой", async () => {
+    const result = await submitTopchanRequest(form({ ...base, guests: "2", privacyConsent: "on" }, false));
+
+    expect(result).toEqual({ ok: false, error: expect.stringMatching(/public offer/i) });
+    expect(deliverRequest).not.toHaveBeenCalled();
+  });
+
+  it("бассейн: отклоняет заявку без согласия на обработку персональных данных", async () => {
+    const result = await submitPoolRequest(
+      form({ ...base, guests: "2", kids: "0", toddlers: "0", offerConsent: "on" }, false),
+    );
+
+    expect(result).toEqual({ ok: false, error: expect.stringMatching(/personal data/i) });
+    expect(deliverRequest).not.toHaveBeenCalled();
+  });
+
+  it("тюбинг: проверяет правила, оферту и персональные данные независимо", async () => {
+    const result = await submitTubingRequest(
+      form(
+        {
+          ...base,
+          guests: "2",
+          pack0: "1",
+          consent: "on",
+          rulesConsent: "on",
+          offerConsent: "on",
+        },
+        false,
+      ),
+    );
+
+    expect(result).toEqual({ ok: false, error: expect.stringMatching(/personal data/i) });
+    expect(deliverRequest).not.toHaveBeenCalled();
+  });
 });
 
 describe("топчан: сервер считает по цене из админки", () => {
@@ -206,5 +258,63 @@ describe("топчан: парковка НЕ попадает в счёт", () 
     // меняться не должен.
     await submitTopchanRequest(form({ ...base, date: nextMonday(), cars: "3" }));
     expect(sentTotal()).toBe(topchanPricing.rent.weekday);
+  });
+});
+
+describe("тюбинг: парковка оплачивается отдельно от заявки", () => {
+  it("даже старое поле cars не добавляет парковку в сумму заявки", async () => {
+    await submitTubingRequest(
+      form({
+        locale: "ru",
+        name: "Тест",
+        phone: "+998901234567",
+        guests: "2",
+        date: nextMonday(),
+        pack0: "1",
+        cars: "3",
+        rulesConsent: "on",
+      }),
+    );
+
+    expect(sentTotal()).toBe(tubingPricing.packages[0].price);
+  });
+});
+
+describe("тюбинг: согласие с правилами и офертой", () => {
+  const base = {
+    locale: "ru",
+    name: "Тест",
+    phone: "+998901234567",
+    guests: "2",
+    date: nextMonday(),
+    pack0: "1",
+  };
+
+  it("не принимает заявку без явного согласия", async () => {
+    const result = await submitTubingRequest(form(base));
+
+    expect(result.ok).toBe(false);
+    expect(result).toMatchObject({ error: expect.stringMatching(/правил|оферт/i) });
+    expect(deliverRequest).not.toHaveBeenCalled();
+  });
+
+  it("фиксирует согласие в сообщении и архивной записи", async () => {
+    const result = await submitTubingRequest(form({ ...base, rulesConsent: "on" }));
+    const sent = deliverRequest.mock.calls.at(-1)?.[0] as {
+      telegramHtml?: string;
+      emailHtml?: string;
+      record?: { extras?: string[] };
+    };
+
+    expect(result).toEqual({ ok: true });
+    expect(sent.telegramHtml).toMatch(/согласие.+правил.+оферт/i);
+    expect(sent.telegramHtml).toMatch(/редакция № 2/i);
+    expect(sent.telegramHtml).toContain("13.08.2026");
+    expect(sent.telegramHtml).toMatch(/персональн/i);
+    expect(sent.emailHtml).toMatch(/согласие.+правил.+оферт/i);
+    expect(sent.emailHtml).toMatch(/персональн/i);
+    expect(sent.record?.extras?.join("\n")).toMatch(/согласие.+правил.+оферт/i);
+    expect(sent.record?.extras?.join("\n")).toMatch(/персональн/i);
+    expect(sent.record?.extras?.join("\n")).toContain("13.08.2026");
   });
 });

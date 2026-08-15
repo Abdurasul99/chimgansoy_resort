@@ -4,6 +4,8 @@ import { useActionState, useEffect, useRef } from "react";
 import { submitContact } from "@/app/actions/contact";
 import { trackEvent } from "@/lib/analytics";
 import { Icon } from "@/components/ui/Icon";
+import { LegalConsentFields } from "@/components/ui/LegalConsentFields";
+import type { Locale } from "@/i18n/config";
 
 type Dict = {
   name: string;
@@ -15,7 +17,7 @@ type Dict = {
   errorRequired: string;
 };
 
-type Props = { dict: Dict; locale: string };
+type Props = { dict: Dict; locale: Locale };
 
 type State = { status: "idle" | "ok" | "error"; message?: string };
 
@@ -114,6 +116,8 @@ export function ContactForm({ dict, locale }: Props) {
           className="w-full resize-none rounded-xl border border-white/14 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white placeholder-white/30 outline-none transition-all duration-200 focus:border-[#f0c26a] focus:bg-white/[0.07] focus:ring-2 focus:ring-[#f0c26a]/20"
         />
       </label>
+
+      <LegalConsentFields locale={locale} tone="dark" />
 
       {/* Error */}
       {state.status === "error" && (

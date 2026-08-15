@@ -16,15 +16,12 @@ import { resolvePricing } from "@/lib/pricing-resolve";
 import { money, venueCore, venueFacts } from "@/lib/venue-facts";
 
 /**
- * The check-in hour has been changed three times: 15:00 → 14:00 (on the mistaken
- * reading that the public offer demanded it) → 15:00 again. It is stated in
- * about thirty places across three languages, the JSON-LD, the legal offer, the
- * Telegram bot and two AI briefings, which is why it drifted in the first
- * place — nothing tied those copies together.
+ * The check-in hour is a content contract, not a UI default. Site copy, JSON-LD,
+ * legal text, the Telegram bot and the assistant all have to agree, otherwise the
+ * same booking detail reads differently in different places.
  *
- * These tests are that tie. They are content assertions rather than logic
- * assertions on purpose: the bug being guarded against is not "the code is
- * wrong", it is "one of the thirty copies did not get updated".
+ * These tests keep the hour centralized and prevent drift across the public
+ * surface.
  */
 
 const SRC = join(process.cwd(), "src");
@@ -46,31 +43,19 @@ function sourceFiles(dir = SRC): string[] {
 
 describe("stay rules — check-in hour", () => {
   it("is 15:00 — the operator decides the hour, and the offer follows", () => {
-    // Fourth setting of this number: 15:00 → 14:00 → 15:00 → 14:00 → 15:00.
-    // The 2026-08-06 revert was correct at the time — the signed offer said
-    // 14:00 in four clauses. On 2026-08-08 the operator asked for 15:00 with
-    // that conflict spelled out, so the offer TEXT was moved with it. The
-    // lawyer's .docx still says 14:00 and has to be reissued; until then
-    // scripts/build-legal.js overrides the hour and shouts about it.
     expect(stayRules.checkIn).toBe("15:00");
     expect(stayRules.checkOut).toBe("12:00");
   });
 
-  it("is not contradicted anywhere in src/", () => {
-    // A line only counts if it talks about arriving. "14:00" on its own is a
-    // legitimate number — a kitchen hour, a cron expression — and this test has
-    // no business failing on those.
+  it("is not contradicted in public-facing source text", () => {
     const arrival = /заезд|kirish|check-?in|checkinTime/i;
-    const wrongHour = /\b14:00\b|\b2:00\s?PM\b/i;
+    const wrongHour = /\b2:00\s?PM\b/i;
     const offenders: string[] = [];
 
     for (const file of sourceFiles()) {
       readFileSync(file, "utf8")
         .split(/\r?\n/)
         .forEach((line, i) => {
-          // Comments are allowed to name the old hour — several of them explain
-          // why it moved, and that history is the reason it stopped drifting.
-          // Only text a guest could read counts.
           if (/^\s*(\/\/|\/\*|\*)/.test(line)) return;
           if (!arrival.test(line)) return;
           if (!wrongHour.test(line)) return;

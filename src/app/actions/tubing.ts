@@ -1,14 +1,14 @@
 "use server";
 
 import { contacts } from "@/content/contacts";
-import { parkingPricing, tubingPricing } from "@/content/pricing";
+import { tubingRulesVersion } from "@/content/policies-tubing-legal";
 import { getPricing } from "@/lib/pricing-live";
 import { esc } from "@/lib/telegram";
 import { ridesRu } from "@/lib/tariff";
+import { validateLegalConsents } from "@/lib/legal-consent";
 import {
   deliverRequest,
   dialable,
-  isWeekend,
   money,
   todayTashkent,
 } from "@/lib/request-delivery";
@@ -49,8 +49,8 @@ type Lang = keyof typeof MESSAGES;
  *
  * Priced by package of rides, with no weekday/weekend band — the operator gave
  * one price per package and nothing else, so nothing here invents a tariff
- * split. The entry fee for a car does still follow the day band, which is why
- * the tariff label is still recorded.
+ * split. Parking is intentionally not a form item: its separate fee is shown
+ * as a bold note on the page and is paid outside the request total.
  */
 export async function submitTubingRequest(formData: FormData): Promise<TubingResult> {
   // Honeypot — a field no human sees. Bots that fill it get a silent success.
@@ -60,11 +60,17 @@ export async function submitTubingRequest(formData: FormData): Promise<TubingRes
   const lang: Lang = localeRaw === "uz" || localeRaw === "en" ? localeRaw : "ru";
   const m = MESSAGES[lang];
 
+  const legalError = validateLegalConsents(formData, lang, { tubingRules: true });
+  if (legalError) return { ok: false, error: legalError };
+
   const name = ((formData.get("name") as string | null) ?? "").trim();
   const phone = ((formData.get("phone") as string | null) ?? "").trim();
   const date = ((formData.get("date") as string | null) ?? "").trim();
   const message = ((formData.get("message") as string | null) ?? "").trim();
 
+  // required защищает обычного гостя, а эта проверка — сервер от старой
+  // вкладки или подменённого запроса. Принимается только значение реальной
+  // отмеченной HTML-галочки.
   if (!name) return { ok: false, error: m.nameRequired };
   if (!phone) return { ok: false, error: m.phoneRequired };
   if (phone.replace(/\D/g, "").length < 7) return { ok: false, error: m.phoneInvalid };
@@ -73,7 +79,6 @@ export async function submitTubingRequest(formData: FormData): Promise<TubingRes
 
   const num = (v: string, max = 200) => Math.min(Math.max(parseInt(v, 10) || 0, 0), max);
   const guests = Math.max(num(((formData.get("guests") as string | null) ?? "").trim()), 1);
-  const cars = num(((formData.get("cars") as string | null) ?? "").trim(), 60);
 
   // One quantity per package, posted as pack0 / pack1 … so adding a third
   // package to pricing.ts needs no change here.
@@ -83,20 +88,21 @@ export async function submitTubingRequest(formData: FormData): Promise<TubingRes
     qty: num(((formData.get(`pack${i}`) as string | null) ?? "").trim(), 100),
   }));
 
-  const weekend = isWeekend(date);
-  const tariff = weekend ? "Пт–Вс" : "Пн–Чт";
-  const carRate = live.parking;
+  const tariff = "единый";
 
   const lines: { label: string; qty: number; rate: number }[] = [
     ...packs
       .filter((p) => p.qty > 0)
       .map((p) => ({ label: `Пакет ${p.rides} ${ridesRu(p.rides)}`, qty: p.qty, rate: p.price })),
-    { label: "Въезд, 1 автомобиль", qty: cars, rate: carRate },
   ].filter((l) => l.qty > 0);
 
   const total = lines.reduce((sum, l) => sum + l.qty * l.rate, 0);
   const rides = packs.reduce((n, p) => n + p.qty * p.rides, 0);
   const tel = dialable(phone);
+  const consentEvidence =
+    `Согласие: Правила тюбинговой горки, редакция № ${tubingRulesVersion.revision} ` +
+    `(основа DOCX SHA-256 ${tubingRulesVersion.sha256}, дополнение от ${tubingRulesVersion.amendmentDate}), ` +
+    "Публичная оферта и Политика конфиденциальности (согласие на обработку персональных данных).";
 
   const telegramHtml = [
     "<b>🛷 Заявка на тюбинг</b>",
@@ -104,7 +110,7 @@ export async function submitTubingRequest(formData: FormData): Promise<TubingRes
     `<b>Имя:</b> ${esc(name)}`,
     // Bare international number on its own line — see the note in topchan.ts.
     `📞 <b>Телефон:</b> ${esc(tel)}`,
-    `<b>Дата:</b> ${esc(date)} · тариф въезда ${tariff}`,
+    `<b>Дата:</b> ${esc(date)}`,
     `<b>Гостей:</b> ${guests}${rides ? ` · <b>спусков:</b> ${rides}` : ""}`,
     "",
     ...(lines.length
@@ -115,6 +121,8 @@ export async function submitTubingRequest(formData: FormData): Promise<TubingRes
     "",
     `<b>ИТОГО: ${money(total)} сум</b>`,
     ...(message ? ["", `<b>Комментарий:</b> ${esc(message)}`] : []),
+    "",
+    `<b>Согласие:</b> правила тюбинговой горки (редакция № ${tubingRulesVersion.revision}, дополнение от ${tubingRulesVersion.amendmentDate}), публичная оферта и обработка персональных данных по Политике конфиденциальности · основа DOCX SHA-256 ${tubingRulesVersion.sha256}`,
     "",
     `<i>Заявка с сайта chimgandarbaza.uz · язык гостя: ${lang}</i>`,
   ].join("\n");
@@ -130,6 +138,8 @@ export async function submitTubingRequest(formData: FormData): Promise<TubingRes
         .join("")}</ul>
       <p><b>К оплате:</b> ${money(total)} сум</p>
       ${message ? `<p><b>Комментарий:</b> ${esc(message)}</p>` : ""}
+      <p><b>Согласие:</b> правила тюбинговой горки (редакция № ${tubingRulesVersion.revision}), публичная оферта и обработка персональных данных по Политике конфиденциальности.<br>
+      <small>Дополнение от ${tubingRulesVersion.amendmentDate} · основа DOCX SHA-256: ${tubingRulesVersion.sha256}</small></p>
       <p style="color:#7a7a73;font-size:12px">Отправлено с chimgandarbaza.uz</p>
     </div>`;
 
@@ -146,7 +156,7 @@ export async function submitTubingRequest(formData: FormData): Promise<TubingRes
       kids: 0,
       toddlers: 0,
       units: rides,
-      extras: lines.map((l) => `${l.label} ×${l.qty}`),
+      extras: [...lines.map((l) => `${l.label} ×${l.qty}`), consentEvidence],
       total,
       tariff,
       message: message || undefined,

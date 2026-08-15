@@ -38,12 +38,15 @@ describe("Header", () => {
     expect(screen.getAllByText("EN").length).toBeGreaterThanOrEqual(1);
   });
 
-  it("renders 'book now' CTA link to /bron", () => {
+  it("кнопка брони ведёт в каталог домиков и есть на телефоне", () => {
+    // Вела на /bron, где стоял движок Exely. Движок скрыли, страница осталась
+    // почти пустой — единственная золотая кнопка уводила гостя в тупик.
     render(<Header locale="ru" />);
-    const ctas = screen.getAllByRole("link").filter((l) =>
-      l.getAttribute("href")?.endsWith("/bron"),
-    );
+    const ctas = screen.getAllByRole("link").filter((l) => l.getAttribute("href")?.endsWith("/nomera"));
     expect(ctas.length).toBeGreaterThan(0);
+    // Одна для десктопа, одна для телефона: на телефоне кнопка жила только
+    // внутри бургер-меню, и гость не видел ни одной кнопки на экране.
+    expect(ctas.some((l) => l.className.includes("lg:hidden"))).toBe(true);
   });
 
   it("mobile burger button toggles aria-expanded", async () => {

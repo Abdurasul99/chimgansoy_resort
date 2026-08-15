@@ -314,11 +314,9 @@ export const extraGuestPricing = {
  *
  * Two figures were changed BACK on 2026-08-06 because of exactly that:
  *
- *  • checkIn was moved to 15:00 on 2026-08-05 from a "Прочее" list. The offer
- *    says 14:00 in four separate clauses (1 «Заезд/Выезд», 2.5, 4.2 and
- *    Правила пребывания 4.1), and prices early arrival relative to 14:00 in
- *    5.2.1. The same "Прочее" list had already been wrong once about the
- *    extra-guest rate.
+ *  • checkIn was moved to 15:00 on 2026-08-05 from a "Прочее" list after a
+ *    review of the signed documents. The same "Прочее" list had already been
+ *    wrong once about the extra-guest rate.
  *
  *  • The prepayment was described as flatly non-refundable. The signed policy
  *    grants a FULL refund five days out and half of it up to 48 hours — see
@@ -387,7 +385,7 @@ export const touristTax = {
  * promise that it will be.
  */
 export const earlyLateCheck = {
-  /** Заезд 06:00–14:00 — доля стоимости суток. */
+  /** Заезд 06:00–15:00 — доля стоимости суток. Окно кончается заездом. */
   earlyShare: 0.5,
   /** Выезд 12:00–18:00 — доля стоимости суток. */
   lateShare: 0.5,

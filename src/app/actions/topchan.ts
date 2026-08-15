@@ -4,6 +4,7 @@ import { contacts } from "@/content/contacts";
 import { topchanPricing } from "@/content/pricing";
 import { getPricing } from "@/lib/pricing-live";
 import { esc } from "@/lib/telegram";
+import { validateLegalConsents } from "@/lib/legal-consent";
 import {
   deliverRequest,
   dialable,
@@ -69,6 +70,9 @@ export async function submitTopchanRequest(formData: FormData): Promise<TopchanR
   const localeRaw = ((formData.get("locale") as string | null) ?? "").trim();
   const lang: Lang = localeRaw === "uz" || localeRaw === "en" ? localeRaw : "ru";
   const m = MESSAGES[lang];
+
+  const legalError = validateLegalConsents(formData, lang);
+  if (legalError) return { ok: false, error: legalError };
 
   const name = ((formData.get("name") as string | null) ?? "").trim();
   const phone = ((formData.get("phone") as string | null) ?? "").trim();

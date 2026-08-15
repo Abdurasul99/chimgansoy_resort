@@ -10,6 +10,7 @@ import { contacts } from "@/content/contacts";
 import { CountInput } from "@/components/ui/CountInput";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Icon } from "@/components/ui/Icon";
+import { LegalConsentFields } from "@/components/ui/LegalConsentFields";
 import { trackEvent } from "@/lib/analytics";
 import { text } from "@/lib/localize";
 import { isWeekendISO, money } from "@/lib/tariff";
@@ -53,6 +54,7 @@ const COPY: Record<
     bungalowLarge: string;
     total: string;
     freeNote: string;
+    parkingNote: string;
   }
 > = {
   ru: {
@@ -91,7 +93,8 @@ const COPY: Record<
     // row inside a max-w-3xl card, so it never gets more than ~170 px of text
     // room — the old labels had their price cut off at every screen width.
     total: "Предварительно к оплате",
-    freeNote: `Вход и парковка для посетителей бассейна БЕСПЛАТНЫ. Гостям, проживающим в шале и глэмпинге, вход тоже бесплатный. Дети до 5 лет — бесплатно в сопровождении взрослых. Бунгало ${B.small.name} (до ${B.small.capacity} чел.) на территории ${B.small.count}, ${B.large.name} (до ${B.large.capacity} чел.) — ${B.large.count}; больше этого числа заказать нельзя. Аренда бунгало не включает входные билеты. Бассейн работает ежедневно 08:00–20:00. Со своей едой и напитками в зону бассейна нельзя — на территории работают пул-бар и ресторан.`,
+    freeNote: `Вход для посетителей бассейна БЕСПЛАТНЫЙ. Гостям, проживающим в шале и глэмпинге, вход тоже бесплатный. Дети до 5 лет — бесплатно в сопровождении взрослых. Бунгало ${B.small.name} (до ${B.small.capacity} чел.) на территории ${B.small.count}, ${B.large.name} (до ${B.large.capacity} чел.) — ${B.large.count}; больше этого числа заказать нельзя. Аренда бунгало не включает входные билеты. Бассейн работает ежедневно 08:00–20:00. Со своей едой и напитками в зону бассейна нельзя — на территории работают пул-бар и ресторан.`,
+    parkingNote: "Парковка для посетителей бассейна бесплатная.",
   },
   uz: {
     eyebrow: "Basseyn · yozgi mavsum",
@@ -118,7 +121,8 @@ const COPY: Record<
     bungalowSmall: `${B.small.name} bungalo, ${B.small.capacity} kishigacha`,
     bungalowLarge: `${B.large.name} bungalo, ${B.large.capacity} kishigacha`,
     total: "Taxminiy to'lov",
-    freeNote: `Basseyn mehmonlari uchun kirish va parkovka BEPUL. Shale va glempingda turuvchilar uchun kirish ham bepul. 5 yoshgacha bolalar — kattalar bilan bepul. Hududda ${B.small.count} ta ${B.small.name} bungalo (${B.small.capacity} kishigacha) va ${B.large.count} ta ${B.large.name} (${B.large.capacity} kishigacha) bor; bundan ko'pini buyurtma qilib bo'lmaydi. Bungalo ijarasi kirish chiptalarini o'z ichiga olmaydi. Basseyn har kuni 08:00–20:00. Basseyn hududiga o'z ovqatingiz va ichimliklaringiz bilan kirish mumkin emas — hududda pul-bar va restoran ishlaydi.`,
+    freeNote: `Basseyn mehmonlari uchun kirish BEPUL. Shale va glempingda turuvchilar uchun kirish ham bepul. 5 yoshgacha bolalar — kattalar bilan bepul. Hududda ${B.small.count} ta ${B.small.name} bungalo (${B.small.capacity} kishigacha) va ${B.large.count} ta ${B.large.name} (${B.large.capacity} kishigacha) bor; bundan ko'pini buyurtma qilib bo'lmaydi. Bungalo ijarasi kirish chiptalarini o'z ichiga olmaydi. Basseyn har kuni 08:00–20:00. Basseyn hududiga o'z ovqatingiz va ichimliklaringiz bilan kirish mumkin emas — hududda pul-bar va restoran ishlaydi.`,
+    parkingNote: "Basseyn mehmonlari uchun avtoturargoh bepul.",
   },
   en: {
     eyebrow: "The pool · summer season",
@@ -145,7 +149,8 @@ const COPY: Record<
     bungalowSmall: `${B.small.name} bungalow, up to ${B.small.capacity}`,
     bungalowLarge: `${B.large.name} bungalow, up to ${B.large.capacity}`,
     total: "Estimated total",
-    freeNote: `Entry and parking are FREE for pool visitors. Chalet and glamping guests get in free too. Under-fives free with an adult. There are ${B.small.count} ${B.small.name} bungalows (up to ${B.small.capacity} guests) and ${B.large.count} ${B.large.name} ones (up to ${B.large.capacity}) on site; you cannot book more than that. Bungalow rental does not include entry tickets. The pool is open daily 08:00–20:00. Outside food and drink are not allowed in the pool area — the pool bar and the restaurant are on site.`,
+    freeNote: `Entry is FREE for pool visitors. Chalet and glamping guests get in free too. Under-fives free with an adult. There are ${B.small.count} ${B.small.name} bungalows (up to ${B.small.capacity} guests) and ${B.large.count} ${B.large.name} ones (up to ${B.large.capacity}) on site; you cannot book more than that. Bungalow rental does not include entry tickets. The pool is open daily 08:00–20:00. Outside food and drink are not allowed in the pool area — the pool bar and the restaurant are on site.`,
+    parkingNote: "Parking is free for pool visitors.",
   },
 };
 
@@ -276,6 +281,10 @@ export function PoolRequestForm({
         </div>
       </div>
 
+      <p className="mt-4 rounded-2xl border border-[color:var(--sun)]/45 bg-[var(--sun)]/10 px-4 py-3 text-sm leading-6 text-[var(--ink)]">
+        <strong>{t.parkingNote}</strong>
+      </p>
+
       <form action={action} className="mt-7 space-y-4">
         <input type="hidden" name="locale" value={locale} />
         {/* Honeypot — invisible to humans, filled only by bots */}
@@ -380,6 +389,8 @@ export function PoolRequestForm({
           <span className={labelCls}>{t.message}</span>
           <textarea name="message" rows={3} placeholder={t.messagePh} className={`${field} resize-none`} />
         </label>
+
+        <LegalConsentFields locale={locale} />
 
         {state.status === "error" && state.message && (
           <p role="alert" className="rounded-xl bg-[#c0392b]/10 px-4 py-3 text-sm font-semibold text-[#c0392b]">

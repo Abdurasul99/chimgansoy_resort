@@ -119,6 +119,44 @@ describe("формы заявок — цены оператора доходят
   });
 });
 
+describe("парковка вынесена из полей заявки в отдельное примечание", () => {
+  const PARKING_WORD = {
+    ru: /парков/i,
+    uz: /parkov|avtoturargoh/i,
+    en: /parking/i,
+  } as const;
+
+  for (const { name, Form } of FORMS) {
+    for (const locale of ["ru", "uz", "en"] as const) {
+      it(`${name}/${locale}: парковка указана жирным вне form`, () => {
+        const { container } = render(<Form locale={locale} />);
+        const form = container.querySelector("form");
+        const parkingNote = Array.from(container.querySelectorAll("strong")).find((node) =>
+          PARKING_WORD[locale].test(node.textContent ?? ""),
+        );
+
+        expect(parkingNote, `${name}/${locale}: нет отдельного жирного примечания`).toBeDefined();
+        expect(form?.contains(parkingNote ?? null)).toBe(false);
+        expect(form?.textContent ?? "", `${name}/${locale}: парковка осталась внутри form`).not.toMatch(
+          PARKING_WORD[locale],
+        );
+        expect(form?.querySelector('input[name="cars"]')).toBeNull();
+      });
+    }
+  }
+
+  it("тюбинг: примечание показывает живую цену парковки, но не добавляет её в форму", () => {
+    const patched = resolvePricing({ "parking.flat": 61_000 });
+    const { container } = render(<TubingRequestForm locale="ru" pricing={patched} />);
+    const parkingNote = Array.from(container.querySelectorAll("strong")).find((node) =>
+      /парков/i.test(node.textContent ?? ""),
+    );
+
+    expect(parkingNote?.textContent).toMatch(/61\s*000/);
+    expect(container.querySelector("form")?.textContent ?? "").not.toMatch(/61\s*000/);
+  });
+});
+
 describe("формы заявок — счётчики не уходят в минус", () => {
   it("бассейн: количество гостей нельзя увести ниже нуля", async () => {
     const user = userEvent.setup();
@@ -156,6 +194,74 @@ describe("формы заявок — обязательные поля", () => 
       expect(honeypot!.tabIndex).toBe(-1);
     });
   }
+});
+
+describe("тюбинг — обязательное согласие с правилами и офертой", () => {
+  for (const locale of ["ru", "uz", "en"] as const) {
+    it(`${locale}: без отдельной галочки форму нельзя отправить`, () => {
+      const { container } = render(<TubingRequestForm locale={locale} />);
+      const consent = container.querySelector<HTMLInputElement>('input[name="rulesConsent"]');
+
+      expect(consent).not.toBeNull();
+      expect(consent?.type).toBe("checkbox");
+      expect(consent?.required).toBe(true);
+    });
+
+    it(`${locale}: рядом с галочкой доступны правила тюбинга и публичная оферта`, () => {
+      const { container } = render(<TubingRequestForm locale={locale} />);
+      const fieldset = container.querySelector("fieldset");
+      const hrefs = Array.from(fieldset?.querySelectorAll("a") ?? []).map((link) => link.getAttribute("href"));
+
+      expect(hrefs).toContain(`/${locale}/legal/tubing-rules`);
+      expect(hrefs).toContain(`/${locale}/legal/public-offer`);
+    });
+
+    it(`${locale}: перед согласием видны ограничения 100 см, 95 кг и 140 см`, () => {
+      const { container } = render(<TubingRequestForm locale={locale} />);
+      const text = container.textContent ?? "";
+
+      expect(text).toMatch(/100\s*(см|sm|cm)/i);
+      expect(text).toMatch(/95\s*(кг|kg)/i);
+      expect(text).toMatch(/140\s*(см|sm|cm)/i);
+    });
+
+    it(`${locale}: длина трассы в форме совпадает со страницей услуги — 160 м`, () => {
+      const { container } = render(<TubingRequestForm locale={locale} />);
+      const text = container.textContent ?? "";
+
+      expect(text).toMatch(/160\s*(м|m)/i);
+      expect(text).not.toMatch(/150\s*(м|m)/i);
+    });
+  }
+});
+
+describe("юридические согласия во всех формах отдыха на день", () => {
+  for (const { name, Form } of FORMS) {
+    for (const locale of ["ru", "uz", "en"] as const) {
+      it(`${name}/${locale}: оферта и обработка персональных данных подтверждаются отдельно`, () => {
+        const { container } = render(<Form locale={locale} />);
+        const offer = container.querySelector<HTMLInputElement>('input[name="offerConsent"]');
+        const privacy = container.querySelector<HTMLInputElement>('input[name="privacyConsent"]');
+
+        expect(offer, `${name}/${locale}: нет согласия с офертой`).not.toBeNull();
+        expect(privacy, `${name}/${locale}: нет согласия на обработку данных`).not.toBeNull();
+        expect(offer?.required).toBe(true);
+        expect(privacy?.required).toBe(true);
+
+        const hrefs = Array.from(container.querySelectorAll("a")).map((link) => link.getAttribute("href"));
+        expect(hrefs).toContain(`/${locale}/legal/public-offer`);
+        expect(hrefs).toContain(`/${locale}/legal/privacy-policy`);
+      });
+    }
+  }
+
+  it("тюбинг дополнительно требует отдельного согласия с правилами горки", () => {
+    const { container } = render(<TubingRequestForm locale="ru" />);
+    const rules = container.querySelector<HTMLInputElement>('input[name="rulesConsent"]');
+
+    expect(rules).not.toBeNull();
+    expect(rules?.required).toBe(true);
+  });
 });
 
 describe("наличие мест не обещается", () => {

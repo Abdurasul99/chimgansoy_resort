@@ -2,15 +2,17 @@
 
 import { useActionState, useEffect, useState } from "react";
 import { submitTubingRequest } from "@/app/actions/tubing";
-import { priceLabels, tubingPricing } from "@/content/pricing";
+import { priceLabels } from "@/content/pricing";
+import { tubing100cmFormSummary, tubing100cmSummaryTitle } from "@/content/tubing-100cm-rules";
 import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 import { contacts } from "@/content/contacts";
 import { CountInput } from "@/components/ui/CountInput";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Icon } from "@/components/ui/Icon";
+import { LegalConsentFields } from "@/components/ui/LegalConsentFields";
 import { trackEvent } from "@/lib/analytics";
-import { text } from "@/lib/localize";
-import { isWeekendISO, money, ridesRu } from "@/lib/tariff";
+import { list, text } from "@/lib/localize";
+import { money, ridesRu } from "@/lib/tariff";
 import type { Locale } from "@/i18n/config";
 
 const COPY: Record<
@@ -21,7 +23,6 @@ const COPY: Record<
     lead: string;
     date: string;
     guests: string;
-    cars: string;
     name: string;
     namePh: string;
     phone: string;
@@ -35,7 +36,7 @@ const COPY: Record<
     failed: string;
     priceTitle: string;
     packLabel: (rides: number) => string;
-    entry: string;
+    parkingNote: (price: string) => string;
     total: string;
     seasonNote: string;
   }
@@ -46,7 +47,6 @@ const COPY: Record<
     lead: "Выберите дату и количество спусков — администратор перезвонит, подтвердит время и состояние трассы.",
     date: "Дата визита",
     guests: "Гостей",
-    cars: "Парковочное место",
     name: "Ваше имя",
     namePh: "Как к вам обращаться",
     phone: "Телефон",
@@ -60,10 +60,10 @@ const COPY: Record<
     failed: `Не удалось отправить заявку. Позвоните нам: ${contacts.phone}`,
     priceTitle: "Тариф",
     packLabel: (r) => `${r} ${ridesRu(r)}`,
-    entry: "Парковочное место, 1 авто",
+    parkingNote: (price) => `Парковка платная — ${price} сум за автомобиль. Оплачивается отдельно и не входит в сумму заявки.`,
     total: "Предварительно к оплате",
     seasonNote:
-      "Цена пакетов одинаковая в будни и выходные; въезд считается по дню недели. Трасса всесезонная, 150 м, с автоматическим подъёмом — одновременно спускаются до 5 человек.",
+      "Цена пакетов одинаковая в будни и выходные. Трасса всесезонная, 160 м, с автоматическим подъёмом — одновременно спускаются до 5 человек.",
   },
   uz: {
     eyebrow: "Tubing gorkasi",
@@ -71,7 +71,6 @@ const COPY: Record<
     lead: "Sana va uchishlar sonini tanlang — administrator qo'ng'iroq qilib, vaqtni va trassa holatini tasdiqlaydi.",
     date: "Tashrif sanasi",
     guests: "Mehmonlar",
-    cars: "Parkovka joyi",
     name: "Ismingiz",
     namePh: "Sizga qanday murojaat qilaylik",
     phone: "Telefon",
@@ -85,10 +84,10 @@ const COPY: Record<
     failed: `Arizani yuborib bo'lmadi. Bizga qo'ng'iroq qiling: ${contacts.phone}`,
     priceTitle: "Tarif",
     packLabel: (r) => `${r} marta uchish`,
-    entry: "Parkovka joyi, 1 avto",
+    parkingNote: (price) => `Avtoturargoh pullik — har bir avtomobil uchun ${price} so'm. Alohida to'lanadi va ariza summasiga kiritilmaydi.`,
     total: "Taxminiy to'lov",
     seasonNote:
-      "Paket narxi ish kunlari va dam olish kunlarida bir xil; kirish hafta kuniga qarab hisoblanadi. Trassa butun mavsumga mo'ljallangan, 150 m, avtomatik ko'targich bilan — bir vaqtda 5 kishigacha tushadi.",
+      "Paket narxi ish kunlari va dam olish kunlarida bir xil. Trassa butun mavsumga mo'ljallangan, 160 m, avtomatik ko'targich bilan — bir vaqtda 5 kishigacha tushadi.",
   },
   en: {
     eyebrow: "Tubing hill",
@@ -96,7 +95,6 @@ const COPY: Record<
     lead: "Pick a date and how many rides — our administrator will call back to confirm the time and the state of the track.",
     date: "Visit date",
     guests: "Guests",
-    cars: "Parking space",
     name: "Your name",
     namePh: "What should we call you",
     phone: "Phone",
@@ -110,10 +108,10 @@ const COPY: Record<
     failed: `We couldn't send your request. Please call us: ${contacts.phone}`,
     priceTitle: "Tariff",
     packLabel: (r) => `${r} rides`,
-    entry: "Parking space, 1 car",
+    parkingNote: (price) => `Parking is paid — ${price} UZS per car. It is paid separately and is not included in the request total.`,
     total: "Estimated total",
     seasonNote:
-      "Package prices are the same all week; entry follows the day band. The track is all-season, 150 m, with a powered lift — up to 5 people descend at once.",
+      "Package prices are the same all week. The track is all-season, 160 m, with a powered lift — up to 5 people descend at once.",
   },
 };
 
@@ -136,7 +134,6 @@ const field =
   "w-full min-h-14 rounded-xl border border-[color:var(--line)] bg-[var(--paper)] px-4 py-3 text-base text-[var(--ink)] outline-none transition-colors placeholder:text-[var(--muted)]/60 focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15";
 const labelCls =
   "mb-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]";
-
 export function TubingRequestForm({
   locale,
   pricing,
@@ -153,16 +150,11 @@ export function TubingRequestForm({
   const [state, action, pending] = useActionState(formAction, initialState);
 
   const [guests, setGuests] = useState(2);
-  const [cars, setCars] = useState(1);
-  const [weekend, setWeekend] = useState(false);
   // One quantity per package, indexed to pricing.ts — the server reads pack0,
   // pack1 … so a third package needs no change on either side.
   const [packs, setPacks] = useState<number[]>(() => live.tubing.packages.map(() => 0));
 
-  const carRate = live.parking;
-  const total =
-    live.tubing.packages.reduce((sum, p, i) => sum + (packs[i] ?? 0) * p.price, 0) +
-    cars * carRate;
+  const total = live.tubing.packages.reduce((sum, p, i) => sum + (packs[i] ?? 0) * p.price, 0);
   const rides = live.tubing.packages.reduce((n, p, i) => n + (packs[i] ?? 0) * p.rides, 0);
 
   useEffect(() => {
@@ -208,21 +200,13 @@ export function TubingRequestForm({
               <span className="font-serif text-lg font-bold text-[var(--ink)]">{money(p.price)}</span>
             </div>
           ))}
-          {/* The entry fee DOES follow the day band even though the ride
-              packages do not, so its two numbers have to be labelled — an
-              unlabelled "50 000 / 100 000" under a heading that says "one
-              price all week" reads as the weekday figure being the price. */}
-          <div className="flex items-baseline justify-between gap-3 border-b border-[color:var(--line)] px-4 py-3">
-            <span className="text-sm text-[var(--ink)]">{t.entry}</span>
-            {/* Одна цена всю неделю (оператор, 2026-08-08) — тарифных полос у
-                парковки больше нет, поэтому и подписей Пн–Чт / Пт–Вс тоже. */}
-            <span className="text-right">
-              <span className="font-serif text-lg font-bold text-[var(--ink)]">{money(live.parking)}</span>
-            </span>
-          </div>
           <div className="px-4 py-3 text-xs leading-5 text-[var(--muted)]">{t.seasonNote}</div>
         </div>
       </div>
+
+      <p className="mt-4 rounded-2xl border border-[color:var(--sun)]/45 bg-[var(--sun)]/10 px-4 py-3 text-sm leading-6 text-[var(--ink)]">
+        <strong>{t.parkingNote(money(live.parking))}</strong>
+      </p>
 
       <form action={action} className="mt-7 space-y-4">
         <input type="hidden" name="locale" value={locale} />
@@ -238,7 +222,6 @@ export function TubingRequestForm({
           label={t.date}
           locale={locale}
           minToday
-          onChange={(iso) => setWeekend(isWeekendISO(iso))}
         />
 
         <div className="grid gap-3 sm:grid-cols-2">
@@ -258,16 +241,10 @@ export function TubingRequestForm({
           ))}
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
-          <label className="block">
-            <span className={labelCls}>{t.guests}</span>
-            <CountInput name="guests" min={1} max={200} value={guests} onValue={setGuests} className={field} />
-          </label>
-          <label className="block">
-            <span className={labelCls}>{t.cars}</span>
-            <CountInput name="cars" max={60} value={cars} onValue={setCars} className={field} />
-          </label>
-        </div>
+        <label className="block sm:max-w-sm">
+          <span className={labelCls}>{t.guests}</span>
+          <CountInput name="guests" min={1} max={200} value={guests} onValue={setGuests} className={field} />
+        </label>
 
         <div className="flex items-baseline justify-between rounded-2xl bg-[var(--accent)]/[0.08] px-4 py-3.5">
           <span className="text-sm font-semibold text-[var(--ink)]">
@@ -308,6 +285,23 @@ export function TubingRequestForm({
           <span className={labelCls}>{t.message}</span>
           <textarea name="message" rows={3} placeholder={t.messagePh} className={`${field} resize-none`} />
         </label>
+
+        <div className="rounded-2xl border border-[color:var(--sun)]/55 bg-[var(--sun)]/10 px-4 py-4 text-[var(--ink)]">
+          <p className="text-sm font-extrabold">{text(tubing100cmSummaryTitle, locale)}</p>
+          <ul className="mt-2 space-y-1.5 text-sm leading-6">
+            {list(tubing100cmFormSummary, locale).map((item) => (
+              <li key={item} className="flex gap-2">
+                <span aria-hidden="true" className="font-bold text-[var(--sun-dark)]">•</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Согласие находится внутри самой формы и до кнопки. Оба документа
+            открываются отдельно, чтобы введённые дата и телефон не пропали,
+            пока гость читает длинные правила. */}
+        <LegalConsentFields locale={locale} includeTubingRules />
 
         {state.status === "error" && state.message && (
           <p role="alert" className="rounded-xl bg-[#c0392b]/10 px-4 py-3 text-sm font-semibold text-[#c0392b]">

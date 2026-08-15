@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { submitServiceRequest, type ServiceRequestState } from "@/app/actions/service-request";
 import { CountInput } from "@/components/ui/CountInput";
 import { Icon } from "@/components/ui/Icon";
+import { LegalConsentFields } from "@/components/ui/LegalConsentFields";
 import type { Locale } from "@/i18n/config";
 import type { FormField } from "@/lib/site-overrides";
 
@@ -182,6 +183,10 @@ export function DynamicRequestForm({
       {state.error ? (
         <p className="mt-4 text-sm font-semibold text-[var(--rose,#b4413c)]">{state.error}</p>
       ) : null}
+
+      <div className="mt-5">
+        <LegalConsentFields locale={locale} />
+      </div>
 
       <button
         type="submit"
