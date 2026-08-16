@@ -71,6 +71,25 @@ export const policies: PolicyPage[] = [
           en: ["Some areas may require advance booking.", "Keep the territory clean and follow staff instructions.", "Children must be supervised by adults."],
         },
       },
+      {
+        // Отдельным разделом, а не строкой в общем списке: это правило гость
+        // узнаёт постфактум — уже стоя у ресепшена в купальнике.
+        title: { ru: "Дресс-код", uz: "Dress-kod", en: "Dress code" },
+        items: {
+          ru: [
+            "В купальных костюмах разрешено находиться только в зоне бассейна.",
+            "Передвижение по территории курорта — кафе, ресепшен, магазин, общие зоны — в одежде и обуви.",
+          ],
+          uz: [
+            "Cho'milish kiyimida faqat basseyn zonasida bo'lish mumkin.",
+            "Kurort hududi bo'ylab — kafe, resepshn, do'kon, umumiy zonalar — kiyim va oyoq kiyimda yuriladi.",
+          ],
+          en: [
+            "Swimwear may be worn in the pool area only.",
+            "Elsewhere on the resort — café, reception, shop, common areas — please wear clothes and footwear.",
+          ],
+        },
+      },
     ],
   },
   {
