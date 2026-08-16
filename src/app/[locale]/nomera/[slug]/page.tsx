@@ -156,7 +156,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
   // already turned into renderable frames by lib/rooms-live.ts.
   const galleryFrames = live?.gallery ?? [];
   const isCabin = room.slug === "glamping" || room.slug === "cottage";
-  const { adult, chargedFromAge, freeThroughAge, guestVisitCottage } = extraGuestPricing;
+  const { adult, childFrom, childTo, adultFromAge, freeThroughAge, guestVisitCottage } = extraGuestPricing;
   // Base occupancy leads the list, because it is the number the rate covers —
   // the one a guest needs before they can work out whether they owe anything.
   const occ = isCabin ? cabinOccupancy[room.slug as "glamping" | "cottage"] : null;
@@ -166,7 +166,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
         ru: [
           `Стандартное размещение — ${occ.base} гостя, максимум ${occ.max}. Места сверх стандарта — за доплату.`,
           `Заезд с ${stayRules.checkIn}, выезд до ${stayRules.checkOut}. Ранний заезд и поздний выезд — по загрузке и за доплату.`,
-          `Дополнительное место за ночь — ${group(livePricing.extraGuest.adult)} сум за каждого гостя от ${chargedFromAge} лет. Дети 0–${freeThroughAge} лет — бесплатно.`,
+          `Дополнительное место за ночь — ${group(livePricing.extraGuest.adult)} сум за гостя от ${adultFromAge} лет и ${group(livePricing.extraGuest.child)} сум за ребёнка ${childFrom}–${childTo} лет. Дети 0–${freeThroughAge} лет — бесплатно.`,
           ...(room.slug === "cottage"
             ? [`Гостевой визит в шале (без ночёвки) — ${group(livePricing.extraGuest.guestVisitCottage)} сум.`]
             : []),
@@ -176,7 +176,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
         uz: [
           `Standart joylashuv — ${occ.base} mehmon, maksimum ${occ.max}. Standartdan ortiq joylar — qo'shimcha to'lov evaziga.`,
           `Kirish ${stayRules.checkIn} dan, chiqish ${stayRules.checkOut} gacha. Erta kirish va kech chiqish — bandlikka qarab va qo'shimcha to'lov evaziga.`,
-          `Bir kechaga qo'shimcha joy — ${chargedFromAge} yoshdan katta har bir mehmon uchun ${group(livePricing.extraGuest.adult)} so'm. 0–${freeThroughAge} yoshdagi bolalar — bepul.`,
+          `Bir kechaga qo'shimcha joy — ${adultFromAge} yoshdan katta mehmon uchun ${group(livePricing.extraGuest.adult)} so'm, ${childFrom}–${childTo} yoshdagi bola uchun ${group(livePricing.extraGuest.child)} so'm. 0–${freeThroughAge} yoshdagi bolalar — bepul.`,
           ...(room.slug === "cottage"
             ? [`Shalega mehmon tashrifi (tunab qolmasdan) — ${group(livePricing.extraGuest.guestVisitCottage)} so'm.`]
             : []),
@@ -186,7 +186,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
         en: [
           `The rate covers ${occ.base} guests; the cabin holds up to ${occ.max}. Places beyond the standard are charged.`,
           `Check-in from ${stayRules.checkIn}, check-out by ${stayRules.checkOut}. Early check-in and late check-out depend on occupancy and are charged.`,
-          `An extra place per night — ${group(livePricing.extraGuest.adult)} UZS for every guest aged ${chargedFromAge} and over. Children aged 0–${freeThroughAge} stay free.`,
+          `An extra place per night — ${group(livePricing.extraGuest.adult)} UZS for a guest aged ${adultFromAge} and over, ${group(livePricing.extraGuest.child)} UZS for a child aged ${childFrom}–${childTo}. Children aged 0–${freeThroughAge} stay free.`,
           ...(room.slug === "cottage"
             ? [`A guest visit to a chalet (no overnight stay) — ${group(livePricing.extraGuest.guestVisitCottage)} UZS.`]
             : []),

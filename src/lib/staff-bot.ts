@@ -305,7 +305,8 @@ async function renderPrices(): Promise<View> {
       // The three charges that a guest only meets at the door if nobody says
       // them out loud. Same figures as the room pages and the AI briefing.
       "<b>➕ Дополнительное место за ночь</b> (в глэмпинге и шале одинаково):",
-      `• Гость от ${extraGuestPricing.chargedFromAge} лет — <b>${money(live.extraGuest.adult)}</b>`,
+      `• Гость от ${extraGuestPricing.adultFromAge} лет — <b>${money(live.extraGuest.adult)}</b>`,
+      `• Ребёнок ${extraGuestPricing.childFrom}–${extraGuestPricing.childTo} лет — <b>${money(live.extraGuest.child)}</b>`,
       `• Дети 0–${extraGuestPricing.freeThroughAge} лет — <b>бесплатно</b>`,
       `🚪 Гостевой визит в шале (без ночёвки) — <b>${money(live.extraGuest.guestVisitCottage)}</b>`,
       "",

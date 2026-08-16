@@ -269,7 +269,7 @@ export const cabinOccupancy = {
  * `guestVisitCottage` is a different product entirely: a visitor who comes to
  * someone else's chalet for the day and does not sleep there.
  *
- * Ages: 0–3 free, 4–12 at the child rate, 13+ at the adult rate.
+ * Ages: 0–4 free, 5–11 at the child rate, 12+ at the adult rate.
  * `freeThroughAge` is inclusive — a three-year-old is free — which is why it is
  * not named `freeUnderAge` any more.
  *
@@ -278,26 +278,29 @@ export const cabinOccupancy = {
  */
 export const extraGuestPricing = {
   /**
-   * Доп. место за ночь — ЕДИНАЯ ставка для любого гостя от 4 лет (оператор,
-   * 2026-08-10). Возрастной вилки больше нет: раньше было 400 000 за взрослого
-   * и 300 000 за ребёнка 4–12 лет.
+   * Доп. место за ночь. Возрастная вилка вернулась (оператор, 2026-08-16):
+   * с 12 лет — 600 000, дети 5–11 — 400 000, до 4 лет включительно бесплатно.
+   * С 10 по 16 августа ставка была единой — 500 000 для всех от четырёх лет.
+   *
+   * Двенадцатилетний платит по ВЗРОСЛОЙ ставке: оператор подтвердил границу
+   * отдельно, потому что «5-12» и «12+» в его записке пересекались на этом
+   * возрасте. Так же устроен тариф бассейна — там «дети 5–15», а платят как
+   * взрослые уже с пятнадцати.
    *
    * Ключ админки остался `extraGuest.adult` — под ним лежит правка оператора,
-   * и переименование её осиротило бы. Читать для доплаты нужно именно его.
+   * и переименование её осиротило бы.
    */
-  adult: 500_000,
-  /**
-   * Легаси. Возрастной ставки больше не существует, ни один текст это поле не
-   * печатает. Держится равным основному, чтобы старый сохранённый патч не
-   * показал где-нибудь 300 000, и не удаляется, чтобы не ломать форму данных.
-   */
-  child: 500_000,
+  adult: 600_000,
+  /** Ребёнок 5–11 лет. */
+  child: 400_000,
   /** С этого возраста место платное. Младше — бесплатно. */
-  chargedFromAge: 4,
-  childFrom: 4,
-  childTo: 12,
+  chargedFromAge: 5,
+  childFrom: 5,
+  childTo: 11,
+  /** С этого возраста считают по взрослой ставке. */
+  adultFromAge: 12,
   /** Children of this age and younger are not charged an extra place at all. */
-  freeThroughAge: 3,
+  freeThroughAge: 4,
   /** A day visitor to a chalet who does not stay the night. Per visit. */
   guestVisitCottage: 300_000,
 } as const;

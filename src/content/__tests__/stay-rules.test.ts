@@ -89,26 +89,37 @@ describe("stay rules — check-in hour", () => {
 
 describe("stay rules — the extra-person charge", () => {
   /**
-   * С 2026-08-10 ставка ОДНА: 500 000 за любого гостя от четырёх лет, младше —
-   * бесплатно. Возрастной вилки «взрослый / ребёнок 4–12» больше нет; до этого
-   * было 400 000 и 300 000.
+   * С 2026-08-16 вилка вернулась: 600 000 с гостя от 12 лет, 400 000 с ребёнка
+   * 5–11, до 4 лет включительно бесплатно. Между 10 и 16 августа ставка была
+   * одна — 500 000 для всех от четырёх лет.
    */
-  it("has one rate from the charged age, and free below it", () => {
-    const { chargedFromAge, freeThroughAge, adult } = extraGuestPricing;
-    // Без зазора и без нахлёста: четырёхлетний должен попадать ровно в одну
-    // полосу — платную.
-    expect(freeThroughAge + 1).toBe(chargedFromAge);
-    expect(adult).toBe(500_000);
+  it("charges by age band: child, adult, and free below", () => {
+    const { adult, child } = extraGuestPricing;
+    expect(adult).toBe(600_000);
+    expect(child).toBe(400_000);
+    // Ребёнок дешевле взрослого — иначе вилка не вилка, а опечатка.
+    expect(child).toBeLessThan(adult);
+  });
+
+  it("leaves no age in two bands and none in the gap", () => {
+    const { freeThroughAge, childFrom, childTo, adultFromAge } = extraGuestPricing;
+    // Каждый возраст попадает ровно в одну полосу. Дыра здесь означала бы
+    // гостя, за которого непонятно, сколько брать, — а нахлёст спор с ним на
+    // ресепшене. Двенадцатилетний идёт по взрослой ставке: оператор подтвердил
+    // границу отдельно, потому что «5-12» и «12+» в его записке пересекались.
+    expect(freeThroughAge + 1).toBe(childFrom);
+    expect(childTo + 1).toBe(adultFromAge);
+    expect(adultFromAge).toBe(12);
   });
 
   it("is editable from the admin panel", () => {
     const keys = fields().map((f) => f.key);
     expect(keys).toContain("extraGuest.adult");
     expect(keys).toContain("extraGuest.guestVisitCottage");
-    // Детской ставки в админке быть не должно: поле осталось в модели данных
-    // ради старого патча, но строка, которую не читает ни один текст, — это
+    // Детская ставка снова живая — и снова редактируется. Пока цена была одна,
+    // строки здесь не было: поле, которое не читает ни один текст, — это
     // приглашение вписать число и не понять, почему оно никуда не попало.
-    expect(keys).not.toContain("extraGuest.child");
+    expect(keys).toContain("extraGuest.child");
     // The old shape charged by cabin type. It was live for hours and is gone;
     // if it ever reappears the two schemes will disagree about the same guest.
     expect(keys).not.toContain("extraGuest.glamping");
