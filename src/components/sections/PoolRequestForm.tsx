@@ -10,6 +10,7 @@ import { contacts } from "@/content/contacts";
 import { CountInput } from "@/components/ui/CountInput";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Icon } from "@/components/ui/Icon";
+import { clock } from "@/components/ui/Clock";
 import { LegalConsentFields } from "@/components/ui/LegalConsentFields";
 import { trackEvent } from "@/lib/analytics";
 import { text } from "@/lib/localize";
@@ -243,7 +244,7 @@ export function PoolRequestForm({
 
   return (
     <div className="rounded-3xl border border-[color:var(--line)] bg-[var(--surface-warm)] p-6 shadow-[var(--shadow-card)] sm:p-9">
-      <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--accent-strong)]">{t.eyebrow}</p>
+      <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--accent-strong)]">{clock(t.eyebrow)}</p>
       <h3 className="mt-3 font-serif text-3xl font-semibold leading-tight text-[var(--ink)] sm:text-4xl">{t.title}</h3>
       <p className="mt-3 max-w-xl text-sm leading-6 text-[var(--muted)] sm:text-base sm:leading-7">{t.lead}</p>
 
@@ -283,20 +284,20 @@ export function PoolRequestForm({
             ))}
           </div>
           <div className="px-4 py-3 text-xs leading-5 text-[var(--muted)]">
-            {t.freeNote}
+            {clock(t.freeNote)}
           </div>
         </div>
       </div>
 
       <p className="mt-4 rounded-2xl border border-[color:var(--sun)]/45 bg-[var(--sun)]/10 px-4 py-3 text-sm leading-6 text-[var(--ink)]">
-        <strong>{t.parkingNote}</strong>
+        <strong>{clock(t.parkingNote)}</strong>
       </p>
 
       {/* Дресс-код рядом с парковкой, а не в мелком тексте тарифа: правило, о
           котором узнают на ресепшене, — это испорченный день гостю и разговор
           администратору. Оба уведомления одинаково заметны. */}
       <p className="mt-3 rounded-2xl border border-[color:var(--sun)]/45 bg-[var(--sun)]/10 px-4 py-3 text-sm leading-6 text-[var(--ink)]">
-        <strong>{t.dressCode}</strong>
+        <strong>{clock(t.dressCode)}</strong>
       </p>
 
       <form action={action} className="mt-7 space-y-4">
@@ -422,7 +423,7 @@ export function PoolRequestForm({
           >
             {pending ? t.sending : t.send}
           </button>
-          <p className="mt-3 max-w-md text-xs leading-5 text-[var(--muted)]">{t.note}</p>
+          <p className="mt-3 max-w-md text-xs leading-5 text-[var(--muted)]">{clock(t.note)}</p>
         </div>
       </form>
     </div>

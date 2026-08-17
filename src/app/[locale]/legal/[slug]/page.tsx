@@ -7,6 +7,7 @@ import { dictionaries } from "@/content/translations";
 import { getLocaleParam, getPolicy } from "@/lib/content";
 import { buildMetadata } from "@/lib/metadata";
 import { list, text } from "@/lib/localize";
+import { clock } from "@/components/ui/Clock";
 import { localizePath } from "@/i18n/routing";
 
 type PageProps = {
@@ -54,7 +55,7 @@ export default async function LegalPage({ params }: PageProps) {
               <h2 className="font-serif text-3xl font-semibold text-[var(--ink)]">{text(section.title, locale)}</h2>
               <ul className="mt-5 space-y-3 text-sm leading-7 text-[var(--muted)]">
                 {list(section.items, locale).map((item) => (
-                  <li key={item}>{item}</li>
+                  <li key={item}>{clock(item)}</li>
                 ))}
               </ul>
             </section>

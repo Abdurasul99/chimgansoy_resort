@@ -2,6 +2,7 @@ import { menuCopy, menuGroups, type MenuIcon } from "@/content/menu";
 import { contacts } from "@/content/contacts";
 import { text } from "@/lib/localize";
 import type { Locale } from "@/i18n/config";
+import { clock } from "@/components/ui/Clock";
 
 /**
  * Inline SVGs rather than an icon set.
@@ -98,7 +99,7 @@ export function MenuBoard({ locale }: { locale: Locale }) {
           </h2>
           <p className="mt-4 text-base leading-7 text-[var(--muted)]">{text(menuCopy.lead, locale)}</p>
           <p className="mt-4 inline-flex rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] px-4 py-3 text-sm font-semibold leading-6 text-[var(--ink)]">
-            {text(menuCopy.breakfastNote, locale)}
+            {clock(text(menuCopy.breakfastNote, locale))}
           </p>
         </div>
 

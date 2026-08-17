@@ -20,6 +20,7 @@ import { dictionaries } from "@/content/translations";
 import { getLocaleParam, getRoom } from "@/lib/content";
 import { buildMetadata } from "@/lib/metadata";
 import { list, text } from "@/lib/localize";
+import { clock } from "@/components/ui/Clock";
 import { frameStyle, imageStyle } from "@/lib/images";
 import { localizePath } from "@/i18n/routing";
 
@@ -334,7 +335,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
                         ) : (
                           <Icon name="check" className="h-3 w-3 shrink-0 text-[var(--green)]" />
                         )}
-                        {text(perk.label, locale)}
+                        {clock(text(perk.label, locale))}
                       </li>
                     ))}
                   </ul>
@@ -349,7 +350,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
                       {stayNotes.map((note) => (
                         <li key={note} className="flex gap-2.5 text-sm leading-6 text-[var(--muted)]">
                           <Icon name="check" className="mt-1.5 h-3 w-3 shrink-0 text-[var(--green)]" />
-                          <span>{note}</span>
+                          <span>{clock(note)}</span>
                         </li>
                       ))}
                     </ul>
@@ -389,7 +390,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
                     {(live?.features(locale) ?? list(room.features, locale)).map((item) => (
                       <li key={item} className="flex items-start gap-3 text-sm text-[var(--muted)]">
                         <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
-                        {item}
+                        {clock(item)}
                       </li>
                     ))}
                   </ul>

@@ -3,6 +3,7 @@ import { googleMapsIntegration } from "@/content/integrations";
 import { dictionaries } from "@/content/translations";
 import type { Locale } from "@/i18n/config";
 import { text } from "@/lib/localize";
+import { clock } from "@/components/ui/Clock";
 import { getGoogleMapsEmbedUrl } from "@/lib/maps";
 import { ContactActions } from "@/components/ui/ContactActions";
 
@@ -28,7 +29,7 @@ export function MapBlock({ locale }: MapBlockProps) {
         >
           {text(googleMapsIntegration.placeName, locale)}
         </a>
-        <p className="mt-3 text-sm font-semibold text-[var(--ink)]">{text(contacts.schedule, locale)}</p>
+        <p className="mt-3 text-sm font-semibold text-[var(--ink)]">{clock(text(contacts.schedule, locale))}</p>
         <div className="mt-6">
           <ContactActions locale={locale} compact />
         </div>

@@ -11,6 +11,7 @@ import { list, text } from "@/lib/localize";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Icon } from "@/components/ui/Icon";
 import { Lightbox } from "@/components/ui/Lightbox";
+import { clock } from "@/components/ui/Clock";
 
 type RoomCatalogProps = {
   locale: Locale;
@@ -188,7 +189,7 @@ export function RoomCatalog({ locale, limit, priceChips = {} }: RoomCatalogProps
                           ) : (
                             <Icon name="check" className="h-3 w-3 shrink-0 text-[var(--green)]" />
                           )}
-                          {text(perk.label, locale)}
+                          {clock(text(perk.label, locale))}
                         </li>
                       ))}
                     </ul>

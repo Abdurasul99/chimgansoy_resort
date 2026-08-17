@@ -9,6 +9,7 @@ import { getLocaleParam } from "@/lib/content";
 import { buildMetadata } from "@/lib/metadata";
 import { imageStyle } from "@/lib/images";
 import { text } from "@/lib/localize";
+import { clock } from "@/components/ui/Clock";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
@@ -127,7 +128,7 @@ export default async function ContactPage({ params }: PageProps) {
                   <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">
                     {locale === "ru" ? "Администрация отвечает" : locale === "uz" ? "Ish vaqti" : "We respond"}
                   </p>
-                  <p className="mt-1 text-sm font-semibold text-[var(--ink)]">{text(contacts.schedule, locale)}</p>
+                  <p className="mt-1 text-sm font-semibold text-[var(--ink)]">{clock(text(contacts.schedule, locale))}</p>
                 </div>
               </div>
             </div>

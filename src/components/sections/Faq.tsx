@@ -2,6 +2,7 @@ import { faqItems } from "@/content/faq";
 import type { Locale } from "@/i18n/config";
 import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 import { text } from "@/lib/localize";
+import { clock } from "@/components/ui/Clock";
 import { Icon } from "@/components/ui/Icon";
 
 type FaqProps = {
@@ -22,7 +23,7 @@ export function Faq({ locale, pricing }: FaqProps) {
               <Icon name="arrow" className="h-4 w-4 rotate-90" />
             </span>
           </summary>
-          <p className="mt-4 max-w-3xl text-sm leading-7 text-[var(--muted)]">{text(item.answer, locale)}</p>
+          <p className="mt-4 max-w-3xl text-sm leading-7 text-[var(--muted)]">{clock(text(item.answer, locale))}</p>
         </details>
       ))}
     </div>

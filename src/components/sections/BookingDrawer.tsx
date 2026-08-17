@@ -2,6 +2,7 @@ import { EXELY_ROOM_TYPE } from "@/content/rooms";
 import { dictionaries } from "@/content/translations";
 import { localizePath } from "@/i18n/routing";
 import type { Locale } from "@/i18n/config";
+import { clock } from "@/components/ui/Clock";
 
 type BookingDrawerProps = {
   locale: Locale;
@@ -86,7 +87,7 @@ export function BookingDrawer({ locale, roomTitle, roomSlug, priceFrom }: Bookin
         {perks.map((item) => (
           <li key={item} className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--green)]" />
-            {item}
+            {clock(item)}
           </li>
         ))}
       </ul>

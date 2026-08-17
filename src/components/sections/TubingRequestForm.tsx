@@ -10,6 +10,7 @@ import { contacts } from "@/content/contacts";
 import { CountInput } from "@/components/ui/CountInput";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Icon } from "@/components/ui/Icon";
+import { clock } from "@/components/ui/Clock";
 import { LegalConsentFields } from "@/components/ui/LegalConsentFields";
 import { trackEvent } from "@/lib/analytics";
 import { list, text } from "@/lib/localize";
@@ -185,7 +186,7 @@ export function TubingRequestForm({
 
   return (
     <div className="rounded-3xl border border-[color:var(--line)] bg-[var(--surface-warm)] p-6 shadow-[var(--shadow-card)] sm:p-9">
-      <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--accent-strong)]">{t.eyebrow}</p>
+      <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--accent-strong)]">{clock(t.eyebrow)}</p>
       <h3 className="mt-3 font-serif text-3xl font-semibold leading-tight text-[var(--ink)] sm:text-4xl">{t.title}</h3>
       <p className="mt-3 max-w-xl text-sm leading-6 text-[var(--muted)] sm:text-base sm:leading-7">{t.lead}</p>
 
@@ -318,7 +319,7 @@ export function TubingRequestForm({
           >
             {pending ? t.sending : t.send}
           </button>
-          <p className="mt-3 max-w-md text-xs leading-5 text-[var(--muted)]">{t.note}</p>
+          <p className="mt-3 max-w-md text-xs leading-5 text-[var(--muted)]">{clock(t.note)}</p>
         </div>
       </form>
     </div>

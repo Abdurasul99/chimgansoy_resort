@@ -10,6 +10,7 @@ import { getPricing } from "@/lib/pricing-live";
 import { resortImages } from "@/content/images";
 import { tubingVideos, extraTubingVideos } from "@/content/videos";
 import { list, text } from "@/lib/localize";
+import { clock } from "@/components/ui/Clock";
 import type { Locale } from "@/i18n/config";
 
 const ABOUT: Record<Locale, string> = {
@@ -70,14 +71,14 @@ export async function DayProductPage({ locale, slug }: { locale: Locale; slug: "
             <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">
               {ABOUT[locale] ?? ABOUT.ru}
             </p>
-            <p className="mt-4 text-lg leading-8 text-[var(--muted)]">{text(product.description, locale)}</p>
+            <p className="mt-4 text-lg leading-8 text-[var(--muted)]">{clock(text(product.description, locale))}</p>
           </div>
 
           <ul className="mt-8 grid gap-3 sm:grid-cols-2 motion-reveal" data-delay="50">
             {list(product.highlights, locale).map((item) => (
               <li key={item} className="flex items-start gap-3 text-sm text-[var(--muted)]">
                 <Icon name="check" className="mt-0.5 h-4 w-4 shrink-0 text-[var(--green)]" />
-                {item}
+                {clock(item)}
               </li>
             ))}
           </ul>
@@ -88,7 +89,7 @@ export async function DayProductPage({ locale, slug }: { locale: Locale; slug: "
               <h2 className="font-serif text-2xl font-semibold text-[var(--ink)]">
                 {text(section.title, locale)}
               </h2>
-              <p className="mt-3 text-base leading-7 text-[var(--muted)]">{text(section.body, locale)}</p>
+              <p className="mt-3 text-base leading-7 text-[var(--muted)]">{clock(text(section.body, locale))}</p>
             </div>
           ))}
 
