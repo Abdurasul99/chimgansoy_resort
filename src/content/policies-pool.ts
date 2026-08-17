@@ -1,6 +1,6 @@
 import type { PolicyPage } from "./policies";
 import { legalPolicies } from "./policies-legal";
-import { amend } from "./policies-legal-amendments";
+import { amend, poolAroundStaySection } from "./policies-legal-amendments";
 import { poolPricing } from "./pricing";
 
 /**
@@ -69,5 +69,7 @@ export const poolRulesPolicy: PolicyPage = {
     uz: "CHIMGAN DARBAZA panoramali basseynining ish vaqti va rasmiy tashrif qoidalari — Ommaviy ofertaga 1-ilovaning 5-bo'limi. Rasmiy matn rus tilida.",
     en: "Opening hours and the official rules for the CHIMGAN DARBAZA panoramic pool — Annex 1, section 5 of the Public Offer. The official text is in Russian.",
   },
-  sections: [hoursSection, ...officialPoolSections()],
+  // Условия «до заезда / после выезда» — тоже про бассейн, и гость, который
+  // читает правила перед оплатой, должен видеть их здесь, а не только в оферте.
+  sections: [hoursSection, ...officialPoolSections(), poolAroundStaySection],
 };

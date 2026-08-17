@@ -36,6 +36,7 @@ export type LivePricing = {
   pool: {
     adult: { weekday: number; weekend: number };
     child: { weekday: number; weekend: number };
+    afterCheckOut: number;
     extras: { towel: number; bungalow4: number; bungalow10: number };
   };
   topchan: { weekday: number; weekend: number };
@@ -73,6 +74,8 @@ export function resolvePricing(patch: Record<string, number> = {}): LivePricing 
         weekday: pick(patch, "pool.child.weekday", poolPricing.child.weekday),
         weekend: pick(patch, "pool.child.weekend", poolPricing.child.weekend),
       },
+      /** День бассейна после выезда из домика — фиксированная плата. */
+      afterCheckOut: pick(patch, "pool.afterCheckout", poolPricing.afterCheckOut),
       extras: {
         towel: pick(patch, "pool.extra.towel", poolPricing.extras.towel),
         bungalow4: pick(patch, "pool.extra.bungalow4", poolPricing.extras.bungalow4),

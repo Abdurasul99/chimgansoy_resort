@@ -166,6 +166,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
         ru: [
           `Стандартное размещение — ${occ.base} гостя, максимум ${occ.max}. Места сверх стандарта — за доплату.`,
           `Заезд с ${stayRules.checkIn}, выезд до ${stayRules.checkOut}. Ранний заезд и поздний выезд — по загрузке и за доплату.`,
+          `Бассейн: до заезда, ожидая заселения, — бесплатно при подтверждённой броне; после выезда — ${group(livePricing.pool.afterCheckOut)} сум за день. Предупредите администратора заранее.`,
           `Дополнительное место за ночь — ${group(livePricing.extraGuest.adult)} сум за гостя от ${adultFromAge} лет и ${group(livePricing.extraGuest.child)} сум за ребёнка ${childFrom}–${childTo} лет. Дети 0–${freeThroughAge} лет — бесплатно.`,
           ...(room.slug === "cottage"
             ? [`Гостевой визит в шале (без ночёвки) — ${group(livePricing.extraGuest.guestVisitCottage)} сум.`]
@@ -176,6 +177,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
         uz: [
           `Standart joylashuv — ${occ.base} mehmon, maksimum ${occ.max}. Standartdan ortiq joylar — qo'shimcha to'lov evaziga.`,
           `Kirish ${stayRules.checkIn} dan, chiqish ${stayRules.checkOut} gacha. Erta kirish va kech chiqish — bandlikka qarab va qo'shimcha to'lov evaziga.`,
+          `Basseyn: kirishdan oldin, joylashuvni kutayotib — tasdiqlangan bron bilan bepul; chiqishdan keyin — bir kun uchun ${group(livePricing.pool.afterCheckOut)} so'm. Administratorni oldindan ogohlantiring.`,
           `Bir kechaga qo'shimcha joy — ${adultFromAge} yoshdan katta mehmon uchun ${group(livePricing.extraGuest.adult)} so'm, ${childFrom}–${childTo} yoshdagi bola uchun ${group(livePricing.extraGuest.child)} so'm. 0–${freeThroughAge} yoshdagi bolalar — bepul.`,
           ...(room.slug === "cottage"
             ? [`Shalega mehmon tashrifi (tunab qolmasdan) — ${group(livePricing.extraGuest.guestVisitCottage)} so'm.`]
@@ -186,6 +188,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
         en: [
           `The rate covers ${occ.base} guests; the cabin holds up to ${occ.max}. Places beyond the standard are charged.`,
           `Check-in from ${stayRules.checkIn}, check-out by ${stayRules.checkOut}. Early check-in and late check-out depend on occupancy and are charged.`,
+          `The pool: free while you wait to check in if your booking is confirmed; after check-out, ${group(livePricing.pool.afterCheckOut)} UZS for the day. Let the administrator know in advance.`,
           `An extra place per night — ${group(livePricing.extraGuest.adult)} UZS for a guest aged ${adultFromAge} and over, ${group(livePricing.extraGuest.child)} UZS for a child aged ${childFrom}–${childTo}. Children aged 0–${freeThroughAge} stay free.`,
           ...(room.slug === "cottage"
             ? [`A guest visit to a chalet (no overnight stay) — ${group(livePricing.extraGuest.guestVisitCottage)} UZS.`]

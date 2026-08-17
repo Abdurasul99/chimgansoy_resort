@@ -1,5 +1,5 @@
 import type { PolicyPage } from "./policies";
-import { stayRules } from "./pricing";
+import { poolPricing, stayRules } from "./pricing";
 
 /**
  * Распоряжения оператора, изменяющие текст подписанных документов.
@@ -54,6 +54,53 @@ const AMENDMENTS: Amendment[] = [
   },
 ];
 
+/**
+ * Тот же разделитель разрядов, что и во всех остальных текстах сайта.
+ *
+ * toLocaleString ставит НЕРАЗРЫВНЫЙ пробел, и «100 000» из документа переставало
+ * совпадать с «100 000» из формы — на глаз одинаково, для поиска и для теста
+ * разные строки.
+ */
+const money = (n: number) => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+
+/**
+ * Дополнительные условия, которых в подписанном документе нет вовсе.
+ *
+ * Замена тут не подходит: оператор не исправил пункт, а добавил новый случай —
+ * бассейн вокруг проживания. Раздел приписывается к оферте с датой распоряжения,
+ * чтобы гость видел, что это добавление, а не часть исходного текста.
+ *
+ * Сумма берётся из той же константы, что и админка с формой: цифра, вписанная
+ * сюда руками, разошлась бы с прайсом при первой правке оператора.
+ */
+export const poolAroundStaySection = {
+  title: {
+    ru: "Дополнительные условия посещения бассейна (распоряжение оператора от 17.08.2026)",
+    uz: "Basseynga tashrif uchun qo'shimcha shartlar (operator farmoyishi, 17.08.2026)",
+    en: "Additional pool conditions (operator's order of 17.08.2026)",
+  },
+  items: {
+    ru: [
+      "До заезда: гость с подтверждённой бронью вправе пользоваться бассейном, ожидая заселения, — до наступления расчётного времени заезда. Отдельная плата не взимается, объект размещения при этом не предоставляется.",
+      `После выезда: посещение бассейна в стоимость проживания не входит и оплачивается отдельно — ${money(poolPricing.afterCheckOut)} сум фиксированно за один день посещения.`,
+      "Указанные условия действуют независимо от основного тарифа и в стоимость номера не включены.",
+      "О намерении воспользоваться бассейном до заезда или после выезда необходимо заранее уведомить администрацию.",
+    ],
+    uz: [
+      "Kirishdan oldin: tasdiqlangan broni bor mehmon joylashuvni kutayotib, hisob-kitob kirish vaqtigacha basseyndan foydalanishi mumkin. Alohida to'lov olinmaydi, joylashuv obyekti bu vaqtda berilmaydi.",
+      `Chiqishdan keyin: basseynga tashrif yashash narxiga kirmaydi va alohida to'lanadi — bir kunlik tashrif uchun qat'iy ${money(poolPricing.afterCheckOut)} so'm.`,
+      "Ushbu shartlar asosiy tarifdan qat'i nazar amal qiladi va xona narxiga kiritilmagan.",
+      "Kirishdan oldin yoki chiqishdan keyin basseyndan foydalanish niyati haqida ma'muriyatni oldindan ogohlantirish kerak.",
+    ],
+    en: [
+      "Before check-in: a guest with a confirmed booking may use the pool while waiting to be checked in, up to the stated check-in time. No separate charge applies; the cabin itself is not handed over at that point.",
+      `After check-out: pool access is not part of the room rate and is paid separately — a flat ${money(poolPricing.afterCheckOut)} UZS for one day.`,
+      "These conditions apply regardless of the main tariff and are not included in the room rate.",
+      "Please notify the administration in advance if you intend to use the pool before check-in or after check-out.",
+    ],
+  },
+};
+
 /** Строка примечания, которую видит гость под изменённым пунктом. */
 const MARK = (note: string) => `Примечание к пункту: ${note}`;
 
@@ -88,6 +135,12 @@ export function amend(page: PolicyPage): PolicyPage {
     touched ||= ru.changed || uz.changed || en.changed;
     return { ...section, items: { ru: ru.items, uz: uz.items, en: en.items } };
   });
+
+  // Добавленные условия — только к оферте: в политике возврата и в политике
+  // конфиденциальности разделу про бассейн делать нечего.
+  if (page.slug === "public-offer") {
+    return { ...page, sections: [...sections, poolAroundStaySection] };
+  }
 
   return touched ? { ...page, sections } : page;
 }

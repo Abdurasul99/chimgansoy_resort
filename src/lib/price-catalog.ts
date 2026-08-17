@@ -85,6 +85,14 @@ export function fields(): PriceField[] {
 
   out.push(
     {
+      // Не полоса Пн–Чт / Пт–Вс: плата фиксированная и от дня недели не зависит.
+      key: "pool.afterCheckout",
+      group: "Бассейн",
+      label: "День бассейна после выезда",
+      hint: "для выехавших гостей, фиксированно за день; до заезда бассейн бесплатный при подтверждённой броне",
+      value: poolPricing.afterCheckOut,
+    },
+    {
       key: "pool.extra.towel",
       group: "Бассейн",
       label: "Аренда полотенца",

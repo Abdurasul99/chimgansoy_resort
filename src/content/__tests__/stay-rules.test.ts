@@ -378,3 +378,39 @@ describe("правила бассейна — отдельная страниц�
     }
   });
 });
+
+describe("бассейн вокруг проживания — распоряжение оператора от 17.08.2026", () => {
+  const offer = JSON.stringify(policies.find((p) => p.slug === "public-offer"));
+  const poolPage = JSON.stringify(policies.find((p) => p.slug === "pool-rules"));
+
+  it("условия приписаны к оферте и помечены как распоряжение, а не как её текст", () => {
+    expect(offer).toContain("Дополнительные условия посещения бассейна (распоряжение оператора от 17.08.2026)");
+    expect(offer).toContain("До заезда:");
+    expect(offer).toContain("После выезда:");
+  });
+
+  it("сумма за день после выезда берётся из прайса, а не вписана в текст", () => {
+    // Цифра, вписанная в документ руками, разошлась бы с админкой при первой
+    // же правке оператора — и гость прочёл бы одно, а заплатил другое.
+    const shown = money(poolPricing.afterCheckOut);
+    expect(offer).toContain(shown);
+    expect(poolPage).toContain(shown);
+    expect(fields().map((f) => f.key)).toContain("pool.afterCheckout");
+    expect(resolvePricing({ "pool.afterCheckout": 123_000 }).pool.afterCheckOut).toBe(123_000);
+  });
+
+  it("до заезда — бесплатно, но только с подтверждённой бронью", () => {
+    expect(poolPricing.beforeCheckInFree).toBe(true);
+    expect(offer).toContain("подтверждённой бронью");
+    // Домик при этом не выдаётся: иначе это ранний заезд, а он платный (§5.2.1).
+    expect(offer).toContain("объект размещения при этом не предоставляется");
+  });
+
+  it("оба брифинга ИИ знают про обе стороны условия", () => {
+    for (const text of [venueFacts(), venueCore()]) {
+      expect(text).toMatch(/до заезда/i);
+      expect(text).toMatch(/после выезда/i);
+      expect(text).toContain(money(poolPricing.afterCheckOut));
+    }
+  });
+});
