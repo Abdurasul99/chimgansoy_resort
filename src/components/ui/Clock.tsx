@@ -24,15 +24,23 @@ const TIME = /(\d{1,2}:\d{2}(?:\s*(?:[–—-]|до|dan|to|gacha)\s*\d{1,2}:\d{2
  */
 const MARK = "font-extrabold text-[var(--sun-dark)]";
 
+/**
+ * На тёмной подложке (зелёный значок, футер) тёмное золото мутнеет — там нужен
+ * светлый оттенок того же акцента. Цвет один и тот же по смыслу, разный по
+ * светлоте: иначе «заметно» превращается в «не разобрать».
+ */
+const MARK_ON_DARK = "font-extrabold text-[var(--sun)]";
+
 /** Текст, в котором каждое время обёрнуто в <strong>. Не время — как было. */
-export function clock(text: string): ReactNode {
+export function clock(text: string, tone: "light" | "dark" = "light"): ReactNode {
   const parts = text.split(TIME);
   if (parts.length === 1) return text;
+  const mark = tone === "dark" ? MARK_ON_DARK : MARK;
 
   return parts.map((part, i) =>
     // split с одной группой захвата отдаёт совпадения на нечётных позициях.
     i % 2 === 1 ? (
-      <strong key={i} className={MARK}>
+      <strong key={i} className={mark}>
         {part}
       </strong>
     ) : (
@@ -42,6 +50,14 @@ export function clock(text: string): ReactNode {
 }
 
 /** Готовый <span> — для мест, где нужен один узел, а не массив. */
-export function Clock({ text, className }: { text: string; className?: string }) {
-  return <span className={className}>{clock(text)}</span>;
+export function Clock({
+  text,
+  className,
+  tone,
+}: {
+  text: string;
+  className?: string;
+  tone?: "light" | "dark";
+}) {
+  return <span className={className}>{clock(text, tone)}</span>;
 }

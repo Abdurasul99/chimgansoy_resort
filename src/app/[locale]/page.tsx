@@ -28,6 +28,8 @@ import { text } from "@/lib/localize";
 import { localizePath } from "@/i18n/routing";
 import { getRoomPrices, priceChip } from "@/lib/room-price";
 import { homeServiceCards } from "@/lib/service-cards";
+import { clock } from "@/components/ui/Clock";
+import { stayRules } from "@/content/pricing";
 
 /**
  * Revalidated every six hours because the «от …» chip is a LIVE price.
@@ -163,12 +165,16 @@ export default async function HomePage({ params }: PageProps) {
               <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--accent-strong)]">
                 <span>{dict.home.stayEyebrow}</span>
                 <span className="h-px w-10 bg-[var(--accent-strong)]/40" />
+                {/* Часы заезда собираются из stayRules, а не вписаны цифрами:
+                    строка с «15:00» руками пережила бы правку константы. */}
                 <span className="text-[var(--muted)]">
-                  {locale === "ru"
-                    ? "заезд 15:00 · выезд 12:00"
-                    : locale === "uz"
-                      ? "kirish 15:00 · chiqish 12:00"
-                      : "check-in 15:00 · check-out 12:00"}
+                  {clock(
+                    locale === "ru"
+                      ? `заезд ${stayRules.checkIn} · выезд ${stayRules.checkOut}`
+                      : locale === "uz"
+                        ? `kirish ${stayRules.checkIn} · chiqish ${stayRules.checkOut}`
+                        : `check-in ${stayRules.checkIn} · check-out ${stayRules.checkOut}`,
+                  )}
                 </span>
               </div>
               <h2 className="motion-reveal-mask mt-4 font-serif text-[clamp(2.4rem,6vw,4.2rem)] font-semibold leading-[1.02] text-[var(--ink)]">
@@ -400,9 +406,16 @@ export default async function HomePage({ params }: PageProps) {
                   Was "08–18 open hours", which is the day-visit window and read
                   as "we close before dinner" next to a stay-led headline. */}
               <div className="editorial-badge editorial-badge--accent absolute -bottom-6 -left-6 hidden lg:block">
-                <p className="font-serif text-4xl font-bold leading-none">15:00</p>
+                <p className="font-serif text-4xl font-bold leading-none text-[var(--sun)]">{stayRules.checkIn}</p>
                 <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-white/80">
-                  {locale === "ru" ? "заезд · выезд 12:00" : locale === "uz" ? "kirish · chiqish 12:00" : "check-in · out 12:00"}
+                  {clock(
+                    locale === "ru"
+                      ? `заезд · выезд ${stayRules.checkOut}`
+                      : locale === "uz"
+                        ? `kirish · chiqish ${stayRules.checkOut}`
+                        : `check-in · out ${stayRules.checkOut}`,
+                    "dark",
+                  )}
                 </p>
               </div>
             </div>
