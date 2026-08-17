@@ -7,10 +7,12 @@ type Copy = {
   offer: (link: ReactNode) => ReactNode;
   privacy: (link: ReactNode) => ReactNode;
   tubingRules: (link: ReactNode) => ReactNode;
+  poolRules: (link: ReactNode) => ReactNode;
   refund: (link: ReactNode) => ReactNode;
   offerLink: string;
   privacyLink: string;
   tubingRulesLink: string;
+  poolRulesLink: string;
   refundLink: string;
 };
 
@@ -20,10 +22,12 @@ const COPY: Record<Locale, Copy> = {
     offer: (link) => <>Я ознакомился(ась) с {link} и принимаю её условия.</>,
     privacy: (link) => <>Я даю согласие на обработку персональных данных в соответствии с {link}.</>,
     tubingRules: (link) => <>Я ознакомился(ась) с {link} и обязуюсь их соблюдать.</>,
+    poolRules: (link) => <>Я ознакомился(ась) с {link} и обязуюсь их соблюдать.</>,
     refund: (link) => <>Я ознакомился(ась) с {link} и принимаю их.</>,
     offerLink: "публичной офертой",
     privacyLink: "Политикой конфиденциальности",
     tubingRulesLink: "правилами тюбинговой горки",
+    poolRulesLink: "правилами посещения бассейна",
     refundLink: "правилами отмены и возврата",
   },
   uz: {
@@ -31,10 +35,12 @@ const COPY: Record<Locale, Copy> = {
     offer: (link) => <>{link} bilan tanishdim va uning shartlarini qabul qilaman.</>,
     privacy: (link) => <>Shaxsiy ma’lumotlarimni {link}ga muvofiq qayta ishlashga roziman.</>,
     tubingRules: (link) => <>{link} bilan tanishdim va ularga rioya qilishga roziman.</>,
+    poolRules: (link) => <>{link} bilan tanishdim va ularga rioya qilishga roziman.</>,
     refund: (link) => <>{link} bilan tanishdim va ularni qabul qilaman.</>,
     offerLink: "Ommaviy oferta",
     privacyLink: "Maxfiylik siyosati",
     tubingRulesLink: "Tubing gorkasidan foydalanish qoidalari",
+    poolRulesLink: "Basseynga tashrif qoidalari",
     refundLink: "Bekor qilish va qaytarish qoidalari",
   },
   en: {
@@ -42,16 +48,18 @@ const COPY: Record<Locale, Copy> = {
     offer: (link) => <>I have read and accept the {link}.</>,
     privacy: (link) => <>I consent to the processing of my personal data under the {link}.</>,
     tubingRules: (link) => <>I have read the {link} and agree to follow them.</>,
+    poolRules: (link) => <>I have read the {link} and agree to follow them.</>,
     refund: (link) => <>I have read and accept the {link}.</>,
     offerLink: "Public Offer",
     privacyLink: "Privacy Policy",
     tubingRulesLink: "Tubing Hill Rules",
+    poolRulesLink: "Pool Rules",
     refundLink: "Cancellation and Refund Rules",
   },
 };
 
 type ConsentRowProps = {
-  name: "offerConsent" | "privacyConsent" | "rulesConsent" | "refundConsent";
+  name: "offerConsent" | "privacyConsent" | "rulesConsent" | "poolRulesConsent" | "refundConsent";
   children: ReactNode;
   tone: "light" | "dark";
 };
@@ -77,11 +85,13 @@ function ConsentRow({ name, children, tone }: ConsentRowProps) {
 export function LegalConsentFields({
   locale,
   includeTubingRules = false,
+  includePoolRules = false,
   includeRefund = false,
   tone = "light",
 }: {
   locale: Locale;
   includeTubingRules?: boolean;
+  includePoolRules?: boolean;
   includeRefund?: boolean;
   tone?: "light" | "dark";
 }) {
@@ -118,6 +128,14 @@ export function LegalConsentFields({
       {includeTubingRules ? (
         <ConsentRow name="rulesConsent" tone={tone}>
           {t.tubingRules(link("/legal/tubing-rules", t.tubingRulesLink))}
+        </ConsentRow>
+      ) : null}
+
+      {/* Правила бассейна — первой строкой, как и правила горки: это то, из-за
+          чего гостя могут не пустить в воду, а не общие условия договора. */}
+      {includePoolRules ? (
+        <ConsentRow name="poolRulesConsent" tone={tone}>
+          {t.poolRules(link("/legal/pool-rules", t.poolRulesLink))}
         </ConsentRow>
       ) : null}
 

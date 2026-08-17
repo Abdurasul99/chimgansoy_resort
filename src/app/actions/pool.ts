@@ -59,7 +59,7 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
   const lang: Lang = localeRaw === "uz" || localeRaw === "en" ? localeRaw : "ru";
   const m = MESSAGES[lang];
 
-  const legalError = validateLegalConsents(formData, lang);
+  const legalError = validateLegalConsents(formData, lang, { poolRules: true });
   if (legalError) return { ok: false, error: legalError };
 
   const name = ((formData.get("name") as string | null) ?? "").trim();

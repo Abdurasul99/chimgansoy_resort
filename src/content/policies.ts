@@ -1,5 +1,7 @@
 import type { LocalizedList, LocalizedString } from "./types";
 import { legalPolicies } from "./policies-legal";
+import { amend } from "./policies-legal-amendments";
+import { poolRulesPolicy } from "./policies-pool";
 import { tubingLegalPolicy } from "./policies-tubing-legal";
 
 export type PolicyPage = {
@@ -112,8 +114,14 @@ export const policies: PolicyPage[] = [
     ],
   },
   // Real legal documents (Public Offer, Privacy Policy, Return & Cancellation)
-  // provided by the operator — see policies-legal.ts.
-  ...legalPolicies,
+  // provided by the operator — see policies-legal.ts. amend() накладывает
+  // распоряжения оператора, изданные после подписания документа: пока юрист не
+  // выпустил новую редакцию, страница обязана показывать срок, по которому
+  // сегодня работает ресепшен. Что именно изменено — в policies-legal-amendments.ts.
+  ...legalPolicies.map(amend),
   // Safety rules generated verbatim from the operator's DOCX.
   tubingLegalPolicy,
+  // Раздел про бассейн из того же документа, вынесенный отдельной страницей:
+  // под ним гость ставит галочку в форме заявки.
+  poolRulesPolicy,
 ];

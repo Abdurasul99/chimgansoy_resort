@@ -6,10 +6,13 @@ import {
   cabinOccupancy,
   dateTransfer,
   extraGuestPricing,
+  poolPricing,
   stayRules,
   touristTax,
 } from "@/content/pricing";
+import { policies } from "@/content/policies";
 import { legalPolicies } from "@/content/policies-legal";
+import { amendmentSources } from "@/content/policies-legal-amendments";
 import { rooms } from "@/content/rooms";
 import { fields } from "@/lib/price-catalog";
 import { resolvePricing } from "@/lib/pricing-resolve";
@@ -271,7 +274,11 @@ describe("stay rules — what the AI is briefed on", () => {
     });
 
     it(`${name}() carries the refund rules the AI must not soften`, () => {
-      expect(text).toMatch(/Предоплата 100%/);
+      expect(text).toMatch(/предоплата 100%/i);
+      // Час, а не сутки (оператор, 17.08.2026), и с автоматической отменой:
+      // ИИ, пообещавший гостю день на оплату, стоит потерянной брони.
+      expect(text).toMatch(/в течение 1 часа/i);
+      expect(text).toMatch(/аннулир/i);
       // The ladder, in figures, in both briefings. The compact one used to say
       // only "невозвратная", which is the opposite of the contract.
       expect(text).toMatch(/5 (СУТОК|суток)/);
@@ -312,5 +319,62 @@ describe("брифинги следуют правкам оператора, а 
   it("без правок брифинг тот же, что и был", () => {
     expect(venueCore(resolvePricing())).toBe(venueCore());
     expect(venueFacts(resolvePricing())).toBe(venueFacts());
+  });
+});
+
+describe("документы — поправки оператора поверх подписанного текста", () => {
+  const offer = policies.find((p) => p.slug === "public-offer");
+  const offerText = JSON.stringify(offer);
+
+  it("срок предоплаты — час, и он не остался сутками ни в одном пункте", () => {
+    // Оператор сократил срок 17.08.2026. Пока юрист не выпустил новую редакцию,
+    // страница обязана показывать срок, по которому работает ресепшен: гость,
+    // прочитавший «сутки», не заплатит через час и потеряет бронь.
+    expect(offerText).toContain(`в течение ${stayRules.prepayWithin.ru} (одного) часа`);
+    expect(offerText).not.toContain("24 (двадцати четырёх) часов");
+    expect(offerText).toContain("автоматически аннулируется");
+  });
+
+  it("изменённый пункт помечен, а не подменён молча", () => {
+    // Молчаливая правка договора — это подлог. Под каждым исправленным пунктом
+    // стоит примечание: что изменено, кем и когда.
+    expect(offerText).toContain("Срок предоплаты изменён распоряжением оператора от 17.08.2026");
+  });
+
+  it("исходные формулировки ещё существуют — иначе поправку пора удалить", () => {
+    // Сторож на будущее. Когда придёт новая редакция .docx и старая фраза из
+    // неё исчезнет, этот тест упадёт — и поправку нужно будет убрать, а не
+    // оставлять висеть навсегда поверх текста, который уже исправлен.
+    const raw = JSON.stringify(legalPolicies);
+    for (const source of amendmentSources) {
+      expect(raw, "поправка больше не находит свой исходный текст").toContain(source);
+    }
+  });
+});
+
+describe("правила бассейна — отдельная страница под галочку в форме", () => {
+  const page = policies.find((p) => p.slug === "pool-rules");
+
+  it("существует и открыта для индексации", () => {
+    expect(page).toBeDefined();
+    expect(page!.indexable).toBe(true);
+  });
+
+  it("это официальный раздел оферты, а не пересказ своими словами", () => {
+    const body = JSON.stringify(page);
+    // Пункты из Приложения № 1, раздел 5 — те самые, под которыми подписан
+    // юрист. Второй текст о том же разошёлся бы с первым на первой правке.
+    expect(body).toContain("проносить и употреблять собственные продукты питания и напитки");
+    expect(body).toContain("исключительно в купальном костюме");
+    expect(page!.sections.some((s) => s.title.ru.includes("ПРАВИЛА ПОСЕЩЕНИЯ ПАНОРАМНОГО БАССЕЙНА"))).toBe(true);
+  });
+
+  it("называет оба окна работы: у проживающих и у посетителей они разные", () => {
+    const hours = page!.sections[0];
+    for (const locale of ["ru", "uz", "en"] as const) {
+      const text = hours.items[locale].join(" ");
+      expect(text, locale).toContain(poolPricing.hours);
+      expect(text, locale).toContain(poolPricing.hoursForStayingGuests);
+    }
   });
 });

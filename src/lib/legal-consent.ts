@@ -2,29 +2,33 @@ import type { Locale } from "@/i18n/config";
 
 type ConsentRequirements = {
   tubingRules?: boolean;
+  poolRules?: boolean;
   refund?: boolean;
 };
 
 const ERRORS: Record<
   Locale,
-  { offer: string; privacy: string; tubingRules: string; refund: string }
+  { offer: string; privacy: string; tubingRules: string; poolRules: string; refund: string }
 > = {
   ru: {
     offer: "Подтвердите согласие с публичной офертой",
     privacy: "Подтвердите согласие на обработку персональных данных",
     tubingRules: "Подтвердите согласие с правилами тюбинговой горки",
+    poolRules: "Подтвердите согласие с правилами посещения бассейна",
     refund: "Подтвердите согласие с правилами отмены и возврата",
   },
   uz: {
     offer: "Ommaviy oferta shartlariga roziligingizni tasdiqlang",
     privacy: "Shaxsiy ma’lumotlarni qayta ishlashga roziligingizni tasdiqlang",
     tubingRules: "Tubing gorkasi qoidalariga roziligingizni tasdiqlang",
+    poolRules: "Basseynga tashrif qoidalariga roziligingizni tasdiqlang",
     refund: "Bekor qilish va qaytarish qoidalariga roziligingizni tasdiqlang",
   },
   en: {
     offer: "Please confirm that you accept the Public Offer",
     privacy: "Please consent to the processing of your personal data",
     tubingRules: "Please confirm that you accept the Tubing Hill Rules",
+    poolRules: "Please confirm that you accept the Pool Rules",
     refund: "Please confirm that you accept the cancellation and refund rules",
   },
 };
@@ -44,6 +48,7 @@ export function validateLegalConsents(
   const error = ERRORS[locale];
 
   if (requirements.tubingRules && !checked(formData, "rulesConsent")) return error.tubingRules;
+  if (requirements.poolRules && !checked(formData, "poolRulesConsent")) return error.poolRules;
   if (!checked(formData, "offerConsent")) return error.offer;
   if (requirements.refund && !checked(formData, "refundConsent")) return error.refund;
   if (!checked(formData, "privacyConsent")) return error.privacy;

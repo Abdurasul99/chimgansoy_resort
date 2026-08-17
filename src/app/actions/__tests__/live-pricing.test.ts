@@ -51,6 +51,8 @@ function form(fields: Record<string, string>, includeLegalConsents = true): Form
   if (includeLegalConsents) {
     fd.set("offerConsent", "on");
     fd.set("privacyConsent", "on");
+    // Правила бассейна — своё согласие, как и правила горки у тюбинга.
+    fd.set("poolRulesConsent", "on");
   }
   for (const [k, v] of Object.entries(fields)) fd.set(k, v);
   return fd;
@@ -84,10 +86,22 @@ describe("серверная проверка обязательных юрид�
 
   it("бассейн: отклоняет заявку без согласия на обработку персональных данных", async () => {
     const result = await submitPoolRequest(
-      form({ ...base, guests: "2", kids: "0", toddlers: "0", offerConsent: "on" }, false),
+      form({ ...base, guests: "2", kids: "0", toddlers: "0", offerConsent: "on", poolRulesConsent: "on" }, false),
     );
 
     expect(result).toEqual({ ok: false, error: expect.stringMatching(/personal data/i) });
+    expect(deliverRequest).not.toHaveBeenCalled();
+  });
+
+  it("бассейн: отклоняет заявку без согласия с правилами бассейна", async () => {
+    // Оператор потребовал отдельную галочку под правилами воды: запрет своей
+    // еды и купальный костюм — это то, из-за чего гостя разворачивают на месте,
+    // и «я не читал» тут дороже, чем непринятая оферта.
+    const result = await submitPoolRequest(
+      form({ ...base, guests: "2", kids: "0", toddlers: "0", offerConsent: "on", privacyConsent: "on" }, false),
+    );
+
+    expect(result).toEqual({ ok: false, error: expect.stringMatching(/Pool Rules|правил/i) });
     expect(deliverRequest).not.toHaveBeenCalled();
   });
 
