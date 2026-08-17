@@ -141,9 +141,11 @@ export const rooms: Room[] = [
       uz: ["Standart 2 mehmon, maksimum 3 — uchinchi joy qo'shimcha to'lov evaziga", "1 yotoq xonasi, 28 m²", "Xususiy sanuzel 3,6 m²", "Terrasa 15 m²", "Kirish 15:00 dan, chiqish 12:00 gacha"],
       en: ["2 guests as standard, 3 maximum — the third place is charged", "1 bedroom, 28 m²", "Private bathroom 3.6 m²", "Terrace 15 m²", "Check-in from 15:00, check-out by 12:00"],
     },
-    // The tubing allowance differs by unit — 2 rides with a glamping cabin, 4
-    // with a chalet — which is why it is stated here per room rather than as a
-    // single site-wide perk.
+    // Тюбинг: один бесплатный спуск на КАЖДОГО проживающего (оператор, голосом
+    // 17.08.2026). Прежние «2 спуска глэмпингу, 4 шале» — то же самое правило,
+    // посчитанное за домик: 2 и 4 это ровно базовая вместимость. На гостя
+    // честнее: при доплате за дополнительное место не нужно решать заново,
+    // положен ли ему спуск.
     included: [
       {
         label: { ru: "Бассейн", uz: "Basseyn", en: "Pool" },
@@ -159,9 +161,9 @@ export const rooms: Room[] = [
       },
       {
         label: {
-          ru: "Тюбинг-горка: 2 спуска",
-          uz: "Tubing gorkasi: 2 marta uchish",
-          en: "Tubing hill: 2 rides",
+          ru: "Тюбинг: спуск каждому гостю",
+          uz: "Tubing: har bir mehmonga uchish",
+          en: "Tubing: a ride for every guest",
         },
         highlight: true,
       },
@@ -258,9 +260,9 @@ export const rooms: Room[] = [
       },
       {
         label: {
-          ru: "Тюбинг-горка: 4 спуска",
-          uz: "Tubing gorkasi: 4 marta uchish",
-          en: "Tubing hill: 4 rides",
+          ru: "Тюбинг: спуск каждому гостю",
+          uz: "Tubing: har bir mehmonga uchish",
+          en: "Tubing: a ride for every guest",
         },
         highlight: true,
       },

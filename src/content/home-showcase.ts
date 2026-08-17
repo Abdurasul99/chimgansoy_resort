@@ -27,9 +27,9 @@ export const homeShowcase: HomeShowcaseItem[] = [
       en: "20 cabins on nine hectares in the mountains",
     },
     copy: {
-      ru: "Десять глэмпингов A-frame и десять шале с двумя спальнями. На территории — бассейн 680 м² с детским бассейном и пул-баром, летний ресторан и всесезонная тюбинг-горка с пикник-зоной. Бассейн включён в проживание, тюбинг — 2 спуска гостям глэмпинга и 4 гостям шале.",
-      uz: "O'nta A-frame glemping va ikki yotoqxonali o'nta shale. Hududda — bolalar basseyni va pul-bar bilan 680 m² basseyn, yozgi restoran va piknik zonali butun mavsumga tubing gorkasi. Basseyn yashash narxiga kiritilgan, tubing — glemping mehmonlariga 2, shale mehmonlariga 4 marta uchish.",
-      en: "Ten A-frame glamping cabins and ten two-bedroom chalets. On the grounds: a 680 m² pool with a children's pool and a pool bar, a summer restaurant and the all-season tubing hill with its picnic area. The pool comes with every stay, and tubing is included — 2 rides with glamping, 4 with a chalet.",
+      ru: "Десять глэмпингов A-frame и десять шале с двумя спальнями. На территории — бассейн 680 м² с детским бассейном и пул-баром, летний ресторан и всесезонная тюбинг-горка с пикник-зоной. Бассейн включён в проживание, тюбинг — по одному бесплатному спуску каждому гостю, при работающей горке.",
+      uz: "O'nta A-frame glemping va ikki yotoqxonali o'nta shale. Hududda — bolalar basseyni va pul-bar bilan 680 m² basseyn, yozgi restoran va piknik zonali butun mavsumga tubing gorkasi. Basseyn yashash narxiga kiritilgan, tubing — gorka ishlayotgan bo'lsa, har bir mehmonga bittadan bepul uchish.",
+      en: "Ten A-frame glamping cabins and ten two-bedroom chalets. On the grounds: a 680 m² pool with a children's pool and a pool bar, a summer restaurant and the all-season tubing hill with its picnic area. The pool comes with every stay, and tubing is included — one free ride per guest, whenever the hill is running.",
     },
   },
   {

@@ -9,6 +9,7 @@ import {
   poolPricing,
   stayRules,
   touristTax,
+  tubingPricing,
 } from "@/content/pricing";
 import { policies } from "@/content/policies";
 import { legalPolicies } from "@/content/policies-legal";
@@ -412,5 +413,49 @@ describe("бассейн вокруг проживания — распоряж�
       expect(text).toMatch(/после выезда/i);
       expect(text).toContain(money(poolPricing.afterCheckOut));
     }
+  });
+});
+
+describe("тюбинг — голосовое распоряжение оператора от 17.08.2026", () => {
+  it("работает 10:00–20:00: после восьми вечера катание запрещено", () => {
+    expect(tubingPricing.hours).toBe("10:00–20:00");
+  });
+
+  it("проживающему включён один спуск НА ГОСТЯ, а не на домик", () => {
+    // Прежние «2 спуска глэмпингу, 4 шале» — то же правило, посчитанное за
+    // домик: 2 и 4 это ровно базовая вместимость. На гостя честнее, и при
+    // доплате за дополнительное место не нужно решать заново.
+    expect(tubingPricing.includedRidesPerGuest).toBe(1);
+    expect(cabinOccupancy.glamping.base * tubingPricing.includedRidesPerGuest).toBe(2);
+    expect(cabinOccupancy.cottage.base * tubingPricing.includedRidesPerGuest).toBe(4);
+  });
+
+  it("оба брифинга ИИ знают про часы, инструктора и оговорку «при работающей горке»", () => {
+    for (const text of [venueFacts(), venueCore()]) {
+      expect(text).toContain(tubingPricing.hours);
+      expect(text).toMatch(/без инструктора|с инструктором|только с инструктором/i);
+      expect(text).toMatch(/при работающей горке|только при работающей/i);
+    }
+  });
+
+  it("нигде не осталось обещания «включено 2 спуска / 4 спуска»", () => {
+    // Обещание живёт в тексте, а не в числе: правка константы его не трогает.
+    // Ищем именно ВКЛЮЧЁННЫЕ спуски — «пакеты 2 или 4 спуска» это тариф, он
+    // верен и остаётся.
+    const included = /включ|kiritilgan|included|проживани|yashash narxiga/i;
+    const fixedCount = /(2|4)\s(спуска|marta uchish|rides)/;
+    const offenders: string[] = [];
+
+    for (const file of sourceFiles()) {
+      readFileSync(file, "utf8")
+        .split(/\r?\n/)
+        .forEach((line, i) => {
+          if (/^\s*(\/\/|\/\*|\*)/.test(line)) return;
+          if (!included.test(line) || !fixedCount.test(line)) return;
+          offenders.push(`${file.slice(SRC.length + 1)}:${i + 1}`);
+        });
+    }
+
+    expect(offenders).toEqual([]);
   });
 });

@@ -1,7 +1,7 @@
 import type { resortImages } from "./images";
 import type { LocalizedList, LocalizedString } from "./types";
 import { tubing100cmPolicySections } from "./tubing-100cm-rules";
-import { topchanPricing } from "./pricing";
+import { topchanPricing, tubingPricing } from "./pricing";
 
 /** Same key type the room catalogue uses, so a typo fails the build. */
 export type ImageKey = keyof typeof resortImages;
@@ -158,9 +158,9 @@ export const dayProducts: DayProduct[] = [
       en: "A 160-metre all-season track with a powered lift — open year-round, not just on snow.",
     },
     description: {
-      ru: "Трасса длиной 160 метров и шириной 6 метров, всесезонная — кататься можно круглый год. Подъём автоматический: наверх тюбинг поднимает обратной тягой, идти пешком в горку не нужно. Одновременно спускаться могут до 5 человек, внизу предусмотрена безопасная остановка. Все правила безопасности учтены в конструкции трассы. Тюбинг берётся пакетами: 2 или 4 спуска, цена одинаковая в будни и в выходные. Вход на территорию бесплатный; для гостей тюбинга отдельно оплачивается парковочное место — за автомобиль.",
+      ru: `Трасса длиной 160 метров и шириной 6 метров, всесезонная — кататься можно круглый год. Подъём автоматический: наверх тюбинг поднимает обратной тягой, идти пешком в горку не нужно. Одновременно спускаться могут до 5 человек, внизу предусмотрена безопасная остановка. Все правила безопасности учтены в конструкции трассы. Горка работает ${tubingPricing.hours}: после 20:00 катание запрещено. Спуск — только в присутствии инструктора и по его разрешению. Тюбинг берётся пакетами: 2 или 4 спуска, цена одинаковая в будни и в выходные. Вход на территорию бесплатный; для гостей тюбинга отдельно оплачивается парковочное место — за автомобиль.`,
       uz: "Trassa uzunligi 160 metr, kengligi 6 metr, butun mavsumga mo'ljallangan — yil davomida uchish mumkin. Ko'tarilish avtomatik: tubingni yuqoriga teskari tortish ko'taradi, tepalikka piyoda chiqish shart emas. Bir vaqtning o'zida 5 kishigacha tusha oladi, pastda xavfsiz to'xtash joyi bor. Barcha xavfsizlik qoidalari trassa konstruksiyasida hisobga olingan. Tubing paketlar bilan olinadi: 2 yoki 4 marta uchish, narx ish kunlari va dam olish kunlarida bir xil. Hududga kirish bepul; tubing mehmonlari uchun parkovka joyi alohida — avtomobil uchun to'lanadi.",
-      en: "The track is 160 metres long and 6 metres wide, and runs all year — not only in snow. The lift is powered: the tube is pulled back to the top, so nobody walks up. Up to 5 people can descend at once, and there is a controlled stop at the bottom. Safety requirements are built into the track itself. Tubing is sold in packages of 2 or 4 rides, at the same price on weekdays and weekends. Entry to the grounds is free; tubing visitors pay separately for a parking space, per car.",
+      en: `The track is 160 metres long and 6 metres wide, and runs all year — not only in snow. The lift is powered: the tube is pulled back to the top, so nobody walks up. Up to 5 people can descend at once, and there is a controlled stop at the bottom. Safety requirements are built into the track itself. The hill runs ${tubingPricing.hours}; riding after 20:00 is not allowed. Descents happen only with the instructor present and on their signal. Tubing is sold in packages of 2 or 4 rides, at the same price on weekdays and weekends. Entry to the grounds is free; tubing visitors pay separately for a parking space, per car.`,
     },
     highlights: {
       ru: [
@@ -170,6 +170,7 @@ export const dayProducts: DayProduct[] = [
         "Автоматический подъём — пешком наверх идти не нужно",
         "До 5 человек спускаются одновременно",
         "Безопасная остановка внизу",
+        `Работает ${tubingPricing.hours}, спуск только с инструктором`,
         "Пакеты: 2 или 4 спуска, одна цена всю неделю",
         "Ватрушка выдаётся на месте",
       ],
@@ -190,6 +191,7 @@ export const dayProducts: DayProduct[] = [
         "Powered lift — nobody walks back up",
         "Up to 5 people descend at once",
         "Controlled stop at the bottom",
+        `Open ${tubingPricing.hours}, descents with an instructor only`,
         "Packages of 2 or 4 rides, one price all week",
         "Tubes provided on site",
       ],

@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { submitTubingRequest } from "@/app/actions/tubing";
 import { priceLabels } from "@/content/pricing";
+import { tubingPricing } from "@/content/pricing";
 import { tubing100cmFormSummary, tubing100cmSummaryTitle } from "@/content/tubing-100cm-rules";
 import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 import { contacts } from "@/content/contacts";
@@ -42,7 +43,7 @@ const COPY: Record<
   }
 > = {
   ru: {
-    eyebrow: "Тюбинг-горка",
+    eyebrow: `Тюбинг-горка · ${tubingPricing.hours}`,
     title: "Оставить заявку",
     lead: "Выберите дату и количество спусков — администратор перезвонит, подтвердит время и состояние трассы.",
     date: "Дата визита",
@@ -56,7 +57,7 @@ const COPY: Record<
     sending: "Отправляем…",
     successTitle: "Заявка принята",
     successText: "Администратор свяжется с вами в ближайшее время и подтвердит бронь.",
-    note: "Заявка — это ещё не оплата. Бронь подтверждает администратор.",
+    note: `Заявка — это ещё не оплата. Бронь подтверждает администратор. Горка работает ${tubingPricing.hours}; спуск — только в присутствии инструктора и по его разрешению.`,
     failed: `Не удалось отправить заявку. Позвоните нам: ${contacts.phone}`,
     priceTitle: "Тариф",
     packLabel: (r) => `${r} ${ridesRu(r)}`,
@@ -66,7 +67,7 @@ const COPY: Record<
       "Цена пакетов одинаковая в будни и выходные. Трасса всесезонная, 160 м, с автоматическим подъёмом — одновременно спускаются до 5 человек.",
   },
   uz: {
-    eyebrow: "Tubing gorkasi",
+    eyebrow: `Tubing gorkasi · ${tubingPricing.hours}`,
     title: "Ariza qoldiring",
     lead: "Sana va uchishlar sonini tanlang — administrator qo'ng'iroq qilib, vaqtni va trassa holatini tasdiqlaydi.",
     date: "Tashrif sanasi",
@@ -80,7 +81,7 @@ const COPY: Record<
     sending: "Yuborilmoqda…",
     successTitle: "Ariza qabul qilindi",
     successText: "Administrator tez orada bog'lanib, bronni tasdiqlaydi.",
-    note: "Ariza — bu hali to'lov emas. Bronni administrator tasdiqlaydi.",
+    note: `Ariza — bu hali to'lov emas. Bronni administrator tasdiqlaydi. Gorka ${tubingPricing.hours} ishlaydi; uchish faqat instruktor ishtirokida va uning ruxsati bilan.`,
     failed: `Arizani yuborib bo'lmadi. Bizga qo'ng'iroq qiling: ${contacts.phone}`,
     priceTitle: "Tarif",
     packLabel: (r) => `${r} marta uchish`,
@@ -90,7 +91,7 @@ const COPY: Record<
       "Paket narxi ish kunlari va dam olish kunlarida bir xil. Trassa butun mavsumga mo'ljallangan, 160 m, avtomatik ko'targich bilan — bir vaqtda 5 kishigacha tushadi.",
   },
   en: {
-    eyebrow: "Tubing hill",
+    eyebrow: `Tubing hill · ${tubingPricing.hours}`,
     title: "Send a request",
     lead: "Pick a date and how many rides — our administrator will call back to confirm the time and the state of the track.",
     date: "Visit date",
@@ -104,7 +105,7 @@ const COPY: Record<
     sending: "Sending…",
     successTitle: "Request received",
     successText: "Our administrator will contact you shortly to confirm the booking.",
-    note: "A request is not a payment. The administrator confirms the booking.",
+    note: `A request is not a payment. The administrator confirms the booking. The hill runs ${tubingPricing.hours}; descents happen only with the instructor present and on their signal.`,
     failed: `We couldn't send your request. Please call us: ${contacts.phone}`,
     priceTitle: "Tariff",
     packLabel: (r) => `${r} rides`,
