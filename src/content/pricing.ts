@@ -58,11 +58,14 @@ export const topchanPricing = {
   /** How many exist on the property. Internal — see the note above. */
   inventory: 30,
   /**
-   * The day-visit window from the operator's poster. Distinct from the pool
-   * (08:00–20:00) and from reception, which is staffed round the clock.
-   * ASSUMPTION worth re-confirming: the poster predates the pool's later hours.
+   * Окно дневного отдыха на топчане (оператор, 2026-08-17). До этого стояло
+   * 08:00–20:00 с постера — предположение, помеченное здесь как требующее
+   * подтверждения; оператор подтвердил другое: топчан работает 10:00–18:00.
+   *
+   * У бассейна теперь СВОИ часы и они длиннее (10:00–22:00) — не сводить их в
+   * одну константу: гость, приехавший на топчан к девяти вечера, приедет зря.
    */
-  hours: "08:00–20:00",
+  hours: "10:00–18:00",
   /** Единый тариф Пн–Вс по постеру оператора (2026-08-08). */
   rent: { weekday: 300_000, weekend: 300_000 },
 };
@@ -180,7 +183,8 @@ export const priceList: PriceItem[] = [
  * administrator corrects it at confirmation.
  */
 export const poolPricing = {
-  hours: "08:00–20:00",
+  /** Оператор, 2026-08-17. Было 08:00–20:00. Топчан закрывается раньше — 18:00. */
+  hours: "10:00–22:00",
   freeForStayingGuests: true,
   holidaysAsWeekend: true,
 

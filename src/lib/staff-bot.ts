@@ -644,7 +644,9 @@ type TgUpdate = {
  * tomorrow, and that question keeps until morning badly.
  */
 const NIGHT_FROM = 23; // inclusive
-const NIGHT_UNTIL = 8; // exclusive — the venue opens at 08:00
+// exclusive. Про сон оператора, а не про часы объектов: ресепшн работает
+// круглосуточно, топчан открывается в 10:00, бассейн тоже.
+const NIGHT_UNTIL = 8;
 
 function isNight(): boolean {
   const hour = new Date(Date.now() + 5 * 3600 * 1000).getUTCHours();
