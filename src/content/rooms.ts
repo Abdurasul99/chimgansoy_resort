@@ -1,5 +1,5 @@
 import { resortImages } from "./images";
-import { poolPricing } from "./pricing";
+import { poolPricing, stayRules } from "./pricing";
 import type { LocalizedList, LocalizedString } from "./types";
 
 export type RoomCategory = "glamping" | "cottage" | "pool";
@@ -153,9 +153,9 @@ export const rooms: Room[] = [
       },
       {
         label: {
-          ru: "Завтрак 08:00–11:00",
-          uz: "Nonushta 08:00–11:00",
-          en: "Breakfast 08:00–11:00",
+          ru: `Завтрак ${stayRules.breakfast}`,
+          uz: `Nonushta ${stayRules.breakfast}`,
+          en: `Breakfast ${stayRules.breakfast}`,
         },
         highlight: true,
       },
@@ -252,9 +252,9 @@ export const rooms: Room[] = [
       },
       {
         label: {
-          ru: "Завтрак 08:00–11:00",
-          uz: "Nonushta 08:00–11:00",
-          en: "Breakfast 08:00–11:00",
+          ru: `Завтрак ${stayRules.breakfast}`,
+          uz: `Nonushta ${stayRules.breakfast}`,
+          en: `Breakfast ${stayRules.breakfast}`,
         },
         highlight: true,
       },

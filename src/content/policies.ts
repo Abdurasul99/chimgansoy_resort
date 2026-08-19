@@ -119,8 +119,10 @@ export const policies: PolicyPage[] = [
   // выпустил новую редакцию, страница обязана показывать срок, по которому
   // сегодня работает ресепшен. Что именно изменено — в policies-legal-amendments.ts.
   ...legalPolicies.map(amend),
-  // Safety rules generated verbatim from the operator's DOCX.
-  tubingLegalPolicy,
+  // Safety rules generated verbatim from the operator's DOCX — с теми же
+  // поправками оператора: запрет совместного спуска касается и этого документа,
+  // иначе два текста об одном правиле разошлись бы.
+  amend(tubingLegalPolicy),
   // Раздел про бассейн из того же документа, вынесенный отдельной страницей:
   // под ним гость ставит галочку в форме заявки.
   poolRulesPolicy,

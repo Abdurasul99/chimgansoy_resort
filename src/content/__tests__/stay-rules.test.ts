@@ -8,12 +8,14 @@ import {
   extraGuestPricing,
   poolPricing,
   stayRules,
+  topchanPricing,
   touristTax,
   tubingPricing,
 } from "@/content/pricing";
 import { policies } from "@/content/policies";
 import { legalPolicies } from "@/content/policies-legal";
 import { amendmentSources } from "@/content/policies-legal-amendments";
+import { tubingLegalPolicy } from "@/content/policies-tubing-legal";
 import { rooms } from "@/content/rooms";
 import { fields } from "@/lib/price-catalog";
 import { resolvePricing } from "@/lib/pricing-resolve";
@@ -346,7 +348,9 @@ describe("документы — поправки оператора повер�
     // Сторож на будущее. Когда придёт новая редакция .docx и старая фраза из
     // неё исчезнет, этот тест упадёт — и поправку нужно будет убрать, а не
     // оставлять висеть навсегда поверх текста, который уже исправлен.
-    const raw = JSON.stringify(legalPolicies);
+    // Поправки накрывают два документа: оферту и правила горки. Сторож обязан
+    // смотреть в оба, иначе он «не найдёт исходник» там, где его и не искал.
+    const raw = JSON.stringify(legalPolicies) + JSON.stringify(tubingLegalPolicy);
     for (const source of amendmentSources) {
       expect(raw, "поправка больше не находит свой исходный текст").toContain(source);
     }
@@ -390,14 +394,27 @@ describe("бассейн вокруг проживания — распоряж�
     expect(offer).toContain("После выезда:");
   });
 
-  it("сумма за день после выезда берётся из прайса, а не вписана в текст", () => {
-    // Цифра, вписанная в документ руками, разошлась бы с админкой при первой
-    // же правке оператора — и гость прочёл бы одно, а заплатил другое.
-    const shown = money(poolPricing.afterCheckOut);
-    expect(offer).toContain(shown);
-    expect(poolPage).toContain(shown);
+  it("в договоре нет ни суммы, ни часов — только отсылка к сайту", () => {
+    // Распоряжение оператора от 18.08.2026: цены и режим работы живут на сайте,
+    // документ на них ссылается. Так их можно менять в админке, не перевыпуская
+    // подписанный текст, — и никакая цифра в договоре не устареет молча.
+    expect(offer).toContain("согласно Прейскуранту, опубликованному на Сайте");
+    expect(offer).not.toContain(money(poolPricing.afterCheckOut));
+    expect(offer).not.toContain(poolPricing.hours);
+    expect(offer).not.toContain(topchanPricing.hours);
+
+    // Сама цена при этом живая: правится в админке и доходит до формы.
     expect(fields().map((f) => f.key)).toContain("pool.afterCheckout");
     expect(resolvePricing({ "pool.afterCheckout": 123_000 }).pool.afterCheckOut).toBe(123_000);
+  });
+
+  it("часы объектов гость находит на сайте, а не в договоре", () => {
+    // Страница правил бассейна — то место, куда ведёт галочка в форме, и там
+    // окна названы. Договор же остаётся с отсылкой: п. 5.2 о том, что режим
+    // устанавливает Исполнитель и публикует на Сайте.
+    expect(poolPage).toContain(poolPricing.hours);
+    expect(poolPage).toContain(poolPricing.hoursForStayingGuests);
+    expect(offer).toContain("Время работы бассейна устанавливается Исполнителем");
   });
 
   it("до заезда — бесплатно, но только с подтверждённой бронью", () => {
@@ -457,5 +474,44 @@ describe("тюбинг — голосовое распоряжение опер�
     }
 
     expect(offenders).toEqual([]);
+  });
+});
+
+describe("тюбинг — совместный спуск запрещён (оператор, 18.08.2026)", () => {
+  const tubingDoc = JSON.stringify(policies.find((p) => p.slug === "tubing-rules"));
+  const offer = JSON.stringify(policies.find((p) => p.slug === "public-offer"));
+
+  it("оба документа говорят, что катается один человек", () => {
+    // Правило живёт в двух подписанных текстах сразу — в оферте (раздел 6) и в
+    // отдельных правилах горки. Поправка обязана накрыть оба, иначе гость
+    // найдёт разрешение там, где мы забыли его убрать.
+    for (const doc of [tubingDoc, offer]) {
+      expect(doc).toMatch(/разрешён спуск только одного человека|ТОЛЬКО ОДНОМУ ЧЕЛОВЕКУ/);
+      expect(doc).toContain("Совместный спуск взрослого с ребёнком");
+      expect(doc).toContain("Совместный спуск взрослого с ребёнком запрещён распоряжением оператора от 18.08.2026");
+    }
+  });
+
+  it("нигде не осталось порядка совместной посадки и суммарного веса пары", () => {
+    for (const doc of [tubingDoc, offer]) {
+      expect(doc).not.toContain("ребёнок садится первым лицом по ходу движения, взрослый — позади и обязан");
+      expect(doc).not.toContain("Суммарный вес взрослого и ребёнка при совместном спуске");
+    }
+  });
+
+  it("возрастной порог остался: младше 4 лет не допускают", () => {
+    // Запрет совместного спуска порог не отменил, но сделал строже по сути:
+    // четырёхлетний формально допущен, а фактически поедет только тот, кто
+    // держится сам. Обе половины должны быть в документе.
+    expect(tubingDoc).toContain("Дети младше 4 лет");
+    expect(tubingDoc).toContain("140 см");
+  });
+
+  it("ИИ знает и про запрет, и про порог — иначе пообещает «поедете вместе»", () => {
+    for (const text of [venueFacts(), venueCore()]) {
+      expect(text).toMatch(/совместный спуск.{0,40}запрещ/i);
+      expect(text).toMatch(/младше 4 лет/i);
+      expect(text).toMatch(/140 см/);
+    }
   });
 });

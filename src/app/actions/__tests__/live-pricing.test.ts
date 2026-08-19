@@ -322,13 +322,13 @@ describe("тюбинг: согласие с правилами и офертой
 
     expect(result).toEqual({ ok: true });
     expect(sent.telegramHtml).toMatch(/согласие.+правил.+оферт/i);
-    expect(sent.telegramHtml).toMatch(/редакция № 2/i);
-    expect(sent.telegramHtml).toContain("13.08.2026");
+    expect(sent.telegramHtml).toMatch(/редакция № 3/i);
+    expect(sent.telegramHtml).toContain("18.08.2026");
     expect(sent.telegramHtml).toMatch(/персональн/i);
     expect(sent.emailHtml).toMatch(/согласие.+правил.+оферт/i);
     expect(sent.emailHtml).toMatch(/персональн/i);
     expect(sent.record?.extras?.join("\n")).toMatch(/согласие.+правил.+оферт/i);
     expect(sent.record?.extras?.join("\n")).toMatch(/персональн/i);
-    expect(sent.record?.extras?.join("\n")).toContain("13.08.2026");
+    expect(sent.record?.extras?.join("\n")).toContain("18.08.2026");
   });
 });

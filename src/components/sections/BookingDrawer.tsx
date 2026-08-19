@@ -3,6 +3,7 @@ import { dictionaries } from "@/content/translations";
 import { localizePath } from "@/i18n/routing";
 import type { Locale } from "@/i18n/config";
 import { clock } from "@/components/ui/Clock";
+import { stayRules } from "@/content/pricing";
 
 type BookingDrawerProps = {
   locale: Locale;
@@ -33,7 +34,11 @@ export function BookingDrawer({ locale, roomTitle, roomSlug, priceFrom }: Bookin
     // Was "Завтрак по запросу" — wrong twice over: the offer (п. 4.6) puts
     // breakfast inside the room rate, and the kitchen serves it on a fixed
     // 08:00–11:00 window, not on request.
-    locale === "ru" ? "Завтрак включён, 08:00–11:00" : locale === "uz" ? "Nonushta kiritilgan, 08:00–11:00" : "Breakfast included, 08:00–11:00",
+    locale === "ru"
+      ? `Завтрак включён, ${stayRules.breakfast}`
+      : locale === "uz"
+        ? `Nonushta kiritilgan, ${stayRules.breakfast}`
+        : `Breakfast included, ${stayRules.breakfast}`,
     locale === "ru" ? "Подбор подходящих дат" : locale === "uz" ? "Mos sanalarni tanlaymiz" : "We help pick the dates",
   ];
 

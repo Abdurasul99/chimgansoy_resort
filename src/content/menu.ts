@@ -1,4 +1,5 @@
 import type { LocalizedString } from "./types";
+import { stayRules } from "./pricing";
 
 /**
  * The restaurant menu.
@@ -115,9 +116,9 @@ export const menuCopy = {
   // already paid for by anyone staying the night — worth saying above the
   // dish list, because a guest who reads only the menu never learns it.
   breakfastNote: {
-    ru: "Завтрак — ежедневно с 08:00 до 11:00. Гостям глэмпинга и шале он включён в стоимость проживания.",
-    uz: "Nonushta — har kuni 08:00 dan 11:00 gacha. Glemping va shale mehmonlari uchun u yashash narxiga kiritilgan.",
-    en: "Breakfast is served daily from 08:00 to 11:00 — included in the rate for glamping and chalet guests.",
+    ru: `Завтрак — ежедневно ${stayRules.breakfast}. Гостям глэмпинга и шале он включён в стоимость проживания.`,
+    uz: `Nonushta — har kuni ${stayRules.breakfast}. Glemping va shale mehmonlari uchun u yashash narxiga kiritilgan.`,
+    en: `Breakfast is served daily ${stayRules.breakfast} — included in the rate for glamping and chalet guests.`,
   },
   priceNote: {
     ru: "Цены не публикуем на сайте, чтобы они всегда были актуальными — уточните их на месте или по телефону.",
