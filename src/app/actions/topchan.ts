@@ -12,6 +12,7 @@ import {
   money,
   todayTashkent,
 } from "@/lib/request-delivery";
+import { pageLine } from "@/lib/request-context";
 
 export type TopchanResult = { ok: true } | { ok: false; error: string };
 
@@ -69,6 +70,8 @@ export async function submitTopchanRequest(formData: FormData): Promise<TopchanR
 
   const localeRaw = ((formData.get("locale") as string | null) ?? "").trim();
   const lang: Lang = localeRaw === "uz" || localeRaw === "en" ? localeRaw : "ru";
+  // Откуда пришла заявка: контекст обращения для оператора.
+  const page = pageLine(formData);
   const m = MESSAGES[lang];
 
   const legalError = validateLegalConsents(formData, lang);
@@ -157,7 +160,7 @@ export async function submitTopchanRequest(formData: FormData): Promise<TopchanR
     `<b>ИТОГО: ${money(total)} сум</b>`,
     ...(message ? ["", `<b>Комментарий:</b> ${esc(message)}`] : []),
     "",
-    `<i>Заявка с сайта chimgandarbaza.uz · язык гостя: ${lang}</i>`,
+    `<i>Заявка с сайта chimgandarbaza.uz${page ? ` · страница: ${esc(page)}` : ""} · язык гостя: ${lang}</i>`,
   ].join("\n");
 
   const emailHtml = `<div style="font-family:system-ui,sans-serif;max-width:520px">

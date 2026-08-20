@@ -16,6 +16,7 @@ import { trackEvent } from "@/lib/analytics";
 import { list, text } from "@/lib/localize";
 import { money, ridesRu } from "@/lib/tariff";
 import type { Locale } from "@/i18n/config";
+import { PageContextFields } from "@/components/ui/PageContextFields";
 
 const COPY: Record<
   Locale,
@@ -212,6 +213,7 @@ export function TubingRequestForm({
 
       <form action={action} className="mt-7 space-y-4">
         <input type="hidden" name="locale" value={locale} />
+        <PageContextFields />
         <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
           <label>
             Company

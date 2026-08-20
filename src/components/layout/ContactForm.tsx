@@ -6,11 +6,14 @@ import { trackEvent } from "@/lib/analytics";
 import { Icon } from "@/components/ui/Icon";
 import { LegalConsentFields } from "@/components/ui/LegalConsentFields";
 import type { Locale } from "@/i18n/config";
+import { PageContextFields } from "@/components/ui/PageContextFields";
 
 type Dict = {
   name: string;
   phone: string;
   message: string;
+  messagePh: string;
+  errorMessage: string;
   send: string;
   sending: string;
   success: string;
@@ -53,6 +56,7 @@ export function ContactForm({ dict, locale }: Props) {
   return (
     <form ref={formRef} action={action} className="space-y-3">
       <input type="hidden" name="formType" value="inquiry" />
+      <PageContextFields />
       <input type="hidden" name="locale" value={locale} />
 
       {/* Honeypot — hidden from humans; bots that fill it are silently dropped */}
@@ -109,9 +113,17 @@ export function ContactForm({ dict, locale }: Props) {
           <Icon name="mail" className="h-3 w-3" />
           {dict.message}
         </span>
+        {/*
+          Вопрос обязателен. Пустая форма давала оператору «Новый вопрос» без
+          вопроса — контакт есть, а о чём разговор, неизвестно; администратор
+          звонил и спрашивал заново. Просить человека написать строку дешевле.
+        */}
         <textarea
           name="message"
           aria-label={dict.message}
+          placeholder={dict.messagePh}
+          required
+          minLength={5}
           rows={3}
           className="w-full resize-none rounded-xl border border-white/14 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white placeholder-white/30 outline-none transition-all duration-200 focus:border-[#f0c26a] focus:bg-white/[0.07] focus:ring-2 focus:ring-[#f0c26a]/20"
         />

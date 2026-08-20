@@ -17,6 +17,8 @@ const dict = {
   name: "Имя",
   phone: "Телефон",
   message: "Сообщение",
+  messagePh: "О чём вопрос?",
+  errorMessage: "Напишите, о чём вопрос",
   send: "Отправить",
   sending: "Отправляем…",
   success: "Спасибо! Свяжемся скоро.",
@@ -45,8 +47,9 @@ describe("ContactForm", () => {
     render(<ContactForm dict={dict} locale="ru" />);
     expect(screen.getByLabelText("Имя")).toHaveAttribute("required");
     expect(screen.getByLabelText("Телефон")).toHaveAttribute("required");
-    // message is NOT required
-    expect(screen.getByLabelText("Сообщение")).not.toHaveAttribute("required");
+    // Вопрос обязателен с 19.08.2026: оператор получал «Новый вопрос» без
+    // единого слова о деле и звонил гостю выяснять, что тому нужно.
+    expect(screen.getByLabelText("Сообщение")).toHaveAttribute("required");
   });
 
   it("requires separate public-offer and personal-data consents", () => {
@@ -95,6 +98,7 @@ describe("ContactForm", () => {
     render(<ContactForm dict={dict} locale="ru" />);
     await user.type(screen.getByLabelText("Имя"), "X");
     await user.type(screen.getByLabelText("Телефон"), "Y");
+    await user.type(screen.getByLabelText("Сообщение"), "Свободно ли шале?");
     await user.click(document.querySelector<HTMLInputElement>('input[name="offerConsent"]')!);
     await user.click(document.querySelector<HTMLInputElement>('input[name="privacyConsent"]')!);
     await user.click(screen.getByRole("button", { name: /Отправить/ }));
@@ -109,6 +113,7 @@ describe("ContactForm", () => {
     render(<ContactForm dict={dict} locale="ru" />);
     await user.type(screen.getByLabelText("Имя"), "X");
     await user.type(screen.getByLabelText("Телефон"), "Y");
+    await user.type(screen.getByLabelText("Сообщение"), "Свободно ли шале?");
     await user.click(document.querySelector<HTMLInputElement>('input[name="offerConsent"]')!);
     await user.click(document.querySelector<HTMLInputElement>('input[name="privacyConsent"]')!);
     await user.click(screen.getByRole("button", { name: /Отправить/ }));
@@ -124,6 +129,7 @@ describe("ContactForm", () => {
     render(<ContactForm dict={dict} locale="ru" />);
     await user.type(screen.getByLabelText("Имя"), "X");
     await user.type(screen.getByLabelText("Телефон"), "Y");
+    await user.type(screen.getByLabelText("Сообщение"), "Свободно ли шале?");
     await user.click(document.querySelector<HTMLInputElement>('input[name="offerConsent"]')!);
     await user.click(document.querySelector<HTMLInputElement>('input[name="privacyConsent"]')!);
     await user.click(screen.getByRole("button", { name: /Отправить/ }));

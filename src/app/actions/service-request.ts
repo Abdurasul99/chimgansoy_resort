@@ -6,6 +6,7 @@ import { deliverRequest, dialable, todayTashkent } from "@/lib/request-delivery"
 import { readOverrides, type FormField } from "@/lib/site-overrides";
 import { insertServiceRequest } from "@/lib/db";
 import { validateLegalConsents } from "@/lib/legal-consent";
+import { pageLine } from "@/lib/request-context";
 
 export type ServiceRequestState = { ok?: boolean; error?: string };
 
@@ -100,6 +101,8 @@ export async function submitServiceRequest(
   form: FormData,
 ): Promise<ServiceRequestState> {
   const locale = langOf(String(form.get("locale") ?? "ru"));
+  // Откуда пришла заявка: контекст обращения для оператора.
+  const page = pageLine(form);
   const t = MESSAGES[locale];
 
   // Ловушка для ботов: заполненное поле — не человек. Отвечаем успехом, чтобы
@@ -141,6 +144,7 @@ export async function submitServiceRequest(
     `Телефон: ${esc(phone)}`,
     ...answers.map((a) => `${esc(a.label)}: ${esc(a.value)}`),
     "",
+    ...(page ? [`Страница: ${esc(page)}`] : []),
     `Язык страницы: ${locale}`,
   ];
 

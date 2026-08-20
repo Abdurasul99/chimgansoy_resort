@@ -4,6 +4,7 @@ import { saveRequest } from "@/lib/requests-store";
 import { adminChatIds } from "@/lib/request-delivery";
 import { esc, sendMessage } from "@/lib/telegram";
 import { validateLegalConsents } from "@/lib/legal-consent";
+import { pageLine } from "@/lib/request-context";
 
 export type ContactResult = { ok: true } | { ok: false; error: string };
 
@@ -15,6 +16,7 @@ const MESSAGES = {
     phoneRequired: "Укажите номер телефона",
     phoneInvalid: "Проверьте номер телефона",
     dateInvalid: "Дата выезда должна быть позже даты заезда",
+    messageRequired: "Напишите, о чём вопрос — иначе администратору придётся звонить и спрашивать заново",
     deliveryFailed:
       "Не удалось отправить заявку. Пожалуйста, позвоните нам: +998 70 176 00 11",
   },
@@ -23,6 +25,7 @@ const MESSAGES = {
     phoneRequired: "Telefon raqamingizni kiriting",
     phoneInvalid: "Telefon raqamini tekshiring",
     dateInvalid: "Ketish sanasi kelish sanasidan keyin bo'lishi kerak",
+    messageRequired: "Savolingizni yozing — aks holda administrator qo'ng'iroq qilib qaytadan so'rashiga to'g'ri keladi",
     deliveryFailed:
       "Arizani yuborib bo'lmadi. Iltimos, bizga qo'ng'iroq qiling: +998 70 176 00 11",
   },
@@ -31,6 +34,7 @@ const MESSAGES = {
     phoneRequired: "Please enter your phone number",
     phoneInvalid: "Please check your phone number",
     dateInvalid: "Check-out must be after check-in",
+    messageRequired: "Tell us what your question is — otherwise the administrator has to call and ask all over again",
     deliveryFailed:
       "We couldn't send your request. Please call us: +998 70 176 00 11",
   },
@@ -119,11 +123,26 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   if (!phone) return { ok: false, error: m.phoneRequired };
   if (phone.replace(/\D/g, "").length < 7) return { ok: false, error: m.phoneInvalid };
   // ISO dates (YYYY-MM-DD) compare correctly as strings.
+  /**
+   * У вопроса должен быть вопрос.
+   *
+   * Форма подвала присылала только имя и телефон, и оператор видел «Новый
+   * вопрос» без единого слова о том, что человеку нужно, — приходилось звонить
+   * и спрашивать заново. Браузерную проверку снимают в инструментах
+   * разработчика, поэтому она продублирована здесь. Броней это не касается:
+   * там контекст дают даты, домик и число гостей.
+   */
+  if (formType === "inquiry" && message.length < 5) {
+    return { ok: false, error: m.messageRequired };
+  }
   if (checkin && checkout && checkout <= checkin) {
     return { ok: false, error: m.dateInvalid };
   }
 
   const dates = checkin && checkout ? `${checkin} → ${checkout}` : checkin || checkout || "";
+  // Откуда пришёл: половина контекста обращения — это страница, с которой
+  // гость нажал «отправить».
+  const page = pageLine(formData);
 
   // Route to the right inbox: bookings -> reservations@, general questions -> info@.
   // Fall back to the legacy BOOKING_EMAIL_TO for backwards compatibility.
@@ -139,7 +158,8 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
     ...(dates ? [["Даты", dates] as [string, string]] : []),
     ...(guests ? [["Гостей", guests] as [string, string]] : []),
     ...(room ? [["Номер", room] as [string, string]] : []),
-    ...(message ? [["Сообщение", message] as [string, string]] : []),
+    ...(message ? [[formType === "inquiry" ? "Вопрос" : "Сообщение", message] as [string, string]] : []),
+    ...(page ? [["Страница", page] as [string, string]] : []),
   ];
 
   const emailHtml = `
@@ -200,7 +220,7 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
     adults: Math.max(parseInt(guests, 10) || 0, 0),
     kids: 0,
     toddlers: 0,
-    extras: [],
+    extras: page ? [`Страница: ${page}`] : [],
     // The nightly rate comes from the PMS after the administrator confirms, so
     // there is no total to record at request time.
     total: 0,
@@ -224,8 +244,9 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
     ...(checkout ? [`Выезд: ${esc(checkout)}`] : []),
     ...(guests ? [`Гостей: ${esc(guests)}`] : []),
     ...(room ? [`Размещение: ${esc(room)}`] : []),
-    ...(message ? ["", `Сообщение: ${esc(message)}`] : []),
+    ...(message ? ["", `${formType === "inquiry" ? "Вопрос" : "Сообщение"}: ${esc(message)}`] : []),
     "",
+    ...(page ? [`Страница: ${esc(page)}`] : []),
     `Язык страницы: ${lang}`,
   ].join("\n");
 

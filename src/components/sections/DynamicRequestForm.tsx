@@ -7,6 +7,7 @@ import { Icon } from "@/components/ui/Icon";
 import { LegalConsentFields } from "@/components/ui/LegalConsentFields";
 import type { Locale } from "@/i18n/config";
 import type { FormField } from "@/lib/site-overrides";
+import { PageContextFields } from "@/components/ui/PageContextFields";
 
 /**
  * Форма заявки, собранная по описанию из панели.
@@ -149,6 +150,7 @@ export function DynamicRequestForm({
 
       <input type="hidden" name="slug" value={slug} />
       <input type="hidden" name="locale" value={locale} />
+      <PageContextFields />
       <input type="hidden" name="serviceTitle" value={title} />
       {/* Ловушка для ботов: человек это поле не видит и не заполняет. */}
       <div className="absolute left-[-9999px]" aria-hidden="true">

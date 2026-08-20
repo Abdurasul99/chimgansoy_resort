@@ -9,6 +9,7 @@ import { insertBooking } from "@/lib/db";
 import { freeUnits } from "@/lib/pms";
 import { STAY_OPENS_AT } from "@/lib/stay-window";
 import { validateLegalConsents } from "@/lib/legal-consent";
+import { pageLine } from "@/lib/request-context";
 
 export type StayRequestState = { ok?: boolean; error?: string };
 
@@ -82,6 +83,8 @@ export async function submitStayRequest(
   form: FormData,
 ): Promise<StayRequestState> {
   const locale = langOf(String(form.get("locale") ?? "ru"));
+  // Откуда пришла заявка: контекст обращения для оператора.
+  const page = pageLine(form);
   const t = MESSAGES[locale];
 
   // Ловушка для ботов: человек это поле не видит. Отвечаем успехом, чтобы не
@@ -152,6 +155,7 @@ export async function submitStayRequest(
     `Гостей: ${adults} взр.${kids > 0 ? ` + ${kids} дет.` : ""}`,
     ...(comment ? ["", `Комментарий: ${esc(comment)}`] : []),
     "",
+    ...(page ? [`Страница: ${esc(page)}`] : []),
     `Язык страницы: ${locale}`,
   ];
 

@@ -8,6 +8,7 @@ import { Icon } from "@/components/ui/Icon";
 import { LegalConsentFields } from "@/components/ui/LegalConsentFields";
 import { STAY_OPENS_AT } from "@/lib/stay-window";
 import type { Locale } from "@/i18n/config";
+import { PageContextFields } from "@/components/ui/PageContextFields";
 
 /**
  * Заявка на проживание, прямо на странице домика.
@@ -220,6 +221,7 @@ export function StayRequestForm({
       )}
 
       <input type="hidden" name="room" value={room} />
+      <PageContextFields />
       <input type="hidden" name="locale" value={locale} />
       <div className="absolute left-[-9999px]" aria-hidden="true">
         <input type="text" name="company" tabIndex={-1} autoComplete="off" />

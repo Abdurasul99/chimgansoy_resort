@@ -152,14 +152,14 @@ describe("submitContact server action", () => {
 
   describe("inquiry form routing", () => {
     it("routes inquiry emails to INFO_EMAIL_TO", async () => {
-      const fd = makeFormData({ name: "Бобур", phone: VALID_PHONE, formType: "inquiry" });
+      const fd = makeFormData({ name: "Бобур", phone: VALID_PHONE, formType: "inquiry", message: "Есть ли места на выходные?" });
       await submitContact(fd);
       const emailBody = resendCalls[0].body as { to: string[] };
       expect(emailBody.to).toEqual(["info@chimgandarbaza.uz"]);
     });
 
     it("uses the inquiry subject", async () => {
-      const fd = makeFormData({ name: "Бобур", phone: VALID_PHONE, formType: "inquiry" });
+      const fd = makeFormData({ name: "Бобур", phone: VALID_PHONE, formType: "inquiry", message: "Когда открывается бассейн?" });
       await submitContact(fd);
       const emailBody = resendCalls[0].body as { subject: string };
       expect(emailBody.subject).toContain("Вопрос");
@@ -227,6 +227,8 @@ describe("submitContact server action", () => {
             name: `Guest ${i}`,
             phone: `+998 90 000 ${String(i).padStart(2, "0")} ${String(i).padStart(2, "0")}`,
             formType: i % 2 === 0 ? "booking" : "inquiry",
+            // У вопроса теперь обязан быть текст — иначе действие его отклонит.
+            message: i % 2 === 0 ? "" : `Вопрос номер ${i}`,
           }),
         ),
       );
@@ -245,6 +247,59 @@ describe("submitContact server action", () => {
       ).length;
       expect(reservationsCount).toBe(50);
       expect(infoCount).toBe(50);
+    });
+  });
+describe("контекст обращения — что именно спрашивает гость", () => {
+    it("не принимает вопрос без вопроса", async () => {
+      // Ровно то, что пришло оператору 19 августа: имя, телефон и ни слова о
+      // деле. По такому сообщению позвонить можно, а подготовиться — нет.
+      const result = await submitContact(makeFormData({ formType: "inquiry", name: "Samandar", phone: VALID_PHONE }));
+
+      expect(result.ok).toBe(false);
+      expect(result.ok === false && result.error).toMatch(/о чём вопрос/i);
+      expect(resendCalls).toHaveLength(0);
+    });
+
+    it("бронь без комментария принимает — там контекст дают даты", async () => {
+      const result = await submitContact(makeFormData({
+          formType: "booking",
+          name: "Samandar",
+          phone: VALID_PHONE,
+          checkin: "2026-09-01",
+          checkout: "2026-09-03",
+        }));
+
+      expect(result.ok).toBe(true);
+    });
+
+    it("страница, с которой написали, попадает в письмо", async () => {
+      await submitContact(makeFormData({
+          formType: "inquiry",
+          name: "Samandar",
+          phone: VALID_PHONE,
+          message: "Можно ли приехать с собакой?",
+          page: "/ru/nomera/cottage",
+        }));
+
+      const body = resendCalls.at(-1)?.body as { html: string; subject: string };
+      expect(body.html).toContain("Можно ли приехать с собакой");
+      // Название раздела рядом с адресом: оператор понимает, о чём речь, не
+      // разбирая ссылку по частям.
+      expect(body.html).toContain("шале");
+      expect(body.html).toContain("/ru/nomera/cottage");
+    });
+
+    it("чужую ссылку в письмо не пускает", async () => {
+      await submitContact(makeFormData({
+          formType: "inquiry",
+          name: "Samandar",
+          phone: VALID_PHONE,
+          message: "Вопрос про даты",
+          page: "https://evil.example/phish",
+        }));
+
+      const body = resendCalls.at(-1)?.body as { html: string };
+      expect(body.html).not.toContain("evil.example");
     });
   });
 });

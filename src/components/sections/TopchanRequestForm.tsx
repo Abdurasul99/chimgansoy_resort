@@ -14,6 +14,7 @@ import { trackEvent } from "@/lib/analytics";
 import { text } from "@/lib/localize";
 import { isWeekendISO, money } from "@/lib/tariff";
 import type { Locale } from "@/i18n/config";
+import { PageContextFields } from "@/components/ui/PageContextFields";
 
 const COPY: Record<
   Locale,
@@ -335,6 +336,7 @@ export function TopchanRequestForm({
 
       <form action={action} className="mt-7 space-y-4">
         <input type="hidden" name="locale" value={locale} />
+        <PageContextFields />
         {/* Honeypot — invisible to humans, filled only by bots */}
         <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
           <label>
