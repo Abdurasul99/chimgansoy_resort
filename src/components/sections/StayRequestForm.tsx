@@ -9,6 +9,7 @@ import { LegalConsentFields } from "@/components/ui/LegalConsentFields";
 import { STAY_OPENS_AT } from "@/lib/stay-window";
 import type { Locale } from "@/i18n/config";
 import { PageContextFields } from "@/components/ui/PageContextFields";
+import { trackEvent } from "@/lib/analytics";
 
 /**
  * Заявка на проживание, прямо на странице домика.
@@ -197,6 +198,16 @@ export function StayRequestForm({
 
   /** Занято — единственное состояние, при котором отправка блокируется. */
   const busy = avail?.status === "busy";
+
+  /**
+   * Событие для аналитики. Заявки на топчан, бассейн и тюбинг о себе
+   * сообщали, а проживание — нет: в Метрике курорт выглядел местом, где
+   * снимают топчан, но не ночуют. room отличает глэмпинг от шале, чтобы в
+   * отчёте это были две строки, а не одна.
+   */
+  useEffect(() => {
+    if (state.ok) trackEvent("stay_request_submitted", { form: "stay", room });
+  }, [state.ok, room]);
 
   if (state.ok) {
     return (

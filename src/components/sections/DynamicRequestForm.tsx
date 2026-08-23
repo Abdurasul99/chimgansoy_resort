@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useEffect } from "react";
 import { submitServiceRequest, type ServiceRequestState } from "@/app/actions/service-request";
 import { CountInput } from "@/components/ui/CountInput";
 import { Icon } from "@/components/ui/Icon";
@@ -8,6 +8,7 @@ import { LegalConsentFields } from "@/components/ui/LegalConsentFields";
 import type { Locale } from "@/i18n/config";
 import type { FormField } from "@/lib/site-overrides";
 import { PageContextFields } from "@/components/ui/PageContextFields";
+import { trackEvent } from "@/lib/analytics";
 
 /**
  * Форма заявки, собранная по описанию из панели.
@@ -132,6 +133,15 @@ export function DynamicRequestForm({
 }) {
   const t = COPY[locale];
   const [state, action, pending] = useActionState<ServiceRequestState, FormData>(submitServiceRequest, {});
+
+  /**
+   * Событие для аналитики: у услуг оператора его не было вовсе. slug
+   * различает услуги между собой — иначе конная прогулка и баня сольются в
+   * одну строку отчёта.
+   */
+  useEffect(() => {
+    if (state.ok) trackEvent("service_request_submitted", { form: "service", service: slug });
+  }, [state.ok, slug]);
 
   if (state.ok) {
     return (

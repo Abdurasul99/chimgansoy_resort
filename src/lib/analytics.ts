@@ -30,7 +30,8 @@ const YM_ID = process.env.NEXT_PUBLIC_YANDEX_METRICA_ID;
  *   clicks:  booking_cta_click · call_click · whatsapp_click ·
  *            telegram_click · instagram_click · map_click
  *   sent:    pool_request_submitted · topchan_request_submitted ·
- *            tubing_request_submitted · inquiry_submitted
+ *            tubing_request_submitted · stay_request_submitted ·
+ *            service_request_submitted · inquiry_submitted
  *
  * (This list previously ended in `booking_submitted`, which no code has ever
  * sent — the three day products each report under their own name.)
