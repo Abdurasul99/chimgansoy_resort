@@ -4,7 +4,7 @@ import { saveRequest } from "@/lib/requests-store";
 import { adminChatIds } from "@/lib/request-delivery";
 import { esc, sendMessage } from "@/lib/telegram";
 import { validateLegalConsents } from "@/lib/legal-consent";
-import { pageLine } from "@/lib/request-context";
+import { pageLine, trafficSource } from "@/lib/request-context";
 
 export type ContactResult = { ok: true } | { ok: false; error: string };
 
@@ -143,6 +143,8 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   // Откуда пришёл: половина контекста обращения — это страница, с которой
   // гость нажал «отправить».
   const page = pageLine(formData);
+  // Метки utm — словами: «визитка из шапки Instagram», а не три параметра.
+  const source = trafficSource(formData);
 
   // Route to the right inbox: bookings -> reservations@, general questions -> info@.
   // Fall back to the legacy BOOKING_EMAIL_TO for backwards compatibility.
@@ -160,6 +162,7 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
     ...(room ? [["Номер", room] as [string, string]] : []),
     ...(message ? [[formType === "inquiry" ? "Вопрос" : "Сообщение", message] as [string, string]] : []),
     ...(page ? [["Страница", page] as [string, string]] : []),
+    ...(source ? [["Пришёл из", source] as [string, string]] : []),
   ];
 
   const emailHtml = `
@@ -220,7 +223,7 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
     adults: Math.max(parseInt(guests, 10) || 0, 0),
     kids: 0,
     toddlers: 0,
-    extras: page ? [`Страница: ${page}`] : [],
+    extras: [...(page ? [`Страница: ${page}`] : []), ...(source ? [`Пришёл из: ${source}`] : [])],
     // The nightly rate comes from the PMS after the administrator confirms, so
     // there is no total to record at request time.
     total: 0,
@@ -247,6 +250,7 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
     ...(message ? ["", `${formType === "inquiry" ? "Вопрос" : "Сообщение"}: ${esc(message)}`] : []),
     "",
     ...(page ? [`Страница: ${esc(page)}`] : []),
+    ...(source ? [`Пришёл из: ${esc(source)}`] : []),
     `Язык страницы: ${lang}`,
   ].join("\n");
 

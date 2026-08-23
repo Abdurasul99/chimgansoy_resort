@@ -12,7 +12,7 @@ import {
   money,
   todayTashkent,
 } from "@/lib/request-delivery";
-import { pageLine } from "@/lib/request-context";
+import { pageLine, trafficSource } from "@/lib/request-context";
 
 export type TubingResult = { ok: true } | { ok: false; error: string };
 
@@ -61,6 +61,8 @@ export async function submitTubingRequest(formData: FormData): Promise<TubingRes
   const lang: Lang = localeRaw === "uz" || localeRaw === "en" ? localeRaw : "ru";
   // Откуда пришла заявка: контекст обращения для оператора.
   const page = pageLine(formData);
+  // Метки utm — словами: «визитка из шапки Instagram», а не три параметра.
+  const source = trafficSource(formData);
   const m = MESSAGES[lang];
 
   const legalError = validateLegalConsents(formData, lang, { tubingRules: true });
@@ -127,7 +129,7 @@ export async function submitTubingRequest(formData: FormData): Promise<TubingRes
     "",
     `<b>Согласие:</b> правила тюбинговой горки (редакция № ${tubingRulesVersion.revision}, дополнение от ${tubingRulesVersion.amendmentDate}), публичная оферта и обработка персональных данных по Политике конфиденциальности · основа DOCX SHA-256 ${tubingRulesVersion.sha256}`,
     "",
-    `<i>Заявка с сайта chimgandarbaza.uz${page ? ` · страница: ${esc(page)}` : ""} · язык гостя: ${lang}</i>`,
+    `<i>Заявка с сайта chimgandarbaza.uz${page ? ` · страница: ${esc(page)}` : ""}${source ? ` · пришёл из: ${esc(source)}` : ""} · язык гостя: ${lang}</i>`,
   ].join("\n");
 
   const emailHtml = `<div style="font-family:system-ui,sans-serif;max-width:520px">

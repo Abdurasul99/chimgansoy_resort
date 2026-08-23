@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { pageContext, pageLabel, pageLine } from "@/lib/request-context";
+import { pageContext, pageLabel, pageLine, trafficSource } from "@/lib/request-context";
 
 /**
  * Контекст обращения. Оператор получал «Новый вопрос: имя, телефон» и звонил
@@ -58,5 +58,53 @@ describe("контекст обращения", () => {
 
   it("пустое поле не превращается в пустую строку «Страница:»", () => {
     expect(pageLine(new FormData())).toBe("");
+  });
+});
+
+describe("откуда пришёл гость", () => {
+  const withPage = (page: string) => {
+    const fd = new FormData();
+    fd.set("page", page);
+    return fd;
+  };
+
+  it("визитку из шапки Instagram называет словами", () => {
+    // Ровно то, что пришло оператору 23.08.2026 тремя параметрами подряд.
+    const fd = withPage("/ru/topchan?utm_source=vizitka&utm_medium=bio&utm_campaign=instagram");
+    expect(trafficSource(fd)).toBe("визитка из шапки Instagram");
+  });
+
+  it("убирает метки из адреса страницы — там они только мешают", () => {
+    const fd = withPage("/ru/topchan?utm_source=vizitka&utm_medium=bio&utm_campaign=instagram");
+    expect(pageLine(fd)).toBe("топчан (/ru/topchan)");
+  });
+
+  it("даты и гостей из адреса не трогает", () => {
+    const fd = withPage("/ru/bron?checkin=2026-09-01&guests=4&utm_source=instagram");
+    expect(pageLine(fd)).toBe("бронирование (/ru/bron?checkin=2026-09-01&guests=4)");
+  });
+
+  it("незнакомую метку печатает как есть, а не выдумывает ей название", () => {
+    expect(trafficSource(withPage("/ru?utm_source=blogger_akmal"))).toBe("blogger_akmal");
+  });
+
+  it("не повторяет источник, когда кампания названа так же", () => {
+    expect(trafficSource(withPage("/ru?utm_source=instagram&utm_campaign=instagram"))).toBe("Instagram");
+  });
+
+  it("рекламу называет рекламой", () => {
+    expect(trafficSource(withPage("/ru?utm_source=google&utm_medium=cpc&utm_campaign=avgust"))).toBe(
+      "Google · реклама · avgust",
+    );
+  });
+
+  it("без меток молчит — пустая строка «Пришёл из» хуже, чем её отсутствие", () => {
+    expect(trafficSource(withPage("/ru/topchan"))).toBe("");
+    expect(trafficSource(new FormData())).toBe("");
+  });
+
+  it("не пропускает разметку из метки — её печатают оператору", () => {
+    // Значение приходит из браузера: чистится так же, как путь.
+    expect(trafficSource(withPage("/ru?utm_source=<b>hack</b>"))).toBe("bhackb");
   });
 });

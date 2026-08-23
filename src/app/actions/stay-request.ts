@@ -9,7 +9,7 @@ import { insertBooking } from "@/lib/db";
 import { freeUnits } from "@/lib/pms";
 import { STAY_OPENS_AT } from "@/lib/stay-window";
 import { validateLegalConsents } from "@/lib/legal-consent";
-import { pageLine } from "@/lib/request-context";
+import { pageLine, trafficSource } from "@/lib/request-context";
 
 export type StayRequestState = { ok?: boolean; error?: string };
 
@@ -85,6 +85,8 @@ export async function submitStayRequest(
   const locale = langOf(String(form.get("locale") ?? "ru"));
   // Откуда пришла заявка: контекст обращения для оператора.
   const page = pageLine(form);
+  // Метки utm — словами, а не параметрами адреса.
+  const source = trafficSource(form);
   const t = MESSAGES[locale];
 
   // Ловушка для ботов: человек это поле не видит. Отвечаем успехом, чтобы не
@@ -156,6 +158,7 @@ export async function submitStayRequest(
     ...(comment ? ["", `Комментарий: ${esc(comment)}`] : []),
     "",
     ...(page ? [`Страница: ${esc(page)}`] : []),
+    ...(source ? [`Пришёл из: ${esc(source)}`] : []),
     `Язык страницы: ${locale}`,
   ];
 
