@@ -40,8 +40,15 @@ const serif = Cormorant({
  * code change, and the site still reports if the variable is ever cleared by
  * accident. The format is checked because the value is interpolated straight
  * into a <script> — an id is `G-` plus uppercase alphanumerics, nothing else.
+ *
+ * Значение берётся ТОЛЬКО из потока данных в интерфейсе GA, кнопкой
+ * «копировать». До 23.08.2026 здесь и в Vercel стояло G-9P44JZ0828 — с цифрой
+ * 8 на конце вместо буквы B. Сайт исправно слал события в несуществующий
+ * ресурс, GA три недели показывал «данные не получены», и ни одна из двух
+ * систем не могла об этом сказать: для gtag любой синтаксически верный id
+ * выглядит рабочим. Один символ, переписанный глазами.
  */
-const GA4_RAW = process.env.NEXT_PUBLIC_GA4_ID?.trim() || "G-9P44JZ0828";
+const GA4_RAW = process.env.NEXT_PUBLIC_GA4_ID?.trim() || "G-9P44JZ082B";
 const GA4_ID = /^G-[A-Z0-9]{6,15}$/.test(GA4_RAW) ? GA4_RAW : "";
 
 export function generateStaticParams() {
