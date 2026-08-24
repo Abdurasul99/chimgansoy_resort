@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { getDayProduct } from "./day-products";
 import { policies } from "./policies";
+import { tubing100cmOfferSection, tubing100cmPolicySections } from "@/content/tubing-100cm-rules";
 
 describe("правила тюбинговой горки", () => {
   const rules = policies.find((policy) => policy.slug === "tubing-rules");
@@ -94,5 +95,23 @@ describe("страница услуги тюбинга", () => {
     expect(ru).toContain("100 см");
     expect(ru).toContain("95 кг");
     expect(ru).toContain("140 см");
+  });
+});
+
+describe("плакат от 24.08.2026", () => {
+  it("запрет кататься в очках попал во все три языка", () => {
+    // На плакате это отдельный значок в разделе запретов, значит и в правилах
+    // это отдельный пункт, а не приписка к предыдущему.
+    const section = tubing100cmPolicySections.find((s) =>
+      s.title.ru.includes("Общие правила безопасности"),
+    );
+    expect(section).toBeDefined();
+    expect(section!.items.ru).toContain("Кататься в очках запрещено.");
+    expect(section!.items.uz).toContain("Ko'zoynakda uchish taqiqlanadi.");
+    expect(section!.items.en).toContain("Riding with glasses is prohibited.");
+  });
+
+  it("запрет доехал до приложения оферты — гость читает его там", () => {
+    expect(tubing100cmOfferSection.items.ru).toContain("Кататься в очках запрещено.");
   });
 });

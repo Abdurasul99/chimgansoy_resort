@@ -130,18 +130,23 @@ export const tubing100cmPolicySections: TubingSafetySection[] = [
         "Начинать спуск можно только после разрешения оператора, когда трасса и зона выката полностью свободны от предыдущих посетителей.",
         "После полной остановки необходимо незамедлительно встать и покинуть зону выката вместе с тюбингом. Возвращаться вверх по трассе спуска запрещено.",
         "Запрещается связывать или сцеплять тюбинги, держаться за руки при параллельном спуске и отталкиваться друг от друга.",
+        // Новый запрет с плаката оператора от 24.08.2026: отдельным пунктом,
+        // а не припиской к предыдущему — на плакате он тоже отдельный значок.
+        "Кататься в очках запрещено.",
         "Запрещено кататься с острыми или крупными предметами и животными. К спуску не допускаются лица в состоянии алкогольного, наркотического или токсического опьянения либо имеющие медицинские противопоказания к активным нагрузкам.",
       ],
       uz: [
         "Faqat operator ruxsatidan so'ng, trassa va to'xtash hududi avvalgi tashrif buyuruvchilardan to'liq bo'shaganida uchishni boshlash mumkin.",
         "Tyubing to'liq to'xtagach, darhol turib, tyubing bilan birga to'xtash hududini tark etish kerak. Uchish trassasi bo'ylab yuqoriga qaytish taqiqlanadi.",
         "Tyubinglarni bog'lash yoki ulash, parallel uchishda qo'l ushlash va bir-birini itarish taqiqlanadi.",
+        "Ko'zoynakda uchish taqiqlanadi.",
         "O'tkir yoki katta buyumlar va hayvonlar bilan uchish taqiqlanadi. Alkogol, giyohvand yoki zaharli moddalar ta'siridagi hamda faol jismoniy yuklamaga tibbiy qarshi ko'rsatmasi bor shaxslar uchishga qo'yilmaydi.",
       ],
       en: [
         "Start only after the operator gives permission and the track and run-out area are completely clear of previous riders.",
         "After the tube stops completely, stand up immediately and leave the run-out area with the tube. Do not walk back up the descent track.",
         "Do not tie or connect tubes, hold hands during parallel descents or push away from another rider.",
+        "Riding with glasses is prohibited.",
         "Do not ride with sharp or bulky objects or with animals. Anyone under the influence of alcohol, narcotics or toxic substances, or with medical contraindications to active exertion, is not permitted to ride.",
       ],
     },
