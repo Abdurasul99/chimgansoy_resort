@@ -103,8 +103,39 @@ describe("откуда пришёл гость", () => {
     expect(trafficSource(new FormData())).toBe("");
   });
 
-  it("не пропускает разметку из метки — её печатают оператору", () => {
-    // Значение приходит из браузера: чистится так же, как путь.
-    expect(trafficSource(withPage("/ru?utm_source=<b>hack</b>"))).toBe("bhackb");
+  it("метку с разметкой отбрасывает целиком", () => {
+    // Значение приходит из браузера, а строка печатается оператору. Показать
+    // «bhackb» можно было бы, но молчание честнее: это уже не источник.
+    expect(trafficSource(withPage("/ru?utm_source=<b>hack</b>"))).toBe("");
+  });
+
+  it("помнит источник, когда гость ушёл со страницы приземления", () => {
+    // Тот самый случай из заявки 24.08.2026: гость пришёл по ссылке из шапки
+    // Instagram на главную, а заявку оставил на странице глэмпинга — там в
+    // адресе меток уже нет. Источник приходит отдельным полем.
+    const fd = new FormData();
+    fd.set("page", "/uz/nomera/glamping");
+    fd.set("source", "utm_source=vizitka&utm_medium=bio&utm_campaign=instagram");
+
+    expect(trafficSource(fd)).toBe("визитка из шапки Instagram");
+    expect(pageLine(fd)).toBe("глэмпинг (/uz/nomera/glamping)");
+  });
+
+  it("запомненный источник главнее адреса страницы", () => {
+    // Внутри сайта ссылки тоже бывают с метками. Первый источник за визит
+    // отвечает на вопрос «что привело гостя», переход внутри — нет.
+    const fd = new FormData();
+    fd.set("page", "/ru/topchan?utm_source=banner");
+    fd.set("source", "utm_source=instagram&utm_medium=stories");
+
+    expect(trafficSource(fd)).toBe("Instagram · сторис");
+  });
+
+  it("пустое поле источника не мешает разобрать адрес", () => {
+    const fd = new FormData();
+    fd.set("page", "/ru/topchan?utm_source=qr&utm_medium=onsite");
+    fd.set("source", "");
+
+    expect(trafficSource(fd)).toBe("QR-код · onsite");
   });
 });

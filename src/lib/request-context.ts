@@ -114,9 +114,16 @@ const NAMES: Record<string, string> = {
 const named = (token: string): string => NAMES[token] ?? token;
 
 export function trafficSource(form: FormData): string {
-  const path = pageContext(form);
-  if (!path) return "";
-  const q = new URLSearchParams(path.split("?")[1] ?? "");
+  // Отдельное поле «source» — метки, запомненные на странице приземления.
+  // Читается первым: к моменту отправки формы гость обычно уже ушёл с той
+  // страницы, и в адресе меток нет. Разбор адреса остаётся запасным путём —
+  // для формы, стоящей прямо на странице приземления, и для старых заявок.
+  const stored = String(form.get("source") ?? "").trim().slice(0, MAX);
+  const fromPage = pageContext(form).split("?")[1] ?? "";
+  const raw = stored || fromPage;
+  // Без регулярки намеренно: экранирование тут уже один раз потерялось.
+  if (!raw || raw.includes(" ") || raw.includes("<") || raw.includes(">")) return "";
+  const q = new URLSearchParams(raw);
   const source = TOKEN(q.get("utm_source"));
   const medium = TOKEN(q.get("utm_medium"));
   const campaign = TOKEN(q.get("utm_campaign"));
