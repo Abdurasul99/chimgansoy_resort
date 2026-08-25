@@ -123,8 +123,8 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
     },
     geo: {
       "@type": "GeoCoordinates",
-      latitude: 41.5193897,
-      longitude: 69.9904599,
+      latitude: 41.518880,
+      longitude: 69.990573,
     },
     priceRange: "$$",
     // Facts mirror src/lib/venue-facts.ts, which is also what the AI concierge

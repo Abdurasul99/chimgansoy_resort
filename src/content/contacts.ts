@@ -6,11 +6,15 @@ export const contacts = {
   whatsapp: "https://wa.me/998701760011",
   telegram: "https://t.me/+998701760011",
   instagram: "https://www.instagram.com/chimgandarbaza/",
-  googleMapsUrl: "https://maps.app.goo.gl/x2WWhzho3Pob6oD46",
+  googleMapsUrl: "https://maps.google.com/maps?q=41.518880,69.990573&ll=41.518880,69.990573&z=16",
+  // Точка уточнена оператором 25.08.2026: сдвинута на 57 м южнее прежней —
+  // ближе к въезду. Прежняя (41.5193897, 69.9904599) осталась в карточке
+  // Google: там её надо поправить руками, кодом это не делается.
+  //
   // Yandex is the default navigator for most guests arriving from Tashkent, so
   // the concierge offers both. Built from mapCoordinates below — Yandex takes
   // longitude first, which is the easy thing to get backwards here.
-  yandexMapsUrl: "https://yandex.uz/maps/?pt=69.9904599,41.5193897&z=17&l=map",
+  yandexMapsUrl: "https://yandex.uz/maps/?pt=69.990573,41.518880&z=17&l=map",
   address: {
     ru: "Chimgan Darbaza, Бостанлыкский район, Ташкентская область",
     uz: "Chimgan Darbaza, Bo'stonliq tumani, Toshkent viloyati",
@@ -30,5 +34,5 @@ export const contacts = {
     uz: "Resepshn 24 soat · kirish 15:00 dan, chiqish 12:00 gacha",
     en: "Reception open 24/7 · check-in from 15:00, check-out by 12:00",
   } satisfies LocalizedString,
-  mapCoordinates: "41.5193897, 69.9904599",
+  mapCoordinates: "41.518880, 69.990573",
 };
