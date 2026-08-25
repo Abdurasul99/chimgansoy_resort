@@ -54,13 +54,11 @@ export const rooms: Room[] = [
      * and next to a chalet exterior and a pool, a photograph of a bed does not
      * say "cabin in the mountains".
      *
-     * aframeLawnBanner specifically, out of seven exterior frames in the repo.
-     * It is the only one with the landscaping finished AND no tower crane in
-     * the sky: aframe-lawn, -lawn-wide, -lawn-tall and hero-aframe-row all
-     * carry the crane above the second roofline, and aframe-exterior and
-     * hero-aframe-pines were shot when the ground was still geotextile and
-     * sand. The banner is cropped above the roofline, which is what puts the
-     * crane out of frame.
+     * aframeLawnBanner specifically. Прежде он был единственным кадром без
+     * башенного крана в небе — остальные шесть экстерьеров сняли, пока стройка
+     * ещё шла. 25.08.2026 оператор прислал августовскую съёмку, и весь набор
+     * A-frame заменён: крана нет ни в одном кадре, газон подстрижен, дорожки
+     * доделаны. Выбор карточки больше не продиктован тем, что прячет обрезка.
      *
      * Order matters: gallery[0] spans both columns on /nomera/[slug], so the
      * wide exterior goes first and the rest sit in a clean grid below it. The
@@ -72,12 +70,12 @@ export const rooms: Room[] = [
       // This gallery's lead has been argued over four times, so: the A-frame
       // exteriors split into two sets, and neither is ideal.
       //
-      // The OLD set (aframeLawn, -LawnWide, -LawnTall, aframeExterior) is
-      // landscape, which is what gallery[0] wants — it spans both columns in a
-      // 4:3 box. But it is 896×672, and every frame has a tower crane in the
-      // sky. aframeLawnWide led here after the crane was retouched out
-      // (scripts/retouch-crane.js), until the operator opened it full-screen on
-      // 2026-08-05 and said it is "не в качестве". They are right, and the
+      // Прежний набор (aframeLawn, -LawnWide, -LawnTall, aframeExterior) был
+      // горизонтальным — то, что и нужно gallery[0], — но 896×672 и с краном в
+      // небе; ретушь крана (scripts/retouch-crane.js) оператор 05.08.2026
+      // забраковал словами «не в качестве». 25.08.2026 все четыре файла
+      // заменены кадрами августовской съёмки, поэтому дальнейший спор ниже
+      // описывает историю, а не сегодняшнее ограничение. Тогда же и
       // retouch is not the reason: 896px shown at 1280 is soft no matter what
       // is in the sky.
       //

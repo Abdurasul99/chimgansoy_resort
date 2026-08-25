@@ -116,9 +116,12 @@ export const resortImages = {
       en: "A-frame cabins on a manicured lawn with pines and a walkway",
     },
   },
-  /* Wide banner cut of the lawn frame — the sky above y≈395 is cropped away
-     because it holds a tower crane and the overhead wires. Used on the About
-     and /bron heroes and behind the closing promo band. */
+  /* Широкий баннер: узкая полоса 2200×984 на героях /about, /bron, /nomera и
+     под финальной промо-лентой.
+     25.08.2026 файл заменён кадром из августовской съёмки оператора — ряд
+     A-frame с горами в глубине. Прежний был обрезкой газонного кадра: небо
+     над ним приходилось срезать, потому что там стоял башенный кран. Кадры
+     новой съёмки строительства не показывают вовсе. */
   aframeLawnBanner: {
     src: "/images/resort/hero/hero-lawn-banner.jpg",
     localSrc: "/images/resort/hero/hero-lawn-banner.jpg",
@@ -919,9 +922,10 @@ export const homeGallery = [
  *   galFoodServing  — a hand carrying a plate over bare ground.
  *   galWaiterPlov   — a man carrying a lagman down a half-finished path, with
  *                     turned earth along the right-hand side.
- *   aframeExterior, aframeLawn, aframeLawnTall, aframeLawnWide — a tower crane
- *                     stands in the sky above the roofline, or the ground is
- *                     still geotextile and sand.
+ *   (aframeExterior, aframeLawn, aframeLawnTall, aframeLawnWide были в этом
+ *   списке из-за башенного крана и геотекстиля под ногами. 25.08.2026 все
+ *   четыре файла заменены кадрами августовской съёмки — стройки в них нет,
+ *   запрет снят.)
  * Each was removed from a surface once already for a stated reason, or carries
  * construction the operator has asked us to stop showing. Adding them back here
  * would quietly undo that, so they stay out. They remain registered because the
