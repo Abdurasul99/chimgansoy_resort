@@ -166,7 +166,7 @@ export const dayProducts: DayProduct[] = [
       ru: [
         "Всесезонная трасса: 160 м длиной, 6 м шириной",
         "Тюбинг диаметром 100 см, максимальная нагрузка — строго до 95 кг",
-        "Самостоятельный спуск ребёнка — при надёжной посадке, обычно от 140 см",
+        "Ребёнок — с 5 лет и от 110 см, при надёжной посадке",
         "Автоматический подъём — пешком наверх идти не нужно",
         "До 5 человек спускаются одновременно",
         "Безопасная остановка внизу",
@@ -177,7 +177,7 @@ export const dayProducts: DayProduct[] = [
       uz: [
         "Butun mavsumga trassa: 160 m uzunlik, 6 m kenglik",
         "Tyubing diametri 100 sm, maksimal yuklama — qat'iy 95 kg gacha",
-        "Bola mustaqil uchishi uchun ishonchli o'tirishi kerak — odatda bo'yi 140 sm dan",
+        "Bola 5 yoshdan va 110 sm dan uchadi, ishonchli o'tirgan holda",
         "Avtomatik ko'targich — piyoda chiqish shart emas",
         "Bir vaqtda 5 kishigacha tushadi",
         "Pastda xavfsiz to'xtash joyi",
@@ -187,7 +187,7 @@ export const dayProducts: DayProduct[] = [
       en: [
         "All-season track: 160 m long, 6 m wide",
         "100 cm tube, maximum load strictly limited to 95 kg",
-        "A child may ride solo only with a secure fit — normally from 140 cm",
+        "A child rides from age 5 and 110 cm, with a secure fit",
         "Powered lift — nobody walks back up",
         "Up to 5 people descend at once",
         "Controlled stop at the bottom",

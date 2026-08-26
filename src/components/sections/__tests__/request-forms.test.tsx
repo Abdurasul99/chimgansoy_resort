@@ -216,13 +216,13 @@ describe("тюбинг — обязательное согласие с прав
       expect(hrefs).toContain(`/${locale}/legal/public-offer`);
     });
 
-    it(`${locale}: перед согласием видны ограничения 100 см, 95 кг и 140 см`, () => {
+    it(`${locale}: перед согласием видны ограничения 100 см, 95 кг и 110 см`, () => {
       const { container } = render(<TubingRequestForm locale={locale} />);
       const text = container.textContent ?? "";
 
       expect(text).toMatch(/100\s*(см|sm|cm)/i);
       expect(text).toMatch(/95\s*(кг|kg)/i);
-      expect(text).toMatch(/140\s*(см|sm|cm)/i);
+      expect(text).toMatch(/110\s*(см|sm|cm)/i);
     });
 
     it(`${locale}: длина трассы в форме совпадает со страницей услуги — 160 м`, () => {

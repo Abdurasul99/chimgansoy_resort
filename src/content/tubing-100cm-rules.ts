@@ -12,7 +12,7 @@ export type TubingSafetySection = {
  * диаметра, нагрузки, посадки и совместного спуска. Совместный спуск взрослого
  * с ребёнком, разрешённый редакцией от 13.08.2026, ЗАПРЕЩЁН распоряжением
  * оператора: на тюбинге катается один человек. Возрастного порога это не
- * отменяет — дети младше 4 лет не допускаются вовсе, — но практическим
+ * отменяет — дети младше 5 лет не допускаются вовсе, — но практическим
  * ограничением становится способность ребёнка ехать самостоятельно. Один источник данных
  * используется на странице услуги и в юридических правилах, чтобы цифры не
  * расходились между двумя экранами.
@@ -31,18 +31,18 @@ export const tubing100cmSummaryTitle: LocalizedString = {
 export const tubing100cmFormSummary: LocalizedList = {
   ru: [
     "Тюбинг — 100 см; максимальная нагрузка на один тюбинг строго до 95 кг.",
-    "Самостоятельный спуск ребёнка — только при надёжной посадке, обычно при росте от 140 см.",
+    "Ребёнок допускается с 5 лет и при росте от 110 см — и только если сам сидит надёжно.",
     "Совместный спуск ЗАПРЕЩЁН: на тюбинге катается только один человек. Ребёнок, которому нужна помощь взрослого, к спуску не допускается.",
   ],
   uz: [
     "Tyubing — 100 sm; bitta tyubing uchun maksimal yuklama qat'iy 95 kg gacha.",
-    "Bola mustaqil uchishi uchun ishonchli o'tirishi kerak — odatda bo'yi 140 sm va undan yuqori.",
+    "Bola 5 yoshdan va bo'yi 110 sm dan boshlab uchishi mumkin — faqat o'zi ishonchli o'tirsa.",
     "Birga uchish TAQIQLANADI: tyubingda faqat bir kishi uchadi. Kattalar yordamiga muhtoj bola uchishga qo'yilmaydi.",
   ],
   en: [
     "Tube diameter: 100 cm; maximum load strictly limited to 95 kg per tube.",
-    "A child may ride alone only with a secure fit — normally at 140 cm or taller.",
-    "Tandem riding: one adult and one child; combined weight also strictly limited to 95 kg.",
+    "A child is admitted from age 5 and from 110 cm — and only with a secure, unaided fit.",
+    "Tandem riding is prohibited: one person per tube. A child who needs an adult is not admitted.",
   ],
 };
 
@@ -103,19 +103,19 @@ export const tubing100cmPolicySections: TubingSafetySection[] = [
     },
     items: {
       ru: [
-        "Самостоятельное катание детей разрешено только тогда, когда ребёнок полностью соответствует габаритам 100-сантиметрового тюбинга — обычно это рост от 140 см. Ребёнок должен самостоятельно глубоко сесть, надёжно зафиксироваться внутри тюбинга и без напряжения крепко держаться за ручки.",
+        "Самостоятельное катание детей разрешено только тогда, когда ребёнок полностью соответствует габаритам 100-сантиметрового тюбинга — рост от 110 см. Ребёнок должен самостоятельно глубоко сесть, надёжно зафиксироваться внутри тюбинга и без напряжения крепко держаться за ручки.",
         "Если ребёнок болтается внутри, не дотягивается до ручек или не может крепко за них держаться, спуск запрещён: совместное катание со взрослым больше не допускается, а другого способа спустить такого ребёнка нет.",
-        "Дети младше 4 лет к спуску не допускаются.",
+        "Дети младше 5 лет к спуску не допускаются.",
       ],
       uz: [
-        "Bola mustaqil uchishi uchun 100 sm li tyubing o'lchamiga to'liq mos kelishi kerak — odatda bo'yi 140 sm va undan yuqori. Bola mustaqil ravishda chuqur o'tirishi, tyubing ichida ishonchli joylashishi va tutqichlarni zo'riqmasdan mahkam ushlashi kerak.",
+        "Bola mustaqil uchishi uchun 100 sm li tyubing o'lchamiga to'liq mos kelishi kerak — bo'yi 110 sm dan boshlab. Bola mustaqil ravishda chuqur o'tirishi, tyubing ichida ishonchli joylashishi va tutqichlarni zo'riqmasdan mahkam ushlashi kerak.",
         "Agar bola tyubing ichida erkin siljisa, tutqichlarga yetmasa yoki ularni mahkam ushlay olmasa, uchish taqiqlanadi: katta odam bilan birga uchishga endi ruxsat berilmaydi.",
-        "4 yoshgacha bo'lgan bolalar uchishga qo'yilmaydi.",
+        "5 yoshgacha bo'lgan bolalar uchishga qo'yilmaydi.",
       ],
       en: [
-        "A child may ride alone only when they fully fit a 100 cm tube — normally at a height of 140 cm or more. The child must be able to sit deep, stay securely positioned and hold the handles firmly without strain.",
+        "A child may ride alone only when they fully fit a 100 cm tube — from a height of 110 cm. The child must be able to sit deep, stay securely positioned and hold the handles firmly without strain.",
         "If the child moves loosely inside the tube, cannot reach the handles or cannot hold them firmly, riding is not allowed: tandem descents with an adult are no longer permitted.",
-        "Children under 4 are not permitted to ride.",
+        "Children under 5 are not permitted to ride.",
       ],
     },
   },
