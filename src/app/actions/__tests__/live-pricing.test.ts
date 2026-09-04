@@ -15,6 +15,23 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { EMPTY } from "@/lib/site-overrides";
 
+/**
+ * Бассейн закрыт оператором 27.08.2026, и серверное действие отказывает
+ * раньше расчёта. Здесь проверяется сам расчёт — он понадобится в день, когда
+ * бассейн откроют, — поэтому флаг подменён на «открыт». Отдельный тест ниже
+ * следит за тем, что закрытие действительно закрывает.
+ */
+vi.mock("@/content/pool-closure", () => ({
+  poolClosure: {
+    closed: false,
+    since: "27.08.2026",
+    title: { ru: "", uz: "", en: "" },
+    text: { ru: "", uz: "", en: "" },
+    alternative: { ru: "", uz: "", en: "" },
+    formError: { ru: "закрыт", uz: "yopiq", en: "closed" },
+  },
+}));
+
 const { readOverrides, deliverRequest } = vi.hoisted(() => ({
   readOverrides: vi.fn(),
   deliverRequest: vi.fn(async (opts: unknown) => {
@@ -330,5 +347,45 @@ describe("тюбинг: согласие с правилами и офертой
     expect(sent.record?.extras?.join("\n")).toMatch(/согласие.+правил.+оферт/i);
     expect(sent.record?.extras?.join("\n")).toMatch(/персональн/i);
     expect(sent.record?.extras?.join("\n")).toContain("18.08.2026");
+  });
+});
+
+describe("бассейн закрыт — сервер не принимает заявку", () => {
+  it("отказывает даже при полностью корректной форме", async () => {
+    // Проверка в вёрстке снимается в инструментах разработчика, а форму можно
+    // отправить из сохранённой копии страницы. Отказ должен стоять на сервере.
+    vi.resetModules();
+    vi.doMock("@/content/pool-closure", () => ({
+      poolClosure: {
+        closed: true,
+        since: "27.08.2026",
+        title: { ru: "", uz: "", en: "" },
+        text: { ru: "", uz: "", en: "" },
+        alternative: { ru: "", uz: "", en: "" },
+        formError: {
+          ru: "Бассейн временно не работает — заявки не принимаются.",
+          uz: "Basseyn vaqtincha ishlamaydi.",
+          en: "The pool is temporarily closed.",
+        },
+      },
+    }));
+
+    const { submitPoolRequest } = await import("@/app/actions/pool");
+    const fd = new FormData();
+    fd.set("locale", "ru");
+    fd.set("name", "Гость");
+    fd.set("phone", "+998 90 123 45 67");
+    fd.set("date", "2026-09-10");
+    fd.set("adults", "2");
+    fd.set("offerConsent", "on");
+    fd.set("privacyConsent", "on");
+    fd.set("poolRulesConsent", "on");
+
+    const result = await submitPoolRequest(fd);
+
+    expect(result.ok).toBe(false);
+    expect(result.ok === false && result.error).toMatch(/временно не работает/i);
+    // И ничего не ушло оператору: заявки на закрытую услугу в телеграм не идут.
+    expect(deliverRequest).not.toHaveBeenCalled();
   });
 });

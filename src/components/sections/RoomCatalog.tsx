@@ -12,6 +12,7 @@ import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Icon } from "@/components/ui/Icon";
 import { Lightbox } from "@/components/ui/Lightbox";
 import { clock } from "@/components/ui/Clock";
+import { poolClosure } from "@/content/pool-closure";
 
 type RoomCatalogProps = {
   locale: Locale;
@@ -47,7 +48,15 @@ export function RoomCatalog({ locale, limit, priceChips = {} }: RoomCatalogProps
   const [gallery, setGallery] = useState<string | null>(null);
   const dict = dictionaries[locale];
   // Only truly-built rooms are bookable here; `available: false` hides the rest.
-  const bookableRooms = useMemo(() => rooms.filter((room) => room.available !== false), []);
+  // Закрытый бассейн уходит из каталога, но остаётся страницей: карточка
+  // ведёт к форме, которой сейчас нет, а страница объясняет, что случилось.
+  const bookableRooms = useMemo(
+    () =>
+      rooms.filter(
+        (room) => room.available !== false && !(room.slug === "pool" && poolClosure.closed),
+      ),
+    [],
+  );
   const availableCategories = useMemo(
     () => roomCategories.filter((c) => c.id === "all" || bookableRooms.some((room) => room.category === c.id)),
     [bookableRooms],

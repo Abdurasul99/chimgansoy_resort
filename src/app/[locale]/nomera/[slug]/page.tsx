@@ -23,6 +23,8 @@ import { list, text } from "@/lib/localize";
 import { clock } from "@/components/ui/Clock";
 import { frameStyle, imageStyle } from "@/lib/images";
 import { localizePath } from "@/i18n/routing";
+import { poolClosure } from "@/content/pool-closure";
+import { ButtonLink } from "@/components/ui/ButtonLink";
 
 /**
  * Revalidated every six hours because the «от …» chip is a LIVE price.
@@ -260,7 +262,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
             {/* The pool's form sits in the next section, which is just past the
                 fold on a laptop. This puts the action itself in the first
                 screen and scrolls to the form. */}
-            {isPool && (
+            {isPool && !poolClosure.closed && (
               <a
                 href="#pool-request"
                 className="btn-press mt-8 inline-flex items-center gap-3 rounded-full bg-gradient-to-b from-[var(--sun)] to-[var(--sun-dark)] px-8 py-5 text-lg font-extrabold text-[var(--on-accent)] shadow-[0_14px_34px_-10px_rgba(0,0,0,0.6)] transition-all duration-300 hover:brightness-[1.04] sm:text-xl"
@@ -280,7 +282,34 @@ export default async function RoomDetailPage({ params }: PageProps) {
           Straight under the hero, full width, so it is the first thing on the
           page after the photo — and wide enough for the tariff to sit as two
           cards and the fields as a comfortable two-column grid. ── */}
-      {isPool && (
+      {isPool && poolClosure.closed && (
+        <section id="pool-request" className="scroll-mt-24 bg-[var(--surface)] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+          <div className="mx-auto max-w-3xl rounded-3xl border border-[color:var(--line)] bg-[var(--surface-warm)] p-8 text-center sm:p-12">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--muted)]">
+              {poolClosure.since}
+            </p>
+            <h2 className="mt-3 text-2xl font-extrabold text-[var(--ink)] sm:text-3xl">
+              {text(poolClosure.title, locale)}
+            </h2>
+            <p className="mt-4 text-sm leading-7 text-[var(--muted)] sm:text-base">
+              {text(poolClosure.text, locale)}
+            </p>
+            <p className="mt-3 text-sm font-semibold leading-7 text-[var(--ink)]">
+              {text(poolClosure.alternative, locale)}
+            </p>
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+              <ButtonLink href={localizePath(locale, "/topchan")} variant="primary">
+                {text({ ru: "Топчан", uz: "Topchan", en: "Topchan" }, locale)}
+              </ButtonLink>
+              <ButtonLink href={localizePath(locale, "/tubing")} variant="ghost">
+                {text({ ru: "Тюбинг-горка", uz: "Tyubing gorkasi", en: "Tubing hill" }, locale)}
+              </ButtonLink>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {isPool && !poolClosure.closed && (
         <section id="pool-request" className="scroll-mt-24 bg-[var(--surface)] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
           <div className="mx-auto max-w-3xl">
             <PoolRequestForm locale={locale} pricing={await getPricing()} />

@@ -1,6 +1,25 @@
 import type { NavigationItem } from "./types";
+import { poolClosure } from "./pool-closure";
 
-export const mainNavigation: NavigationItem[] = [
+/**
+ * Пока бассейн закрыт (см. pool-closure.ts), ссылки на него убираются из меню
+ * и подвала: вести гостя на страницу «услуга не работает» из главного меню —
+ * то же самое, что держать в витрине пустую полку.
+ */
+const withoutClosedPool = <T extends { links?: { href: string }[]; href?: string }>(
+  items: T[],
+): T[] =>
+  !poolClosure.closed
+    ? items
+    : items
+        .map((item) =>
+          item.links
+            ? { ...item, links: item.links.filter((l) => l.href !== "/nomera/pool") }
+            : item,
+        )
+        .filter((item) => item.href !== "/nomera/pool") as T[];
+
+const ALL_MAIN: NavigationItem[] = [
   {
     href: "/",
     label: { ru: "Главная", uz: "Bosh sahifa", en: "Home" },
@@ -27,7 +46,7 @@ export const mainNavigation: NavigationItem[] = [
   },
 ];
 
-export const footerNavigation = [
+const ALL_FOOTER = [
   {
     title: { ru: "Размещение", uz: "Yashash", en: "Stay" },
     links: [
@@ -71,3 +90,7 @@ export const footerNavigation = [
     ],
   },
 ];
+
+/** Меню и подвал без закрытых разделов — это и читает сайт. */
+export const mainNavigation: NavigationItem[] = withoutClosedPool(ALL_MAIN);
+export const footerNavigation = withoutClosedPool(ALL_FOOTER);

@@ -13,6 +13,8 @@ import {
   todayTashkent,
 } from "@/lib/request-delivery";
 import { pageLine, trafficSource } from "@/lib/request-context";
+import { poolClosure } from "@/content/pool-closure";
+import { text } from "@/lib/localize";
 
 export type PoolResult = { ok: true } | { ok: false; error: string };
 
@@ -63,6 +65,18 @@ export async function submitPoolRequest(formData: FormData): Promise<PoolResult>
   // Метки utm — словами: «визитка из шапки Instagram», а не три параметра.
   const source = trafficSource(formData);
   const m = MESSAGES[lang];
+
+  /**
+   * Бассейн закрыт — заявку не принимаем.
+   *
+   * Проверка стоит на сервере, а не только в вёрстке: форму можно отправить
+   * из сохранённой копии страницы или из инструментов разработчика, и тогда
+   * оператор получит заявку на услугу, которой нет. Отвечаем текстом, а не
+   * молчанием: гость должен понять, что делать дальше.
+   */
+  if (poolClosure.closed) {
+    return { ok: false, error: text(poolClosure.formError, lang) };
+  }
 
   const legalError = validateLegalConsents(formData, lang, { poolRules: true });
   if (legalError) return { ok: false, error: legalError };

@@ -28,7 +28,8 @@ type HeaderProps = {
  * системе тюбинга или бассейна»). On these pages the button now scrolls to the
  * form that actually sells the thing being read about.
  */
-const DAY_PRODUCT_PATHS = ["/topchan", "/tubing", "/nomera/pool"] as const;
+// Бассейн закрыт (pool-closure.ts) и убран из меню — подсвечивать нечего.
+const DAY_PRODUCT_PATHS = ["/topchan", "/tubing"] as const;
 
 /**
  * Своя надпись, а не общая dict.bookNow.

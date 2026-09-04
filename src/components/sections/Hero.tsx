@@ -9,6 +9,7 @@ import { BookingWidget } from "@/components/sections/BookingWidget";
 import { SnowParticles } from "@/components/effects/SnowParticles";
 import { HeroScrollCue } from "@/components/ui/HeroScrollCue";
 import { Icon } from "@/components/ui/Icon";
+import { poolClosure } from "@/content/pool-closure";
 
 type HeroProps = {
   locale: Locale;
@@ -333,28 +334,37 @@ export function Hero({ locale, pricing }: HeroProps) {
                 first position and the larger footprint. Solid gold, because a
                 translucent card over a photograph of water is the one
                 treatment guaranteed to go unnoticed. */}
-            <a
-              href={localizePath(locale, "/nomera/pool#pool-request")}
-              className="btn-press group mb-3 flex w-full items-center gap-4 rounded-2xl bg-gradient-to-b from-[var(--sun)] to-[var(--sun-dark)] px-5 py-5 text-[var(--on-accent)] shadow-[0_18px_44px_-12px_rgba(220,140,0,0.9)] transition-all duration-300 hover:brightness-[1.05] sm:px-6 sm:py-6"
-            >
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--on-accent)]/12 sm:h-14 sm:w-14">
-                <Icon name="pool" className="h-7 w-7 sm:h-8 sm:w-8" />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-[1.2rem] font-extrabold leading-tight sm:text-[1.4rem]">
-                  {dict.home.heroPoolCta}
-                </span>
-                <span className="mt-1 block text-[0.8rem] font-semibold leading-snug opacity-75 sm:text-[0.88rem]">
-                  {poolHint(live, locale)}
-                </span>
-              </span>
-              <span
-                aria-hidden
-                className="shrink-0 text-2xl font-bold transition-transform duration-300 group-hover:translate-x-1"
+            {/*
+                Золотая кнопка бассейна снята: бассейн закрыт оператором
+                27.08.2026 (src/content/pool-closure.ts). Она вела прямо к форме
+                заявки, которой теперь нет, — а это первый экран сайта.
+
+                Возвращается вместе с флагом: closed: false.
+            */}
+            {!poolClosure.closed && (
+              <a
+                href={localizePath(locale, "/nomera/pool#pool-request")}
+                className="btn-press group mb-3 flex w-full items-center gap-4 rounded-2xl bg-gradient-to-b from-[var(--sun)] to-[var(--sun-dark)] px-5 py-5 text-[var(--on-accent)] shadow-[0_18px_44px_-12px_rgba(220,140,0,0.9)] transition-all duration-300 hover:brightness-[1.05] sm:px-6 sm:py-6"
               >
-                →
-              </span>
-            </a>
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--on-accent)]/12 sm:h-14 sm:w-14">
+                  <Icon name="pool" className="h-7 w-7 sm:h-8 sm:w-8" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[1.2rem] font-extrabold leading-tight sm:text-[1.4rem]">
+                    {dict.home.heroPoolCta}
+                  </span>
+                  <span className="mt-1 block text-[0.8rem] font-semibold leading-snug opacity-75 sm:text-[0.88rem]">
+                    {poolHint(live, locale)}
+                  </span>
+                </span>
+                <span
+                  aria-hidden
+                  className="shrink-0 text-2xl font-bold transition-transform duration-300 group-hover:translate-x-1"
+                >
+                  →
+                </span>
+              </a>
+            )}
 
             {/* Topchan and tubing, side by side under the pool. Glass over the
                 photograph rather than gold: three solid gold blocks would fight

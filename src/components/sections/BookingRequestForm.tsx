@@ -6,6 +6,7 @@ import { GuestSelect } from "@/components/ui/GuestSelect";
 import { rooms, EXELY_ROOM_TYPE } from "@/content/rooms";
 import { localizePath } from "@/i18n/routing";
 import { text } from "@/lib/localize";
+import { poolClosure } from "@/content/pool-closure";
 
 // What the guest can book. A hand-written "Дневной отдых · Топчан" option used
 // to lead this list AND be the default, so anyone opening /bron without a room
@@ -13,7 +14,7 @@ import { text } from "@/lib/localize";
 // are now exactly the bookable units.
 // Only built, bookable rooms — anything with available:false is excluded.
 const STAY_OPTIONS = rooms
-  .filter((r) => r.available !== false)
+  .filter((r) => r.available !== false && !(r.slug === "pool" && poolClosure.closed))
   .map((r) => ({ slug: r.slug, title: r.title, meta: r.capacity }));
 
 type Locale = "ru" | "uz" | "en";

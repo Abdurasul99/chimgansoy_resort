@@ -30,6 +30,7 @@ import { getRoomPrices, priceChip } from "@/lib/room-price";
 import { homeServiceCards } from "@/lib/service-cards";
 import { clock } from "@/components/ui/Clock";
 import { stayRules } from "@/content/pricing";
+import { poolClosure } from "@/content/pool-closure";
 
 /**
  * Revalidated every six hours because the «от …» chip is a LIVE price.
@@ -71,7 +72,6 @@ const stats = [
 const STAY_CATEGORIES: { href: string; label: Record<string, string> }[] = [
   { href: "/nomera/glamping", label: { ru: "Глэмпинг", uz: "Glemping", en: "Glamping" } },
   { href: "/nomera/cottage", label: { ru: "Шале", uz: "Shale", en: "Chalet" } },
-  { href: "/nomera/pool", label: { ru: "Бассейн", uz: "Basseyn", en: "Pool" } },
   { href: "/tubing", label: { ru: "Тюбинг-горка", uz: "Tubing gorkasi", en: "Tubing hill" } },
   // The topchan keeps its own page and its own hero button; here the row names
   // the place rather than the product, which is what a guest scanning this
@@ -210,66 +210,76 @@ export default async function HomePage({ params }: PageProps) {
 
           <RoomCatalog locale={locale} limit={2} priceChips={priceChips} />
 
-          {/* Pool — the non-obvious inclusion, now with the frame to sell it */}
-          <div
-            className="motion-reveal mt-6 grid overflow-hidden rounded-3xl bg-[var(--mountain)] text-white lg:grid-cols-[1.05fr_1fr]"
-            data-delay="120"
-          >
-            <figure className="relative order-first min-h-[240px] sm:min-h-[320px] lg:order-last lg:min-h-[380px]">
-              {/* Was poolPanorama — which is also the hero, and on a phone the
-                  hero no longer rotates, so this band was showing the top of the
-                  page again one screen later. The steps read as "pool" just as
-                  fast and belong to nothing else on this page. */}
-              <div
-                className="absolute inset-0 bg-cover bg-center"
-                style={imageStyle(resortImages.poolStepsTall)}
-                role="img"
-                aria-label={text(resortImages.poolStepsTall.alt, locale)}
-              />
-            </figure>
+          {/*
+            Баннер бассейна снят: бассейн закрыт оператором 27.08.2026
+            (src/content/pool-closure.ts). Оставлять на главной кнопку
+            «Забронировать бассейн», которая ведёт к сообщению «не работает»,
+            хуже, чем не показывать её вовсе.
 
-            <div className="p-7 sm:p-9 lg:self-center">
-              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--sun)]">
-                {poolBand[locale].label}
-              </p>
-              <h3 className="mt-3 font-serif text-2xl font-semibold leading-tight sm:text-3xl">
-                {poolBand[locale].title}
-              </h3>
-              <p className="mt-3 max-w-xl text-sm leading-7 text-white/70">{poolBand[locale].copy}</p>
-              {/* The band only linked to the pool's description page, so the
-                  one thing bookable without an overnight stay had no way to be
-                  booked from the homepage. `reload` forces a full navigation so
-                  Exely's loader mounts on /bron and reads room-type from the
-                  query — that is where the guest enters their details and gets
-                  the confirmation e-mail. */}
-              {/* Oversized on purpose. The pool is the only thing on this page
-                  a guest can buy without booking a night, and it was previously
-                  represented by a button the same size as everything else. */}
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
-                <a
-                  href={localizePath(locale, "/nomera/pool#pool-request")}
-                  className="btn-press inline-flex items-center justify-center gap-2.5 rounded-full bg-gradient-to-b from-[var(--sun)] to-[var(--sun-dark)] px-8 py-5 text-lg font-extrabold text-[var(--on-accent)] shadow-[0_14px_34px_-10px_rgba(220,140,0,0.75)] transition-all duration-300 hover:brightness-[1.04] sm:text-xl"
-                >
-                  <svg aria-hidden className="h-6 w-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M2 16c1.5 0 1.5 1.2 3 1.2S6.5 16 8 16s1.5 1.2 3 1.2S12.5 16 14 16s1.5 1.2 3 1.2S18.5 16 20 16M2 20c1.5 0 1.5 1.2 3 1.2S6.5 20 8 20s1.5 1.2 3 1.2S12.5 20 14 20s1.5 1.2 3 1.2S18.5 20 20 20M8 14V5a2 2 0 1 1 4 0M16 14V5a2 2 0 1 1 4 0" />
-                  </svg>
-                  {poolBand[locale].book}
-                  <span aria-hidden className="text-2xl leading-none">→</span>
-                </a>
-                <a
-                  href={localizePath(locale, "/nomera/pool")}
-                  className="inline-flex items-center justify-center gap-1.5 rounded-full px-5 py-3 text-sm font-bold text-white/75 underline-offset-4 transition-colors hover:text-white hover:underline"
-                >
-                  {poolBand[locale].cta}
-                </a>
+            Возвращается вместе с флагом: поставить closed: false, и блок
+            снова отрисуется.
+          */}
+          {!poolClosure.closed && (
+            <div
+              className="motion-reveal mt-6 grid overflow-hidden rounded-3xl bg-[var(--mountain)] text-white lg:grid-cols-[1.05fr_1fr]"
+              data-delay="120"
+            >
+              <figure className="relative order-first min-h-[240px] sm:min-h-[320px] lg:order-last lg:min-h-[380px]">
+                {/* Was poolPanorama — which is also the hero, and on a phone the
+                    hero no longer rotates, so this band was showing the top of the
+                    page again one screen later. The steps read as "pool" just as
+                    fast and belong to nothing else on this page. */}
+                <div
+                  className="absolute inset-0 bg-cover bg-center"
+                  style={imageStyle(resortImages.poolStepsTall)}
+                  role="img"
+                  aria-label={text(resortImages.poolStepsTall.alt, locale)}
+                />
+              </figure>
+  
+              <div className="p-7 sm:p-9 lg:self-center">
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--sun)]">
+                  {poolBand[locale].label}
+                </p>
+                <h3 className="mt-3 font-serif text-2xl font-semibold leading-tight sm:text-3xl">
+                  {poolBand[locale].title}
+                </h3>
+                <p className="mt-3 max-w-xl text-sm leading-7 text-white/70">{poolBand[locale].copy}</p>
+                {/* The band only linked to the pool's description page, so the
+                    one thing bookable without an overnight stay had no way to be
+                    booked from the homepage. `reload` forces a full navigation so
+                    Exely's loader mounts on /bron and reads room-type from the
+                    query — that is where the guest enters their details and gets
+                    the confirmation e-mail. */}
+                {/* Oversized on purpose. The pool is the only thing on this page
+                    a guest can buy without booking a night, and it was previously
+                    represented by a button the same size as everything else. */}
+                <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <a
+                    href={localizePath(locale, "/nomera/pool#pool-request")}
+                    className="btn-press inline-flex items-center justify-center gap-2.5 rounded-full bg-gradient-to-b from-[var(--sun)] to-[var(--sun-dark)] px-8 py-5 text-lg font-extrabold text-[var(--on-accent)] shadow-[0_14px_34px_-10px_rgba(220,140,0,0.75)] transition-all duration-300 hover:brightness-[1.04] sm:text-xl"
+                  >
+                    <svg aria-hidden className="h-6 w-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M2 16c1.5 0 1.5 1.2 3 1.2S6.5 16 8 16s1.5 1.2 3 1.2S12.5 16 14 16s1.5 1.2 3 1.2S18.5 16 20 16M2 20c1.5 0 1.5 1.2 3 1.2S6.5 20 8 20s1.5 1.2 3 1.2S12.5 20 14 20s1.5 1.2 3 1.2S18.5 20 20 20M8 14V5a2 2 0 1 1 4 0M16 14V5a2 2 0 1 1 4 0" />
+                    </svg>
+                    {poolBand[locale].book}
+                    <span aria-hidden className="text-2xl leading-none">→</span>
+                  </a>
+                  <a
+                    href={localizePath(locale, "/nomera/pool")}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-full px-5 py-3 text-sm font-bold text-white/75 underline-offset-4 transition-colors hover:text-white hover:underline"
+                  >
+                    {poolBand[locale].cta}
+                  </a>
+                </div>
+  
+                {/* The tariff, so the button isn't a leap of faith */}
+                <p className="mt-4 text-sm font-semibold text-white/60">
+                  {poolPriceLine[locale]}
+                </p>
               </div>
-
-              {/* The tariff, so the button isn't a leap of faith */}
-              <p className="mt-4 text-sm font-semibold text-white/60">
-                {poolPriceLine[locale]}
-              </p>
             </div>
-          </div>
+          )}
         </div>
       </section>
 
