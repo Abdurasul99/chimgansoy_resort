@@ -334,3 +334,24 @@ describe("бюджет ответа", () => {
     expect(answerBudget("hard")).toBeGreaterThan(answerBudget("faq"));
   });
 });
+
+describe("платный запас включается там, где бесплатный не справился", () => {
+  it("цепочка «hard» начинается мимо Groq — обоих ключей", () => {
+    // Пустой ответ от бесплатной модели означает, что вопрос ей не по
+    // бюджету. Просить её ещё раз — потратить квоту и получить ту же
+    // пустоту, поэтому повтор идёт по цепочке «hard».
+    vi.stubEnv("GROQ_API_KEY", "gsk_первый");
+    vi.stubEnv("GROQ_API_KEY_2", "gsk_второй");
+    vi.stubEnv("XAI_API_KEY", "");
+    vi.stubEnv("AI_GATEWAY_API_KEY", "gw_ключ");
+
+    const labels = aiTargets("hard").map((t) => t.label);
+    expect(labels).not.toContain("groq");
+    expect(labels).not.toContain("groq-2");
+    expect(labels).toContain("gateway");
+  });
+
+  it("повтору дают больше места, чем первой попытке", () => {
+    expect(answerBudget("hard")).toBeGreaterThan(answerBudget("faq"));
+  });
+});
