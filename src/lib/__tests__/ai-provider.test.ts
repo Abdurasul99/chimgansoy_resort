@@ -277,3 +277,35 @@ describe("какой вопрос считается расчётом", () => {
     }
   });
 });
+
+describe("второй аккаунт Groq — вторая минутная квота", () => {
+  it("встаёт в цепочку сразу за первым", () => {
+    // Бесплатный тариф Groq — 8000 токенов в минуту, а один вопрос с брифингом
+    // стоит около 5400. Второй вопрос в ту же минуту упирается в 429, и без
+    // второго ключа сайт сразу уходит на платный запас.
+    vi.stubEnv("GROQ_API_KEY", "gsk_первый");
+    vi.stubEnv("GROQ_API_KEY_2", "gsk_второй");
+    vi.stubEnv("XAI_API_KEY", "xai_ключ");
+    vi.stubEnv("AI_GATEWAY_API_KEY", "gw_ключ");
+
+    expect(aiTargets("faq").map((t) => t.label)).toEqual(["groq", "groq-2", "xai", "gateway"]);
+  });
+
+  it("одинаковые ключи не дублируются — это не две квоты, а одна", () => {
+    vi.stubEnv("GROQ_API_KEY", "gsk_один");
+    vi.stubEnv("GROQ_API_KEY_2", "gsk_один");
+    vi.stubEnv("XAI_API_KEY", "");
+    vi.stubEnv("AI_GATEWAY_API_KEY", "");
+
+    expect(aiTargets("faq").map((t) => t.label)).toEqual(["groq"]);
+  });
+
+  it("в расчётах второй ключ не участвует — там нужна модель посильнее", () => {
+    vi.stubEnv("GROQ_API_KEY", "gsk_первый");
+    vi.stubEnv("GROQ_API_KEY_2", "gsk_второй");
+    vi.stubEnv("AI_GATEWAY_API_KEY", "gw_ключ");
+    vi.stubEnv("XAI_API_KEY", "");
+
+    expect(aiTargets("hard").map((t) => t.label)).toEqual(["gateway"]);
+  });
+});

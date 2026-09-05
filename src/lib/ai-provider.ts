@@ -107,6 +107,7 @@ export function answerBudget(kind: AiKind): number {
 export function aiTargets(kind: AiKind = "faq"): AiTarget[] {
   const out: AiTarget[] = [];
   const groqKey = process.env.GROQ_API_KEY?.trim();
+  const groqKey2 = process.env.GROQ_API_KEY_2?.trim();
   const xaiKey = process.env.XAI_API_KEY?.trim();
   const gwKey = process.env.AI_GATEWAY_API_KEY?.trim();
 
@@ -114,6 +115,18 @@ export function aiTargets(kind: AiKind = "faq"): AiTarget[] {
   // на смете для группы из пятнадцати человек.
   if (groqKey && kind === "faq") {
     out.push({ label: "groq", url: GROQ_URL, key: groqKey, model: GROQ_MODEL_FAQ });
+  }
+  /**
+   * Второй аккаунт Groq — вторая минутная квота.
+   *
+   * Бесплатный тариф даёт 8000 токенов в минуту, а один вопрос вместе с
+   * брифингом стоит около 5400. То есть второй вопрос в ту же минуту почти
+   * гарантированно получает 429 и уходит дальше по цепочке. Ключ второго
+   * аккаунта лежал в переменных окружения с 4 августа, но код его не читал —
+   * платная запасная модель включалась там, где хватило бы бесплатной.
+   */
+  if (groqKey2 && groqKey2 !== groqKey && kind === "faq") {
+    out.push({ label: "groq-2", url: GROQ_URL, key: groqKey2, model: GROQ_MODEL_FAQ });
   }
   if (xaiKey) {
     out.push({
