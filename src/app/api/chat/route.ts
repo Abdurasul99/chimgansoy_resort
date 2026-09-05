@@ -328,7 +328,42 @@ export async function POST(req: NextRequest) {
       msg = data.choices?.[0]?.message;
     }
 
-    const reply = stripDisclaimer(msg?.content?.trim() ?? "", toolsUsed);
+    let reply = stripDisclaimer(msg?.content?.trim() ?? "", toolsUsed);
+
+    /**
+     * Пустой ответ — не отказ, а исчерпанный бюджет: пробуем следующего.
+     *
+     * gpt-oss-20b тратит часть бюджета на рассуждение. Когда вопрос длинный
+     * («почему бассейн не работает, проверь я хочу знать»), рассуждение
+     * съедает потолок целиком, и модель возвращает 200 с пустым текстом.
+     * Провайдер считает такой ответ успешным — он и правда ответил, — а
+     * гость видел «Не получилось ответить».
+     *
+     * Второй заход идёт с просьбой ответить коротко: тот же вопрос, но без
+     * длинных рассуждений, укладывается в бюджет. Если и он пуст — тогда
+     * это действительно отказ.
+     */
+    if (!reply) {
+      console.warn(`[chat] ${target.label} вернул пустой ответ — пробуем следующего`);
+      const retry = await callModel(
+        kind,
+        [
+          ...messages,
+          {
+            role: "system",
+            content:
+              "Предыдущая попытка не уместилась в лимит. Ответь тем же языком, ПО СУЩЕСТВУ и КОРОТКО — не больше четырёх предложений, без рассуждений вслух.",
+          },
+        ],
+        false,
+      );
+      if (retry.ok && retry.res.ok) {
+        const again = (await retry.res.json()) as GroqResponse;
+        logUsage("retry", retry.target.model, again.usage);
+        reply = stripDisclaimer(again.choices?.[0]?.message?.content?.trim() ?? "", toolsUsed);
+      }
+    }
+
     if (!reply) return Response.json({ error: "ai_failed" }, { status: 502 });
 
     return Response.json({ reply });
