@@ -426,9 +426,9 @@ export const resortImages = {
     localSrc: "/images/resort/2026-08/chalet-street-curve.jpg",
     position: "center",
     alt: {
-      ru: "Дорога вдоль шале с подстриженным газоном",
-      uz: "O'rilgan maysazor bo'ylab shalelar yo'li",
-      en: "The lane along the chalets with a mown lawn",
+      ru: "Шале с террасами, дорога и горы за ними",
+      uz: "Terrasali shalelar, yo'l va ortidagi tog'lar",
+      en: "Chalets with terraces, the lane and the mountains behind",
     },
   },
   aframeRowRoad: {
