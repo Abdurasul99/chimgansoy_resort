@@ -396,6 +396,111 @@ export const resortImages = {
 
      Filenames here say what is in the frame. The old set did not, which is the
      single cause of every image mix-up this site has had. */
+
+  /* ── Замена бассейна на главной, 05.09.2026 ───────────────────────────
+     Купальный сезон закончился, и оператор попросил убрать воду с главной:
+     фотография закрытого бассейна обещает то, чего гость сейчас не получит.
+     Кадры из той же августовской съёмки, только про домики. ───────────── */
+  chaletRowMountains: {
+    src: "/images/resort/2026-08/chalet-row-mountains.jpg",
+    localSrc: "/images/resort/2026-08/chalet-row-mountains.jpg",
+    position: "center",
+    alt: {
+      ru: "Ряд шале и хребет Чимгана за ними",
+      uz: "Shale qatori va ortidagi Chimyon tizmasi",
+      en: "A row of chalets with the Chimgan ridge behind",
+    },
+  },
+  chaletTerraceRail: {
+    src: "/images/resort/2026-08/chalet-terrace-rail.jpg",
+    localSrc: "/images/resort/2026-08/chalet-terrace-rail.jpg",
+    position: "center",
+    alt: {
+      ru: "Терраса шале с деревянными перилами",
+      uz: "Yog'och panjarali shale terrasasi",
+      en: "A chalet terrace with wooden railings",
+    },
+  },
+  chaletStreetCurve: {
+    src: "/images/resort/2026-08/chalet-street-curve.jpg",
+    localSrc: "/images/resort/2026-08/chalet-street-curve.jpg",
+    position: "center",
+    alt: {
+      ru: "Дорога вдоль шале с подстриженным газоном",
+      uz: "O'rilgan maysazor bo'ylab shalelar yo'li",
+      en: "The lane along the chalets with a mown lawn",
+    },
+  },
+  aframeRowRoad: {
+    src: "/images/resort/2026-08/aframe-row-road.jpg",
+    localSrc: "/images/resort/2026-08/aframe-row-road.jpg",
+    position: "center",
+    alt: {
+      ru: "Ряд домиков A-frame вдоль дорожки",
+      uz: "Yo'lak bo'ylab A-frame uychalari qatori",
+      en: "A row of A-frame cabins along the path",
+    },
+  },
+  aframeTwoPeaks: {
+    src: "/images/resort/2026-08/aframe-two-peaks.jpg",
+    localSrc: "/images/resort/2026-08/aframe-two-peaks.jpg",
+    position: "center",
+    alt: {
+      ru: "Два домика A-frame крупным планом",
+      uz: "Ikki A-frame uycha yaqindan",
+      en: "Two A-frame cabins up close",
+    },
+  },
+  chaletBenchLawn: {
+    src: "/images/resort/2026-08/chalet-bench-lawn.jpg",
+    localSrc: "/images/resort/2026-08/chalet-bench-lawn.jpg",
+    position: "center",
+    alt: {
+      ru: "Скамья на газоне у шале",
+      uz: "Shale yonidagi maysazordagi skameyka",
+      en: "A bench on the lawn by the chalets",
+    },
+  },
+  chaletDuskFacade: {
+    src: "/images/resort/2026-08/chalet-dusk-facade.jpg",
+    localSrc: "/images/resort/2026-08/chalet-dusk-facade.jpg",
+    position: "center",
+    alt: {
+      ru: "Фасад шале с террасой вечером",
+      uz: "Kechqurun terrasali shale fasadi",
+      en: "A chalet facade with its terrace in the evening",
+    },
+  },
+  aframeVerticalPeak: {
+    src: "/images/resort/2026-08/aframe-vertical-peak.jpg",
+    localSrc: "/images/resort/2026-08/aframe-vertical-peak.jpg",
+    position: "center",
+    alt: {
+      ru: "Домик A-frame и гора за ним",
+      uz: "A-frame uycha va ortidagi tog'",
+      en: "An A-frame cabin with the mountain behind it",
+    },
+  },
+  chaletPathTrees: {
+    src: "/images/resort/2026-08/chalet-path-trees.jpg",
+    localSrc: "/images/resort/2026-08/chalet-path-trees.jpg",
+    position: "center",
+    alt: {
+      ru: "Аллея между домиками",
+      uz: "Uychalar orasidagi xiyobon",
+      en: "The walkway between the cabins",
+    },
+  },
+  aframeLawnPines: {
+    src: "/images/resort/2026-08/aframe-lawn-pines.jpg",
+    localSrc: "/images/resort/2026-08/aframe-lawn-pines.jpg",
+    position: "center",
+    alt: {
+      ru: "Домики A-frame на газоне среди сосен",
+      uz: "Qarag'aylar orasidagi maysazorda A-frame uychalari",
+      en: "A-frame cabins on the lawn among the pines",
+    },
+  },
   poolPanorama: {
     src: "/images/resort/2026-08/pool-panorama.jpg",
     localSrc: "/images/resort/2026-08/pool-panorama.jpg",

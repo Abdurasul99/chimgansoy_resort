@@ -31,11 +31,11 @@ import { text } from "@/lib/localize";
  * that never stops moving.
  */
 const ROW_A = [
-  "poolCurveTall",
+  "chaletDuskFacade",
   "chaletLawn",
   "mountainRidge",
   "chaletRowTall",
-  "poolWater",
+  "aframeTwoPeaks",
   "chaletExterior",
 ] as const;
 

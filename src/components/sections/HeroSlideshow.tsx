@@ -34,10 +34,14 @@ import { useEffect, useState } from "react";
 // All three are 2400px wide and 4:3, which survives both the desktop crop
 // (~1.8:1) and a portrait phone (~0.46) without losing the subject — the test
 // every hero frame on this site has to pass.
+// Сентябрь 2026: бассейн ушёл с первого экрана — купальный сезон закончился,
+// а закрытый бассейн на главной обещает то, чего гость сейчас не получит.
+// Те же три требования к кадру: 2400 px, 4:3, сюжет выживает и в десктопной
+// обрезке (~1.8:1), и в вертикали телефона (~0.46).
 const SUMMER_SLIDES = [
-  "/images/resort/2026-08/pool-panorama.jpg", // whole pool, swim-up bar, mountains
-  "/images/resort/2026-08/pool-cabanas-valley.jpg", // cabanas above the valley
-  "/images/resort/2026-08/pool-deck-chalets.jpg", // deck and the chalet row
+  "/images/resort/2026-08/chalet-row-mountains.jpg", // ряд шале и хребет за ними
+  "/images/resort/2026-08/aframe-row-road.jpg", // A-frame вдоль дорожки
+  "/images/resort/2026-08/chalet-street-curve.jpg", // дорога вдоль шале
 ];
 
 const WINTER_PHOTO = "/images/resort/winter-google-aframe.jpg";

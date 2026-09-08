@@ -36,7 +36,7 @@ const CELLS: Cell[] = [
   {
     // Was poolPanorama, which is the hero's first slide, the pool room card and
     // the picnic-zone service card — one photograph doing four jobs on one page.
-    image: "poolCabanasSky",
+    image: "chaletTerraceRail",
     caption: { ru: "Бунгало и небо", uz: "Bungalolar va osmon", en: "Bungalows and sky" },
     span: "md:col-span-2 md:row-span-2",
   },
@@ -47,12 +47,12 @@ const CELLS: Cell[] = [
     span: "md:col-span-2",
   },
   {
-    image: "poolLogoTall",
+    image: "aframeVerticalPeak",
     caption: { ru: "Мозаика на дне", uz: "Tubdagi mozaika", en: "The mosaic on the floor" },
     span: "",
   },
   {
-    image: "poolCabanas",
+    image: "chaletBenchLawn",
     caption: { ru: "Бунгало у воды", uz: "Suv bo'yidagi bungalolar", en: "Bungalows by the water" },
     span: "",
   },

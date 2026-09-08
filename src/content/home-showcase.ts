@@ -20,7 +20,7 @@ export const homeShowcase: HomeShowcaseItem[] = [
     // below. This frame carries the copy better anyway: the text counts cabins
     // AND leads with the pool, and this is the one photograph with both the
     // pool and the chalet row in it.
-    image: "poolWideChalets",
+    image: "chaletPathTrees",
     title: {
       ru: "20 домиков на 9 гектарах в горах",
       uz: "Tog'larda 9 gektarda 20 uycha",
