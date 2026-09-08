@@ -40,11 +40,11 @@ export function OffersSection({ locale }: Props) {
           {dict.home.offersTitle}
         </h2>
 
-        <div className="mt-8 grid gap-4 lg:grid-cols-3">
+        <div className="mt-8 grid gap-4 sm:grid-cols-2">
           {/* Ведущая акция — на две колонки из трёх: у неё есть сумма выгоды. */}
           <a
             href={href(lead.slug)}
-            className="group relative flex flex-col overflow-hidden rounded-3xl border border-[color:var(--line)] bg-[var(--paper)] p-7 shadow-[var(--shadow-card)] transition-shadow duration-200 hover:shadow-[var(--shadow-card-hover)] lg:col-span-2"
+            className="group relative flex flex-col overflow-hidden rounded-3xl border border-[color:var(--line)] bg-[var(--paper)] p-7 shadow-[var(--shadow-card)] transition-shadow duration-200 hover:shadow-[var(--shadow-card-hover)] sm:col-span-2"
           >
             <span className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-transparent via-[var(--sun)] to-transparent" />
             <span className="self-start rounded-full bg-[var(--sun)] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[var(--ink)]">
