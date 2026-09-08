@@ -14,6 +14,9 @@ import {
 } from "@/content/pricing";
 import { policies } from "@/content/policies";
 import { promotions } from "@/content/promotions";
+import { dictionaries } from "@/content/translations";
+import { poolClosure } from "@/content/pool-closure";
+import { homeShowcase } from "@/content/home-showcase";
 import { legalPolicies } from "@/content/policies-legal";
 import { amendmentSources } from "@/content/policies-legal-amendments";
 import { tubingLegalPolicy } from "@/content/policies-tubing-legal";
@@ -565,5 +568,22 @@ describe("акции сентября 2026", () => {
     expect(text).toContain("«2+1»");
     expect(text).toContain("Всё включено");
     expect(text).toContain("НЕ суммируется");
+  });
+});
+
+describe("закрытый бассейн не обещают на главной", () => {
+  it("тексты главной не говорят «бассейн включён», пока он закрыт", () => {
+    // Фотографии воды с главной убрали 05.09.2026, но обещание оставалось
+    // текстом — а текст хуже: его читают все и запоминают дословно.
+    if (!poolClosure.closed) return;
+    const home = JSON.stringify([dictionaries.ru.home, dictionaries.uz.home, dictionaries.en.home, homeShowcase]);
+    expect(home).not.toContain("Бассейн включён в проживание");
+    expect(home).not.toContain("Basseyn yashash narxiga kiritilgan");
+    expect(home).not.toContain("The pool comes with every stay");
+  });
+
+  it("вариант с бассейном сохранён — вернётся вместе с сезоном", () => {
+    // Удалить фразу насовсем значило бы писать её заново в мае.
+    expect(dictionaries.ru.home.heroChipsPool).toContain("Бассейн включён");
   });
 });

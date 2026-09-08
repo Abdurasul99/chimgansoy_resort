@@ -52,7 +52,7 @@ export const dictionaries = {
       newsTitle: "Актуально на территории",
       stayEyebrow: "Проживание",
       aboutTitle: "Горный курорт в 45 минутах от Ташкента",
-      aboutText: "CHIMGAN DARBAZA — курорт на 9 гектарах на высоте 1700 м. Двадцать отдельных домиков: A-frame глэмпинг для двоих и шале с двумя спальнями и кухней-залом для четверых — и там, и там можно добавить места за доплату. Бассейн включён в проживание, кухня работает на территории, горные маршруты Чимгана начинаются сразу за оградой.",
+      aboutText: "CHIMGAN DARBAZA — курорт на 9 гектарах на высоте 1700 м. Двадцать отдельных домиков: A-frame глэмпинг для двоих и шале с двумя спальнями и кухней-залом для четверых — и там, и там можно добавить места за доплату. Завтрак включён в проживание, кухня работает на территории, горные маршруты Чимгана начинаются сразу за оградой.",
       roomsTitle: "Где вы будете жить",
       // Operator's own wording, 2026-08-02. The chalet capacity of 6 is now
       // confirmed and carried through rooms.ts and the AI facts; Booking.com
@@ -164,7 +164,7 @@ export const dictionaries = {
       newsTitle: "Hududdagi yangiliklar",
       stayEyebrow: "Yashash",
       aboutTitle: "Toshkentdan 45 daqiqadagi tog' kurorti",
-      aboutText: "CHIMGAN DARBAZA — 1700 m balandlikda, 9 gektar hududdagi kurort. Yigirma alohida uycha: ikki-uch kishilik A-frame glemping va oila yoki do'stlar uchun ikkita yotoqxona hamda oshxona-zalga ega shale. Basseyn yashash narxiga kiritilgan, oshxona hududda ishlaydi, Chimgon tog' marshrutlari darvoza ortidan boshlanadi.",
+      aboutText: "CHIMGAN DARBAZA — 1700 m balandlikda, 9 gektar hududdagi kurort. Yigirma alohida uycha: ikki-uch kishilik A-frame glemping va oila yoki do'stlar uchun ikkita yotoqxona hamda oshxona-zalga ega shale. Nonushta yashash narxiga kiritilgan, oshxona hududda ishlaydi, Chimgon tog' marshrutlari darvoza ortidan boshlanadi.",
       roomsTitle: "Qayerda yashaysiz",
       roomsText: "Ikki kishilik A-frame glemping, 6 kishigacha davra uchun ikki yotoqxonali shale — formatni tanlang va bron qiling.",
       thingsTitle: "Kurortda nima qilish",
@@ -273,7 +273,7 @@ export const dictionaries = {
       newsTitle: "Latest updates",
       stayEyebrow: "Stays",
       aboutTitle: "A mountain resort 45 minutes from Tashkent",
-      aboutText: "CHIMGAN DARBAZA is a resort on nine hectares at 1,700 m. Twenty standalone cabins: A-frame glamping for two or three, and chalets with two bedrooms and a kitchen-lounge for a family or a group. The pool is included in every stay, the kitchen works on site, and the Chimgan trails begin just beyond the gate.",
+      aboutText: "CHIMGAN DARBAZA is a resort on nine hectares at 1,700 m. Twenty standalone cabins: A-frame glamping for two or three, and chalets with two bedrooms and a kitchen-lounge for a family or a group. Breakfast is included in every stay, the kitchen works on site, and the Chimgan trails begin just beyond the gate.",
       roomsTitle: "Where you'll stay",
       roomsText: "A-frame glamping for two, a two-bedroom chalet for a group of up to 6 — pick a format and book it.",
       thingsTitle: "What to do at the resort",
