@@ -406,9 +406,9 @@ export const resortImages = {
     localSrc: "/images/resort/2026-08/chalet-row-mountains.jpg",
     position: "center",
     alt: {
-      ru: "Ряд шале и хребет Чимгана за ними",
-      uz: "Shale qatori va ortidagi Chimyon tizmasi",
-      en: "A row of chalets with the Chimgan ridge behind",
+      ru: "Шале на подстриженном газоне, сосны и горы",
+      uz: "O'rilgan maysazordagi shalelar, qarag'aylar va tog'lar",
+      en: "Chalets on a mown lawn with pines and mountains",
     },
   },
   chaletTerraceRail: {
@@ -436,9 +436,9 @@ export const resortImages = {
     localSrc: "/images/resort/2026-08/aframe-row-road.jpg",
     position: "center",
     alt: {
-      ru: "Ряд домиков A-frame вдоль дорожки",
-      uz: "Yo'lak bo'ylab A-frame uychalari qatori",
-      en: "A row of A-frame cabins along the path",
+      ru: "Домик A-frame и горы за ним",
+      uz: "A-frame uycha va ortidagi tog'lar",
+      en: "An A-frame cabin with the mountains behind",
     },
   },
   aframeTwoPeaks: {
@@ -446,9 +446,9 @@ export const resortImages = {
     localSrc: "/images/resort/2026-08/aframe-two-peaks.jpg",
     position: "center",
     alt: {
-      ru: "Два домика A-frame крупным планом",
-      uz: "Ikki A-frame uycha yaqindan",
-      en: "Two A-frame cabins up close",
+      ru: "Домик A-frame крупным планом",
+      uz: "A-frame uycha yaqindan",
+      en: "An A-frame cabin up close",
     },
   },
   chaletBenchLawn: {
@@ -466,9 +466,9 @@ export const resortImages = {
     localSrc: "/images/resort/2026-08/chalet-dusk-facade.jpg",
     position: "center",
     alt: {
-      ru: "Фасад шале с террасой вечером",
-      uz: "Kechqurun terrasali shale fasadi",
-      en: "A chalet facade with its terrace in the evening",
+      ru: "Фасад шале с террасой",
+      uz: "Terrasali shale fasadi",
+      en: "A chalet facade with its terrace",
     },
   },
   aframeVerticalPeak: {
