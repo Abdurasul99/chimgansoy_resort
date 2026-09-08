@@ -70,6 +70,9 @@ export const dictionaries = {
       mapTitle: "Как нас найти",
       finalOfferTitle: "Забронируйте лучшие даты заранее",
       finalOfferText: "Выберите даты онлайн или напишите в WhatsApp — поможем выбрать между шале и глэмпингом и подтвердим бронь.",
+      offersEyebrow: "Действующие акции",
+      offersTitle: "Поводы приехать в сентябре",
+      offersSaving: "Ваша выгода",
     },
     pages: {
       rooms: { title: "Проживание: шале и глэмпинг", lead: "Двадцать отдельных домиков на 9 гектарах. Выберите формат и забронируйте — бассейн включён в проживание." },
@@ -175,6 +178,9 @@ export const dictionaries = {
       mapTitle: "Bizni qanday topish mumkin",
       finalOfferTitle: "Eng yaxshi sanalarni oldindan bron qiling",
       finalOfferText: "Sanalarni onlayn tanlang yoki WhatsApp'ga yozing — shale va glemping o'rtasida tanlashga yordam beramiz va bronni tasdiqlaymiz.",
+      offersEyebrow: "Amaldagi aksiyalar",
+      offersTitle: "Sentyabrda kelish uchun sabablar",
+      offersSaving: "Sizning foydangiz",
     },
     pages: {
       rooms: { title: "Yashash: shale va glemping", lead: "9 gektarda yigirma alohida uycha. Formatni tanlang va bron qiling — basseyn yashash narxiga kiritilgan." },
@@ -280,6 +286,9 @@ export const dictionaries = {
       mapTitle: "How to find us",
       finalOfferTitle: "Book the best dates early",
       finalOfferText: "Pick your dates online or message us on WhatsApp — we'll help you choose between a chalet and a glamping cabin and confirm the booking.",
+      offersEyebrow: "Current offers",
+      offersTitle: "Reasons to come in September",
+      offersSaving: "You save",
     },
     pages: {
       rooms: { title: "Stays: chalets and glamping", lead: "Twenty standalone cabins on nine hectares. Pick a format and book it — the pool comes with every stay." },

@@ -13,6 +13,7 @@ import {
   tubingPricing,
 } from "@/content/pricing";
 import { policies } from "@/content/policies";
+import { promotions } from "@/content/promotions";
 import { legalPolicies } from "@/content/policies-legal";
 import { amendmentSources } from "@/content/policies-legal-amendments";
 import { tubingLegalPolicy } from "@/content/policies-tubing-legal";
@@ -533,5 +534,36 @@ describe("возраст ребёнка при заселении (операт�
     expect(extraGuestPricing.freeThroughAge).toBe(4);
     expect(extraGuestPricing.childFrom).toBe(5);
     expect(extraGuestPricing.adultFromAge).toBe(12);
+  });
+});
+
+describe("акции сентября 2026", () => {
+  it("три акции с метками, совпадающими с визиткой", () => {
+    // slug уходит в utm_content и на сайте, и в визитке из шапки Instagram —
+    // иначе статистика по одной и той же акции разъедется на два счётчика.
+    expect(promotions.map((p) => p.slug)).toEqual(["2plus1", "all-inclusive", "slow-weekend"]);
+  });
+
+  it("взаимоисключение написано в обеих акциях, а не в одной", () => {
+    // Условие «не суммируется» гость читает на той карточке, которую открыл.
+    // Указать его только в одной — значит поспорить с ним на ресепшене.
+    const byslug = (s: string) => promotions.find((p) => p.slug === s)!;
+    expect(byslug("2plus1").terms.ru.join(" ")).toContain("Всё включено");
+    expect(byslug("all-inclusive").terms.ru.join(" ")).toContain("2+1");
+  });
+
+  it("у каждой акции есть условия на всех трёх языках", () => {
+    for (const promo of promotions) {
+      for (const locale of ["ru", "uz", "en"] as const) {
+        expect(promo.terms[locale].length, `${promo.slug}/${locale}`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it("ИИ знает про акции — иначе пообещает скидку, которой нет", () => {
+    const text = venueFacts();
+    expect(text).toContain("«2+1»");
+    expect(text).toContain("Всё включено");
+    expect(text).toContain("НЕ суммируется");
   });
 });

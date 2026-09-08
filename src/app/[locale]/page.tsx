@@ -5,6 +5,7 @@ import { LeisureShowcase } from "@/components/sections/LeisureShowcase";
 import { RoomCatalog } from "@/components/sections/RoomCatalog";
 import { Faq } from "@/components/sections/Faq";
 import { MapBlock } from "@/components/sections/MapBlock";
+import { OffersSection } from "@/components/sections/OffersSection";
 import { PromoBand } from "@/components/sections/PromoBand";
 import { TestimonialsCarousel } from "@/components/sections/TestimonialsCarousel";
 import { PhotoMarquee } from "@/components/sections/PhotoMarquee";
@@ -454,6 +455,12 @@ export default async function HomePage({ params }: PageProps) {
           whole visit, so a bare price table on the homepage would duplicate
           them without letting anyone act. The three day CTAs live in the hero
           instead; the numbers are in content/pricing.ts as `dayUse`. */}
+
+      {/* ── Действующие акции ─────────────────────────────────────────
+          Стоят выше отзывов и галереи: акция отвечает на вопрос «почему
+          сейчас», а фотографии и отзывы — на «как там» и «можно ли верить».
+          Гость из сторис должен увидеть повод раньше, чем начнёт листать. */}
+      <OffersSection locale={locale} />
 
       {/* ── Reviews — cinematic carousel ──────────────── */}
       <TestimonialsCarousel locale={locale} />

@@ -1,49 +1,117 @@
-import type { LocalizedString } from "./types";
+import type { LocalizedList, LocalizedString } from "./types";
 
+/**
+ * Действующие акции курорта.
+ *
+ * До 05.09.2026 здесь лежали три выдуманных «сезонных предложения» —
+ * «раннее бронирование», «шале + активности», «тихая ночь»: у них не было ни
+ * условий, ни цифр, ни срока, и продать по ним было нечего. Оператор запустил
+ * настоящие, с датами и выгодой, — они и лежат тут.
+ *
+ * `slug` уходит в метку ссылки (utm_content), поэтому в заявке видно, какая
+ * акция привела гостя. Совпадает с метками на визитке из шапки Instagram.
+ */
 export type Promotion = {
+  slug: "2plus1" | "all-inclusive" | "slow-weekend";
+  badge: LocalizedString;
   title: LocalizedString;
   description: LocalizedString;
-  badge: LocalizedString;
+  /** Строки выгоды: подпись и сумма. Пусто, если выгода не в деньгах. */
+  savings?: { label: LocalizedString; amount: number }[];
+  /** Условия — то, из-за чего на ресепшене спорят, если о них умолчать. */
+  terms: LocalizedList;
 };
 
 export const promotions: Promotion[] = [
   {
-    badge: { ru: "Сезонное предложение", uz: "Mavsumiy taklif", en: "Seasonal offer" },
+    slug: "2plus1",
+    badge: { ru: "Будни · −33%", uz: "Ish kunlari · −33%", en: "Weekdays · −33%" },
     title: {
-      ru: "Раннее бронирование выходных",
-      uz: "Dam olish kunlarini erta bron qilish",
-      en: "Early weekend booking",
+      ru: "«2+1» — третья ночь в подарок",
+      uz: "«2+1» — uchinchi kecha sovg'a",
+      en: "2+1 — third night free",
     },
     description: {
-      ru: "Забронируйте проживание заранее и получите приоритетный выбор размещения и посадочных зон.",
-      uz: "Joylashuvni oldindan bron qiling va turar joy hamda o'tirish zonalarini ustuvor tanlang.",
-      en: "Book your stay in advance and get priority choice of accommodation and lounge zones.",
+      ru: "Оплачиваете две ночи, третью получаете бесплатно. Больше времени в горах без спешки.",
+      uz: "Ikki kecha uchun to'laysiz, uchinchisi bepul. Tog'larda shoshilmasdan ko'proq vaqt.",
+      en: "Pay for two nights, get the third free. More time in the mountains, unhurried.",
+    },
+    savings: [
+      { label: { ru: "Глэмпинг", uz: "Glemping", en: "Glamping" }, amount: 1_500_000 },
+      { label: { ru: "Шале", uz: "Shale", en: "Chalet" }, amount: 3_000_000 },
+    ],
+    terms: {
+      ru: [
+        "Заезд с понедельника по четверг, выезд не позже пятницы",
+        "Не суммируется с тарифом «Всё включено»",
+      ],
+      uz: [
+        "Kirish dushanbadan payshanbagacha, chiqish jumadan kechikmay",
+        "«Hammasi kiritilgan» tarifi bilan qo'shilmaydi",
+      ],
+      en: [
+        "Arrive Monday to Thursday, depart no later than Friday",
+        "Not combinable with the All-Inclusive rate",
+      ],
     },
   },
   {
-    badge: { ru: "Для семей", uz: "Oilalar uchun", en: "For families" },
+    slug: "all-inclusive",
+    badge: { ru: "Пн–Пт", uz: "Du–Ju", en: "Mon–Fri" },
     title: {
-      ru: "Шале + активности на день",
-      uz: "Shale + bir kunlik faoliyatlar",
-      en: "Chalet plus day activities",
+      ru: "Тариф «Всё включено»",
+      uz: "«Hammasi kiritilgan» tarifi",
+      en: "The All-Inclusive rate",
     },
     description: {
-      ru: "Соберите семейный маршрут с проживанием, рестораном, детской зоной и прогулкой.",
-      uz: "Yashash, restoran, bolalar zonasi va sayr bilan oilaviy marshrut tuzing.",
-      en: "Build a family itinerary with a stay, restaurant, kids zone, and a walk.",
+      ru: "Завтрак, обед и ужин по сет-меню. Обед подаётся уже после выезда, в 13:00, — можно не спешить домой голодными.",
+      uz: "Nonushta, tushlik va kechki ovqat set-menyu bo'yicha. Tushlik chiqishdan keyin, soat 13:00 da — och holda yo'lga chiqmaysiz.",
+      en: "Breakfast, lunch and dinner from our set menu. Lunch is served after check-out, at 13:00 — no need to leave hungry.",
+    },
+    terms: {
+      ru: [
+        "Блюда по расписанию в ресторане или с доставкой в домик",
+        "Только будни, с понедельника по пятницу",
+        "Не суммируется с акцией «2+1»",
+      ],
+      uz: [
+        "Taomlar jadval bo'yicha restoranda yoki uyga yetkazib beriladi",
+        "Faqat ish kunlari, dushanbadan jumagacha",
+        "«2+1» aksiyasi bilan qo'shilmaydi",
+      ],
+      en: [
+        "Meals on schedule in the restaurant or delivered to your cabin",
+        "Weekdays only, Monday to Friday",
+        "Not combinable with the 2+1 offer",
+      ],
     },
   },
   {
-    badge: { ru: "Будни", uz: "Ish kunlari", en: "Weekdays" },
+    slug: "slow-weekend",
+    badge: { ru: "Сб–Вс", uz: "Sha–Ya", en: "Sat–Sun" },
     title: {
-      ru: "Тихая ночь в горах",
-      uz: "Tog'larda sokin tun",
-      en: "A quiet night in the mountains",
+      ru: "Выходной без спешки",
+      uz: "Shoshilmasdan dam olish",
+      en: "An unhurried weekend",
     },
     description: {
-      ru: "Глэмпинг на двоих в будни — короткая перезагрузка с террасой, бассейном и ужином от кухни.",
-      uz: "Ish kunlarida ikki kishilik glemping — terrasa, basseyn va oshxonadan kechki ovqat bilan qisqa hordiq.",
-      en: "Midweek glamping for two — a short reset with a terrace, the pool, and dinner from the kitchen.",
+      ru: "Поздний выезд в воскресенье и завтрак на всех проживающих. Никакой утренней суеты со сбором вещей к полудню.",
+      uz: "Yakshanba kuni kech chiqish va barcha mehmonlarga nonushta. Tushga qadar shoshilib yig'ilish shart emas.",
+      en: "Late check-out on Sunday and breakfast for every guest. No rushing to pack by noon.",
+    },
+    terms: {
+      ru: [
+        "Только при бронировании на одни сутки: с субботы на воскресенье",
+        "Точное время позднего выезда подтверждает администратор при брони",
+      ],
+      uz: [
+        "Faqat bir kecha-kunduzga bron qilinganda: shanbadan yakshanbaga",
+        "Kech chiqishning aniq vaqtini bron paytida administrator tasdiqlaydi",
+      ],
+      en: [
+        "Saturday-to-Sunday bookings only",
+        "The exact late check-out time is confirmed by the administrator",
+      ],
     },
   },
 ];
