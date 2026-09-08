@@ -322,7 +322,10 @@ export function Hero({ locale, pricing }: HeroProps) {
               className="motion-rise mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 sm:gap-x-4"
               style={{ animationDelay: "160ms" }}
             >
-              {dict.home.heroChips.map((chip, i) => (
+              {/* Пока бассейн закрыт, первый экран о нём молчит: обещание в
+                  тексте хуже фотографии — его читают все и запоминают. Вернётся
+                  вместе с флагом poolClosure. */}
+              {(poolClosure.closed ? dict.home.heroChips : dict.home.heroChipsPool).map((chip, i) => (
                 <li key={chip} className="flex items-center gap-3 sm:gap-4">
                   {i > 0 && <span aria-hidden className="h-1 w-1 rounded-full bg-[var(--sun)]/70" />}
                   <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/75 sm:text-xs">

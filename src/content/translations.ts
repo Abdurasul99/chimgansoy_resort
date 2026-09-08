@@ -41,8 +41,9 @@ export const dictionaries = {
     home: {
       eyebrow: "CHIMGANDARBAZA.UZ / CHIMGANDARBAZA.COM",
       title: "CHIMGAN DARBAZA",
-      lead: "Шале и A-frame глэмпинг на высоте 1700 м, в 45 минутах от Ташкента. Бассейн включён в проживание, горы Чимгана — сразу за террасой.",
-      heroChips: ["Шале для 4 гостей", "Глэмпинг A-frame", "Бассейн включён"],
+      lead: "Шале и A-frame глэмпинг на высоте 1700 м, в 45 минутах от Ташкента. Завтрак включён в проживание, горы Чимгана — сразу за террасой.",
+      heroChips: ["Шале для 4 гостей", "Глэмпинг A-frame", "Завтрак включён"],
+      heroChipsPool: ["Шале для 4 гостей", "Глэмпинг A-frame", "Бассейн включён"],
       heroOffer: "Бронируйте шале и глэмпинг заранее",
       // "Только бассейн" asserted the pool was the sole day product. The
       // topchan and the tubing hill are sold alongside it now, each with its
@@ -155,8 +156,9 @@ export const dictionaries = {
     home: {
       eyebrow: "CHIMGANDARBAZA.UZ / CHIMGANDARBAZA.COM",
       title: "CHIMGAN DARBAZA",
-      lead: "1700 m balandlikda, Toshkentdan 45 daqiqada shale va A-frame glemping. Basseyn yashash narxiga kiritilgan, Chimgon tog'lari — terrasangiz ortida.",
-      heroChips: ["4 mehmonga shale", "A-frame glemping", "Basseyn kiritilgan"],
+      lead: "1700 m balandlikda, Toshkentdan 45 daqiqada shale va A-frame glemping. Nonushta yashash narxiga kiritilgan, Chimgon tog'lari — terrasangiz ortida.",
+      heroChips: ["4 mehmonga shale", "A-frame glemping", "Nonushta kiritilgan"],
+      heroChipsPool: ["4 mehmonga shale", "A-frame glemping", "Basseyn kiritilgan"],
       heroOffer: "Shale va glempingni oldindan bron qiling",
       heroPoolCta: "Basseyn DAY PASS",
       newsTitle: "Hududdagi yangiliklar",
@@ -263,8 +265,9 @@ export const dictionaries = {
     home: {
       eyebrow: "CHIMGANDARBAZA.UZ / CHIMGANDARBAZA.COM",
       title: "CHIMGAN DARBAZA",
-      lead: "Chalets and A-frame glamping at 1,700 m, 45 minutes from Tashkent. The pool comes with every stay, and the Chimgan range starts right off your terrace.",
-      heroChips: ["Chalet for up to 6", "A-frame glamping", "Pool included"],
+      lead: "Chalets and A-frame glamping at 1,700 m, 45 minutes from Tashkent. Breakfast comes with every stay, and the Chimgan range starts right off your terrace.",
+      heroChips: ["Chalet for up to 6", "A-frame glamping", "Breakfast included"],
+      heroChipsPool: ["Chalet for up to 6", "A-frame glamping", "Pool included"],
       heroOffer: "Reserve a chalet or glamping cabin early",
       heroPoolCta: "Pool DAY PASS",
       newsTitle: "Latest updates",
