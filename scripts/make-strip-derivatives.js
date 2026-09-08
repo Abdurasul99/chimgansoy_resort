@@ -20,11 +20,31 @@ const path = require("path");
 const ROOT = path.join(__dirname, "..", "public", "images", "resort");
 const OUT = path.join(ROOT, "strip");
 
-/** Keys in the strip, resolved to their files by reading the registry. */
-const KEYS = [
-  "poolCurveTall", "chaletLawn", "mountainRidge", "chaletRowTall", "poolWater", "chaletExterior",
-  "galTopchanPeaks", "chaletDining", "galTopchanRidge", "aframeLounge", "galPathway", "galTopchanRow",
-];
+/**
+ * Кадры ленты читаются ИЗ САМОГО КОМПОНЕНТА, а не дублируются здесь.
+ *
+ * Копия списка уже разошлась однажды: 05.09.2026 в ленте заменили два кадра
+ * бассейна, а этот файл остался со старыми ключами — деривативы новых не
+ * собрались, и на главной висел битый прямоугольник с подписью «Два домика
+ * A-frame крупным планом». Проверка check-home-photos это поймала, но её
+ * вывод отфильтровали и не прочли.
+ *
+ * Так же читает список check-home-photos.js: один источник на троих.
+ */
+const marqueeSrc = fs.readFileSync(
+  path.join(__dirname, "..", "src", "components", "sections", "PhotoMarquee.tsx"),
+  "utf8",
+);
+const KEYS = ["ROW_A", "ROW_B"].flatMap((row) => {
+  // Без регулярок намеренно: экранирование в этом файле уже терялось.
+  const after = marqueeSrc.split("const " + row + " = [")[1];
+  if (!after) throw new Error("make-strip-derivatives: не нашёл " + row + " в PhotoMarquee.tsx");
+  const body = after.split("] as const;")[0];
+  const NL = String.fromCharCode(10);
+  const Q = String.fromCharCode(34);
+  return body.split(NL).map((l) => l.trim()).filter((l) => l.startsWith(Q))
+    .map((l) => l.split(Q)[1]);
+});
 
 const registry = fs.readFileSync(path.join(__dirname, "..", "src", "content", "images.ts"), "utf8");
 
