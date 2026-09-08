@@ -153,6 +153,13 @@ export default async function HomePage({ params }: PageProps) {
       {/* ── Hero ──────────────────────────────────────── */}
       <Hero locale={locale} pricing={livePricing} />
 
+      {/* ── Действующие акции — сразу под первым экраном ──────────────
+          Стояли перед отзывами, на пятом экране: до них доскроллили единицы,
+          а приходят из сторис именно за поводом. Теперь карточка «−33%» видна
+          в герое, а ссылка с неё ведёт сюда — на экран ниже, где у каждой
+          акции написаны условия. Сначала повод, потом фотографии и отзывы. */}
+      <OffersSection locale={locale} />
+
       {/* ── Living photo strip — real 2026 shots ──────── */}
       <PhotoMarquee locale={locale} />
 
@@ -455,12 +462,6 @@ export default async function HomePage({ params }: PageProps) {
           whole visit, so a bare price table on the homepage would duplicate
           them without letting anyone act. The three day CTAs live in the hero
           instead; the numbers are in content/pricing.ts as `dayUse`. */}
-
-      {/* ── Действующие акции ─────────────────────────────────────────
-          Стоят выше отзывов и галереи: акция отвечает на вопрос «почему
-          сейчас», а фотографии и отзывы — на «как там» и «можно ли верить».
-          Гость из сторис должен увидеть повод раньше, чем начнёт листать. */}
-      <OffersSection locale={locale} />
 
       {/* ── Reviews — cinematic carousel ──────────────── */}
       <TestimonialsCarousel locale={locale} />

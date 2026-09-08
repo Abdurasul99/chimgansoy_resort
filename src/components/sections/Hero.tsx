@@ -10,6 +10,7 @@ import { SnowParticles } from "@/components/effects/SnowParticles";
 import { HeroScrollCue } from "@/components/ui/HeroScrollCue";
 import { Icon } from "@/components/ui/Icon";
 import { poolClosure } from "@/content/pool-closure";
+import { promotions } from "@/content/promotions";
 
 type HeroProps = {
   locale: Locale;
@@ -80,6 +81,21 @@ function dayCtas(
 export function Hero({ locale, pricing }: HeroProps) {
   const live = pricing ?? resolvePricing();
   const ctas = dayCtas(live, locale);
+  /**
+   * Ведущая акция для первого экрана. Заголовок берётся из promotions.ts —
+   * оттуда же, откуда его читает секция ниже: две копии одного обещания
+   * разойдутся в первый же месяц.
+   */
+  const lead = promotions[0];
+  const heroPromo = {
+    title: { ru: "Третья ночь в подарок", uz: "Uchinchi kecha sovg'a", en: "Third night free" }[locale],
+    hint: {
+      ru: "Оплачиваете 2 ночи · только будни",
+      uz: "2 kecha uchun to'laysiz · faqat ish kunlari",
+      en: "Pay for 2 nights · weekdays only",
+    }[locale],
+    slug: lead.slug,
+  };
   const dict = dictionaries[locale];
 
   return (
@@ -365,6 +381,40 @@ export function Hero({ locale, pricing }: HeroProps) {
                 </span>
               </a>
             )}
+
+            {/*
+                Акция на первом экране — в той позиции, где стояла золотая
+                кнопка бассейна. Пока бассейн закрыт, это место пустует, а
+                предложение, ради которого гость и приходит из сторис, лежало
+                на пять экранов ниже: до него доскроллили единицы.
+
+                Ведёт не сразу в бронирование, а к секции акций экраном ниже:
+                у «2+1» есть условия (только будни, выезд не позже пятницы), и
+                гость должен увидеть их до того, как выберет выходные.
+            */}
+            <a
+              data-hero-promo
+              href="#offers"
+              className="btn-press group mb-3 flex items-center gap-3 rounded-2xl bg-gradient-to-b from-[var(--sun)] to-[var(--sun-dark)] px-4 py-3.5 text-[var(--ink)] shadow-[0_10px_30px_rgba(0,0,0,.28)] transition-shadow duration-300 hover:shadow-[0_14px_38px_rgba(0,0,0,.36)] sm:px-5 sm:py-4"
+            >
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-black/12 text-[0.82rem] font-black leading-none sm:h-12 sm:w-12 sm:text-[0.92rem]">
+                −33%
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[0.95rem] font-extrabold leading-tight sm:text-[1.1rem]">
+                  {heroPromo.title}
+                </span>
+                <span className="mt-0.5 block text-[0.72rem] font-semibold leading-snug opacity-75 sm:text-[0.82rem]">
+                  {heroPromo.hint}
+                </span>
+              </span>
+              <span
+                aria-hidden
+                className="shrink-0 text-2xl font-bold transition-transform duration-300 group-hover:translate-x-1"
+              >
+                →
+              </span>
+            </a>
 
             {/* Topchan and tubing, side by side under the pool. Glass over the
                 photograph rather than gold: three solid gold blocks would fight
