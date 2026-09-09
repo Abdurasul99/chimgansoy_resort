@@ -70,15 +70,28 @@ export type PromoHint =
   | { kind: "offer-third"; extendTo: string }
   /** Выбрано три ночи по акции — третья бесплатно. */
   | { kind: "third-free" }
+  /**
+   * Даты короткие, но под акцию не подходят — объясняем, какие подойдут.
+   *
+   * Молчать здесь нельзя: гость выбрал среду и пятницу, увидел пустоту и решил,
+   * что акции нет вовсе. Третья ночь у него ушла бы на субботу, а по условиям
+   * выезд не позже пятницы — это надо сказать словами, чтобы он мог сдвинуть
+   * даты, а не гадать.
+   */
+  | { kind: "explain" }
   | null;
 
 /** Что показать под выбранными датами. */
 export function promoHint(checkin: string, checkout: string, today = todayTashkent()): PromoHint {
+  if (!promoActive(today)) return null;
   const nights = nightsBetween(checkin, checkout);
+  if (!nights) return null;
   if (nights === 3 && rangeQualifies(checkin, checkout, today)) return { kind: "third-free" };
   if (nights === 2) {
     const extended = nextDay(checkout);
     if (rangeQualifies(checkin, extended, today)) return { kind: "offer-third", extendTo: extended };
   }
+  // Две-три ночи выбраны, но условия не сошлись — объясняем какие нужны.
+  if (nights <= 3) return { kind: "explain" };
   return null;
 }

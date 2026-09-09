@@ -50,6 +50,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     promoOfferCta: "Продлить на ночь",
     promoFree: "Третья ночь бесплатно — акция «2+1»",
     promoNote: "Скидку применит администратор при подтверждении брони",
+    promoExplain: "Акция «2+1»: заезд с понедельника по четверг, выезд не позже пятницы — тогда третья ночь бесплатно",
   },
   uz: {
     title: "Bir marta bosib bron qilish",
@@ -80,6 +81,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     promoOfferCta: "Bir kechaga uzaytirish",
     promoFree: "Uchinchi kecha bepul — «2+1» aksiyasi",
     promoNote: "Chegirmani bronni tasdiqlashda administrator qo'llaydi",
+    promoExplain: "«2+1» aksiyasi: kirish dushanbadan payshanbagacha, chiqish jumadan kechikmay — shunda uchinchi kecha bepul",
   },
   en: {
     title: "Book in one click",
@@ -110,6 +112,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     promoOfferCta: "Extend by one night",
     promoFree: "The third night is free — the 2+1 offer",
     promoNote: "The administrator applies the discount when confirming the booking",
+    promoExplain: "The 2+1 offer: arrive Monday to Thursday and depart no later than Friday — then the third night is free",
   },
 };
 
@@ -367,7 +370,13 @@ export function StayRequestForm({
           сумму выше мы не пересчитываем — обещать цифру, которой нет в PMS,
           хуже, чем назвать бесплатную ночь словами.
       */}
-      {promo && (
+      {promo?.kind === "explain" && (
+        // Спокойная строка, без золотой рамки: это не предложение, а объяснение,
+        // почему предложения нет. Соперничать с кнопкой отправки ему незачем.
+        <p className="mt-3 text-xs font-semibold leading-5 text-[var(--muted)]">{t.promoExplain}</p>
+      )}
+
+      {promo && promo.kind !== "explain" && (
         <div className="mt-3 rounded-xl border border-[color:var(--sun)]/45 bg-[var(--sun)]/12 px-4 py-3">
           <p className="text-sm font-bold text-[var(--ink)]">
             {promo.kind === "third-free" ? t.promoFree : t.promoOffer}

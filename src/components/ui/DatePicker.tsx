@@ -305,6 +305,9 @@ export function DatePicker({ name, label, defaultValue = "", locale, minToday = 
                 <button
                   key={`${cell.iso}-${idx}`}
                   type="button"
+                  /* Дата на самой кнопке: по тексту ячейку не выбрать — под числом
+                     стоит цена, и «14» с ценой 1500к читается как «141500к». */
+                  data-date={cell.iso}
                   disabled={Boolean(isDisabled)}
                   onClick={() => select(cell.iso)}
                   className={`flex ${days ? "h-12 flex-col gap-0.5" : "h-9"} w-full items-center justify-center rounded-lg text-sm font-semibold tabular-nums transition-all ${
