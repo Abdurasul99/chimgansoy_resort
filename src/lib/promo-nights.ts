@@ -1,0 +1,84 @@
+import { promotions } from "@/content/promotions";
+
+/**
+ * Акция «2+1» на конкретных датах: три ночи по цене двух.
+ *
+ * Условия оператора: заезд с понедельника по четверг, выезд не позже пятницы,
+ * действует до конца сентября 2026. Из них следует главное — акция работает
+ * только внутри рабочей недели, поэтому больше трёх ночей под неё не попадает.
+ *
+ * Живёт отдельным модулем, а не внутри формы, потому что то же правило нужно
+ * трём местам сразу: форме заявки, секции акций и карточке первого экрана.
+ * Форма — самое важное из них: гость выбирает даты именно там, и подсказка
+ * «добавьте третью ночь, она бесплатно» стоит ровно в тот момент, когда он ещё
+ * может передумать.
+ */
+
+/** Asia/Tashkent — UTC+5 круглый год, без перехода на летнее время. */
+export function todayTashkent(): string {
+  return new Date(Date.now() + 5 * 3600 * 1000).toISOString().slice(0, 10);
+}
+
+const promo = promotions.find((p) => p.slug === "2plus1");
+
+/** Последний день действия акции включительно, из данных акции. */
+export function promoLastDay(): string {
+  return promo?.until ?? "";
+}
+
+/** Акция ещё действует на указанную дату (по умолчанию — сегодня). */
+export function promoActive(today = todayTashkent()): boolean {
+  const last = promoLastDay();
+  return Boolean(last) && today <= last;
+}
+
+const day = (iso: string) => new Date(`${iso}T12:00:00Z`).getUTCDay(); // 0=вс … 6=сб
+
+/** Ночей между датами; 0, если даты пустые или порядок неверный. */
+export function nightsBetween(checkin: string, checkout: string): number {
+  if (!checkin || !checkout) return 0;
+  const ms = Date.parse(`${checkout}T12:00:00Z`) - Date.parse(`${checkin}T12:00:00Z`);
+  const n = Math.round(ms / 86_400_000);
+  return n > 0 ? n : 0;
+}
+
+/** Дата через сутки после указанной. */
+export function nextDay(iso: string): string {
+  return new Date(Date.parse(`${iso}T12:00:00Z`) + 86_400_000).toISOString().slice(0, 10);
+}
+
+/**
+ * Попадает ли отрезок под условия акции.
+ *
+ * Проверяем именно выезд, а не только длину: заезд в четверг на три ночи даёт
+ * выезд в воскресенье — это уже выходные, и акция не действует, хотя ночей
+ * ровно три.
+ */
+export function rangeQualifies(checkin: string, checkout: string, today = todayTashkent()): boolean {
+  if (!promoActive(today)) return false;
+  if (!checkin || !checkout) return false;
+  if (checkout > promoLastDay()) return false;
+  const inDay = day(checkin);
+  const outDay = day(checkout);
+  if (inDay < 1 || inDay > 4) return false; // заезд Пн–Чт
+  if (outDay < 2 || outDay > 5) return false; // выезд Вт–Пт
+  return true;
+}
+
+export type PromoHint =
+  /** Выбрано две ночи, третья попадает под акцию — предлагаем продлить. */
+  | { kind: "offer-third"; extendTo: string }
+  /** Выбрано три ночи по акции — третья бесплатно. */
+  | { kind: "third-free" }
+  | null;
+
+/** Что показать под выбранными датами. */
+export function promoHint(checkin: string, checkout: string, today = todayTashkent()): PromoHint {
+  const nights = nightsBetween(checkin, checkout);
+  if (nights === 3 && rangeQualifies(checkin, checkout, today)) return { kind: "third-free" };
+  if (nights === 2) {
+    const extended = nextDay(checkout);
+    if (rangeQualifies(checkin, extended, today)) return { kind: "offer-third", extendTo: extended };
+  }
+  return null;
+}

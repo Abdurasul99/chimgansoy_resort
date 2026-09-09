@@ -20,6 +20,13 @@ export type Promotion = {
   savings?: { label: LocalizedString; amount: number }[];
   /** Условия — то, из-за чего на ресепшене спорят, если о них умолчать. */
   terms: LocalizedList;
+  /**
+   * Последний день действия, включительно (ISO). Без него акция висела бы
+   * на сайте и первого октября — и гость приехал бы за скидкой, которой уже
+   * нет. Проверку делает src/lib/promo-nights.ts, она же гасит подсказку в
+   * форме заявки и карточку на первом экране.
+   */
+  until?: string;
 };
 
 export const promotions: Promotion[] = [
@@ -40,17 +47,21 @@ export const promotions: Promotion[] = [
       { label: { ru: "Глэмпинг", uz: "Glemping", en: "Glamping" }, amount: 1_500_000 },
       { label: { ru: "Шале", uz: "Shale", en: "Chalet" }, amount: 3_000_000 },
     ],
+    until: "2026-09-30",
     terms: {
       ru: [
         "Заезд с понедельника по четверг, выезд не позже пятницы",
+        "Действует до 30 сентября 2026 года",
         "Не суммируется с тарифом «Всё включено»",
       ],
       uz: [
         "Kirish dushanbadan payshanbagacha, chiqish jumadan kechikmay",
+        "2026-yil 30-sentabrgacha amal qiladi",
         "«Hammasi kiritilgan» tarifi bilan qo'shilmaydi",
       ],
       en: [
         "Arrive Monday to Thursday, depart no later than Friday",
+        "Valid through 30 September 2026",
         "Not combinable with the All-Inclusive rate",
       ],
     },

@@ -10,6 +10,7 @@ import { HeroScrollCue } from "@/components/ui/HeroScrollCue";
 import { Icon } from "@/components/ui/Icon";
 import { poolClosure } from "@/content/pool-closure";
 import { promotions } from "@/content/promotions";
+import { promoActive } from "@/lib/promo-nights";
 
 type HeroProps = {
   locale: Locale;
@@ -86,6 +87,8 @@ export function Hero({ locale, pricing }: HeroProps) {
    * разойдутся в первый же месяц.
    */
   const lead = promotions[0];
+  // Карточка живёт ровно столько, сколько сама акция.
+  const showPromo = promoActive();
   const heroPromo = {
     title: { ru: "Третья ночь в подарок", uz: "Uchinchi kecha sovg'a", en: "Third night free" }[locale],
     hint: {
@@ -238,6 +241,7 @@ export function Hero({ locale, pricing }: HeroProps) {
                 у «2+1» есть условия (только будни, выезд не позже пятницы), и
                 гость должен увидеть их до того, как выберет выходные.
             */}
+            {showPromo && (
             <a
               data-hero-promo
               href="#offers"
@@ -261,6 +265,7 @@ export function Hero({ locale, pricing }: HeroProps) {
                 →
               </span>
             </a>
+            )}
 
             {/* Topchan and tubing, side by side under the pool. Glass over the
                 photograph rather than gold: three solid gold blocks would fight

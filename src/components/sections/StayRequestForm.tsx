@@ -10,6 +10,7 @@ import { STAY_OPENS_AT } from "@/lib/stay-window";
 import type { Locale } from "@/i18n/config";
 import { PageContextFields } from "@/components/ui/PageContextFields";
 import { trackEvent } from "@/lib/analytics";
+import { promoHint } from "@/lib/promo-nights";
 
 /**
  * Заявка на проживание, прямо на странице домика.
@@ -45,6 +46,10 @@ const COPY: Record<Locale, Record<string, string>> = {
     busy: "На эти даты всё занято — выберите другие",
     priceFrom: "от",
     sum: "сум",
+    promoOffer: "Добавьте третью ночь — по акции «2+1» она бесплатно",
+    promoOfferCta: "Продлить на ночь",
+    promoFree: "Третья ночь бесплатно — акция «2+1»",
+    promoNote: "Скидку применит администратор при подтверждении брони",
   },
   uz: {
     title: "Bir marta bosib bron qilish",
@@ -71,6 +76,10 @@ const COPY: Record<Locale, Record<string, string>> = {
     busy: "Bu sanalarga hammasi band — boshqasini tanlang",
     priceFrom: "dan",
     sum: "so'm",
+    promoOffer: "Uchinchi kechani qo'shing — «2+1» aksiyasi bo'yicha u bepul",
+    promoOfferCta: "Bir kechaga uzaytirish",
+    promoFree: "Uchinchi kecha bepul — «2+1» aksiyasi",
+    promoNote: "Chegirmani bronni tasdiqlashda administrator qo'llaydi",
   },
   en: {
     title: "Book in one click",
@@ -97,6 +106,10 @@ const COPY: Record<Locale, Record<string, string>> = {
     busy: "Fully booked for these dates — please pick others",
     priceFrom: "from",
     sum: "UZS",
+    promoOffer: "Add a third night — it is free under the 2+1 offer",
+    promoOfferCta: "Extend by one night",
+    promoFree: "The third night is free — the 2+1 offer",
+    promoNote: "The administrator applies the discount when confirming the booking",
   },
 };
 
@@ -133,6 +146,15 @@ export function StayRequestForm({
    */
   const [avail, setAvail] = useState<{ status: string; price?: number } | null>(null);
   const [checking, setChecking] = useState(false);
+  /**
+   * Подсказка про «2+1» считается прямо из выбранных дат.
+   *
+   * Гость выбирает даты здесь — и здесь же должен узнать, что третья ночь
+   * бесплатна. Написать об этом только на странице акций значит рассчитывать,
+   * что он вспомнит про неё в момент, когда уже выбрал две ночи и тянется к
+   * кнопке отправки.
+   */
+  const promo = promoHint(checkin, checkout);
   /** Цены и занятость открытого месяца — их календарь рисует прямо в клетках. */
   const [calendar, setCalendar] = useState<Record<string, { price: number | null; free: boolean }>>({});
   const [month, setMonth] = useState("");
@@ -336,6 +358,33 @@ export function StayRequestForm({
           {avail.price ? ` · ${t.priceFrom} ${avail.price.toLocaleString("ru-RU").replaceAll(",", " ")} ${t.sum}` : ""}
         </p>
       )}
+      {/*
+          Акция стоит СРАЗУ под строкой доступности, до кнопки отправки: это
+          последний момент, когда гость ещё может передвинуть выезд. У варианта
+          с двумя ночами есть кнопка — одно нажатие вместо возврата в календарь.
+
+          Скидку применяет администратор: движок брони о ней не знает, поэтому
+          сумму выше мы не пересчитываем — обещать цифру, которой нет в PMS,
+          хуже, чем назвать бесплатную ночь словами.
+      */}
+      {promo && (
+        <div className="mt-3 rounded-xl border border-[color:var(--sun)]/45 bg-[var(--sun)]/12 px-4 py-3">
+          <p className="text-sm font-bold text-[var(--ink)]">
+            {promo.kind === "third-free" ? t.promoFree : t.promoOffer}
+          </p>
+          <p className="mt-1 text-xs font-semibold text-[var(--muted)]">{t.promoNote}</p>
+          {promo.kind === "offer-third" && (
+            <button
+              type="button"
+              onClick={() => setCheckout(promo.extendTo)}
+              className="btn-press mt-2.5 rounded-lg bg-[var(--ink)] px-3.5 py-2 text-xs font-bold text-white"
+            >
+              {t.promoOfferCta}
+            </button>
+          )}
+        </div>
+      )}
+
       {!checking && busy && (
         <p className="mt-5 rounded-xl bg-[var(--rose,#b4413c)]/10 px-4 py-2.5 text-sm font-bold text-[var(--rose,#b4413c)]">
           {t.busy}

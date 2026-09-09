@@ -1,4 +1,5 @@
 import { promotions } from "@/content/promotions";
+import { todayTashkent } from "@/lib/promo-nights";
 import { dictionaries } from "@/content/translations";
 import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
@@ -25,10 +26,22 @@ type Props = { locale: Locale };
  */
 export function OffersSection({ locale }: Props) {
   const dict = dictionaries[locale];
-  const [lead, ...rest] = promotions;
+  /*
+   * Просроченная акция уходит со страницы сама.
+   *
+   * У «2+1» есть срок — до 30.09.2026. Без этой проверки первого октября
+   * гость прочитал бы про третью ночь в подарок, приехал за ней и услышал на
+   * ресепшене, что акция кончилась. Дата берётся по Ташкенту: сайт живёт там,
+   * а не там, где сервер.
+   */
+  const today = todayTashkent();
+  const active = promotions.filter((p) => !p.until || today <= p.until);
+  const [lead, ...rest] = active;
 
   const href = (slug: string) =>
     `${localizePath(locale, "/bron")}?utm_source=site&utm_medium=offers&utm_content=${slug}`;
+
+  if (!lead) return null;
 
   return (
     <section className="bg-[var(--surface-warm)] px-4 py-16 sm:px-6 lg:px-8" id="offers">
