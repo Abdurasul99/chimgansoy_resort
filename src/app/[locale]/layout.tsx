@@ -8,7 +8,6 @@ import { Footer } from "@/components/layout/Footer";
 import { ScrollObserver } from "@/components/ui/ScrollObserver";
 import { SmoothScroll } from "@/components/ui/SmoothScroll";
 import { FaqPanel } from "@/components/ui/FaqPanel";
-import { SeasonDetector } from "@/components/ui/SeasonDetector";
 import { AnalyticsEvents } from "@/components/ui/AnalyticsEvents";
 import { LogoIntro } from "@/components/ui/LogoIntro";
 import { YandexMetrica } from "@/components/ui/YandexMetrica";
@@ -233,7 +232,6 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         <HideOnBron>
           <FaqPanel key={locale} locale={locale} />
         </HideOnBron>
-        <SeasonDetector />
         <AnalyticsEvents />
         <LogoIntro locale={locale as Locale} />
         {/* GA4 — afterInteractive, not lazyOnload.

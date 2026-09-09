@@ -28,8 +28,6 @@ export const dictionaries = {
     menu: "Меню",
     close: "Закрыть",
     open: "Открыть",
-    summer: "Лето",
-    winter: "Зима",
     pageIntro: "Все данные в структуре сайта подготовлены для быстрой замены на реальные материалы курорта.",
     bookingWidget: {
       title: "Проверьте доступность отдыха",
@@ -143,8 +141,6 @@ export const dictionaries = {
     menu: "Menyu",
     close: "Yopish",
     open: "Ochish",
-    summer: "Yoz",
-    winter: "Qish",
     pageIntro: "Sayt tuzilmasidagi barcha ma'lumotlar kurortning real materiallariga tez almashtirish uchun tayyorlangan.",
     bookingWidget: {
       title: "Dam olish mavjudligini tekshiring",
@@ -252,8 +248,6 @@ export const dictionaries = {
     menu: "Menu",
     close: "Close",
     open: "Open",
-    summer: "Summer",
-    winter: "Winter",
     pageIntro: "All content is structured so real resort materials can be replaced quickly.",
     bookingWidget: {
       title: "Check resort availability",

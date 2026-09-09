@@ -44,8 +44,6 @@ const SUMMER_SLIDES = [
   "/images/resort/2026-08/chalet-street-curve.jpg", // дорога вдоль шале
 ];
 
-const WINTER_PHOTO = "/images/resort/winter-google-aframe.jpg";
-
 const INTERVAL_MS = 5500;
 
 /**
@@ -65,24 +63,9 @@ const DESKTOP = "(min-width: 1024px)";
 const CALM = "(prefers-reduced-motion: reduce)";
 
 export function HeroSlideshow() {
-  const [isWinter, setIsWinter] = useState(false);
   const [rotating, setRotating] = useState(false);
   const [active, setActive] = useState(0);
   const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("cgs_season");
-    const month = new Date().getMonth() + 1;
-    const autoWinter = month === 12 || month <= 3;
-    setIsWinter(saved === "winter" || (!saved && autoWinter));
-
-    const observer = new MutationObserver(() => {
-      const season = document.documentElement.getAttribute("data-season");
-      setIsWinter(season === "winter");
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-season"] });
-    return () => observer.disconnect();
-  }, []);
 
   useEffect(() => {
     const wide = window.matchMedia(DESKTOP);
@@ -104,7 +87,7 @@ export function HeroSlideshow() {
   }, []);
 
   useEffect(() => {
-    if (isWinter || !rotating) return;
+    if (!rotating) return;
 
     // NOTE: `active` is mutated by this effect itself via setActive((prev)=>...).
     // It must NOT be in the deps array — otherwise the effect re-runs every
@@ -122,18 +105,7 @@ export function HeroSlideshow() {
       clearInterval(progressTimer);
       clearInterval(slideTimer);
     };
-  }, [isWinter, rotating]);
-
-  if (isWinter) {
-    return (
-      <div
-        className="absolute inset-0 -z-20 bg-cover bg-center"
-        style={{ backgroundImage: `url(${WINTER_PHOTO})` }}
-        role="img"
-        aria-label="Winter A-frame cottages in the Chimgan mountains"
-      />
-    );
-  }
+  }, [rotating]);
 
   // Static: the one frame, no second layer to cross-fade against, and no
   // `transition` — a slow scale on a full-viewport background is exactly the

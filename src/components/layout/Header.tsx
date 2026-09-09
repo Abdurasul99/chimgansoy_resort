@@ -9,7 +9,6 @@ import { dictionaries } from "@/content/translations";
 import { locales, type Locale } from "@/i18n/config";
 import { localizePath, switchLocalePath } from "@/i18n/routing";
 import { text } from "@/lib/localize";
-import { SeasonToggle } from "@/components/ui/SeasonToggle";
 import { lock, unlock } from "@/lib/scroll-lock";
 import { onScrollFrame } from "@/lib/scroll-engine";
 
@@ -180,7 +179,6 @@ export function Header({ locale }: HeaderProps) {
                 is the one decorative item here; the language switcher and the
                 booking button both have to stay. */}
             <div className="hidden xl:block">
-              <SeasonToggle onDark={isHeaderOnHero} locale={locale} />
             </div>
 
             {/* Language switcher */}

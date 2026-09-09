@@ -105,13 +105,12 @@ describe("HeroSlideshow", () => {
     expect(countSlides(container)).toBe(1);
   });
 
-  it("winter mode renders static photo (no dots)", () => {
-    // Component reads localStorage in useEffect to determine season — set it
-    // before render so the effect picks it up on first commit.
+  it("сезон больше ни на что не влияет", () => {
+    // Зимняя тема снята оператором 09.09.2026: слайдер показывает те же
+    // летние кадры независимо от того, что осталось в localStorage у гостя,
+    // который заходил сюда зимой.
     window.localStorage.setItem("cgs_season", "winter");
     render(<HeroSlideshow />);
-    // useEffect runs synchronously after first commit; isWinter flips → re-render
-    const dots = screen.queryAllByRole("button", { hidden: true });
-    expect(dots).toHaveLength(0);
+    expect(countSlides(document.body)).toBeGreaterThan(0);
   });
 });
