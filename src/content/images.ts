@@ -836,6 +836,101 @@ export const resortImages = {
      ровно то, что было видно на тех кадрах. Теперь есть сама горка — две
      полосы с подъёмником между ними, покрытие с орнаментом и фирменные
      зелёные тюбинги. */
+
+  /* ── Вечерний тюбинг с подсветкой, съёмка оператора 09.09.2026 ──────────
+     Первые кадры горки в темноте: до этого весь набор был дневной, и гость
+     не знал, что трасса работает и вечером. Вертикали 9:16 — сняты для
+     сторис, в галерее показываются столбцом. ─────────────────────────── */
+  tubingDuskTrack: {
+    src: "/images/resort/tubing-vecher/dusk-track-led.jpg",
+    localSrc: "/images/resort/tubing-vecher/dusk-track-led.jpg",
+    position: "center",
+    alt: {
+      ru: "Трасса тюбинга в огнях подсветки на закате",
+      uz: "Quyosh botishida yoritilgan tyubing trassasi",
+      en: "The tubing track lit up at sunset",
+    },
+  },
+  tubingDuskRider: {
+    src: "/images/resort/tubing-vecher/dusk-rider-lights.jpg",
+    localSrc: "/images/resort/tubing-vecher/dusk-rider-lights.jpg",
+    position: "center",
+    alt: {
+      ru: "Гость на тюбинге среди огней трассы",
+      uz: "Trassa chiroqlari orasida tyubingdagi mehmon",
+      en: "A guest on a tube among the track lights",
+    },
+  },
+  tubingDuskFamily: {
+    src: "/images/resort/tubing-vecher/dusk-family-run.jpg",
+    localSrc: "/images/resort/tubing-vecher/dusk-family-run.jpg",
+    position: "center",
+    alt: {
+      ru: "Компания на старте вечернего спуска",
+      uz: "Kechki uchishning startida do'stlar",
+      en: "A group at the start of an evening run",
+    },
+  },
+  tubingDuskRun: {
+    src: "/images/resort/tubing-vecher/dusk-run-down.jpg",
+    localSrc: "/images/resort/tubing-vecher/dusk-run-down.jpg",
+    position: "center",
+    alt: {
+      ru: "Вечерний спуск вдоль подсвеченной трассы",
+      uz: "Yoritilgan trassa bo'ylab kechki uchish",
+      en: "An evening run along the lit track",
+    },
+  },
+  tubingDuskSlope: {
+    src: "/images/resort/tubing-vecher/dusk-slope-glow.jpg",
+    localSrc: "/images/resort/tubing-vecher/dusk-slope-glow.jpg",
+    position: "center",
+    alt: {
+      ru: "Склон и подсветка трассы на закате",
+      uz: "Quyosh botishida qiyalik va trassa yoritgichlari",
+      en: "The slope and the track lights at sunset",
+    },
+  },
+  tubingDuskMoon: {
+    src: "/images/resort/tubing-vecher/dusk-moon-ridge.jpg",
+    localSrc: "/images/resort/tubing-vecher/dusk-moon-ridge.jpg",
+    position: "center",
+    alt: {
+      ru: "Молодая луна над хребтом",
+      uz: "Tizma uzra yosh oy",
+      en: "A new moon over the ridge",
+    },
+  },
+  tubingDuskValley: {
+    src: "/images/resort/tubing-vecher/dusk-valley-lights.jpg",
+    localSrc: "/images/resort/tubing-vecher/dusk-valley-lights.jpg",
+    position: "center",
+    alt: {
+      ru: "Огни курорта в долине после заката",
+      uz: "Quyosh botgach vodiydagi kurort chiroqlari",
+      en: "The resort lights in the valley after sunset",
+    },
+  },
+  tubingDuskCurve: {
+    src: "/images/resort/tubing-vecher/dusk-track-curve.jpg",
+    localSrc: "/images/resort/tubing-vecher/dusk-track-curve.jpg",
+    position: "center",
+    alt: {
+      ru: "Изгиб трассы в вечерней подсветке",
+      uz: "Kechki yoritishda trassaning burilishi",
+      en: "The curve of the track in evening light",
+    },
+  },
+  tubingDuskResort: {
+    src: "/images/resort/tubing-vecher/dusk-resort-night.jpg",
+    localSrc: "/images/resort/tubing-vecher/dusk-resort-night.jpg",
+    position: "center",
+    alt: {
+      ru: "Территория курорта ночью, вид с горки",
+      uz: "Kechasi kurort hududi, gorkadan ko'rinish",
+      en: "The resort at night, seen from the hill",
+    },
+  },
   tubingTubeStart: {
     src: "/images/resort/tubing-2026-08/tube-start-valley.jpg",
     localSrc: "/images/resort/tubing-2026-08/tube-start-valley.jpg",
