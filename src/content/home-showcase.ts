@@ -45,9 +45,9 @@ export const homeShowcase: HomeShowcaseItem[] = [
       en: "A chalet with a kitchen-lounge — for family and friends",
     },
     copy: {
-      ru: "Две спальни, туалет и душ в каждой, кухня-зал с диваном, тёплый пол и терраса 35 м². До 6 гостей.",
+      ru: "Две спальни, туалет и душ в каждой, кухня-зал с диваном, тёплый пол и терраса 42 м². До 6 гостей.",
       uz: "Ikkita yotoqxona, har birida hojatxona va dush, divanli oshxona-zal, issiq pol va 35 m² terrasa. Standart 4 mehmon, maksimum 6.",
-      en: "Two bedrooms, each with its own toilet and shower, a kitchen-lounge with a sofa, heated floors, and a 35 m² terrace. Up to 6 guests.",
+      en: "Two bedrooms, each with its own toilet and shower, a kitchen-lounge with a sofa, heated floors, and a 42 m² terrace. Up to 6 guests.",
     },
   },
   {

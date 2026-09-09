@@ -126,7 +126,7 @@ export const rooms: Room[] = [
     // the ceiling and not what the rate covers — a guest reading it planned for
     // three and met a surcharge at the desk. Both numbers, in the chip.
     capacity: { ru: "2 гостя, до 3 с доплатой", uz: "2 mehmon, qo'shimcha to'lov bilan 3 tagacha", en: "2 guests, up to 3 with a surcharge" },
-    size: { ru: "28 м² + терраса 15 м²", uz: "28 m² + terrasa 15 m²", en: "28 m² + 15 m² terrace" },
+    size: { ru: "32 м² + терраса 15 м²", uz: "32 m² + terrasa 15 m²", en: "32 m² + 15 m² terrace" },
     // No bath anywhere on the property — every unit has a shower. Stated
     // explicitly so nobody books expecting one.
     amenities: {
@@ -135,9 +135,9 @@ export const rooms: Room[] = [
       en: ["Double bed 180×200", "Private terrace", "Shower room", "Air conditioning", "Heated floor", "TV", "Wi-Fi", "Free parking"],
     },
     features: {
-      ru: ["Стандартно 2 гостя, максимум 3 — третье место за доплату", "1 спальная комната, 28 м²", "Собственный санузел 3,6 м²", "Терраса 15 м²", "Заезд с 15:00, выезд до 12:00"],
-      uz: ["Standart 2 mehmon, maksimum 3 — uchinchi joy qo'shimcha to'lov evaziga", "1 yotoq xonasi, 28 m²", "Xususiy sanuzel 3,6 m²", "Terrasa 15 m²", "Kirish 15:00 dan, chiqish 12:00 gacha"],
-      en: ["2 guests as standard, 3 maximum — the third place is charged", "1 bedroom, 28 m²", "Private bathroom 3.6 m²", "Terrace 15 m²", "Check-in from 15:00, check-out by 12:00"],
+      ru: ["Стандартно 2 гостя, максимум 3 — третье место за доплату", "1 спальная комната, 32 м²", "Собственный санузел 3,6 м²", "Терраса 15 м²", "Заезд с 15:00, выезд до 12:00"],
+      uz: ["Standart 2 mehmon, maksimum 3 — uchinchi joy qo'shimcha to'lov evaziga", "1 yotoq xonasi, 32 m²", "Xususiy sanuzel 3,6 m²", "Terrasa 15 m²", "Kirish 15:00 dan, chiqish 12:00 gacha"],
+      en: ["2 guests as standard, 3 maximum — the third place is charged", "1 bedroom, 32 m²", "Private bathroom 3.6 m²", "Terrace 15 m²", "Check-in from 15:00, check-out by 12:00"],
     },
     // Тюбинг: один бесплатный спуск на КАЖДОГО проживающего (оператор, голосом
     // 17.08.2026). Прежние «2 спуска глэмпингу, 4 шале» — то же самое правило,
@@ -230,7 +230,7 @@ export const rooms: Room[] = [
     // accepted. What is new is the base: the rate covers four, and guests five
     // and six are surcharged.
     capacity: { ru: "4 гостя, до 6 с доплатой", uz: "4 mehmon, qo'shimcha to'lov bilan 6 tagacha", en: "4 guests, up to 6 with a surcharge" },
-    size: { ru: "79,8 м² + терраса 35 м²", uz: "79,8 m² + terrasa 35 m²", en: "79.8 m² + 35 m² terrace" },
+    size: { ru: "91 м² + терраса 42 м²", uz: "91 m² + terrasa 42 m²", en: "91 m² + 42 m² terrace" },
     amenities: {
       // Two ensuites, both with a shower — there is no bath anywhere on the
       // property, in any unit.
@@ -266,7 +266,7 @@ export const rooms: Room[] = [
       },
       { label: { ru: "Тёплый пол", uz: "Issiq pol", en: "Heated floor" } },
       { label: { ru: "Полная кухня", uz: "To'liq oshxona", en: "Full kitchen" } },
-      { label: { ru: "Терраса 35 м²", uz: "35 m² terrasa", en: "35 m² terrace" } },
+      { label: { ru: "Терраса 42 м²", uz: "42 m² terrasa", en: "42 m² terrace" } },
       { label: { ru: "Санузел в каждой спальне", uz: "Har bir yotoqxonada sanuzel", en: "Ensuite in every bedroom" } },
       { label: { ru: "Парковка у домика", uz: "Uycha yonida parking", en: "Parking by the cabin" } },
       { label: { ru: "Wi-Fi", uz: "Wi-Fi", en: "Wi-Fi" } },
