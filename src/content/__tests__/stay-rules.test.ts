@@ -14,13 +14,13 @@ import {
 } from "@/content/pricing";
 import { policies } from "@/content/policies";
 import { promotions } from "@/content/promotions";
+import { rooms } from "@/content/rooms";
 import { dictionaries } from "@/content/translations";
 import { poolClosure } from "@/content/pool-closure";
 import { homeShowcase } from "@/content/home-showcase";
 import { legalPolicies } from "@/content/policies-legal";
 import { amendmentSources } from "@/content/policies-legal-amendments";
 import { tubingLegalPolicy } from "@/content/policies-tubing-legal";
-import { rooms } from "@/content/rooms";
 import { fields } from "@/lib/price-catalog";
 import { resolvePricing } from "@/lib/pricing-resolve";
 import { money, venueCore, venueFacts } from "@/lib/venue-facts";
@@ -585,5 +585,28 @@ describe("закрытый бассейн не обещают на главно�
   it("вариант с бассейном сохранён — вернётся вместе с сезоном", () => {
     // Удалить фразу насовсем значило бы писать её заново в мае.
     expect(dictionaries.ru.home.heroChipsPool).toContain("Бассейн включён");
+  });
+});
+
+describe("площади домиков — с рабочего чертежа оператора", () => {
+  it("шале: сумма комнат сходится с заявленной площадью", () => {
+    // На чертеже проставлено: кухня-гостиная 38,4 · спальни 16,0 + 16,0 ·
+    // санузлы 4,7 + 4,7. Если поменяют одну цифру и забудут итог, тест упадёт.
+    const комнаты = 38.4 + 16.0 + 16.0 + 4.7 + 4.7;
+    expect(комнаты).toBeCloseTo(79.8, 1);
+
+    const chalet = rooms.find((r) => r.slug === "cottage");
+    expect(chalet?.size.ru).toContain("79,8 м²");
+    expect(chalet?.size.ru).toContain("35 м²");
+  });
+
+  it("шале: обе спальни одинаковые, как на плане", () => {
+    // Прежде на сайте стояли 15,9 и 15,6 — разница, которой на чертеже нет.
+    const chalet = rooms.find((r) => r.slug === "cottage");
+    const текст = chalet!.features.ru.join(" ");
+    expect(текст).toContain("Спальня 1 (16,0 м²)");
+    expect(текст).toContain("Спальня 2 (16,0 м²)");
+    expect(текст).not.toContain("15,9");
+    expect(текст).not.toContain("15.6");
   });
 });
