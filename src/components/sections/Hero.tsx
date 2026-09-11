@@ -10,7 +10,7 @@ import { HeroScrollCue } from "@/components/ui/HeroScrollCue";
 import { Icon } from "@/components/ui/Icon";
 import { poolClosure } from "@/content/pool-closure";
 import { promotions } from "@/content/promotions";
-import { promoActive } from "@/lib/promo-nights";
+import { promoActive, promoCheapestNight } from "@/lib/promo-nights";
 
 type HeroProps = {
   locale: Locale;
@@ -91,10 +91,15 @@ export function Hero({ locale, pricing }: HeroProps) {
   const showPromo = promoActive();
   const heroPromo = {
     title: { ru: "Третья ночь в подарок", uz: "Uchinchi kecha sovg'a", en: "Third night free" }[locale],
+    /*
+     * «Ночь от 1 000 000 сум» — формулировка самого оператора: так он продаёт
+     * акцию в рекламе. Цифра считается из тарифа (две ночи из трёх), а не
+     * вписана текстом: поменяется цена — поменяется и подпись.
+     */
     hint: {
-      ru: "Оплачиваете 2 ночи · только будни",
-      uz: "2 kecha uchun to'laysiz · faqat ish kunlari",
-      en: "Pay for 2 nights · weekdays only",
+      ru: `Ночь от ${money(promoCheapestNight())} сум · будни`,
+      uz: `Kecha ${money(promoCheapestNight())} so'mdan · ish kunlari`,
+      en: `A night from ${money(promoCheapestNight())} UZS · weekdays`,
     }[locale],
     slug: lead.slug,
   };

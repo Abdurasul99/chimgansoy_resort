@@ -95,3 +95,38 @@ export function promoHint(checkin: string, checkout: string, today = todayTashke
   if (nights <= 3) return { kind: "explain" };
   return null;
 }
+
+/**
+ * Расчёт «2+1» по каждому домику — то, что оператор объясняет гостям словами:
+ * «1 ночь = 1 500 000, 3 ночи = 3 000 000, значит ночь выходит 1 000 000».
+ *
+ * Считается из суммы выгоды в promotions.ts: выгода и есть цена одной ночи,
+ * потому что бесплатной становится ровно одна. Цифр в тексте нет — поменяется
+ * тариф, поменяется и расчёт.
+ */
+export type PromoRow = {
+  label: { ru: string; uz: string; en: string };
+  /** Цена одной ночи в будни. */
+  night: number;
+  /** Сколько платит гость за три ночи по акции. */
+  total: number;
+  /** Сколько выходит за ночь, если разделить на три. */
+  perNight: number;
+};
+
+export function promoBreakdown(): PromoRow[] {
+  return (promo?.savings ?? []).map((s) => ({
+    label: s.label,
+    night: s.amount,
+    total: s.amount * 2,
+    // Округляем до тысячи: 3 000 000 / 3 делится ровно, но тариф может
+    // смениться на число, которое не делится.
+    perNight: Math.round((s.amount * 2) / 3 / 1000) * 1000,
+  }));
+}
+
+/** Самая низкая цена ночи по акции — крючок для первого экрана. */
+export function promoCheapestNight(): number {
+  const rows = promoBreakdown();
+  return rows.length ? Math.min(...rows.map((r) => r.perNight)) : 0;
+}

@@ -21,6 +21,12 @@ export type Promotion = {
   /** Условия — то, из-за чего на ресепшене спорят, если о них умолчать. */
   terms: LocalizedList;
   /**
+   * «Как это работает» — по шагам, словами оператора. Гость читает условия и
+   * не может представить, что именно получит; расписание по дням отвечает
+   * на это раньше, чем он возьмёт телефон.
+   */
+  howItWorks?: { title: LocalizedString; lines: LocalizedList };
+  /**
    * Последний день действия, включительно (ISO). Без него акция висела бы
    * на сайте и первого октября — и гость приехал бы за скидкой, которой уже
    * нет. Проверку делает src/lib/promo-nights.ts, она же гасит подсказку в
@@ -52,16 +58,19 @@ export const promotions: Promotion[] = [
       ru: [
         "Заезд с понедельника по четверг, выезд не позже пятницы",
         "Действует до 30 сентября 2026 года",
+        "Завтраки включены",
         "Не суммируется с тарифом «Всё включено»",
       ],
       uz: [
         "Kirish dushanbadan payshanbagacha, chiqish jumadan kechikmay",
         "2026-yil 30-sentabrgacha amal qiladi",
+        "Nonushta kiritilgan",
         "«Hammasi kiritilgan» tarifi bilan qo'shilmaydi",
       ],
       en: [
         "Arrive Monday to Thursday, depart no later than Friday",
         "Valid through 30 September 2026",
+        "Breakfast included",
         "Not combinable with the All-Inclusive rate",
       ],
     },
@@ -75,9 +84,32 @@ export const promotions: Promotion[] = [
       en: "The All-Inclusive rate",
     },
     description: {
-      ru: "Завтрак, обед и ужин по сет-меню. Обед подаётся уже после выезда, в 13:00, — можно не спешить домой голодными.",
-      uz: "Nonushta, tushlik va kechki ovqat set-menyu bo'yicha. Tushlik chiqishdan keyin, soat 13:00 da — och holda yo'lga chiqmaysiz.",
-      en: "Breakfast, lunch and dinner from our set menu. Lunch is served after check-out, at 13:00 — no need to leave hungry.",
+      ru: "Трёхразовое питание по сет-меню на каждый полный день проживания: завтрак, обед и ужин. Не нужно думать, что приготовить и где поесть.",
+      uz: "Har bir to'liq yashash kuni uchun set-menyu bo'yicha uch mahal ovqat: nonushta, tushlik va kechki ovqat. Nima pishirish va qayerda ovqatlanishni o'ylash shart emas.",
+      en: "Three meals from our set menu for every full day of your stay: breakfast, lunch and dinner. No need to think about cooking or where to eat.",
+    },
+    howItWorks: {
+      title: { ru: "Как это работает", uz: "Qanday ishlaydi", en: "How it works" },
+      lines: {
+        ru: [
+          "1 ночь: в день заезда — ужин, утром — завтрак",
+          "2 ночи и больше: в день заезда — ужин",
+          "каждый полный день — завтрак, обед и ужин",
+          "в день выезда — завтрак",
+        ],
+        uz: [
+          "1 kecha: kelgan kuni — kechki ovqat, ertalab — nonushta",
+          "2 kecha va undan ko'p: kelgan kuni — kechki ovqat",
+          "har bir to'liq kun — nonushta, tushlik va kechki ovqat",
+          "ketish kuni — nonushta",
+        ],
+        en: [
+          "1 night: dinner on arrival, breakfast the next morning",
+          "2 nights or more: dinner on arrival",
+          "every full day — breakfast, lunch and dinner",
+          "on the day you leave — breakfast",
+        ],
+      },
     },
     terms: {
       ru: [

@@ -1,5 +1,5 @@
 import { promotions } from "@/content/promotions";
-import { todayTashkent } from "@/lib/promo-nights";
+import { promoBreakdown, todayTashkent } from "@/lib/promo-nights";
 import { dictionaries } from "@/content/translations";
 import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
@@ -37,6 +37,12 @@ export function OffersSection({ locale }: Props) {
   const today = todayTashkent();
   const active = promotions.filter((p) => !p.until || today <= p.until);
   const [lead, ...rest] = active;
+  const rows = lead?.slug === "2plus1" ? promoBreakdown() : [];
+  const cols = {
+    ru: { how: "Как считается", one: "3 ночи без акции", three: "3 ночи по акции", per: "За ночь", note: "Суммы в сумах, будние дни. Завтраки включены." },
+    uz: { how: "Qanday hisoblanadi", one: "3 kecha aksiyasiz", three: "3 kecha aksiyada", per: "Kechasi", note: "Summalar so'mda, ish kunlari. Nonushta kiritilgan." },
+    en: { how: "How it adds up", one: "3 nights, no offer", three: "3 nights, offer", per: "Per night", note: "UZS, weekdays. Breakfast included." },
+  }[locale];
 
   const href = (slug: string) =>
     `${localizePath(locale, "/bron")}?utm_source=site&utm_medium=offers&utm_content=${slug}`;
@@ -70,30 +76,43 @@ export function OffersSection({ locale }: Props) {
               {text(lead.description, locale)}
             </p>
 
-            {lead.savings ? (
-              <div className="mt-5 max-w-sm">
+            {/*
+                Расчёт «2+1» — так, как его объясняет гостям оператор: сколько
+                стоит ночь, сколько три ночи по акции и во что это выходит за
+                ночь. «Ночь в Чимгане за 1 000 000» — это и есть предложение, и
+                гость должен увидеть, откуда оно берётся, а не поверить на слово.
+                Цифры считаются из тарифа в promotions.ts, в тексте их нет.
+            */}
+            {rows.length ? (
+              <div className="mt-5 overflow-x-auto">
                 <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--muted)]">
-                  {dict.home.offersSaving}
+                  {cols.how}
                 </p>
-                <dl className="mt-2">
-                  {lead.savings.map((s) => (
-                    <div
-                      key={text(s.label, "ru")}
-                      className="flex items-baseline justify-between gap-4 border-b border-dashed border-[color:var(--line)] py-1.5 last:border-b-0"
-                    >
-                      <dt className="text-sm text-[var(--ink)]">{text(s.label, locale)}</dt>
-                      {/* «от», потому что выгода зависит от тарифа даты: в
-                          выходные ночь дороже будней, точного числа нет. */}
-                      <dd className="text-lg font-bold tabular-nums text-[var(--accent)]">
-                        <span className="text-[11px] font-semibold opacity-70">
-                          {dict.from}{" "}
-                        </span>
-                        {money(s.amount)}
-                        <span className="text-[11px] font-semibold opacity-70">{" "}{text(priceLabels.currencyShort, locale)}</span>
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
+                <table className="mt-2 w-full min-w-[22rem] max-w-xl text-left text-sm">
+                  <thead>
+                    <tr className="text-[11px] uppercase tracking-wider text-[var(--muted)]">
+                      <th className="py-1.5 font-semibold" />
+                      <th className="py-1.5 text-right font-semibold">{cols.one}</th>
+                      <th className="py-1.5 text-right font-semibold">{cols.three}</th>
+                      <th className="py-1.5 text-right font-semibold">{cols.per}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.map((r) => (
+                      <tr key={r.label.ru} className="border-t border-dashed border-[color:var(--line)]">
+                        <td className="py-2 text-[var(--ink)]">{text(r.label, locale)}</td>
+                        <td className="py-2 text-right tabular-nums text-[var(--muted)] line-through decoration-[var(--muted)]/50">
+                          {money(r.night * 3)}
+                        </td>
+                        <td className="py-2 text-right font-semibold tabular-nums text-[var(--ink)]">{money(r.total)}</td>
+                        <td className="py-2 text-right text-lg font-bold tabular-nums text-[var(--accent)]">
+                          {money(r.perNight)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p className="mt-1.5 text-[11px] text-[var(--muted)]">{cols.note}</p>
               </div>
             ) : null}
 
@@ -120,6 +139,18 @@ export function OffersSection({ locale }: Props) {
               <p className="mt-3 text-[14.5px] leading-6 text-[var(--muted)]">
                 {text(promo.description, locale)}
               </p>
+              {promo.howItWorks ? (
+                <div className="mt-4 rounded-2xl bg-[var(--surface-warm)] px-4 py-3">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--muted)]">
+                    {text(promo.howItWorks.title, locale)}
+                  </p>
+                  <ul className="mt-1.5 space-y-1 text-[13.5px] leading-5 text-[var(--ink)]">
+                    {list(promo.howItWorks.lines, locale).map((l) => (
+                      <li key={l}>{l}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
               <ul className="mt-auto pt-5 text-[12.5px] leading-6 text-[var(--muted)]">
                 {list(promo.terms, locale).map((t) => (
                   <li key={t}>· {t}</li>

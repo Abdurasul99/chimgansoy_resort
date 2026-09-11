@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { promotions } from "@/content/promotions";
-import { nightsBetween, promoActive, promoHint, rangeQualifies } from "@/lib/promo-nights";
+import { nightsBetween, promoActive, promoBreakdown, promoCheapestNight, promoHint, rangeQualifies } from "@/lib/promo-nights";
 
 /**
  * Акция «2+1» на конкретных датах.
@@ -86,5 +86,36 @@ describe("акция исчезает сама", () => {
     const promo = promotions.find((p) => p.slug === "2plus1")!;
     expect(promo.terms.ru.join(" ")).toContain("30 сентября");
     expect(promo.terms.en.join(" ")).toContain("30 September");
+  });
+});
+
+describe("расчёт «2+1» — как его объясняет оператор", () => {
+  it("глэмпинг: 3 ночи за 3 000 000, то есть 1 000 000 за ночь", () => {
+    const g = promoBreakdown().find((r) => r.label.ru === "Глэмпинг")!;
+    expect(g.night).toBe(1_500_000);
+    expect(g.total).toBe(3_000_000);
+    expect(g.perNight).toBe(1_000_000);
+  });
+
+  it("шале: 3 ночи за 6 000 000, то есть 2 000 000 за ночь", () => {
+    const c = promoBreakdown().find((r) => r.label.ru === "Шале")!;
+    expect(c.night).toBe(3_000_000);
+    expect(c.total).toBe(6_000_000);
+    expect(c.perNight).toBe(2_000_000);
+  });
+
+  it("на первый экран идёт самая дешёвая ночь — 1 000 000", () => {
+    expect(promoCheapestNight()).toBe(1_000_000);
+  });
+});
+
+describe("«Всё включено» — питание по дням", () => {
+  it("расписание есть, и обеда после выезда в нём нет", () => {
+    // Прежний макет обещал обед в 13:00 после выезда. Оператор 11.09.2026
+    // расписал питание заново: в день выезда только завтрак.
+    const ai = promotions.find((p) => p.slug === "all-inclusive")!;
+    const lines = ai.howItWorks!.lines.ru.join(" ");
+    expect(lines).toContain("в день выезда — завтрак");
+    expect(JSON.stringify(ai)).not.toContain("13:00");
   });
 });
