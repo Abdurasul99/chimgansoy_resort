@@ -102,9 +102,9 @@ export function Hero({ locale, pricing }: HeroProps) {
   const promoRow = promoBreakdown()[0];
   const promoNote = promoRow
     ? {
-        ru: `Заезд в понедельник или вторник · 3 ночи на двоих — ${money(promoRow.total)} сум`,
-        uz: `Kirish dushanba yoki seshanba · 2 kishiga 3 kecha — ${money(promoRow.total)} so'm`,
-        en: `Arrive Monday or Tuesday · 3 nights for two — ${money(promoRow.total)} UZS`,
+        ru: `Заезд Пн или Вт · 3 ночи на двоих — ${money(promoRow.total)} сум`,
+        uz: `Kirish Du yoki Se · 2 kishiga 3 kecha — ${money(promoRow.total)} so'm`,
+        en: `Mon or Tue arrival · 3 nights for two — ${money(promoRow.total)} UZS`,
       }[locale]
     : "";
   const heroPromo = {
@@ -292,7 +292,7 @@ export function Hero({ locale, pricing }: HeroProps) {
             {showPromo && promoNote && (
               <p
                 data-hero-promo-note
-                className="mb-3 -mt-1.5 px-1 text-[0.72rem] font-semibold leading-snug text-white/70 sm:text-[0.8rem]"
+                className="mb-3 -mt-1.5 px-1 text-[0.72rem] font-semibold leading-snug text-white/85 [text-shadow:0_1px_3px_rgba(0,0,0,0.55)] sm:text-[0.8rem]"
               >
                 {promoNote}
               </p>
