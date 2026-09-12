@@ -253,14 +253,6 @@ export function Hero({ locale, pricing }: HeroProps) {
                 </span>
               </a>
             )}
-            {showPromo && promoNote && (
-              <p
-                data-hero-promo-note
-                className="mb-3 -mt-1.5 px-1 text-[0.72rem] font-semibold leading-snug text-white/70 sm:text-[0.8rem]"
-              >
-                {promoNote}
-              </p>
-            )}
 
             {/*
                 Акция на первом экране — в той позиции, где стояла золотая
@@ -296,6 +288,14 @@ export function Hero({ locale, pricing }: HeroProps) {
                 →
               </span>
             </a>
+            )}
+            {showPromo && promoNote && (
+              <p
+                data-hero-promo-note
+                className="mb-3 -mt-1.5 px-1 text-[0.72rem] font-semibold leading-snug text-white/70 sm:text-[0.8rem]"
+              >
+                {promoNote}
+              </p>
             )}
 
             {/* Topchan and tubing, side by side under the pool. Glass over the
