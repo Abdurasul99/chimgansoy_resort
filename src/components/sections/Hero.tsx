@@ -10,7 +10,7 @@ import { HeroScrollCue } from "@/components/ui/HeroScrollCue";
 import { Icon } from "@/components/ui/Icon";
 import { poolClosure } from "@/content/pool-closure";
 import { promotions } from "@/content/promotions";
-import { promoActive, promoCheapestNight } from "@/lib/promo-nights";
+import { promoActive, promoBreakdown, promoCheapestNight } from "@/lib/promo-nights";
 
 type HeroProps = {
   locale: Locale;
@@ -89,6 +89,24 @@ export function Hero({ locale, pricing }: HeroProps) {
   const lead = promotions[0];
   // Карточка живёт ровно столько, сколько сама акция.
   const showPromo = promoActive();
+  /**
+   * Условие под карточкой: заезд только в понедельник или вторник.
+   *
+   * Из правил «заезд Пн–Чт, выезд не позже пятницы» на три ночи выходит ровно
+   * два варианта — Пн→Чт и Вт→Пт. Оператор так и объявляет акцию, и гость
+   * должен увидеть это до того, как откроет календарь и выберет четверг.
+   *
+   * Цена — трёх ночей глэмпинга на двоих, из того же расчёта, что и таблица
+   * в секции акций. Числа в тексте нет.
+   */
+  const promoRow = promoBreakdown()[0];
+  const promoNote = promoRow
+    ? {
+        ru: `Заезд в понедельник или вторник · 3 ночи на двоих — ${money(promoRow.total)} сум`,
+        uz: `Kirish dushanba yoki seshanba · 2 kishiga 3 kecha — ${money(promoRow.total)} so'm`,
+        en: `Arrive Monday or Tuesday · 3 nights for two — ${money(promoRow.total)} UZS`,
+      }[locale]
+    : "";
   const heroPromo = {
     title: { ru: "Третья ночь в подарок", uz: "Uchinchi kecha sovg'a", en: "Third night free" }[locale],
     /*
@@ -234,6 +252,14 @@ export function Hero({ locale, pricing }: HeroProps) {
                   →
                 </span>
               </a>
+            )}
+            {showPromo && promoNote && (
+              <p
+                data-hero-promo-note
+                className="mb-3 -mt-1.5 px-1 text-[0.72rem] font-semibold leading-snug text-white/70 sm:text-[0.8rem]"
+              >
+                {promoNote}
+              </p>
             )}
 
             {/*

@@ -45,9 +45,9 @@ export const promotions: Promotion[] = [
       en: "2+1 — third night free",
     },
     description: {
-      ru: "Оплачиваете две ночи, третью получаете бесплатно — ночь в Чимгане выходит от 1 000 000 сум. Заезд в понедельник ➔ выезд в четверг (3 ночи). Заезд во вторник ➔ выезд в пятницу (3 ночи).",
-      uz: "Ikki kecha uchun to'laysiz, uchinchisi bepul — Chimgandagi tun 1 000 000 so'mdan boshlanadi. Kirish dushanba ➔ chiqish chorshanba (3 kecha). Kirish seshanba ➔ chiqish juma (3 kecha).",
-      en: "Pay for two nights, get the third free — a night in Chimgan starts from 1,000,000 UZS. Monday arrival ➔ Thursday departure (3 nights). Tuesday arrival ➔ Friday departure (3 nights).",
+      ru: "Оплачиваете две ночи, третью получаете бесплатно. Заезд в понедельник или во вторник — три ночи в горах без спешки.",
+      uz: "Ikki kecha uchun to'laysiz, uchinchisi bepul. Kirish dushanba yoki seshanba — tog'larda shoshilmasdan uch kecha.",
+      en: "Pay for two nights, get the third free. Arrive Monday or Tuesday — three unhurried nights in the mountains.",
     },
     savings: [
       { label: { ru: "Глэмпинг", uz: "Glemping", en: "Glamping" }, amount: 1_500_000 },
@@ -60,13 +60,15 @@ export const promotions: Promotion[] = [
         "Заезд во вторник ➔ выезд в пятницу (3 ночи)",
         "Действует до 30 сентября 2026 года",
         "Завтраки включены",
+        "Гости сверх двоих — по тарифу за каждую ночь",
         "Не суммируется с тарифом «Всё включено»",
       ],
       uz: [
-        "Kirish dushanba ➔ chiqish chorshanba (3 kecha)",
+        "Kirish dushanba ➔ chiqish payshanba (3 kecha)",
         "Kirish seshanba ➔ chiqish juma (3 kecha)",
         "2026-yil 30-sentabrgacha amal qiladi",
         "Nonushta kiritilgan",
+        "Ikki kishidan ortiq mehmonlar — har bir kecha uchun tarif bo'yicha",
         "«Hammasi kiritilgan» tarifi bilan qo'shilmaydi",
       ],
       en: [
@@ -74,6 +76,7 @@ export const promotions: Promotion[] = [
         "Tuesday arrival ➔ Friday departure (3 nights)",
         "Valid through 30 September 2026",
         "Breakfast included",
+        "Guests beyond two are charged per night at the standard rate",
         "Not combinable with the All-Inclusive rate",
       ],
     },
