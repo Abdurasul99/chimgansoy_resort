@@ -50,19 +50,29 @@ export function nextDay(iso: string): string {
 /**
  * Попадает ли отрезок под условия акции.
  *
- * Проверяем именно выезд, а не только длину: заезд в четверг на три ночи даёт
- * выезд в воскресенье — это уже выходные, и акция не действует, хотя ночей
- * ровно три.
+ * Оператор уточнил правило: акция действует только на 3 ночи в строгих схемах:
+ * - Понедельник → Четверг
+ * - Вторник → Пятница
+ *
+ * Проверяем именно сочетание заезда/выезда, а не просто «три ночи».
  */
 export function rangeQualifies(checkin: string, checkout: string, today = todayTashkent()): boolean {
   if (!promoActive(today)) return false;
   if (!checkin || !checkout) return false;
   if (checkout > promoLastDay()) return false;
+
   const inDay = day(checkin);
   const outDay = day(checkout);
-  if (inDay < 1 || inDay > 4) return false; // заезд Пн–Чт
-  if (outDay < 2 || outDay > 5) return false; // выезд Вт–Пт
-  return true;
+  const nights = nightsBetween(checkin, checkout);
+
+  if (nights !== 3) return false;
+
+  const validPairs = new Set([
+    "1-4", // Пн → Чт
+    "2-5", // Вт → Пт
+  ]);
+
+  return validPairs.has(`${inDay}-${outDay}`);
 }
 
 export type PromoHint =

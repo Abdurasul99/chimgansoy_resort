@@ -45,9 +45,9 @@ export const promotions: Promotion[] = [
       en: "2+1 — third night free",
     },
     description: {
-      ru: "Оплачиваете две ночи, третью получаете бесплатно. Больше времени в горах без спешки.",
-      uz: "Ikki kecha uchun to'laysiz, uchinchisi bepul. Tog'larda shoshilmasdan ko'proq vaqt.",
-      en: "Pay for two nights, get the third free. More time in the mountains, unhurried.",
+      ru: "Оплачиваете две ночи, третью получаете бесплатно — ночь в Чимгане выходит от 1 000 000 сум. Заезд в понедельник ➔ выезд в четверг (3 ночи). Заезд во вторник ➔ выезд в пятницу (3 ночи).",
+      uz: "Ikki kecha uchun to'laysiz, uchinchisi bepul — Chimgandagi tun 1 000 000 so'mdan boshlanadi. Kirish dushanba ➔ chiqish chorshanba (3 kecha). Kirish seshanba ➔ chiqish juma (3 kecha).",
+      en: "Pay for two nights, get the third free — a night in Chimgan starts from 1,000,000 UZS. Monday arrival ➔ Thursday departure (3 nights). Tuesday arrival ➔ Friday departure (3 nights).",
     },
     savings: [
       { label: { ru: "Глэмпинг", uz: "Glemping", en: "Glamping" }, amount: 1_500_000 },
@@ -56,19 +56,22 @@ export const promotions: Promotion[] = [
     until: "2026-09-30",
     terms: {
       ru: [
-        "Заезд с понедельника по четверг, выезд не позже пятницы",
+        "Заезд в понедельник ➔ выезд в четверг (3 ночи)",
+        "Заезд во вторник ➔ выезд в пятницу (3 ночи)",
         "Действует до 30 сентября 2026 года",
         "Завтраки включены",
         "Не суммируется с тарифом «Всё включено»",
       ],
       uz: [
-        "Kirish dushanbadan payshanbagacha, chiqish jumadan kechikmay",
+        "Kirish dushanba ➔ chiqish chorshanba (3 kecha)",
+        "Kirish seshanba ➔ chiqish juma (3 kecha)",
         "2026-yil 30-sentabrgacha amal qiladi",
         "Nonushta kiritilgan",
         "«Hammasi kiritilgan» tarifi bilan qo'shilmaydi",
       ],
       en: [
-        "Arrive Monday to Thursday, depart no later than Friday",
+        "Monday arrival ➔ Thursday departure (3 nights)",
+        "Tuesday arrival ➔ Friday departure (3 nights)",
         "Valid through 30 September 2026",
         "Breakfast included",
         "Not combinable with the All-Inclusive rate",
