@@ -83,7 +83,7 @@ export const promotions: Promotion[] = [
   },
   {
     slug: "all-inclusive",
-    badge: { ru: "Пн–Пт", uz: "Du–Ju", en: "Mon–Fri" },
+    badge: { ru: "Пн–Чт", uz: "Du–Pay", en: "Mon–Thu" },
     title: {
       ru: "Тариф «Всё включено»",
       uz: "«Hammasi kiritilgan» tarifi",
@@ -120,17 +120,17 @@ export const promotions: Promotion[] = [
     terms: {
       ru: [
         "Блюда по расписанию в ресторане или с доставкой в домик",
-        "Только будни, с понедельника по пятницу",
+        "Заезд с понедельника по четверг",
         "Не суммируется с акцией «2+1»",
       ],
       uz: [
         "Taomlar jadval bo'yicha restoranda yoki uyga yetkazib beriladi",
-        "Faqat ish kunlari, dushanbadan jumagacha",
+        "Kirish dushanbadan payshanbagacha",
         "«2+1» aksiyasi bilan qo'shilmaydi",
       ],
       en: [
         "Meals on schedule in the restaurant or delivered to your cabin",
-        "Weekdays only, Monday to Friday",
+        "Arrive Monday to Thursday",
         "Not combinable with the 2+1 offer",
       ],
     },
