@@ -1,4 +1,4 @@
-import { neon } from "@neondatabase/serverless";
+import { sqlClient } from "@/lib/sql-client";
 
 /**
  * Доступ к базе мини-PMS.
@@ -10,8 +10,11 @@ import { neon } from "@neondatabase/serverless";
  * идут ПОСЛЕ доставки, а не вместо неё.
  *
  * Пул (DATABASE_URL), а не прямое соединение: приложение живёт короткими
- * запросами из serverless-функций, и открывать под каждый своё соединение
- * Neon не даст. Прямое нужно только миграциям — см. scripts/db-migrate.mjs.
+ * запросами, и открывать под каждый своё соединение — заново платить за
+ * рукопожатие. Прямое нужно только миграциям — см. scripts/db-migrate.mjs.
+ *
+ * База с 15.09.2026 живёт на том же сервере, что и сайт; транспорт — в
+ * src/lib/sql-client.ts.
  */
 function client() {
   const url = process.env.DATABASE_URL?.trim();
@@ -19,7 +22,7 @@ function client() {
     console.error("[db] DATABASE_URL не задан — запись пропущена");
     return null;
   }
-  return neon(url);
+  return sqlClient(url);
 }
 
 /** Одинаковый для броней и услуг: панель показывает их в одной логике. */

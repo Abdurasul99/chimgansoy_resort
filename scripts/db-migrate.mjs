@@ -5,10 +5,10 @@
  * ломает и не теряет — это важнее краткости, потому что запускать её будут
  * руками и, скорее всего, не один раз.
  *
- * Соединение — прямое (UNPOOLED): pgbouncer не пропускает DDL в транзакции.
+ * Соединение — прямое (UNPOOLED): пул соединений не пропускает DDL в транзакции.
  */
 import { readFileSync } from "node:fs";
-import { neon } from "@neondatabase/serverless";
+import pg from "pg";
 
 const env = Object.fromEntries(
   readFileSync(new URL("../.env.local", import.meta.url), "utf8")
@@ -19,7 +19,9 @@ const env = Object.fromEntries(
 
 const url = env.DATABASE_URL_UNPOOLED || env.DATABASE_URL;
 if (!url) throw new Error("В .env.local нет DATABASE_URL");
-const sql = neon(url);
+const pool = new pg.Pool({ connectionString: url });
+// Форма ответа как у прежнего драйвера Neon: массив строк, а не { rows }.
+const sql = { query: async (text, params) => (await pool.query(text, params)).rows };
 
 /**
  * Единицы: 10 глэмпингов, 10 шале и 12 бунгало у бассейна.
@@ -160,3 +162,5 @@ const tables = await sql.query(
 );
 console.log(`\nединиц размещения: ${count}`);
 console.log(`таблицы: ${tables.map((t) => t.table_name).join(", ")}`);
+
+await pool.end();

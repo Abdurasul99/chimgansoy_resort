@@ -1,4 +1,4 @@
-import { neon } from "@neondatabase/serverless";
+import { sqlClient } from "@/lib/sql-client";
 import { requestsBetween, type StoredRequest } from "@/lib/requests-store";
 
 /**
@@ -18,7 +18,7 @@ import { requestsBetween, type StoredRequest } from "@/lib/requests-store";
 function db() {
   const url = process.env.DATABASE_URL?.trim();
   if (!url) throw new Error("DATABASE_URL не задан");
-  return neon(url);
+  return sqlClient(url);
 }
 
 export type ImportResult = { bookings: number; services: number; skipped: number; total: number };

@@ -1,4 +1,4 @@
-import { neon } from "@neondatabase/serverless";
+import { sqlClient } from "@/lib/sql-client";
 import type { PmsStatus } from "@/lib/db";
 
 /**
@@ -12,7 +12,7 @@ import type { PmsStatus } from "@/lib/db";
 function sql() {
   const url = process.env.DATABASE_URL?.trim();
   if (!url) throw new Error("DATABASE_URL не задан");
-  return neon(url);
+  return sqlClient(url);
 }
 
 export const STATUS_LABEL: Record<PmsStatus, string> = {
