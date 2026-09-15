@@ -17,7 +17,6 @@
     "test:e2e:desktop": "playwright test --project=desktop"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^1.1.0",
     "@types/pg": "^8.23.1",
     "@vercel/blob": "^2.6.1",
     "framer-motion": "^12.40.0",
