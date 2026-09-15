@@ -20,14 +20,30 @@
  * ffmpeg-static is installed with --no-save on purpose: it is a ~40 MB binary
  * needed for one manual step, and putting it in package.json would download it
  * on every CI install and every Vercel build for the rest of the site's life.
- * It reads BLOB_READ_WRITE_TOKEN from .env.local and uploads the results.
+ * It reads BLOB_READY_DIR from .env.local and uploads the results.
  */
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const { execFileSync } = require("child_process");
 const ffmpeg = require("ffmpeg-static");
-const { put } = require("@vercel/blob");
+/**
+ * Раньше здесь была загрузка в Vercel Blob. С 15.09.2026 файлы живут на своём
+ * сервере, и класть их туда из скрипта на рабочей машине нечем — да и незачем:
+ * кодирование и доставка это разные шаги, и смешивать их значит гонять сотню
+ * мегабайт заново при каждой опечатке в параметрах ffmpeg.
+ *
+ * Поэтому put() складывает готовое в одну папку и возвращает адрес, по
+ * которому файл будет доступен ПОСЛЕ отправки на сервер. Команда отправки —
+ * в конце вывода.
+ */
+const READY = path.join(process.env.TEMP || ".", "chimgan-blob-ready", "video");
+async function put(name, data) {
+  const base = name.replace(/^video\//, "");
+  fs.mkdirSync(READY, { recursive: true });
+  fs.writeFileSync(path.join(READY, base), data);
+  return { url: `/blob/video/${base}`, pathname: name };
+}
 
 const BASE = "https://rxblzbvichchznop.public.blob.vercel-storage.com/video";
 const KEYS = ["tubing-1", "tubing-2", "tubing-3", "tubing-4", "tubing-5"];
@@ -52,11 +68,7 @@ async function download(url, dst) {
 
 (async () => {
   loadEnv();
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    console.error("BLOB_READ_WRITE_TOKEN missing — cannot upload");
-    process.exit(1);
-  }
-  fs.mkdirSync(WORK, { recursive: true });
+    fs.mkdirSync(WORK, { recursive: true });
 
   for (const key of KEYS) {
     const src = path.join(WORK, `${key}.mp4`);
@@ -93,7 +105,7 @@ async function download(url, dst) {
       contentType: "video/mp4",
       addRandomSuffix: false,
       allowOverwrite: true,
-      token: process.env.BLOB_READ_WRITE_TOKEN,
+      token: process.env.BLOB_READY_DIR,
     });
     console.log(`${key}-preview.mp4  ${String(kb).padStart(5)} KB  ->  ${blob.url}`);
   }

@@ -17,12 +17,28 @@
  *
  *   & 'C:\Program Files\nodejs\node.exe' .\scripts\encode-chalet-video.js
  *
- * Needs BLOB_READ_WRITE_TOKEN in the environment (pull it with `vercel env pull`).
+ * Needs BLOB_READY_DIR in the environment (pull it with `vercel env pull`).
  */
 const { execFileSync } = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
-const { put } = require("@vercel/blob");
+/**
+ * Раньше здесь была загрузка в Vercel Blob. С 15.09.2026 файлы живут на своём
+ * сервере, и класть их туда из скрипта на рабочей машине нечем — да и незачем:
+ * кодирование и доставка это разные шаги, и смешивать их значит гонять сотню
+ * мегабайт заново при каждой опечатке в параметрах ffmpeg.
+ *
+ * Поэтому put() складывает готовое в одну папку и возвращает адрес, по
+ * которому файл будет доступен ПОСЛЕ отправки на сервер. Команда отправки —
+ * в конце вывода.
+ */
+const READY = path.join(process.env.TEMP || ".", "chimgan-blob-ready", "video");
+async function put(name, data) {
+  const base = name.replace(/^video\//, "");
+  fs.mkdirSync(READY, { recursive: true });
+  fs.writeFileSync(path.join(READY, base), data);
+  return { url: `/blob/video/${base}`, pathname: name };
+}
 
 const FFMPEG = path.join(__dirname, "..", "node_modules", "ffmpeg-static", "ffmpeg.exe");
 const SRC = "C:/Users/Abdurasul/Downloads/Telegram Desktop/Shale (2).mp4";
@@ -64,12 +80,7 @@ const mb = (f) => (fs.statSync(f).size / 1048576).toFixed(1) + " MB";
 
   for (const f of [full, preview, poster]) console.log(`  ${path.basename(f).padEnd(26)} ${mb(f)}`);
 
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    console.log("\nBLOB_READ_WRITE_TOKEN not set — files written locally, nothing uploaded.");
-    console.log(OUT);
-    return;
-  }
-
+  
   console.log("\nuploading…");
   for (const f of [full, preview, poster]) {
     const name = path.basename(f);
@@ -81,4 +92,7 @@ const mb = (f) => (fs.statSync(f).size / 1048576).toFixed(1) + " MB";
     });
     console.log(`  ${name.padEnd(26)} ${res.url}`);
   }
+  console.log("");
+  console.log("Готово. Отправьте на сервер:");
+  console.log(`  scp ${READY}/* root@5.189.150.167:/var/lib/chimgan-blob/video/`);
 })();

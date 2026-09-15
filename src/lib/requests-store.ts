@@ -17,7 +17,7 @@
  * booked.
  */
 
-import { list, put } from "@vercel/blob";
+import { list, put } from "@/lib/blob-store";
 
 /**
  * Which form the request came from.

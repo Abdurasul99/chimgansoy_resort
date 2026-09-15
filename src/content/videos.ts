@@ -5,7 +5,8 @@ import type { LocalizedString } from "./types";
  *
  * The source clips were 4K HEVC in a .MOV container — which plays on Safari
  * and nowhere else that matters — so they are transcoded to H.264 720×1280 MP4
- * with a poster frame each, and served from Vercel Blob rather than the repo.
+ * with a poster frame each, and served from the server's own store rather
+ * than the repo.
  *
  * CAPTIONS DESCRIBE WHAT IS ACTUALLY IN EACH CLIP. Four of the five are the
  * pool, the cabins and the bungalows; only `tubing-4` is the slide itself.
@@ -13,7 +14,10 @@ import type { LocalizedString } from "./types";
  * registry already had to be rescued from.
  */
 
-const BASE = "https://rxblzbvichchznop.public.blob.vercel-storage.com/video";
+// Путь, а не полный адрес: файлы отдаёт тот же домен, что и страницу, и
+// видео одинаково работает на обоих (сайт и панель). До 15.09.2026 здесь был
+// адрес Vercel Blob — хранилище переехало на диск сервера.
+const BASE = "/blob/video";
 
 export type VideoClip = {
   key: string;

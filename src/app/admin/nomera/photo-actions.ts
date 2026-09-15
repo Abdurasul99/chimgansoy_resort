@@ -1,6 +1,6 @@
 "use server";
 
-import { put, del } from "@vercel/blob";
+import { put, del } from "@/lib/blob-store";
 import { revalidatePath } from "next/cache";
 import sharp from "sharp";
 import { requireAdmin } from "@/lib/admin-auth";

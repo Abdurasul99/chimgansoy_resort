@@ -48,7 +48,15 @@ function frameFor(service: LiveService, locale: Locale) {
     return { frame: image, alt: text(image.alt, locale) };
   }
 
-  if (key && /^https:\/\/[a-z0-9-]+\.public\.blob\.vercel-storage\.com\//.test(key)) {
+  // Картинка из нашего хранилища. С 15.09.2026 это путь /blob/ на своём
+  // сервере; прежние адреса Vercel Blob всё ещё встречаются в сохранённых
+  // данных оператора, поэтому принимаются оба, пока те не вымоются.
+  const ownStore =
+    !!key &&
+    (key.startsWith("/blob/") ||
+      (key.startsWith("https://") && key.includes(".public.blob.vercel-storage.com/")));
+
+  if (ownStore) {
     return { frame: { src: key }, alt: service.custom?.title ?? "" };
   }
 

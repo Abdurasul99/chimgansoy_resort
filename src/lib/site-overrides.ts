@@ -1,4 +1,4 @@
-import { head, put } from "@vercel/blob";
+import { head, put } from "@/lib/blob-store";
 import { unstable_cache, revalidateTag, updateTag } from "next/cache";
 
 /**
@@ -166,10 +166,34 @@ export type Overrides = {
   data: OverrideData;
 };
 
+/**
+ * Адрес ведёт в наше хранилище?
+ *
+ * Относительный путь и полный адрес на нашем домене — оба свои. Чужой хост
+ * отбрасывается: документ с картинкой на постороннем сервере — это чужой
+ * контроль над тем, что видит гость.
+ */
+function isOwnStoreUrl(url: string): boolean {
+  if (url.startsWith("/blob/")) return true;
+  try {
+    const u = new URL(url);
+    const allowed = ["chimgandarbaza.uz", "www.chimgandarbaza.uz", "chimgansoy.com", "127.0.0.1", "localhost"];
+    return allowed.includes(u.hostname) && u.pathname.startsWith("/blob/");
+  } catch {
+    return false;
+  }
+}
+
 export const EMPTY: OverrideData = { prices: {}, services: {}, customServices: [], rooms: {}, photos: [], news: [] };
 
+/**
+ * Хранилище теперь на диске сервера, отдельного ключа у него нет — поэтому
+ * проверять нечего и оно доступно всегда. Функция оставлена, чтобы места
+ * вызова не переписывать: если хранилище снова станет внешним, условие
+ * вернётся сюда, а не разойдётся по файлу.
+ */
 function configured(): boolean {
-  return Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
+  return true;
 }
 
 /**
@@ -312,9 +336,10 @@ export function coerce(raw: unknown): OverrideData {
           typeof p === "object" &&
           typeof p.id === "string" &&
           typeof p.url === "string" &&
-          // Only our own store: a URL from anywhere else would let a saved
-          // document point the site at someone else's server.
-          /^https:\/\/[a-z0-9-]+\.public\.blob\.vercel-storage\.com\//.test(p.url),
+          // Только наше хранилище: адрес откуда угодно ещё позволил бы
+          // сохранённому документу увести сайт на чужой сервер. С 15.09.2026
+          // файлы отдаёт наш же домен по пути /blob/, а не Vercel.
+          isOwnStoreUrl(p.url),
       )
     : [];
 
