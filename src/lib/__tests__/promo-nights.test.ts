@@ -76,24 +76,28 @@ describe("что показать гостю под датами", () => {
 });
 
 describe("акция исчезает сама", () => {
-  it("у «2+1» проставлен срок — иначе она висела бы вечно", () => {
-    const promo = promotions.find((p) => p.slug === "2plus1");
-    expect(promo?.until).toBe("2026-09-30");
+  it("сентябрьские условия гаснут вместе с месяцем", () => {
+    // «2+1» и «Всё включено» — условия сентября: питание получают те, кто
+    // заезжает в понедельник или вторник, и только до конца месяца. Даты нет —
+    // акция висит в октябре, и гость приезжает за тем, чего уже не дают.
+    for (const slug of ["2plus1", "all-inclusive"]) {
+      expect(promotions.find((p) => p.slug === slug)?.until).toBe("2026-09-30");
+    }
   });
 
-  it("бессрочные акции сроком не ограничены", () => {
-    // «Всё включено» и «Выходной без спешки» действуют, пока оператор не
-    // скажет иначе: у них until нет, и фильтр их не трогает.
-    const ongoing = promotions.filter((p) => p.slug !== "2plus1");
-    expect(ongoing.every((p) => !p.until)).toBe(true);
+  it("«Выходной без спешки» сроком не ограничен", () => {
+    // Он действует, пока оператор не скажет иначе: until нет, фильтр его не трогает.
+    expect(promotions.find((p) => p.slug === "slow-weekend")?.until).toBeUndefined();
   });
 
   it("срок указан и в условиях, которые читает гость", () => {
     // Дата в коде без даты в тексте — это скидка, которая пропадёт без
     // предупреждения.
-    const promo = promotions.find((p) => p.slug === "2plus1")!;
-    expect(promo.terms.ru.join(" ")).toContain("30 сентября");
-    expect(promo.terms.en.join(" ")).toContain("30 September");
+    for (const slug of ["2plus1", "all-inclusive"]) {
+      const promo = promotions.find((p) => p.slug === slug)!;
+      expect(promo.terms.ru.join(" ")).toContain("30 сентября");
+      expect(promo.terms.en.join(" ")).toContain("30 September");
+    }
   });
 });
 

@@ -83,7 +83,11 @@ export const promotions: Promotion[] = [
   },
   {
     slug: "all-inclusive",
-    badge: { ru: "Пн–Чт", uz: "Du–Pay", en: "Mon–Thu" },
+    // Сентябрьское условие: заезд по понедельникам и вторникам действует до
+    // конца месяца. Без этой даты акция висела бы и в октябре, а гость приехал
+    // бы за питанием, которого в тарифе уже нет.
+    until: "2026-09-30",
+    badge: { ru: "Пн и Вт", uz: "Du va Se", en: "Mon & Tue" },
     title: {
       ru: "Тариф «Всё включено»",
       uz: "«Hammasi kiritilgan» tarifi",
@@ -120,17 +124,20 @@ export const promotions: Promotion[] = [
     terms: {
       ru: [
         "Блюда по расписанию в ресторане или с доставкой в домик",
-        "Заезд с понедельника по четверг",
+        "Заезд в понедельник или вторник",
+        "Действует до 30 сентября 2026 года",
         "В акции «2+1» это питание уже входит",
       ],
       uz: [
         "Taomlar jadval bo'yicha restoranda yoki uyga yetkazib beriladi",
-        "Kirish dushanbadan payshanbagacha",
+        "Kirish dushanba yoki seshanba",
+        "2026-yil 30-sentabrgacha amal qiladi",
         "«2+1» aksiyasida bu ovqatlanish allaqachon kiritilgan",
       ],
       en: [
         "Meals on schedule in the restaurant or delivered to your cabin",
-        "Arrive Monday to Thursday",
+        "Arrive on Monday or Tuesday",
+        "Valid through 30 September 2026",
         "The 2+1 offer already includes these meals",
       ],
     },
