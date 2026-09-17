@@ -98,6 +98,10 @@ export function proxy(request: NextRequest) {
  * provisioned (it has an id), so the day anyone mounts <Analytics/> it would
  * have collected nothing and looked like a Vercel fault rather than ours.
  *
+ * `documents` — папка с PDF (сертификат): без исключения запрос за файлом
+ * получал 307 на /uz/documents/… и скачивание ломалось так же, как ломались
+ * бы картинки без своего исключения.
+ *
  * `admin` is NO LONGER excluded: the host split above has to see those requests
  * to answer 404 for them on the public domain. It is still never rewritten to a
  * locale — the branch above returns before the locale logic on the admin host,
@@ -105,6 +109,6 @@ export function proxy(request: NextRequest) {
  */
 export const config = {
   matcher: [
-    "/((?!_next|_vercel|api|favicon.ico|icon.svg|apple-icon.png|-/opengraph-image|opengraph-image|robots.txt|sitemap.xml|images|file.svg|globe.svg|next.svg|vercel.svg|window.svg|yandex_ba7cbd0977b91438.html).*)",
+    "/((?!_next|_vercel|api|favicon.ico|icon.svg|apple-icon.png|-/opengraph-image|opengraph-image|robots.txt|sitemap.xml|images|documents|file.svg|globe.svg|next.svg|vercel.svg|window.svg|yandex_ba7cbd0977b91438.html).*)",
   ],
 };
