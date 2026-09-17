@@ -84,6 +84,7 @@ const ALL_FOOTER = [
     title: { ru: "Информация", uz: "Ma'lumot", en: "Information" },
     links: [
       { href: "/legal/public-offer", label: { ru: "Публичная оферта", uz: "Ommaviy oferta", en: "Public offer" } },
+      { href: "/legal/sertifikat", label: { ru: "Сертификат соответствия", uz: "Muvofiqlik sertifikati", en: "Certificate of conformity" } },
       { href: "/legal/privacy-policy", label: { ru: "Политика конфиденциальности", uz: "Maxfiylik siyosati", en: "Privacy policy" } },
       { href: "/legal/payment-refund", label: { ru: "Возврат и отмена", uz: "Qaytarish va bekor qilish", en: "Refund & cancellation" } },
       { href: "/legal/how-to-get-there", label: { ru: "Как добраться", uz: "Qanday borish", en: "How to get there" } },

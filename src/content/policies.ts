@@ -3,6 +3,7 @@ import { legalPolicies } from "./policies-legal";
 import { amend } from "./policies-legal-amendments";
 import { poolRulesPolicy } from "./policies-pool";
 import { tubingLegalPolicy } from "./policies-tubing-legal";
+import { certificatePolicy } from "./policies-certificate";
 
 export type PolicyPage = {
   slug: string;
@@ -15,6 +16,24 @@ export type PolicyPage = {
     title: LocalizedString;
     items: LocalizedList;
   }[];
+  /**
+   * Приложенный документ — скан, который страница показывает и даёт скачать.
+   * Есть только у сертификата: остальные документы существуют как текст, и
+   * картинка вместо текста сделала бы их нечитаемыми для поиска и экранных
+   * читалок.
+   */
+  document?: {
+    /** PDF под кнопкой «скачать». */
+    file: string;
+    /** Картинка для показа на странице. */
+    preview: string;
+    /** Запасной формат для браузеров без webp. */
+    previewFallback?: string;
+    width: number;
+    height: number;
+    caption: LocalizedString;
+    download: LocalizedString;
+  };
 };
 
 export const policies: PolicyPage[] = [
@@ -126,4 +145,8 @@ export const policies: PolicyPage[] = [
   // Раздел про бассейн из того же документа, вынесенный отдельной страницей:
   // под ним гость ставит галочку в форме заявки.
   poolRulesPolicy,
+  // Сертификат Комитета по туризму: не текст правил, а скан выданного
+  // документа с реквизитами — стоит здесь же, потому что гость ищет его там,
+  // где остальные официальные бумаги.
+  certificatePolicy,
 ];

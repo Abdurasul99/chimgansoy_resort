@@ -50,6 +50,38 @@ export default async function LegalPage({ params }: PageProps) {
 
       <section className="px-4 py-14 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] p-6 shadow-[var(--shadow-card)] sm:p-8">
+          {policy.document && (
+            <figure className="mb-10">
+              {/*
+                Скан под <picture>, а не <Image>: файл лежит в public и не
+                нуждается в перегенерации, а запасной jpeg нужен ровно для тех
+                браузеров, где webp не открывается.
+
+                loading="lazy" сознательно НЕ ставится: на этой странице скан —
+                главное содержимое, ради него её и открывают.
+              */}
+              <picture>
+                {policy.document.previewFallback && (
+                  <source srcSet={policy.document.preview} type="image/webp" />
+                )}
+                <img
+                  src={policy.document.previewFallback ?? policy.document.preview}
+                  alt={text(policy.document.caption, locale)}
+                  width={policy.document.width}
+                  height={policy.document.height}
+                  className="w-full rounded-xl border border-[color:var(--line)] bg-white shadow-[var(--shadow-card)]"
+                />
+              </picture>
+              <figcaption className="mt-3 text-center text-xs leading-6 text-[var(--muted)]">
+                {text(policy.document.caption, locale)}
+              </figcaption>
+              <div className="mt-5 text-center">
+                <ButtonLink href={policy.document.file} variant="secondary" external>
+                  {text(policy.document.download, locale)}
+                </ButtonLink>
+              </div>
+            </figure>
+          )}
           {policy.sections.map((section, index) => (
             <section key={text(section.title, locale)} className={index === policy.sections.length - 1 ? "" : "mb-10"}>
               <h2 className="font-serif text-3xl font-semibold text-[var(--ink)]">{text(section.title, locale)}</h2>
