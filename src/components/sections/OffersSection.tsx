@@ -35,7 +35,9 @@ export function OffersSection({ locale }: Props) {
    * а не там, где сервер.
    */
   const today = todayTashkent();
-  const active = promotions.filter((p) => !p.until || today <= p.until);
+  const active = promotions.filter(
+    (p) => (!p.until || today <= p.until) && !p.hiddenOnSite,
+  );
   const [lead, ...rest] = active;
   const rows = lead?.slug === "2plus1" ? promoBreakdown() : [];
   const cols = {
