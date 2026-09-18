@@ -65,7 +65,7 @@ export const promotions: Promotion[] = [
     until: "2026-09-30",
     terms: {
       ru: [
-        "Действует только в будние дни: заезд с понедельника по четверг",
+        "Действует только в будние дни: заезд в понедельник или вторник",
         "Максимально поздний день выезда — пятница",
         "Заезд в понедельник ➔ выезд в четверг (3 ночи)",
         "Заезд во вторник ➔ выезд в пятницу (3 ночи)",
@@ -74,7 +74,7 @@ export const promotions: Promotion[] = [
         "Действует до 30 сентября 2026 года",
       ],
       uz: [
-        "Faqat ish kunlarida amal qiladi: kirish dushanbadan payshanbagacha",
+        "Faqat ish kunlarida amal qiladi: kirish dushanba yoki seshanba",
         "Chiqish mumkin bo'lgan eng so'nggi kun — juma",
         "Kirish dushanba ➔ chiqish payshanba (3 kecha)",
         "Kirish seshanba ➔ chiqish juma (3 kecha)",
@@ -83,7 +83,7 @@ export const promotions: Promotion[] = [
         "2026-yil 30-sentabrgacha amal qiladi",
       ],
       en: [
-        "Weekdays only: arrive Monday through Thursday",
+        "Weekdays only: arrive on Monday or Tuesday",
         "The latest possible departure day is Friday",
         "Monday arrival ➔ Thursday departure (3 nights)",
         "Tuesday arrival ➔ Friday departure (3 nights)",
