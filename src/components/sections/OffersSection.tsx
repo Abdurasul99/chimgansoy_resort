@@ -41,9 +41,9 @@ export function OffersSection({ locale }: Props) {
   const [lead, ...rest] = active;
   const rows = lead?.slug === "2plus1" ? promoBreakdown() : [];
   const cols = {
-    ru: { how: "Как считается", one: "3 ночи без акции", three: "3 ночи по акции", per: "За ночь", note: "Суммы в сумах, будние дни. Питание «Всё включено» входит." },
-    uz: { how: "Qanday hisoblanadi", one: "3 kecha aksiyasiz", three: "3 kecha aksiyada", per: "Kechasi", note: "Summalar so'mda, ish kunlari. «Hammasi kiritilgan» ovqatlanish kiradi." },
-    en: { how: "How it adds up", one: "3 nights, no offer", three: "3 nights, offer", per: "Per night", note: "UZS, weekdays. All-Inclusive meals are part of the offer." },
+    ru: { how: "Как считается", one: "3 ночи без акции", three: "3 ночи по акции", per: "За ночь", note: "Суммы в сумах, будние дни. Питание в акцию не входит." },
+    uz: { how: "Qanday hisoblanadi", one: "3 kecha aksiyasiz", three: "3 kecha aksiyada", per: "Kechasi", note: "Summalar so'mda, ish kunlari. Ovqatlanish aksiyaga kirmaydi." },
+    en: { how: "How it adds up", one: "3 nights, no offer", three: "3 nights, offer", per: "Per night", note: "UZS, weekdays. Meals are not part of the offer." },
   }[locale];
 
   const href = (slug: string) =>
