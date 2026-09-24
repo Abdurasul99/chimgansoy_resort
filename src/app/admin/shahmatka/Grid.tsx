@@ -175,7 +175,13 @@ export function Grid({
 
   const dayLabel = (d: string) => {
     const dt = new Date(`${d}T12:00:00`);
-    return { num: dt.getDate(), dow: dt.toLocaleDateString("ru-RU", { weekday: "short" }), weekend: [0, 5, 6].includes(dt.getDay()) };
+    return {
+      num: dt.getDate(),
+      dow: dt.toLocaleDateString("ru-RU", { weekday: "short" }),
+      // Выходные для проживания — ночи пт и сб: ночь на воскресенье с 24.09.2026
+      // стоит по будничной цене (stayNightBand в pricing.ts).
+      weekend: [5, 6].includes(dt.getDay()),
+    };
   };
 
   return (

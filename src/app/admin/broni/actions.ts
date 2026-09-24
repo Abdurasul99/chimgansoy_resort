@@ -156,7 +156,7 @@ export async function saveRate(_prev: BroniState, form: FormData): Promise<Broni
     fri: [5],
     sat: [6],
   };
-  if (!(scope in BANDS)) return { error: "Обновите страницу: список дней изменился." };
+  if (!Object.hasOwn(BANDS, scope)) return { error: "Обновите страницу: список дней изменился." };
   const dows = BANDS[scope];
 
   try {

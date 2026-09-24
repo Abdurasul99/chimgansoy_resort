@@ -35,7 +35,7 @@ export const TOPIC_LABEL: Record<Topic, string> = {
   directions: "как добраться, координаты, ссылки на карты",
   policy: "отмена, перенос, предоплата, депозит, животные",
   extras: "аренда мангала и казана, дрова, уголь, парковка",
-  rooms: "подробный состав шале и глэмпинга, что включено",
+  rooms: "подробный состав шале и глэмпинга, что включено, действующие акции и их сроки",
 };
 
 /** Pulls one titled block out of the full briefing by its heading. */

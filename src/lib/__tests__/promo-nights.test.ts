@@ -1,6 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { promotions } from "@/content/promotions";
-import { nightsBetween, promoActive, promoBreakdown, promoCheapestNight, promoHint, rangeQualifies } from "@/lib/promo-nights";
+import {
+  nightsBetween,
+  promoActive,
+  promoBookable,
+  promoBreakdown,
+  promoCheapestNight,
+  promoHint,
+  promoLastCheckin,
+  rangeQualifies,
+} from "@/lib/promo-nights";
 
 /**
  * Акция «2+1» на конкретных датах.
@@ -55,8 +64,37 @@ describe("акция «2+1» — какие даты подходят", () => {
   it("акция кончается 30 сентября", () => {
     expect(promoActive("2026-09-30")).toBe(true);
     expect(promoActive("2026-10-01")).toBe(false);
-    // Выезд за границу срока тоже не считается.
-    expect(rangeQualifies("2026-09-28", "2026-10-01", "2026-09-28")).toBe(false);
+  });
+
+  it("срок — последняя НОЧЬ, а не выезд: Пн 28.09 → Чт 01.10 по акции", () => {
+    // Все три ночи в сентябре, и Exely эти даты по тарифу «2+1» продаёт. До
+    // 24.09.2026 форма требовала выезд не позже 30-го и отказывала в них.
+    expect(rangeQualifies("2026-09-28", "2026-10-01", "2026-09-24")).toBe(true);
+    // Вт 29.09 → Пт 02.10: последняя ночь уже 1 октября — не подходит.
+    expect(rangeQualifies("2026-09-29", "2026-10-02", "2026-09-24")).toBe(false);
+  });
+
+  it("последний заезд по акции — 28.09, и после него её больше не рекламируют", () => {
+    expect(promoLastCheckin()).toBe("2026-09-28");
+    expect(promoBookable("2026-09-28")).toBe(true);
+    // 29–30.09 акция формально действует, но заехать по ней уже нельзя.
+    expect(promoBookable("2026-09-29")).toBe(false);
+  });
+});
+
+describe("подсказка у границы срока", () => {
+  it("схема верная, но даты за сроком — называем срок, а не схемы", () => {
+    // Вт 29.09 → Пт 02.10 — ровно схема Вт→Пт. Список схем с ней же внутри
+    // гость прочёл бы как бессмыслицу: причина отказа — срок.
+    const late = { kind: "too-late", lastCheckin: "2026-09-28", until: "2026-09-30" };
+    expect(promoHint("2026-09-29", "2026-10-02", "2026-09-24")).toEqual(late);
+    // Две ночи с того же вторника: продлить до пятницы нельзя по той же причине.
+    expect(promoHint("2026-09-29", "2026-10-01", "2026-09-24")).toEqual(late);
+  });
+
+  it("заезд уже после конца акции — ничего не говорим", () => {
+    // Иначе гостя звали бы подгонять октябрьские даты под сентябрьскую акцию.
+    expect(promoHint("2026-10-05", "2026-10-07", "2026-09-24")).toBeNull();
   });
 });
 

@@ -20,6 +20,20 @@ import { promoHint } from "@/lib/promo-nights";
  * и одна кнопка, а дальше с гостем говорит человек. Движок никуда не делся: он
  * по-прежнему на /bron для тех, кто хочет оформить всё сам.
  */
+const MONTHS: Record<Locale, string[]> = {
+  ru: ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"],
+  uz: ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentabr", "oktabr", "noyabr", "dekabr"],
+  en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+};
+
+/** «30 сентября» / «30-sentabr» / «30 September» — дата срока акции словами. */
+function promoDate(iso: string, locale: Locale): string {
+  const [, m, d] = iso.split("-").map(Number);
+  if (!m || !d) return iso;
+  const month = MONTHS[locale][m - 1];
+  return locale === "uz" ? `${d}-${month}` : `${d} ${month}`;
+}
+
 const COPY: Record<Locale, Record<string, string>> = {
   ru: {
     title: "Забронировать в один клик",
@@ -51,6 +65,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     promoFree: "Третья ночь бесплатно — акция «2+1»",
     promoNote: "Скидку применит администратор при подтверждении брони",
     promoExplain: "Акция «2+1»: только 3 ночи по схемам Вс→Ср, Пн→Чт или Вт→Пт — третья ночь бесплатно",
+    promoTooLate: "Акция «2+1» действует до {until}: последний заезд по ней — {last}",
   },
   uz: {
     title: "Bir marta bosib bron qilish",
@@ -82,6 +97,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     promoFree: "Uchinchi kecha bepul — «2+1» aksiyasi",
     promoNote: "Chegirmani bronni tasdiqlashda administrator qo'llaydi",
     promoExplain: "«2+1» aksiyasi: faqat 3 kecha — yakshanba→chorshanba, dushanba→payshanba yoki seshanba→juma — uchinchi kecha bepul",
+    promoTooLate: "«2+1» aksiyasi {until}gacha amal qiladi: unga oxirgi kirish — {last}",
   },
   en: {
     title: "Book in one click",
@@ -113,6 +129,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     promoFree: "The third night is free — the 2+1 offer",
     promoNote: "The administrator applies the discount when confirming the booking",
     promoExplain: "The 2+1 offer: only 3 nights on the Sun→Wed, Mon→Thu or Tue→Fri pattern — the third night is free",
+    promoTooLate: "The 2+1 offer runs until {until}: the last arrival for it is {last}",
   },
 };
 
@@ -373,13 +390,19 @@ export function StayRequestForm({
           сумму выше мы не пересчитываем — обещать цифру, которой нет в PMS,
           хуже, чем назвать бесплатную ночь словами.
       */}
-      {promo?.kind === "explain" && (
+      {(promo?.kind === "explain" || promo?.kind === "too-late") && (
         // Спокойная строка, без золотой рамки: это не предложение, а объяснение,
         // почему предложения нет. Соперничать с кнопкой отправки ему незачем.
-        <p className="mt-3 text-xs font-semibold leading-5 text-[var(--muted)]">{t.promoExplain}</p>
+        <p className="mt-3 text-xs font-semibold leading-5 text-[var(--muted)]">
+          {promo.kind === "too-late"
+            ? t.promoTooLate
+                .replace("{until}", promoDate(promo.until, locale))
+                .replace("{last}", promoDate(promo.lastCheckin, locale))
+            : t.promoExplain}
+        </p>
       )}
 
-      {promo && promo.kind !== "explain" && (
+      {promo && (promo.kind === "third-free" || promo.kind === "offer-third") && (
         <div className="mt-3 rounded-xl border border-[color:var(--sun)]/45 bg-[var(--sun)]/12 px-4 py-3">
           <p className="text-sm font-bold text-[var(--ink)]">
             {promo.kind === "third-free" ? t.promoFree : t.promoOffer}

@@ -4,6 +4,7 @@ import { dictionaries } from "@/content/translations";
 import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
 import { imageStyle } from "@/lib/images";
+import { promoBookable } from "@/lib/promo-nights";
 import { text } from "@/lib/localize";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 
@@ -13,7 +14,15 @@ type PromoBandProps = {
 
 export function PromoBand({ locale }: PromoBandProps) {
   const dict = dictionaries[locale];
-  const promo = promotions[0];
+  /**
+   * Подзаголовок полосы — название акции, пока на неё можно заехать.
+   *
+   * Здесь стоял голый бейдж без проверки срока: «−33%» висел бы над кнопкой
+   * «Забронировать» и в октябре, а бейдж без названия («Вс–Чт · −33%») читался
+   * как скидка на любую бронь в движке, где её нет. После срока полоса
+   * остаётся — просто без акции.
+   */
+  const promo = promoBookable() ? promotions.find((p) => p.slug === "2plus1") : undefined;
 
   return (
     <section className="relative isolate overflow-hidden bg-[var(--green)] px-4 py-16 text-white sm:px-6 lg:px-8">
@@ -34,7 +43,9 @@ export function PromoBand({ locale }: PromoBandProps) {
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(12,18,14,0.92),rgba(12,18,14,0.62),rgba(12,18,14,0.44))]" />
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1.1fr_0.7fr] lg:items-center">
         <div>
-          <p className="text-xs font-bold uppercase text-white/62">{text(promo.badge, locale)}</p>
+          {promo && (
+            <p className="text-xs font-bold uppercase text-white/62">{text(promo.title, locale)}</p>
+          )}
           <h2 className="mt-3 max-w-3xl font-serif text-4xl font-semibold leading-tight sm:text-5xl">
             {dict.home.finalOfferTitle}
           </h2>

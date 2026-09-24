@@ -174,7 +174,9 @@ describe("формы заявок — счётчики не уходят в ми
     }
     // Whatever the inputs hold, the printed total must not be negative.
     expect(document.body.textContent).not.toMatch(/−\s?\d|-\s?\d+\s?\d{3}\s*сум/);
-  });
+  // Много кликов userEvent подряд: под параллельной нагрузкой всего набора
+  // укладывался в пять секунд не всегда и падал по таймауту, а не по сути.
+  }, 15_000);
 });
 
 describe("формы заявок — обязательные поля", () => {

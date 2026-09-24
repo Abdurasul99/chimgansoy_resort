@@ -1,5 +1,5 @@
 import { promotions } from "@/content/promotions";
-import { promoBreakdown, todayTashkent } from "@/lib/promo-nights";
+import { promoBookable, promoBreakdown, todayTashkent } from "@/lib/promo-nights";
 import { dictionaries } from "@/content/translations";
 import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
@@ -35,8 +35,13 @@ export function OffersSection({ locale }: Props) {
    * а не там, где сервер.
    */
   const today = todayTashkent();
+  // У «2+1» мерилом служит последний заезд, а не дата срока: срок — 30.09, но
+  // три ночи с заездом 29-го уже в октябре, и карточка звала бы на даты,
+  // которых нет. Остальные акции живут до своей даты.
   const active = promotions.filter(
-    (p) => (!p.until || today <= p.until) && !p.hiddenOnSite,
+    (p) =>
+      (p.slug === "2plus1" ? promoBookable(today) : !p.until || today <= p.until) &&
+      !p.hiddenOnSite,
   );
   const [lead, ...rest] = active;
   const rows = lead?.slug === "2plus1" ? promoBreakdown() : [];
@@ -90,11 +95,16 @@ export function OffersSection({ locale }: Props) {
                 <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--muted)]">
                   {cols.how}
                 </p>
-                <table className="mt-2 w-full min-w-[22rem] max-w-xl text-left text-sm">
+                {/* На телефоне таблица в четыре колонки не помещалась: min-w в
+                    352 px против ~290 внутри карточки, и колонка «за ночь» —
+                    главная цифра акции — уезжала за край под прокрутку. До sm
+                    колонок три: цена без акции встаёт зачёркнутой над ценой по
+                    акции. */}
+                <table className="mt-2 w-full max-w-xl text-left text-sm sm:min-w-[22rem]">
                   <thead>
                     <tr className="text-[11px] uppercase tracking-wider text-[var(--muted)]">
                       <th className="py-1.5 font-semibold" />
-                      <th className="py-1.5 text-right font-semibold">{cols.one}</th>
+                      <th className="hidden py-1.5 text-right font-semibold sm:table-cell">{cols.one}</th>
                       <th className="py-1.5 text-right font-semibold">{cols.three}</th>
                       <th className="py-1.5 text-right font-semibold">{cols.per}</th>
                     </tr>
@@ -103,11 +113,16 @@ export function OffersSection({ locale }: Props) {
                     {rows.map((r) => (
                       <tr key={r.label.ru} className="border-t border-dashed border-[color:var(--line)]">
                         <td className="py-2 text-[var(--ink)]">{text(r.label, locale)}</td>
-                        <td className="py-2 text-right tabular-nums text-[var(--muted)] line-through decoration-[var(--muted)]/50">
+                        <td className="hidden py-2 text-right tabular-nums text-[var(--muted)] line-through decoration-[var(--muted)]/50 sm:table-cell">
                           {money(r.night * 3)}
                         </td>
-                        <td className="py-2 text-right font-semibold tabular-nums text-[var(--ink)]">{money(r.total)}</td>
-                        <td className="py-2 text-right text-lg font-bold tabular-nums text-[var(--accent)]">
+                        <td className="py-2 pl-2 text-right font-semibold tabular-nums text-[var(--ink)]">
+                          <span className="block text-[11px] font-normal text-[var(--muted)] line-through decoration-[var(--muted)]/50 sm:hidden">
+                            {money(r.night * 3)}
+                          </span>
+                          {money(r.total)}
+                        </td>
+                        <td className="py-2 pl-2 text-right text-base font-bold tabular-nums text-[var(--accent)] sm:text-lg">
                           {money(r.perNight)}
                         </td>
                       </tr>

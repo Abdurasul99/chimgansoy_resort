@@ -10,7 +10,7 @@ import { HeroScrollCue } from "@/components/ui/HeroScrollCue";
 import { Icon } from "@/components/ui/Icon";
 import { poolClosure } from "@/content/pool-closure";
 import { promotions } from "@/content/promotions";
-import { promoActive, promoBreakdown, promoCheapestNight } from "@/lib/promo-nights";
+import { promoBookable, promoBreakdown, promoCheapestNight } from "@/lib/promo-nights";
 
 type HeroProps = {
   locale: Locale;
@@ -87,8 +87,10 @@ export function Hero({ locale, pricing }: HeroProps) {
    * разойдутся в первый же месяц.
    */
   const lead = promotions[0];
-  // Карточка живёт ровно столько, сколько сама акция.
-  const showPromo = promoActive();
+  // Карточка живёт, пока на акцию ещё можно заехать. Не до даты срока: с 29.09
+  // ни одна дата под неё не подходит, и первый экран рекламировал бы то, что
+  // форма ниже выбрать не даст.
+  const showPromo = promoBookable();
   /**
    * Условие под карточкой: заезд в воскресенье, понедельник или вторник.
    *
@@ -115,9 +117,9 @@ export function Hero({ locale, pricing }: HeroProps) {
      * вписана текстом: поменяется цена — поменяется и подпись.
      */
     hint: {
-      ru: `Ночь от ${money(promoCheapestNight())} сум · Вс–Пт`,
-      uz: `Kecha ${money(promoCheapestNight())} so'mdan · Ya–Ju`,
-      en: `A night from ${money(promoCheapestNight())} UZS · Sun–Fri`,
+      ru: `Ночь от ${money(promoCheapestNight())} сум · ночи Вс–Чт`,
+      uz: `Kecha ${money(promoCheapestNight())} so'mdan · Ya–Pay kechalari`,
+      en: `A night from ${money(promoCheapestNight())} UZS · Sun–Thu nights`,
     }[locale],
     slug: lead.slug,
   };
