@@ -97,7 +97,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     promoFree: "Uchinchi kecha bepul — «2+1» aksiyasi",
     promoNote: "Chegirmani bronni tasdiqlashda administrator qo'llaydi",
     promoExplain: "«2+1» aksiyasi: faqat 3 kecha — yakshanba→chorshanba, dushanba→payshanba yoki seshanba→juma — uchinchi kecha bepul",
-    promoTooLate: "«2+1» aksiyasi {until}gacha amal qiladi: unga oxirgi kirish — {last}",
+    promoTooLate: "«2+1» aksiyasi {until}gacha amal qiladi: u bo'yicha oxirgi kirish kuni — {last}",
   },
   en: {
     title: "Book in one click",

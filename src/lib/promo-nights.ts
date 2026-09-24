@@ -152,6 +152,11 @@ export function promoHint(checkin: string, checkout: string, today = todayTashke
   // Заезд уже после конца акции — объяснять её схемы значит звать гостя
   // подгонять октябрьские даты под предложение, которого в октябре нет.
   if (checkin > promoLastDay()) return null;
+  // Заезд позже последнего возможного (29–30.09) — никакая схема уже не
+  // сработает, и список схем гостю ничего не даст: причина в сроке.
+  if (checkin > promoLastCheckin()) {
+    return { kind: "too-late", lastCheckin: promoLastCheckin(), until: promoLastDay() };
+  }
   if (nights === 3 && rangeQualifies(checkin, checkout, today)) return { kind: "third-free" };
   if (nights === 2) {
     const extended = nextDay(checkout);

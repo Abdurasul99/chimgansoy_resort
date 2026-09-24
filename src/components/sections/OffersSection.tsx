@@ -46,9 +46,9 @@ export function OffersSection({ locale }: Props) {
   const [lead, ...rest] = active;
   const rows = lead?.slug === "2plus1" ? promoBreakdown() : [];
   const cols = {
-    ru: { how: "Как считается", one: "3 ночи без акции", three: "3 ночи по акции", per: "За ночь", note: "Суммы в сумах, ночи с воскресенья по четверг. Питание в акцию не входит." },
-    uz: { how: "Qanday hisoblanadi", one: "3 kecha aksiyasiz", three: "3 kecha aksiyada", per: "Kechasi", note: "Summalar so'mda, yakshanbadan payshanbagacha bo'lgan kechalar. Ovqatlanish aksiyaga kirmaydi." },
-    en: { how: "How it adds up", one: "3 nights, no offer", three: "3 nights, offer", per: "Per night", note: "UZS, Sunday–Thursday nights. Meals are not part of the offer." },
+    ru: { how: "Как считается", one: "3 ночи без акции", three: "3 ночи по акции", per: "За ночь", note: "Суммы в сумах, ночи с воскресенья по четверг. Завтрак включён, обед и ужин («Всё включено») — отдельно." },
+    uz: { how: "Qanday hisoblanadi", one: "3 kecha aksiyasiz", three: "3 kecha aksiyada", per: "Kechasi", note: "Summalar so'mda, yakshanbadan payshanbagacha bo'lgan kechalar. Nonushta kiritilgan, tushlik va kechki ovqat («Hammasi kiritilgan») — alohida." },
+    en: { how: "How it adds up", one: "3 nights, no offer", three: "3 nights, offer", per: "Per night", note: "UZS, Sunday–Thursday nights. Breakfast included; lunch and dinner (All-Inclusive) are extra." },
   }[locale];
 
   const href = (slug: string) =>
@@ -82,6 +82,23 @@ export function OffersSection({ locale }: Props) {
             <p className="mt-3 max-w-xl text-[15px] leading-7 text-[var(--muted)]">
               {text(lead.description, locale)}
             </p>
+
+            {/* Расписание питания — и когда «Всё включено» стоит ведущей
+                карточкой. 29–30.09 «2+1» уже снята (заехать по ней нельзя), и
+                без этого блока расписание пропадало на два дня: ведущий шаблон
+                умел только расчёт «2+1». */}
+            {lead.howItWorks ? (
+              <div className="mt-4 max-w-xl rounded-2xl bg-[var(--surface-warm)] px-4 py-3">
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--muted)]">
+                  {text(lead.howItWorks.title, locale)}
+                </p>
+                <ul className="mt-1.5 space-y-1 text-[13.5px] leading-5 text-[var(--ink)]">
+                  {list(lead.howItWorks.lines, locale).map((l) => (
+                    <li key={l}>{l}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
 
             {/*
                 Расчёт «2+1» — так, как его объясняет гостям оператор: сколько

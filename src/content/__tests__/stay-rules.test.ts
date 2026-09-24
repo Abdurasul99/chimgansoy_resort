@@ -595,6 +595,8 @@ describe("акции сентября 2026", () => {
     const lastDays = venueFacts(undefined, "2026-09-29");
     expect(lastDays).not.toContain("«2+1» — оплачиваются 2 ночи");
     expect(lastDays).toContain("«Всё включено» — трёхразовое питание");
+    // …но об акции бот не молчит: у гостей с заездом 27–28.09 она ещё идёт.
+    expect(lastDays).toContain("новые заезды по акции закрыты");
     // 01.10: обеих акций в брифинге нет, бот их не предложит.
     const october = venueFacts(undefined, "2026-10-01");
     expect(october).not.toContain("«2+1» — оплачиваются 2 ночи");

@@ -4,7 +4,7 @@ import { ridesRu } from "@/lib/tariff";
 import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 import { poolClosure } from "@/content/pool-closure";
 import { promotions } from "@/content/promotions";
-import { promoBookable, promoBreakdown, promoLastCheckin, promoLastDay, todayTashkent } from "@/lib/promo-nights";
+import { promoActive, promoBookable, promoBreakdown, promoLastCheckin, promoLastDay, todayTashkent } from "@/lib/promo-nights";
 
 /** 50000 -> "50 000" */
 export function money(n: number): string {
@@ -68,7 +68,15 @@ function promoBlock(today = todayTashkent()): string {
   const twoPlusOne = promotions.find((p) => p.slug === "2plus1");
   if (twoPlusOne && promoBookable(today)) {
     lines.push(
-      `  • «2+1» — оплачиваются 2 ночи, третья бесплатно. Ровно 3 ночи, заезд в воскресенье, понедельник или вторник, самый поздний день выезда — пятница: схемы Вс→Ср, Пн→Чт или Вт→Пт. Заезд в среду или четверг под акцию НЕ подходит — три ночи оттуда уходят в выходные. СРОК: действует до ${ruDate(promoLastDay())} — это последняя НОЧЬ по акции, поэтому последний заезд — ${ruDate(promoLastCheckin())}; даты позже под акцию не подходят. Выгода ${promoSavings()}. Как считать: ${promoMath()}. Питание НЕ входит: акция НЕ суммируется с тарифом «Всё включено» — если гость хочет еду, тариф оплачивается отдельно и по обычной цене. Цена акции — на ДВОИХ; гости сверх двоих оплачиваются отдельно за каждую ночь по обычному тарифу доп. места.`,
+      `  • «2+1» — оплачиваются 2 ночи, третья бесплатно. Ровно 3 ночи, заезд в воскресенье, понедельник или вторник, самый поздний день выезда — пятница: схемы Вс→Ср, Пн→Чт или Вт→Пт. Заезд в среду или четверг под акцию НЕ подходит — три ночи оттуда уходят в выходные. СРОК: действует до ${ruDate(promoLastDay())} — это последняя НОЧЬ по акции, поэтому последний заезд — ${ruDate(promoLastCheckin())}; даты позже под акцию не подходят. Выгода ${promoSavings()}. Как считать: ${promoMath()}. Завтрак входит, как в любое проживание. Тариф «Всё включено» (завтрак, обед и ужин по сет-меню) с акцией НЕ суммируется — это два разных предложения, гость выбирает одно; обед и ужин при «2+1» — по меню ресторана за отдельную плату. Цена акции — на ДВОИХ; гости сверх двоих оплачиваются отдельно за каждую ночь по обычному тарифу доп. места.`,
+    );
+  }
+  if (twoPlusOne && !promoBookable(today) && promoActive(today)) {
+    // Последний заезд прошёл, а срок ещё нет. Без этой строки бот, у которого
+    // «2+1» пропала из брифинга, отрицал бы акцию, по которой в домиках ещё
+    // живут гости с заездом 27–28.09 и о которой спрашивают из Instagram.
+    lines.push(
+      `  • «2+1» — новые заезды по акции закрыты: последний заезд был ${ruDate(promoLastCheckin())}, акция действует до ${ruDate(promoLastDay())}. Брони, уже оформленные по акции, действуют; новые даты по ней не бронируются.`,
     );
   }
   const allInclusive = promotions.find((p) => p.slug === "all-inclusive");
