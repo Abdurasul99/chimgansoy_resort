@@ -57,7 +57,8 @@ export function Grid({
   bookings: BookingRow[];
   rates: RateRow[];
   /** Обычная цена из прайса — последний запасной вариант. */
-  basePrice: Record<string, number>;
+  /** Ориентир из прайса по слагу и дате (ISO) — там, где своей цены и Exely нет. */
+  basePrice: Record<string, Record<string, number>>;
   /**
    * Цены из Exely по датам: date → slug → цена. Это то же число, что видит
    * гость на сайте, и оператор в их шахматке.
@@ -206,13 +207,16 @@ export function Grid({
           <input name="price" type="number" min={0} placeholder="напр. 1800000" className={`${input} w-48`} />
         </label>
         <label className="block">
-          {/* Выходные у оператора — пятница, суббота, воскресенье: это ночи, за
-              которые берут по выходному тарифу, а не дни заезда и выезда. */}
+          {/* Полосы прайса проживания с 24.09.2026: ночи Вс–Чт по будничной
+              цене, пятница и суббота — каждая своя. Прежние «Выходные: пт, сб,
+              вс» ставили воскресенью цену пятницы, а пятнице и субботе —
+              одну на двоих. Это ночи, а не дни заезда и выезда. */}
           <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-[var(--muted)]">Дни</span>
           <select name="scope" defaultValue="all" className={input}>
             <option value="all">Все дни</option>
-            <option value="weekend">Выходные: пт, сб, вс</option>
-            <option value="weekday">Будни: пн–чт</option>
+            <option value="sunthu">Ночи вс–чт</option>
+            <option value="fri">Ночь с пятницы на субботу</option>
+            <option value="sat">Ночь с субботы на воскресенье</option>
           </select>
         </label>
         <button
@@ -301,7 +305,7 @@ export function Grid({
                      */
                     const own = rateOf(slug, d);
                     const fromExely = live?.[d]?.[slug];
-                    const shown = own ?? fromExely ?? basePrice[slug] ?? 0;
+                    const shown = own ?? fromExely ?? basePrice[slug]?.[d] ?? 0;
                     return (
                       <td
                         key={d}

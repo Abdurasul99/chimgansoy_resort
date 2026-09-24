@@ -47,16 +47,20 @@ export type Promotion = {
 export const promotions: Promotion[] = [
   {
     slug: "2plus1",
-    badge: { ru: "Будни · −33%", uz: "Ish kunlari · −33%", en: "Weekdays · −33%" },
+    // «Будни» здесь стояло до 24.09.2026, пока заезд был только в Пн или Вт.
+    // С воскресным заездом это слово обманывает: гость читает «будни» как
+    // понедельник–пятницу. Окно Вс–Пт — то же, что у оператора в прайсе
+    // («Воскресенье → Пятница» — будничная цена).
+    badge: { ru: "Вс–Пт · −33%", uz: "Ya–Ju · −33%", en: "Sun–Fri · −33%" },
     title: {
       ru: "«2+1» — третья ночь в подарок",
       uz: "«2+1» — uchinchi kecha sovg'a",
       en: "2+1 — third night free",
     },
     description: {
-      ru: "Оплачиваете две ночи, третью получаете бесплатно. Заезд в понедельник или во вторник — три ночи в горах без спешки.",
-      uz: "Ikki kecha uchun to'laysiz, uchinchisi bepul. Kirish dushanba yoki seshanba — tog'larda shoshilmasdan uch kecha.",
-      en: "Pay for two nights, get the third free. Arrive Monday or Tuesday — three unhurried nights in the mountains.",
+      ru: "Оплачиваете две ночи, третью получаете бесплатно. Заезд в воскресенье, понедельник или вторник — три ночи в горах без спешки.",
+      uz: "Ikki kecha uchun to'laysiz, uchinchisi bepul. Kirish yakshanba, dushanba yoki seshanba — tog'larda shoshilmasdan uch kecha.",
+      en: "Pay for two nights, get the third free. Arrive on Sunday, Monday or Tuesday — three unhurried nights in the mountains.",
     },
     savings: [
       { label: { ru: "Глэмпинг", uz: "Glemping", en: "Glamping" }, amount: 1_500_000 },
@@ -65,8 +69,9 @@ export const promotions: Promotion[] = [
     until: "2026-09-30",
     terms: {
       ru: [
-        "Действует только в будние дни: заезд в понедельник или вторник",
+        "Заезд в воскресенье, понедельник или вторник — ровно 3 ночи",
         "Максимально поздний день выезда — пятница",
+        "Заезд в воскресенье ➔ выезд в среду (3 ночи)",
         "Заезд в понедельник ➔ выезд в четверг (3 ночи)",
         "Заезд во вторник ➔ выезд в пятницу (3 ночи)",
         "Не суммируется с тарифом «Всё включено»",
@@ -74,8 +79,9 @@ export const promotions: Promotion[] = [
         "Действует до 30 сентября 2026 года",
       ],
       uz: [
-        "Faqat ish kunlarida amal qiladi: kirish dushanba yoki seshanba",
+        "Kirish yakshanba, dushanba yoki seshanba — aynan 3 kecha",
         "Chiqish mumkin bo'lgan eng so'nggi kun — juma",
+        "Kirish yakshanba ➔ chiqish chorshanba (3 kecha)",
         "Kirish dushanba ➔ chiqish payshanba (3 kecha)",
         "Kirish seshanba ➔ chiqish juma (3 kecha)",
         "«Hammasi kiritilgan» tarifi bilan jamlanmaydi",
@@ -83,8 +89,9 @@ export const promotions: Promotion[] = [
         "2026-yil 30-sentabrgacha amal qiladi",
       ],
       en: [
-        "Weekdays only: arrive on Monday or Tuesday",
+        "Arrive on Sunday, Monday or Tuesday — exactly 3 nights",
         "The latest possible departure day is Friday",
+        "Sunday arrival ➔ Wednesday departure (3 nights)",
         "Monday arrival ➔ Thursday departure (3 nights)",
         "Tuesday arrival ➔ Friday departure (3 nights)",
         "Does not combine with the All-Inclusive rate",
@@ -95,11 +102,15 @@ export const promotions: Promotion[] = [
   },
   {
     slug: "all-inclusive",
-    // Сентябрьское условие: заезд по понедельникам и вторникам действует до
-    // конца месяца. Без этой даты акция висела бы и в октябре, а гость приехал
-    // бы за питанием, которого в тарифе уже нет.
+    // Условие оператора от 24.09.2026: тариф действует с воскресенья по четверг
+    // включительно (до этого — с понедельника). Формулировка оператора — «тариф
+    // действует», а не «заезд», и она сохранена дословно: «заезд по четверг»
+    // гость прочёл бы как питание и в пятницу с субботой.
+    //
+    // Срок — сентябрь: без даты карточка висела бы и в октябре, а гость
+    // приехал бы за питанием, которого в тарифе уже нет.
     until: "2026-09-30",
-    badge: { ru: "Пн–Чт", uz: "Du–Pay", en: "Mon–Thu" },
+    badge: { ru: "Вс–Чт", uz: "Ya–Pay", en: "Sun–Thu" },
     title: {
       ru: "Тариф «Всё включено»",
       uz: "«Hammasi kiritilgan» tarifi",
@@ -136,19 +147,19 @@ export const promotions: Promotion[] = [
     terms: {
       ru: [
         "Блюда по расписанию в ресторане или с доставкой в домик",
-        "Заезд с понедельника по четверг",
+        "Тариф действует с воскресенья по четверг включительно",
         "Действует до 30 сентября 2026 года",
         "Не суммируется с акцией «2+1»",
       ],
       uz: [
         "Taomlar jadval bo'yicha restoranda yoki uyga yetkazib beriladi",
-        "Kirish dushanbadan payshanbagacha",
+        "Tarif yakshanbadan payshanbagacha (payshanba ham) amal qiladi",
         "2026-yil 30-sentabrgacha amal qiladi",
         "«2+1» aksiyasi bilan jamlanmaydi",
       ],
       en: [
         "Meals on schedule in the restaurant or delivered to your cabin",
-        "Arrive Monday to Thursday",
+        "Valid Sunday through Thursday inclusive",
         "Valid through 30 September 2026",
         "Does not combine with the 2+1 offer",
       ],

@@ -90,11 +90,11 @@ export function Hero({ locale, pricing }: HeroProps) {
   // Карточка живёт ровно столько, сколько сама акция.
   const showPromo = promoActive();
   /**
-   * Условие под карточкой: заезд только в понедельник или вторник.
+   * Условие под карточкой: заезд в воскресенье, понедельник или вторник.
    *
-   * Из правил «заезд Пн–Чт, выезд не позже пятницы» на три ночи выходит ровно
-   * два варианта — Пн→Чт и Вт→Пт. Оператор так и объявляет акцию, и гость
-   * должен увидеть это до того, как откроет календарь и выберет четверг.
+   * С 24.09.2026 у акции три схемы — Вс→Ср, Пн→Чт и Вт→Пт: ровно три ночи и
+   * выезд не позже пятницы. Гость должен увидеть это до того, как откроет
+   * календарь и выберет четверг.
    *
    * Цена — трёх ночей глэмпинга на двоих, из того же расчёта, что и таблица
    * в секции акций. Числа в тексте нет.
@@ -102,9 +102,9 @@ export function Hero({ locale, pricing }: HeroProps) {
   const promoRow = promoBreakdown()[0];
   const promoNote = promoRow
     ? {
-        ru: `Заезд Пн или Вт · 3 ночи на двоих — ${money(promoRow.total)} сум`,
-        uz: `Kirish Du yoki Se · 2 kishiga 3 kecha — ${money(promoRow.total)} so'm`,
-        en: `Mon or Tue arrival · 3 nights for two — ${money(promoRow.total)} UZS`,
+        ru: `Заезд Вс, Пн или Вт · 3 ночи на двоих — ${money(promoRow.total)} сум`,
+        uz: `Kirish Ya, Du yoki Se · 2 kishiga 3 kecha — ${money(promoRow.total)} so'm`,
+        en: `Sun, Mon or Tue arrival · 3 nights for two — ${money(promoRow.total)} UZS`,
       }[locale]
     : "";
   const heroPromo = {
@@ -115,9 +115,9 @@ export function Hero({ locale, pricing }: HeroProps) {
      * вписана текстом: поменяется цена — поменяется и подпись.
      */
     hint: {
-      ru: `Ночь от ${money(promoCheapestNight())} сум · будни`,
-      uz: `Kecha ${money(promoCheapestNight())} so'mdan · ish kunlari`,
-      en: `A night from ${money(promoCheapestNight())} UZS · weekdays`,
+      ru: `Ночь от ${money(promoCheapestNight())} сум · Вс–Пт`,
+      uz: `Kecha ${money(promoCheapestNight())} so'mdan · Ya–Ju`,
+      en: `A night from ${money(promoCheapestNight())} UZS · Sun–Fri`,
     }[locale],
     slug: lead.slug,
   };
@@ -261,7 +261,7 @@ export function Hero({ locale, pricing }: HeroProps) {
                 на пять экранов ниже: до него доскроллили единицы.
 
                 Ведёт не сразу в бронирование, а к секции акций экраном ниже:
-                у «2+1» есть условия (только 3 ночи по схеме Пн→Чт или Вт→Пт), и
+                у «2+1» есть условия (только 3 ночи: Вс→Ср, Пн→Чт или Вт→Пт), и
                 гость должен увидеть их до того, как выберет выходные.
             */}
             {showPromo && (

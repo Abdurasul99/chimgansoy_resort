@@ -140,11 +140,24 @@ export async function saveRate(_prev: BroniState, form: FormData): Promise<Broni
   if (price !== null && (!Number.isFinite(price) || price < 0)) return { error: "Цена должна быть числом." };
 
   /**
-   * Какие дни задеть. «Выходные» у оператора — пятница, суббота, воскресенье:
-   * это ночи, за которые берут по выходному тарифу, а не дни заезда-выезда.
+   * Какие ночи задеть — по полосам прайса проживания от 24.09.2026: ночи с
+   * воскресенья по четверг, пятница и суббота (stayNightBand в pricing.ts).
+   * Считаются ночи, а не дни заезда-выезда.
+   *
+   * Неизвестная полоса — ошибка, а не «все дни». До 24.09 здесь были
+   * «weekend» (пт, сб, вс) и «weekday» (пн–чт); вкладка, открытая до
+   * обновления, пришлёт старое значение, и молча применить цену ко всем дням
+   * диапазона было бы худшим из возможных толкований.
    */
   const scope = String(form.get("scope") ?? "all").trim();
-  const dows = scope === "weekend" ? [5, 6, 0] : scope === "weekday" ? [1, 2, 3, 4] : undefined;
+  const BANDS: Record<string, number[] | undefined> = {
+    all: undefined,
+    sunthu: [0, 1, 2, 3, 4],
+    fri: [5],
+    sat: [6],
+  };
+  if (!(scope in BANDS)) return { error: "Обновите страницу: список дней изменился." };
+  const dows = BANDS[scope];
 
   try {
     const days = await setRateRange(room, from, to, price, undefined, dows);

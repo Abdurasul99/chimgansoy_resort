@@ -32,6 +32,16 @@ type DatePickerProps = {
   days?: Record<string, { price: number | null; free: boolean }>;
   /** Месяц, который сейчас на экране — родитель по нему подгружает цены. */
   onMonthChange?: (month: string) => void;
+  /**
+   * Значение, которое родитель выставляет сам, минуя клик по календарю.
+   *
+   * Без него календарь держал дату, выбранную при монтировании, и не знал об
+   * изменениях снаружи. Кнопка «Продлить на ночь» в форме заявки меняла
+   * подсказку на «третья ночь бесплатно», а в скрытое поле — и в заявку —
+   * уходил прежний выезд: оператор получал две ночи, гость ждал три.
+   * Передавайте вместе с onChange, чтобы выбор гостя возвращался родителю.
+   */
+  value?: string;
 };
 
 const monthNames: Record<Locale, string[]> = {
@@ -81,9 +91,18 @@ function displayValue(iso: string, locale: Locale): string {
   return `${p.d} ${monthShort[locale][p.m]} ${p.y}`;
 }
 
-export function DatePicker({ name, label, defaultValue = "", locale, minToday = false, onChange, days, onMonthChange }: DatePickerProps) {
-  const [value, setValue] = useState(defaultValue);
+export function DatePicker({ name, label, defaultValue = "", locale, minToday = false, onChange, days, onMonthChange, value: external }: DatePickerProps) {
+  const [value, setValue] = useState(external ?? defaultValue);
   const [open, setOpen] = useState(false);
+  // Родитель поменял дату сам — подстраиваемся прямо в рендере (так советует
+  // React для «состояния, производного от пропа»), без эффекта и лишнего кадра
+  // со старой датой. Сравниваем с прошлым пропом, а не с состоянием: иначе
+  // выбор гостя, ещё не дошедший до родителя, откатывался бы назад.
+  const [lastExternal, setLastExternal] = useState(external);
+  if (external !== lastExternal) {
+    setLastExternal(external);
+    if (external !== undefined) setValue(external);
+  }
   // The calendar renders in a portal (document.body) with fixed positioning, so an
   // ancestor's `overflow-hidden` (e.g. the hero, which clips snow/decorations) can
   // never crop it. `pos` holds the computed viewport coords (set on open + scroll/resize).

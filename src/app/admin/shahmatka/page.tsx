@@ -5,7 +5,7 @@ import { NewBooking } from "../broni/NewBooking";
 import { listRates, listUnits, occupancy, type BookingRow, type RateRow, type UnitRow } from "@/lib/pms";
 import { exelyOccupancy } from "@/lib/exely-occupancy";
 import { exelyRates } from "@/lib/exely-rates";
-import { poolPricing } from "@/content/pricing";
+import { poolPricing, stayNightBand, stayNightRates } from "@/content/pricing";
 
 /**
  * Шахматка: кто где стоит и почём.
@@ -69,15 +69,22 @@ export default async function ShahmatkaPage({
    * Обычная цена — её показывает строка цен там, где своей на дату нет.
    *
    * Цены за ночь живут в Exely, а не в нашем прайсе: тот считает дневные услуги.
-   * Здесь стоят те же числа, что на карточках домиков, — как ориентир, пока
-   * оператор не задал свою цену на конкретные даты.
+   * Здесь — ориентир, пока оператор не задал свою цену на конкретные даты.
+   *
+   * По дням, а не одним числом: с 24.09.2026 у проживания три полосы — ночи
+   * Вс–Чт, пятница и суббота (stayNightRates в pricing.ts). Плоская цена
+   * показывала бы оператору будничную сумму на выходных датах — именно там,
+   * где Exely чаще всего молчит, потому что на выходные тариф ещё не заведён.
    */
-  const basePrice: Record<string, number> = {
-    glamping: 1_500_000,
-    cottage: 3_000_000,
+  const flat = (n: number) => Object.fromEntries(days.map((d) => [d, n]));
+  const byBand = (slug: keyof typeof stayNightRates) =>
+    Object.fromEntries(days.map((d) => [d, stayNightRates[slug][stayNightBand(d)]]));
+  const basePrice: Record<string, Record<string, number>> = {
+    glamping: byBand("glamping"),
+    cottage: byBand("cottage"),
     // Бунгало у бассейна — дневная аренда, цифры из прайса оператора.
-    "bungalow-small": poolPricing.extras.bungalow4,
-    "bungalow-large": poolPricing.extras.bungalow10,
+    "bungalow-small": flat(poolPricing.extras.bungalow4),
+    "bungalow-large": flat(poolPricing.extras.bungalow10),
   };
 
   const nav = (offset: number) => {

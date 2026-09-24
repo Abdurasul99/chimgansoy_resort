@@ -40,6 +40,20 @@ describe("DatePicker", () => {
     expect(hidden).toHaveAttribute("value", "2026-08-15");
   });
 
+  it("follows a date the parent sets itself, so the form submits it", () => {
+    // Кнопка «Продлить на ночь» ставит выезд из формы. Раньше календарь держал
+    // дату с момента монтирования, и в заявку уходил прежний выезд.
+    const { container, rerender } = render(
+      <DatePicker name="checkout" label="x" locale="ru" value="2026-09-15" onChange={() => {}} />,
+    );
+    const hidden = () => container.querySelector('input[name="checkout"]');
+    expect(hidden()).toHaveAttribute("value", "2026-09-15");
+    rerender(<DatePicker name="checkout" label="x" locale="ru" value="2026-09-16" onChange={() => {}} />);
+    expect(hidden()).toHaveAttribute("value", "2026-09-16");
+    expect(screen.getByText(/16 сен 2026/)).toBeInTheDocument();
+  });
+
+
   it("clicking trigger opens the calendar grid", async () => {
     const user = userEvent.setup();
     render(<DatePicker name="x" label="X" locale="ru" />);

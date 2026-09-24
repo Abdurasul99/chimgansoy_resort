@@ -12,6 +12,7 @@ import {
   touristTax,
   tubingPricing,
 } from "@/content/pricing";
+import { stayNightBand, stayNightRates } from "@/content/pricing";
 import { policies } from "@/content/policies";
 import { promotions } from "@/content/promotions";
 import { rooms } from "@/content/rooms";
@@ -632,5 +633,33 @@ describe("площади домиков — с рабочего чертежа �
     expect(текст).toContain("Спальня 2 (16,0 м²)");
     expect(текст).not.toContain("15,9");
     expect(текст).not.toContain("15.6");
+  });
+});
+
+describe("прайс проживания по ночам — оператор, 24.09.2026", () => {
+  it("совпадает с объявленными ценами", () => {
+    expect(stayNightRates.glamping).toEqual({ sunThu: 1_500_000, fri: 1_650_000, sat: 1_800_000 });
+    expect(stayNightRates.cottage).toEqual({ sunThu: 3_000_000, fri: 3_300_000, sat: 3_600_000 });
+  });
+
+  it("ночь на воскресенье — будничная, пятница и суббота — каждая своя", () => {
+    // 24.09.2026 — четверг. Полосы — не выходные дневных услуг (пт, сб, вс):
+    // перепутать их значит поставить воскресенью цену пятницы.
+    expect(stayNightBand("2026-09-24")).toBe("sunThu"); // чт
+    expect(stayNightBand("2026-09-25")).toBe("fri");
+    expect(stayNightBand("2026-09-26")).toBe("sat");
+    expect(stayNightBand("2026-09-27")).toBe("sunThu"); // вс
+    expect(stayNightBand("2026-09-28")).toBe("sunThu"); // пн
+  });
+
+  it("выгода «2+1» равна будничной ночи — иначе расчёт акции врёт", () => {
+    // Все три схемы акции (Вс→Ср, Пн→Чт, Вт→Пт) ложатся на ночи Вс–Чт,
+    // поэтому бесплатная ночь стоит ровно будничную цену. Кто поменяет одно
+    // без другого, получит таблицу «3 ночи без акции» с чужими числами.
+    const promo = promotions.find((p) => p.slug === "2plus1")!;
+    expect(promo.savings?.map((s) => s.amount)).toEqual([
+      stayNightRates.glamping.sunThu,
+      stayNightRates.cottage.sunThu,
+    ]);
   });
 });

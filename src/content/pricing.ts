@@ -296,6 +296,37 @@ export const priceLabels = {
  * per extraGuestPricing. `max` is a hard limit — beds, not money — so a party
  * over it needs a second cabin, not a bigger surcharge.
  */
+/**
+ * Прайс проживания оператора по ночам — объявлен 24.09.2026.
+ *
+ *   ночи с воскресенья по четверг   глэмпинг 1 500 000   шале 3 000 000
+ *   ночь с пятницы на субботу                1 650 000        3 300 000
+ *   ночь с субботы на воскресенье            1 800 000        3 600 000
+ *
+ * ГДЕ ЭТИ ЧИСЛА НАСТОЯЩИЕ. Гость платит то, что считает Exely, — там оператор
+ * и меняет цены, а сайт читает их вживую (src/lib/exely.ts). Здесь прайс лежит
+ * как ориентир для шахматки в админке, которая иначе показывала бы пустоту на
+ * датах, где Exely молчит. На гостевые страницы эти числа НЕ выводятся:
+ * второй источник одной цены — ровно то, от чего предостерегает
+ * src/lib/price-catalog.ts.
+ *
+ * Полос три, а не «будни/выходные», и это не та неделя, что у дневных услуг:
+ * у бассейна и топчана выходные — пт, сб, вс (isWeekendISO), а здесь ночь
+ * на воскресенье стоит по будничной цене, а пятница и суббота — каждая своя.
+ */
+export const stayNightRates = {
+  glamping: { sunThu: 1_500_000, fri: 1_650_000, sat: 1_800_000 },
+  cottage: { sunThu: 3_000_000, fri: 3_300_000, sat: 3_600_000 },
+} as const;
+
+export type StayNightBand = "sunThu" | "fri" | "sat";
+
+/** Полоса прайса для ночи, начинающейся в указанную дату (ISO). */
+export function stayNightBand(iso: string): StayNightBand {
+  const day = new Date(`${iso}T12:00:00Z`).getUTCDay(); // 0 = вс … 6 = сб
+  return day === 5 ? "fri" : day === 6 ? "sat" : "sunThu";
+}
+
 export const cabinOccupancy = {
   glamping: { base: 2, max: 3 },
   cottage: { base: 4, max: 6 },
