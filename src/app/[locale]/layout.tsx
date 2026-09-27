@@ -12,6 +12,8 @@ import { AnalyticsEvents } from "@/components/ui/AnalyticsEvents";
 import { LogoIntro } from "@/components/ui/LogoIntro";
 import { YandexMetrica } from "@/components/ui/YandexMetrica";
 import { HideOnBron } from "@/components/ui/HideOnBron";
+import { restaurantListed } from "@/lib/restaurant/live";
+import { restaurantCopy } from "@/content/restaurant";
 import { dictionaries } from "@/content/translations";
 import { isLocale, locales, type Locale } from "@/i18n/config";
 import { localizedUrl, originForLocale } from "@/i18n/domains";
@@ -91,6 +93,10 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   if (!isLocale(locale)) {
     notFound();
   }
+
+  // Ресторан в меню сайта — только когда владелец открыл раздел. Чтение из
+  // кэша с тегом: переключатель в панели сбрасывает его сразу.
+  const listed = await restaurantListed();
 
   const schemaJson = JSON.stringify({
     "@context": "https://schema.org",
@@ -220,7 +226,18 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
             <span className="scroll-ticks__cursor" />
           </div>
         </HideOnBron>
-        <Header locale={locale as Locale} />
+        <Header
+          locale={locale as Locale}
+          restaurant={
+            listed
+              ? { href: "/restaurant", label: { ru: restaurantCopy.ru.navLabel, uz: restaurantCopy.uz.navLabel, en: restaurantCopy.en.navLabel } }
+              : null
+          }
+          restaurantLabels={{
+            cart: restaurantCopy[locale as Locale].menu.viewCart,
+            menu: restaurantCopy[locale as Locale].menu.title,
+          }}
+        />
         <main id="main">{children}</main>
         {/* Footer + FAQ widget hidden on /bron (Exely: no distractions on the
             booking page; the floating widget also overlaps the cart on mobile). */}
@@ -252,11 +269,16 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
               src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}
               strategy="afterInteractive"
             />
+            {/* Страница статуса заказа ресторана — секретная ссылка: её адрес и
+                содержимое в аналитику не уходят. Проверка — indexOf, а не
+                регулярное выражение: в шаблонной строке обратные слэши
+                пропадают, и выражение со слэшами становилось комментарием
+                «//», который ломал весь скрипт. */}
             <Script id="ga4-init" strategy="afterInteractive">{`
               window.dataLayer=window.dataLayer||[];
               function gtag(){dataLayer.push(arguments);}
               gtag('js',new Date());
-              gtag('config','${GA4_ID}',{send_page_view:true});
+              if(location.pathname.indexOf("/restaurant/order/")<0){gtag('config','${GA4_ID}',{send_page_view:true});}
             `}</Script>
           </>
         )}

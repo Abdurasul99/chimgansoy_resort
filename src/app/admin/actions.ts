@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { endSession, passwordMatches, startSession, authConfigured } from "@/lib/admin-auth";
+import { endSession, homeFor, passwordRole, startSession, authConfigured } from "@/lib/admin-auth";
 
 /**
  * Sign-in and sign-out for /admin.
@@ -28,6 +28,9 @@ const ATTEMPT_DELAY_MS = 1000;
 
 export async function signIn(_prev: SignInState, formData: FormData): Promise<SignInState> {
   const password = String(formData.get("password") ?? "");
+  // Имя — для истории статусов ресторана: «кто подтвердил заказ». Владельцу
+  // не обязательно, сотрудникам ресторана — просим, но не требуем.
+  const name = String(formData.get("name") ?? "").trim().slice(0, 60);
 
   if (!authConfigured()) {
     return { error: "Панель не настроена: не заданы ADMIN_PASSWORD и AUTH_SECRET." };
@@ -35,14 +38,15 @@ export async function signIn(_prev: SignInState, formData: FormData): Promise<Si
 
   await new Promise((r) => setTimeout(r, ATTEMPT_DELAY_MS));
 
-  if (!passwordMatches(password)) {
+  const role = passwordRole(password);
+  if (!role) {
     return { error: "Неверный пароль." };
   }
 
-  await startSession();
+  await startSession(role, name);
   // Outside the try/catch idiom on purpose: redirect() signals by throwing, so
   // wrapping it would swallow the navigation and report it as a failure.
-  redirect("/admin");
+  redirect(homeFor(role));
 }
 
 export async function signOut(): Promise<void> {

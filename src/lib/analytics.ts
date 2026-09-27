@@ -32,6 +32,9 @@ const YM_ID = process.env.NEXT_PUBLIC_YANDEX_METRICA_ID;
  *   sent:    pool_request_submitted · topchan_request_submitted ·
  *            tubing_request_submitted · stay_request_submitted ·
  *            service_request_submitted · inquiry_submitted
+ *   ресторан: restaurant_dish_view · restaurant_add_to_cart ·
+ *            restaurant_checkout_start · restaurant_order_submitted ·
+ *            restaurant_table_request_submitted
  *
  * (This list previously ended in `booking_submitted`, which no code has ever
  * sent — the three day products each report under their own name.)

@@ -6,6 +6,7 @@ import { services } from "@/content/services";
 import { hiddenServiceSlugs } from "@/lib/services-live";
 import { poolClosure } from "@/content/pool-closure";
 import { policies } from "@/content/policies";
+import { restaurantListed } from "@/lib/restaurant/live";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPaths = [
@@ -46,11 +47,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
    * Условие одно и то же в обоих местах: флаг indexable. Разъедутся они только
    * вместе.
    */
+  // Ресторан — только открытый или в анонсе. Оформление и статус заказа в
+  // карту не идут никогда: это служебные страницы (и в robots они закрыты).
+  const restaurantPaths = (await restaurantListed()) ? ["/restaurant", "/restaurant/menu", "/restaurant/tables"] : [];
+
   const legalPaths = policies
     .filter((policy) => policy.indexable)
     .map((policy) => `/legal/${policy.slug}`);
 
-  return [...staticPaths, ...roomPaths, ...servicePaths, ...legalPaths].flatMap((path) =>
+  return [...staticPaths, ...restaurantPaths, ...roomPaths, ...servicePaths, ...legalPaths].flatMap((path) =>
     locales.map((locale) => ({
       url: localizedUrl(locale, path),
       lastModified: new Date(),

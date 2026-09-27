@@ -4,11 +4,21 @@ import { languageAlternates, localizedUrl, originForLocale } from "@/i18n/domain
 import type { PageSeo } from "@/content/types";
 import { text } from "./localize";
 
-export function buildMetadata(locale: Locale, seo: PageSeo, path = "/"): Metadata {
+/**
+ * `opts.image` — своя картинка для соцсетей (ТЗ ресторана: у ресторана и
+ * меню отдельные OG); по умолчанию общая карточка комплекса. `opts.noindex`
+ * — для разделов, которые пока скрыты и открыты только предпросмотром.
+ */
+export function buildMetadata(
+  locale: Locale,
+  seo: PageSeo,
+  path = "/",
+  opts: { image?: string; noindex?: boolean } = {},
+): Metadata {
   const siteUrl = originForLocale(locale);
   const title = text(seo.title, locale);
   const description = text(seo.description, locale);
-  const ogImage = `${siteUrl}/-/opengraph-image`;
+  const ogImage = opts.image ? new URL(opts.image, siteUrl).toString() : `${siteUrl}/-/opengraph-image`;
 
   // The root layout applies "%s | CHIMGAN DARBAZA". If a page's title already
   // contains the brand (e.g. the homepage), use an absolute title so we don't
@@ -18,6 +28,7 @@ export function buildMetadata(locale: Locale, seo: PageSeo, path = "/"): Metadat
   const titleField: Metadata["title"] = hasBrand ? { absolute: title } : title;
 
   return {
+    ...(opts.noindex ? { robots: { index: false, follow: false } } : {}),
     metadataBase: new URL(siteUrl),
     title: titleField,
     description,
@@ -33,12 +44,14 @@ export function buildMetadata(locale: Locale, seo: PageSeo, path = "/"): Metadat
       locale,
       type: "website",
       images: [
-        {
-          url: ogImage,
-          width: 1200,
-          height: 630,
-          alt: "CHIMGAN DARBAZA",
-        },
+        opts.image
+          ? { url: ogImage, alt: title }
+          : {
+              url: ogImage,
+              width: 1200,
+              height: 630,
+              alt: "CHIMGAN DARBAZA",
+            },
       ],
     },
     twitter: {

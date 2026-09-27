@@ -41,6 +41,8 @@ export function pageLabel(path: string): string {
     [/^\/place/, "окрестности"],
     [/^\/legal/, "документы"],
     [/^\/novosti/, "новости"],
+    [/^\/restaurant\/tables/, "ресторан, бронь стола"],
+    [/^\/restaurant/, "ресторан"],
   ];
   return KNOWN.find(([re]) => re.test(p))?.[1] ?? "";
 }

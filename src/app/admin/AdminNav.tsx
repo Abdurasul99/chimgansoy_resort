@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { AdminRole } from "@/lib/admin-auth";
 
 /**
  * The panel's navigation.
@@ -23,17 +24,30 @@ const NAV = [
   { href: "/admin/uslugi", label: "Услуги" },
   { href: "/admin/nomera", label: "Домики" },
   { href: "/admin/novosti", label: "Новости" },
+  { href: "/admin/restoran", label: "Ресторан" },
 ];
 
-export function AdminNav() {
+/** Вход ресторана видит только свой раздел — остальные пункты ему не нужны. */
+const RESTAURANT_NAV = [
+  { href: "/admin/restoran", label: "Заказы" },
+  { href: "/admin/restoran/stoly", label: "Столы" },
+];
+
+export function AdminNav({ role = "owner" }: { role?: AdminRole }) {
   const pathname = usePathname();
+  const items = role === "owner" ? NAV : role === "manager"
+    ? [...RESTAURANT_NAV, { href: "/admin/restoran/menu", label: "Меню" }, { href: "/admin/restoran/nastroyki", label: "Настройки" }]
+    : RESTAURANT_NAV;
 
   return (
     <nav className="order-3 -mx-1 flex w-full gap-1 overflow-x-auto sm:order-none sm:w-auto sm:overflow-visible">
-      {NAV.map((item) => {
+      {items.map((item) => {
         // Exact match for the dashboard, prefix for the rest — otherwise
         // "Сводка" stays lit on every screen, since every path starts /admin.
-        const on = item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href);
+        const on =
+          item.href === "/admin" || (role !== "owner" && item.href === "/admin/restoran")
+            ? pathname === item.href
+            : pathname.startsWith(item.href);
         return (
           <Link
             key={item.href}

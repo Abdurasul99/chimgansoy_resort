@@ -13,6 +13,12 @@ type DatePickerProps = {
   locale: Locale;
   minToday?: boolean;
   /**
+   * Последняя дата, которую можно выбрать (ISO, включительно). Ресторан не
+   * принимает заказ дальше двух недель, а бронь стола — двух месяцев: без
+   * этого календарь давал выбрать день, который сервер потом отклонял.
+   */
+  maxDate?: string;
+  /**
    * Fires with the ISO date whenever the selection changes ("" when cleared).
    *
    * The value lives in a React-controlled hidden input, and React does not
@@ -91,7 +97,7 @@ function displayValue(iso: string, locale: Locale): string {
   return `${p.d} ${monthShort[locale][p.m]} ${p.y}`;
 }
 
-export function DatePicker({ name, label, defaultValue = "", locale, minToday = false, onChange, days, onMonthChange, value: external }: DatePickerProps) {
+export function DatePicker({ name, label, defaultValue = "", locale, minToday = false, maxDate, onChange, days, onMonthChange, value: external }: DatePickerProps) {
   const [value, setValue] = useState(external ?? defaultValue);
   const [open, setOpen] = useState(false);
   // Родитель поменял дату сам — подстраиваемся прямо в рендере (так советует
@@ -319,7 +325,7 @@ export function DatePicker({ name, label, defaultValue = "", locale, minToday = 
               const info = days?.[cell.iso];
               // Занятый день выбрать нельзя — в этом весь смысл затеи.
               const isBusy = info ? !info.free : false;
-              const isDisabled = (minToday && today && cell.iso < today) || isBusy;
+              const isDisabled = (minToday && today && cell.iso < today) || (maxDate && cell.iso > maxDate) || isBusy;
               return (
                 <button
                   key={`${cell.iso}-${idx}`}

@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { contacts } from "@/content/contacts";
 import { mainNavigation } from "@/content/navigation";
+import type { NavigationItem } from "@/content/types";
+import { cartCount, useCart } from "@/lib/restaurant/cart";
 import { dictionaries } from "@/content/translations";
 import { locales, type Locale } from "@/i18n/config";
 import { localizePath, switchLocalePath } from "@/i18n/routing";
@@ -14,6 +16,18 @@ import { onScrollFrame } from "@/lib/scroll-engine";
 
 type HeaderProps = {
   locale: Locale;
+  /**
+   * Ресторан в меню сайта — только когда владелец открыл раздел (анонс или
+   * работа). Решает сервер по настройкам; сам список пунктов живёт в
+   * navigation.ts и о ресторане не знает.
+   */
+  restaurant?: NavigationItem | null;
+  /**
+   * Две подписи кнопки в разделе ресторана — строками, а не всем словарём
+   * ресторана: шапка стоит на каждой странице, и тащить в неё три языка
+   * текстов ресторана значило бы утяжелить весь сайт.
+   */
+  restaurantLabels?: { cart: string; menu: string };
 };
 
 /**
@@ -43,8 +57,13 @@ const HEADER_CTA: Record<string, string> = {
   en: "Book in one click",
 };
 
-export function Header({ locale }: HeaderProps) {
+export function Header({ locale, restaurant = null, restaurantLabels }: HeaderProps) {
   const pathname = usePathname();
+  const cart = useCart();
+  // Ресторан встаёт после «Услуг»: это тоже то, за чем приезжают на территорию.
+  const nav = restaurant
+    ? mainNavigation.flatMap((item) => (item.href === "/services" ? [item, restaurant] : [item]))
+    : mainNavigation;
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -67,6 +86,20 @@ export function Header({ locale }: HeaderProps) {
   // Якорь для плавной прокрутки нужен только там, где форма на этой же
   // странице. Каталогу домиков он ни к чему — прыгать не к чему.
   const bookReload = !dayProduct;
+
+  /*
+   * В разделе ресторана золотая кнопка — не бронь домика, а меню или корзина:
+   * гость, выбирающий ужин, не должен улетать в каталог домиков (та же
+   * ошибка, что была с тюбингом 06.08.2026).
+   */
+  const inRestaurant = pathname.startsWith(localizePath(locale, "/restaurant"));
+  const inCart = cartCount(cart);
+  const cta =
+    inRestaurant && restaurantLabels
+      ? inCart > 0
+        ? { href: localizePath(locale, "/restaurant/checkout"), label: `${restaurantLabels.cart} · ${inCart}`, reload: false }
+        : { href: localizePath(locale, "/restaurant/menu"), label: restaurantLabels.menu, reload: false }
+      : { href: bookHref, label: HEADER_CTA[locale] ?? dict.bookNow, reload: bookReload };
 
   // Scrolling down past the hero tucks the bar away; any upward move brings it
   // straight back. Reads from the shared scroll loop rather than adding a second
@@ -92,11 +125,20 @@ export function Header({ locale }: HeaderProps) {
     return () => unlock();
   }, [isOpen]);
 
-  const isHeroPage = pathname.split("/").length <= 2;
+  // У ресторана каждая страница начинается с тёмной шапки под фото — светлая
+  // стеклянная полоса поверх неё смотрелась бы заплаткой.
+  const isHeroPage = pathname.split("/").length <= 2 || inRestaurant;
   const isHeaderOnHero = isHeroPage && !scrolled;
   // The burger lives in the bar, so the bar has to stay put while the drawer is
   // open. Derived rather than pushed into state via an effect.
   const isHidden = hidden && !isOpen;
+
+  // Липкие панели страниц (лента разделов меню ресторана) встают под шапку,
+  // пока она видна, и поднимаются к краю, когда шапка уехала. Атрибут
+  // меняется только при переключении, а не на каждом кадре прокрутки.
+  useEffect(() => {
+    document.documentElement.dataset.header = isHidden ? "hidden" : "shown";
+  }, [isHidden]);
   const languageOptions = [locale, ...locales.filter((item) => item !== locale)];
   // Soft text shadow for header text sitting on the hero photo — extra legibility
   // insurance on top of the scrim, on the brightest parts of the image.
@@ -145,7 +187,7 @@ export function Header({ locale }: HeaderProps) {
 
           {/* Desktop nav */}
           <nav className="hidden items-center gap-8 lg:flex" aria-label="Main navigation">
-            {mainNavigation.map((item) => {
+            {nav.map((item) => {
               const href = localizePath(locale, item.href);
               const isActive = pathname === href || (item.href !== "/" && pathname.startsWith(href));
               return (
@@ -211,11 +253,11 @@ export function Header({ locale }: HeaderProps) {
             {/* На странице услуги — к её форме; иначе в каталог домиков, где
                 гость выбирает домик и уходит в «забронировать в один клик». */}
             <a
-              href={bookHref}
-              {...(bookReload ? {} : { "data-anchor": "request" })}
+              href={cta.href}
+              {...(cta.reload || inRestaurant ? {} : { "data-anchor": "request" })}
               className="btn-press btn-glow-primary inline-flex h-10 items-center justify-center rounded-full px-5 text-[13px] font-bold"
             >
-              {HEADER_CTA[locale] ?? dict.bookNow}
+              {cta.label}
             </a>
           </div>
 
@@ -227,11 +269,11 @@ export function Header({ locale }: HeaderProps) {
             рядом с логотипом, а перенос в две строки ломает высоту шапки.
           */}
           <a
-            href={bookHref}
-            {...(bookReload ? {} : { "data-anchor": "request" })}
+            href={cta.href}
+            {...(cta.reload || inRestaurant ? {} : { "data-anchor": "request" })}
             className="btn-press mr-1 inline-flex h-9 shrink-0 items-center justify-center rounded-full bg-[var(--sun)] px-2.5 text-[10px] font-bold leading-tight text-[var(--on-accent)] shadow-[0_8px_20px_-8px_rgba(220,140,0,0.8)] sm:px-4 sm:text-[12px] lg:hidden"
           >
-            {HEADER_CTA[locale] ?? dict.bookNow}
+            {cta.label}
           </a>
 
           {/* Mobile burger */}
@@ -292,7 +334,7 @@ export function Header({ locale }: HeaderProps) {
 
         <nav className="flex flex-1 flex-col justify-center px-6" aria-label="Mobile navigation">
           <ul className="space-y-1">
-            {mainNavigation.map((item, i) => {
+            {nav.map((item, i) => {
               const href = localizePath(locale, item.href);
               const isActive = pathname === href || (item.href !== "/" && pathname.startsWith(href));
               return (

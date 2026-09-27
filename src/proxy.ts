@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { locales } from "@/i18n/config";
 import { defaultLocaleForHost } from "@/i18n/domains";
 import { adminHost, isAdminHost, requestHost } from "@/lib/admin-host";
+import { ADMIN_COOKIE, homeFor, roleCanOpen, sessionFromToken } from "@/lib/admin-session";
 
 const PUBLIC_SITE = "https://chimgandarbaza.uz";
 
@@ -72,7 +73,35 @@ export function proxy(request: NextRequest) {
    * answered 307 to /ru/admin, exactly as GET /xx does.
    */
   if (pathname === "/admin" || pathname.startsWith("/admin/")) {
-    return;
+    /*
+     * Права — здесь, а не только в layout панели. Layout не перерисовывается
+     * при переходах внутри панели, и проверку в нём можно обойти собранным
+     * вручную RSC-запросом. Proxy видит каждый запрос.
+     *
+     *  • без входа — только /admin, где форма пароля;
+     *  • вход ресторана — только свой раздел, остальное уводит в него.
+     */
+    const session = sessionFromToken(request.cookies.get(ADMIN_COOKIE)?.value);
+    const target = !session ? (pathname === "/admin" ? null : "/admin") : roleCanOpen(session.role, pathname) ? null : homeFor(session.role);
+    // Вызов server action (заголовок Next-Action) не уводим: редирект POST-а
+    // браузер повторил бы на /admin, и вместо «Нет прав — войдите снова»
+    // человек увидел бы страницу ошибки. Права действие проверит само.
+    const isAction = request.method === "POST" && request.headers.has("next-action");
+    if (target && target !== pathname && !isAction) {
+      const url = request.nextUrl.clone();
+      url.pathname = target;
+      url.search = "";
+      return NextResponse.redirect(url, 307);
+    }
+    /*
+     * Путь — в заголовок запроса для layout панели: layout не получает
+     * pathname, а ему нужно решить, пускать ли на эту страницу вход ресторана
+     * (у менеджера и официантов «Сазанчика» свой пароль и только свой раздел).
+     * Заголовок ставится здесь и перезаписывает всё, что прислал браузер.
+     */
+    const headers = new Headers(request.headers);
+    headers.set("x-admin-path", pathname);
+    return NextResponse.next({ request: { headers } });
   }
 
   // Locale routing for the public site. The admin host never reaches this,

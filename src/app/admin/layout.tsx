@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "../globals.css";
-import { authConfigured, isSignedIn } from "@/lib/admin-auth";
+import { headers } from "next/headers";
+import Link from "next/link";
+import { authConfigured, getSession, homeFor, roleCanOpen, ROLE_LABEL } from "@/lib/admin-auth";
 import { LoginForm } from "./LoginForm";
 import { AdminNav } from "./AdminNav";
 import { signOut } from "./actions";
@@ -52,12 +54,20 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const signedIn = await isSignedIn();
+  const session = await getSession();
+  const signedIn = session !== null;
+  /*
+   * Вход ресторана видит только свой раздел. Путь приходит от proxy
+   * (x-admin-path): layout его иначе не знает. Пусто — значит, запрос прошёл
+   * мимо proxy, и тогда пускаем только владельца.
+   */
+  const path = (await headers()).get("x-admin-path") ?? "";
+  const allowed = session ? roleCanOpen(session.role, path || "/admin") : false;
 
   return (
     <html lang="ru" className={sans.variable}>
       <body className="admin-root min-h-screen bg-[var(--surface)] font-sans text-[var(--ink)] antialiased">
-        {!signedIn ? (
+        {!session ? (
           <main className="flex min-h-screen items-center justify-center px-5 py-16">
             <div className="w-full max-w-sm">
               <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[var(--muted)]">
@@ -67,7 +77,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 Панель управления
               </h1>
               <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-                Заявки, аналитика, цены, услуги и новости.
+                Заявки, аналитика, цены, услуги, новости и ресторан.
               </p>
 
               <div className="mt-8">
@@ -92,7 +102,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[var(--muted)]">
                   CHIMGAN DARBAZA
                 </span>
-                <AdminNav />
+                <AdminNav role={session.role} />
+                {session.role !== "owner" && (
+                  <span className="text-xs font-semibold text-[var(--muted)]">
+                    {ROLE_LABEL[session.role]}
+                    {session.name ? ` · ${session.name}` : ""}
+                  </span>
+                )}
                 {/* A form posting a server action, not a fetch: it works with
                     JavaScript disabled and cannot hang in a pending state. */}
                 <form action={signOut} className="ml-auto">
@@ -105,7 +121,24 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 </form>
               </div>
             </header>
-            <main className="mx-auto max-w-6xl px-5 py-8">{children}</main>
+            <main className="mx-auto max-w-6xl px-5 py-8">
+              {allowed ? (
+                children
+              ) : (
+                <div className="rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] p-6">
+                  <p className="font-serif text-2xl font-semibold">Нет доступа к этому разделу</p>
+                  <p className="mt-2 text-sm text-[var(--muted)]">
+                    Вход «{ROLE_LABEL[session.role]}» открывает только раздел ресторана.
+                  </p>
+                  <Link
+                    href={homeFor(session.role)}
+                    className="mt-4 inline-flex rounded-full bg-[var(--ink)] px-4 py-2 text-sm font-semibold text-[var(--paper)]"
+                  >
+                    Перейти в ресторан
+                  </Link>
+                </div>
+              )}
+            </main>
           </div>
         )}
       </body>

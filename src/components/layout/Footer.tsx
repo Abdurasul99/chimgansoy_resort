@@ -6,6 +6,7 @@ import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
 import { text } from "@/lib/localize";
 import { hiddenServiceSlugs } from "@/lib/services-live";
+import { restaurantListed } from "@/lib/restaurant/live";
 import { ContactForm } from "@/components/layout/ContactForm";
 
 type FooterProps = {
@@ -45,7 +46,26 @@ export async function Footer({ locale }: FooterProps) {
   // Услуга, выключенная в /admin/uslugi, не должна оставаться ссылкой в подвале:
   // её страница уже не отвечает, и гость упирается в тупик на каждой странице
   // сайта сразу. Подвал — единственное место, где эти адреса записаны руками.
-  const hidden = await hiddenServiceSlugs();
+  const [hidden, listed] = await Promise.all([hiddenServiceSlugs(), restaurantListed()]);
+  // Пока ресторан скрыт, в подвале остаётся прежняя «Кухня и меню»; открыт —
+  // та же строка ведёт в ресторан, а рядом появляется бронь стола.
+  const groups = listed
+    ? footerNavigation.map((g) =>
+        g.links.some((l) => l.href === "/services/restaurant")
+          ? {
+              ...g,
+              links: g.links.flatMap((l) =>
+                l.href === "/services/restaurant"
+                  ? [
+                      { href: "/restaurant", label: { ru: "Ресторан и меню", uz: "Restoran va menyu", en: "Restaurant & menu" } },
+                      { href: "/restaurant/tables", label: { ru: "Бронь стола", uz: "Stol band qilish", en: "Book a table" } },
+                    ]
+                  : [l],
+              ),
+            }
+          : g,
+      )
+    : footerNavigation;
   const isHidden = (href: string) => {
     const slug = href.startsWith("/services/") ? href.slice("/services/".length) : null;
     return slug !== null && hidden.includes(slug);
@@ -141,7 +161,7 @@ export async function Footer({ locale }: FooterProps) {
             </div>
 
             <div className="grid grid-cols-2 gap-6 sm:grid-cols-2 lg:grid-cols-2">
-              {footerNavigation.map((group) => (
+              {groups.map((group) => (
                 <div key={text(group.title, locale)}>
                   <h3 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">{text(group.title, locale)}</h3>
                   <ul className="mt-4 space-y-2.5">

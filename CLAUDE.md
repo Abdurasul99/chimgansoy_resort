@@ -121,6 +121,17 @@ The floating "Вопросы / Savollar / FAQ" button opens **`FaqPanel`** — a
 
 `FaqPanel.tsx` only surfaces a curated subset of entries (`FAQ_ORDER`). Topics tied to overnight stays (cottage, glamping, checkin, cancellation, pool) are hidden but live in the knowledge file — re-add their ids to `FAQ_ORDER` when overnight stays open back up.
 
+### Restaurant «Сазанчик» (since 26.09.2026)
+
+Built from the spec `CHIMGAN_DARBAZA_TZ_RESTAURANT_2026-09-25.docx`: the restaurant lives **inside** this site at `/[locale]/restaurant` — landing, `/menu` (cart in localStorage), `/checkout`, `/tables`, `/order/[token]` (private status page). No online payment: every order is a request the restaurant confirms by phone.
+
+- Data is in Postgres, not in `src/content`: tables `restaurant_*`, created by the app itself on first use (`src/lib/restaurant/schema.ts`, one DDL transaction under an advisory lock). Domain code — `src/lib/restaurant/` (`rules.ts` is the single price/time/status calculator shared by browser and server).
+- Order path (`src/app/actions/restaurant.ts`): validate → re-price from the DB → **save** (idempotency key per attempt) → only then Telegram (`notify.ts`, same bot `TELEGRAM_STAFF_BOT_TOKEN`, chat `TELEGRAM_RESTAURANT_CHAT_ID` or `TELEGRAM_ADMIN_CHAT_ID`). Unsent notifications are retried on the next order and when staff open the panel.
+- Status buttons in Telegram (`ro:<id>:<code>`, `rt:…`) are handled in `src/lib/restaurant/bot.ts`, routed from `staff-bot.ts` before the guest menu. Only chats the bot posts orders to may press them (+ optional `TELEGRAM_RESTAURANT_STAFF_IDS`).
+- Admin: `/admin/restoran` (orders, tables, menu, settings). Roles by password: `ADMIN_PASSWORD` owner (everything), `RESTAURANT_MANAGER_PASSWORD` (restaurant only), `RESTAURANT_STAFF_PASSWORD` (orders and tables only). Enforced in `src/proxy.ts` (every request) and in each action (`requireRole`).
+- Section state (settings): `hidden` — reachable by direct link, not in nav/search, orders closed; `announce` — in nav, orders closed; `open`. Preview link from settings sets a cookie on the public site; preview orders are marked test.
+- Tests: `src/lib/restaurant/__tests__`, `src/app/actions/__tests__/restaurant.test.ts`, and `tests/integration/restaurant-db.test.ts` (real Postgres, run with `RESTAURANT_DB_TEST=…` pointing at a throwaway DB — never production).
+
 ---
 
 ## i18n conventions

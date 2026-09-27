@@ -9,6 +9,13 @@ const nextConfig: NextConfig = {
   // ~30 bytes per response + closes a fingerprinting vector).
   poweredByHeader: false,
 
+  experimental: {
+    // Фото блюд и шапки ресторана загружаются через server action. Лимит по
+    // умолчанию — 1 МБ, а снимок с телефона больше; браузер панели сначала
+    // уменьшает фото сам, этот запас — на случай, когда уменьшить не вышло.
+    serverActions: { bodySizeLimit: "12mb" },
+  },
+
   images: {
     // Modern formats — browsers that don't support AVIF fall back to WebP, then JPEG.
     // Cuts hero/room photo bytes by 30-50% vs the source JPEGs.

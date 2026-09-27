@@ -9,7 +9,14 @@ export default function robots(): MetadataRoute.Robots {
       // The operator's panel. It is behind a password either way — this only
       // keeps the login form out of search results, where it would be the one
       // page on the site inviting strangers to guess a password.
-      disallow: ["/admin", "/admin/"],
+      disallow: [
+        "/admin",
+        "/admin/",
+        // Оформление заказа и статус по секретной ссылке — ни в выдачу, ни в
+        // кэш поисковика: на странице статуса имя и маска телефона гостя.
+        "/*/restaurant/checkout",
+        "/*/restaurant/order/",
+      ],
     },
     sitemap: `${primaryOrigin}/sitemap.xml`,
   };

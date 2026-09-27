@@ -117,3 +117,77 @@ describe("admin auth", () => {
     }
   });
 });
+
+describe("роли панели (ресторан)", () => {
+  beforeEach(() => {
+    jar.clear();
+    vi.stubEnv("AUTH_SECRET", SECRET);
+    vi.stubEnv("ADMIN_PASSWORD", PASSWORD);
+    vi.stubEnv("RESTAURANT_MANAGER_PASSWORD", "manager-pass-1");
+    vi.stubEnv("RESTAURANT_STAFF_PASSWORD", "staff-pass-22");
+  });
+  afterEach(() => vi.unstubAllEnvs());
+
+  it("пароль определяет роль", async () => {
+    const { passwordRole } = await load();
+    expect(passwordRole(PASSWORD)).toBe("owner");
+    expect(passwordRole("manager-pass-1")).toBe("manager");
+    expect(passwordRole("staff-pass-22")).toBe("staff");
+    expect(passwordRole("nope")).toBeNull();
+  });
+
+  it("не заданный пароль роли не открывает её пустой строкой", async () => {
+    vi.stubEnv("RESTAURANT_STAFF_PASSWORD", "");
+    const { passwordRole } = await load();
+    expect(passwordRole("")).toBeNull();
+  });
+
+  it("сессия помнит роль и имя; старая cookie без роли — владелец", async () => {
+    const { startSession, getSession } = await load();
+    await startSession("manager", "Азиз");
+    expect(await getSession()).toEqual({ role: "manager", name: "Азиз" });
+    jar.set(COOKIE, signWith(SECRET, Date.now() + 60_000));
+    expect(await getSession()).toEqual({ role: "owner", name: "" });
+  });
+
+  it("вход ресторана не проходит requireAdmin, но проходит свою роль", async () => {
+    const { startSession, requireAdmin, requireRole } = await load();
+    await startSession("staff", "Официант");
+    await expect(requireAdmin()).rejects.toThrow(/not authorised/i);
+    await expect(requireRole("owner", "manager")).rejects.toThrow(/not authorised/i);
+    await expect(requireRole("owner", "manager", "staff")).resolves.toEqual({ role: "staff", name: "Официант" });
+  });
+
+  it("подменить роль в cookie нельзя — подпись не сойдётся", async () => {
+    const { startSession, getSession } = await load();
+    await startSession("staff");
+    jar.set(COOKIE, jar.get(COOKIE)!.replace(".staff.", ".owner."));
+    expect(await getSession()).toBeNull();
+  });
+
+  it("смена пароля роли выкидывает её входы, но не владельца", async () => {
+    const { startSession, getSession } = await load();
+    await startSession("staff", "Официант");
+    const staffCookie = jar.get(COOKIE)!;
+    await startSession("owner");
+    const ownerCookie = jar.get(COOKIE)!;
+    vi.stubEnv("RESTAURANT_STAFF_PASSWORD", "new-staff-pass");
+    const again = await load();
+    jar.set(COOKIE, staffCookie);
+    expect(await again.getSession()).toBeNull();
+    jar.set(COOKIE, ownerCookie);
+    expect(await again.getSession()).toEqual({ role: "owner", name: "" });
+    void getSession;
+  });
+
+  it("какие разделы открывает какая роль", async () => {
+    const { roleCanOpen } = await load();
+    expect(roleCanOpen("owner", "/admin/broni")).toBe(true);
+    expect(roleCanOpen("manager", "/admin/restoran/menu")).toBe(true);
+    expect(roleCanOpen("manager", "/admin/restoranX")).toBe(false);
+    expect(roleCanOpen("manager", "/admin")).toBe(false);
+    expect(roleCanOpen("staff", "/admin/restoran")).toBe(true);
+    expect(roleCanOpen("staff", "/admin/restoran/stoly")).toBe(true);
+    expect(roleCanOpen("staff", "/admin/restoran/nastroyki")).toBe(false);
+  });
+});

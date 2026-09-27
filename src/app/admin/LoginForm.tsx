@@ -28,6 +28,18 @@ export function LoginForm() {
         className="mt-2 w-full rounded-xl border border-[color:var(--line)] bg-[var(--paper)] px-4 py-3 text-base text-[var(--ink)] outline-none transition focus:border-[var(--sun)] focus:ring-2 focus:ring-[var(--sun)]/30"
       />
 
+      <label htmlFor="name" className="mt-5 block text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]">
+        Ваше имя <span className="font-semibold normal-case tracking-normal">— для истории заказов ресторана</span>
+      </label>
+      <input
+        id="name"
+        name="name"
+        type="text"
+        autoComplete="name"
+        maxLength={60}
+        className="mt-2 w-full rounded-xl border border-[color:var(--line)] bg-[var(--paper)] px-4 py-3 text-base text-[var(--ink)] outline-none transition focus:border-[var(--sun)] focus:ring-2 focus:ring-[var(--sun)]/30"
+      />
+
       {state.error && (
         <p role="alert" className="mt-3 text-sm font-semibold text-[#c0392b]">
           {state.error}

@@ -18,6 +18,8 @@ import { buildMetadata } from "@/lib/metadata";
 import { list, text } from "@/lib/localize";
 import { localizePath } from "@/i18n/routing";
 import { getRoomPrices, priceChip } from "@/lib/room-price";
+import { restaurantListed } from "@/lib/restaurant/live";
+import { RestaurantTeaser } from "@/components/restaurant/RestaurantTeaser";
 
 /**
  * Страница услуги рисуется на каждый запрос.
@@ -153,6 +155,8 @@ export default async function ServiceDetailPage({ params }: PageProps) {
       />
       <BookingWidget locale={locale} />
 
+      {/* Открыт ресторан — первым делом ведём в него: там меню с ценами и заказ. */}
+      {service.slug === "restaurant" && (await restaurantListed()) && <RestaurantTeaser locale={locale} />}
       {/* The kitchen page is the one place a full menu belongs. */}
       {service.slug === "restaurant" && <MenuBoard locale={locale} />}
 

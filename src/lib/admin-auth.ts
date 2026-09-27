@@ -1,78 +1,63 @@
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
+import { ADMIN_COOKIE, MAX_AGE_S, sessionFromToken, sessionToken, type AdminRole, type AdminSession, ROLE_LABEL } from "./admin-session";
+
+export * from "./admin-session";
 
 /**
- * Admin session for /admin — one shared password, no user table.
+ * Admin session for /admin — shared passwords, no user table.
  *
- * There is exactly one administrator, and the panel holds nothing the site does
- * not already hold: prices that are printed on the public pages, and guest
- * requests that are already pushed to a Telegram group. A user table, password
- * hashes and a reset flow would be machinery with nobody to serve.
+ * There used to be exactly one administrator and one password. The restaurant
+ * (see src/lib/restaurant) changed that: it is run by a different operating
+ * party, and its manager and waiters must process orders without seeing hotel
+ * bookings, guest phone numbers or prices. So there are now three roles, each
+ * with its own password in the environment:
  *
- * The cookie carries no identity — only an expiry, HMAC-signed with
- * AUTH_SECRET. There is nothing in it to steal and nothing to enumerate: a
- * forged cookie needs the secret, and an old one is refused by its own
- * timestamp. HttpOnly keeps it away from any script on the page, SameSite=Lax
- * means another site cannot ride it, and Secure keeps it off plain HTTP in
- * production.
+ *   owner   — ADMIN_PASSWORD, the whole panel, as before;
+ *   manager — RESTAURANT_MANAGER_PASSWORD, the restaurant section only;
+ *   staff   — RESTAURANT_STAFF_PASSWORD, restaurant orders and tables only.
  *
- * Ported from the chimgan-uslugi services portal, where this exact module has
- * been running since 2026-08-03. It came over unchanged apart from the cookie
- * name, because it was written storage-agnostic — it was the one part of that
- * project that did not die with its unprovisioned database.
+ * Still no user table: a role is a password, and the person's name is typed at
+ * sign-in so the order history can say who pressed "confirm". Anyone with the
+ * password could type any name — that is fine for a history meant to answer
+ * "who was on shift", not to settle a dispute.
+ *
+ * The cookie carries the expiry, the role and the name, HMAC-signed with
+ * AUTH_SECRET. A cookie issued before roles existed (`exp.mac`) is still
+ * accepted as the owner, so nobody was signed out by the upgrade. HttpOnly
+ * keeps it away from page scripts, SameSite=Lax keeps other sites from riding
+ * it, Secure keeps it off plain HTTP in production.
  */
 
-const COOKIE = "cd_admin";
-const MAX_AGE_S = 60 * 60 * 12; // a working day; long enough not to nag
+const COOKIE = ADMIN_COOKIE;
 
-function secret(): string {
-  const s = process.env.AUTH_SECRET?.trim();
-  if (!s) throw new Error("AUTH_SECRET is not set");
-  return s;
-}
-
-function sign(expiresAt: number): string {
-  const mac = createHmac("sha256", secret()).update(String(expiresAt)).digest("hex");
-  return `${expiresAt}.${mac}`;
-}
-
-function valid(token: string | undefined): boolean {
-  if (!token) return false;
-  const [expRaw, mac] = token.split(".");
-  const exp = Number(expRaw);
-  if (!exp || !mac || Number.isNaN(exp)) return false;
-  if (Date.now() > exp) return false;
-  let expected: string;
-  try {
-    expected = createHmac("sha256", secret()).update(expRaw).digest("hex");
-  } catch {
-    // AUTH_SECRET missing in this environment: refuse rather than throw into
-    // the render. authConfigured() is what surfaces the misconfiguration.
-    return false;
-  }
-  let a: Buffer;
-  try {
-    a = Buffer.from(mac, "hex");
-  } catch {
-    return false;
-  }
-  const b = Buffer.from(expected, "hex");
-  // Constant-time: a length mismatch alone would otherwise leak through timing.
-  return a.length === b.length && timingSafeEqual(a, b);
-}
-
-/** True when the password matches. Compared in constant time. */
-export function passwordMatches(input: string): boolean {
-  const expected = process.env.ADMIN_PASSWORD?.trim();
-  if (!expected) return false;
+function equalSecret(input: string, expected: string | undefined): boolean {
+  const want = expected?.trim();
+  if (!want) return false;
   const a = Buffer.from(input);
-  const b = Buffer.from(expected);
+  const b = Buffer.from(want);
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
-export async function startSession(): Promise<void> {
+/** True when the owner password matches. Compared in constant time. */
+export function passwordMatches(input: string): boolean {
+  return equalSecret(input, process.env.ADMIN_PASSWORD);
+}
+
+/**
+ * Which role a password opens, or null. Every candidate is compared, match or
+ * not, so the time taken does not say which password was close.
+ */
+export function passwordRole(input: string): AdminRole | null {
+  const owner = equalSecret(input, process.env.ADMIN_PASSWORD);
+  const manager = equalSecret(input, process.env.RESTAURANT_MANAGER_PASSWORD);
+  const staff = equalSecret(input, process.env.RESTAURANT_STAFF_PASSWORD);
+  return owner ? "owner" : manager ? "manager" : staff ? "staff" : null;
+}
+
+export async function startSession(role: AdminRole = "owner", name = ""): Promise<void> {
   const jar = await cookies();
-  jar.set(COOKIE, sign(Date.now() + MAX_AGE_S * 1000), {
+  jar.set(COOKIE, sessionToken(role, name), {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
@@ -86,21 +71,40 @@ export async function endSession(): Promise<void> {
   jar.delete(COOKIE);
 }
 
-export async function isSignedIn(): Promise<boolean> {
+export async function getSession(): Promise<AdminSession | null> {
   try {
     const jar = await cookies();
-    return valid(jar.get(COOKIE)?.value);
+    return sessionFromToken(jar.get(COOKIE)?.value);
   } catch {
-    return false;
+    return null;
   }
 }
 
+export async function isSignedIn(): Promise<boolean> {
+  return (await getSession()) !== null;
+}
+
 /**
- * Guard for every admin action. Throws rather than returning a falsy value, so
- * a forgotten check fails loudly instead of silently writing to the store.
+ * Guard for every owner-only action. Throws rather than returning a falsy
+ * value, so a forgotten check fails loudly instead of silently writing to the
+ * store. A restaurant login is refused here: it must not reach bookings,
+ * prices or the site's content.
  */
 export async function requireAdmin(): Promise<void> {
-  if (!(await isSignedIn())) throw new Error("Not authorised");
+  const s = await getSession();
+  if (!s || s.role !== "owner") throw new Error("Not authorised");
+}
+
+/** Guard for restaurant actions: returns the session so it can be logged. */
+export async function requireRole(...roles: AdminRole[]): Promise<AdminSession> {
+  const s = await getSession();
+  if (!s || !roles.includes(s.role)) throw new Error("Not authorised");
+  return s;
+}
+
+/** «Менеджер ресторана · Азиз» — как сотрудник попадёт в историю статусов. */
+export function actorName(s: AdminSession): string {
+  return s.name ? `${ROLE_LABEL[s.role]} · ${s.name}` : ROLE_LABEL[s.role];
 }
 
 export function authConfigured(): boolean {
