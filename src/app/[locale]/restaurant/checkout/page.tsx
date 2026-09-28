@@ -23,8 +23,8 @@ export default async function RestaurantCheckoutPage({ params }: PageProps) {
 
   return (
     <div className="rest bg-[#fcf4e6]">
-      {preview && <PreviewBanner locale={locale} />}
       <RestaurantPageHead
+        notice={preview ? <PreviewBanner locale={locale} /> : null}
         eyebrow={t.checkout.eyebrow}
         title={t.checkout.title}
         lead={openModes.length ? t.checkout.lead : t.closedBanner}

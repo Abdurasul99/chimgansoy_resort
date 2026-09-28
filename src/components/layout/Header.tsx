@@ -173,13 +173,27 @@ export function Header({ locale, restaurant = null, restaurantLabels }: HeaderPr
             onClick={() => setIsOpen(false)}
             prefetch={false}
           >
-            <div className="px-2 py-1 transition-all duration-500">
-              <div className="relative" style={{ width: "100px", height: "62px" }}>
+            {/* Два логотипа друг на друге. Над фото — белые буквы и горы:
+                тёмно-серые (#323941) на тёмном кадре читались как пятно, и
+                название комплекса на первом экране было почти не видно. На
+                светлой стеклянной шапке после прокрутки — обычный тёмный.
+                Смена — через прозрачность, без перезагрузки картинки. */}
+            <div className="px-2 py-1">
+              <div className="relative h-[62px] w-[100px] lg:h-[70px] lg:w-[112px]">
                 <img
                   src="/images/resort/chimgan_darbaza.svg"
                   alt="CHIMGAN DARBAZA Resort"
-                  className="logo-img"
-                  style={{ display: "block", width: "100px", height: "auto" }}
+                  className={`logo-img absolute inset-0 block h-auto w-full transition-opacity duration-500 ${
+                    isHeaderOnHero ? "opacity-0" : "opacity-100"
+                  }`}
+                />
+                <img
+                  src="/images/resort/chimgan_darbaza_light.svg"
+                  alt=""
+                  aria-hidden="true"
+                  className={`logo-img logo-img-light absolute inset-0 block h-auto w-full transition-opacity duration-500 ${
+                    isHeaderOnHero ? "opacity-100" : "opacity-0"
+                  }`}
                 />
               </div>
             </div>

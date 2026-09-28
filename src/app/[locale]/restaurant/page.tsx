@@ -70,11 +70,19 @@ export default async function RestaurantPage({ params }: PageProps) {
 
   return (
     <div className="rest bg-[#fcf4e6]">
-      {preview && <PreviewBanner locale={locale} />}
-      {settings.state === "open" || preview ? null : (
-        <div className="relative z-[55] bg-[#1f1712] px-4 py-2.5 text-center text-sm font-semibold text-[#ffd9a0]">{t.closedBanner}</div>
-      )}
-      <RestaurantHero locale={locale} settings={settings} openModes={openModes} tablesOpen={tablesOpen} />
+      <RestaurantHero
+        locale={locale}
+        settings={settings}
+        openModes={openModes}
+        tablesOpen={tablesOpen}
+        notice={
+          preview ? (
+            <PreviewBanner locale={locale} />
+          ) : settings.state === "open" ? null : (
+            <div className="bg-[#1f1712]/90 px-4 py-2.5 text-center text-sm font-semibold text-[#ffd9a0]">{t.closedBanner}</div>
+          )
+        }
+      />
       <Ticker words={words} />
       <HowItWorks locale={locale} />
 

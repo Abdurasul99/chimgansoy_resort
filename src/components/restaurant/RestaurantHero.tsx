@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
 import { restaurantText } from "@/content/restaurant";
@@ -7,6 +8,7 @@ import { heroImage, openNow } from "@/lib/restaurant/page";
 import { Embers, IkatBand, Rosette } from "./Ornaments";
 import { GlowLink } from "./GlowLink";
 import { RestIcon, type RestIconName } from "./RestIcon";
+import { TopNotice } from "./RestaurantSections";
 
 /**
  * Первый экран ресторана: живое фото, искры, название-пламя и четыре
@@ -18,11 +20,14 @@ export function RestaurantHero({
   settings,
   openModes,
   tablesOpen,
+  notice,
 }: {
   locale: Locale;
   settings: RestaurantSettings;
   openModes: OrderMode[];
   tablesOpen: boolean;
+  /** Плашка под шапкой сайта — см. TopNotice. */
+  notice?: ReactNode;
 }) {
   const t = restaurantText(locale);
   const name = pickText(settings.name, locale);
@@ -70,7 +75,8 @@ export function RestaurantHero({
       <Rosette size={420} className="rest-spin pointer-events-none absolute -right-40 -top-40 -z-10 opacity-[0.16] sm:-right-24 sm:-top-24" />
       <Rosette size={260} className="rest-spin pointer-events-none absolute -bottom-24 -left-28 -z-10 opacity-[0.12]" colors={["#17a3b0", "#f4a52a", "#d6352b"]} />
 
-      <div className="mx-auto max-w-7xl px-4 pb-10 pt-32 sm:px-6 sm:pb-14 sm:pt-40 lg:px-8">
+      <TopNotice notice={notice} />
+      <div className={`mx-auto max-w-7xl px-4 pb-10 sm:px-6 sm:pb-14 lg:px-8 ${notice ? "pt-12 sm:pt-20" : "pt-32 sm:pt-40"}`}>
         <div className="motion-rise max-w-3xl">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-[#ffc46b] backdrop-blur">

@@ -16,7 +16,7 @@ import { RestIcon } from "./RestIcon";
 export function PreviewBanner({ locale }: { locale: Locale }) {
   const t = restaurantText(locale);
   return (
-    <div className="relative z-[55] bg-[repeating-linear-gradient(135deg,#17a3b0_0_14px,#128895_14px_28px)] px-4 py-2 text-center text-xs font-bold text-white">
+    <div className="bg-[repeating-linear-gradient(135deg,#17a3b0_0_14px,#128895_14px_28px)] px-4 py-2 text-center text-xs font-bold text-white">
       {t.hiddenPreview}{" "}
       <a href={`/api/restaurant/preview?off=1&l=${locale}`} className="underline underline-offset-2">
         {t.previewExit}
@@ -217,25 +217,42 @@ export function FinalCta({ locale, name, tablesOpen }: { locale: Locale; name: s
   );
 }
 
+/**
+ * Плашка под шапкой сайта — «предпросмотр» или «приём заказов скоро».
+ *
+ * Живёт внутри тёмного первого экрана, а не над ним. Первый экран уходит под
+ * прозрачную шапку (-mt-[4.5rem]); плашка перед ним сдвигала его вниз, и за
+ * шапкой оставалась полоса светлого фона страницы — белый логотип и меню на
+ * ней терялись (28.09.2026).
+ */
+export function TopNotice({ notice }: { notice?: ReactNode }) {
+  if (!notice) return null;
+  return <div className="relative z-10 pt-[4.5rem]">{notice}</div>;
+}
+
 /** Шапка внутренних страниц ресторана — тёмная, с искрой, короче первого экрана. */
 export function RestaurantPageHead({
   eyebrow,
   title,
   lead,
   name,
+  notice,
   children,
 }: {
   eyebrow: string;
   title: string;
   lead: string;
   name: string;
+  /** Плашка под шапкой сайта (предпросмотр) — см. TopNotice. */
+  notice?: ReactNode;
   children?: ReactNode;
 }) {
   return (
     <section className="relative isolate -mt-[4.5rem] overflow-hidden bg-[#140f0c] text-white">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(70%_90%_at_85%_0%,rgba(255,106,43,0.45),transparent_60%),radial-gradient(60%_80%_at_0%_100%,rgba(23,163,176,0.25),transparent_60%)]" />
       <Rosette size={360} className="rest-spin pointer-events-none absolute -right-32 -top-28 -z-10 opacity-[0.14]" />
-      <div className="mx-auto max-w-7xl px-4 pb-10 pt-28 sm:px-6 sm:pb-14 sm:pt-36 lg:px-8">
+      <TopNotice notice={notice} />
+      <div className={`mx-auto max-w-7xl px-4 pb-10 sm:px-6 sm:pb-14 lg:px-8 ${notice ? "pt-10 sm:pt-16" : "pt-28 sm:pt-36"}`}>
         <p className="inline-flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#ffc46b]">
           <RestIcon name="flame" className="h-3.5 w-3.5 text-[#ff8a3d]" />
           {name} · {eyebrow}

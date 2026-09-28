@@ -37,8 +37,8 @@ export default async function RestaurantMenuPage({ params, searchParams }: PageP
 
   return (
     <div className="rest bg-[#fcf4e6]">
-      {preview && <PreviewBanner locale={locale} />}
       <RestaurantPageHead
+        notice={preview ? <PreviewBanner locale={locale} /> : null}
         eyebrow={t.menu.eyebrow}
         title={t.menu.title}
         lead={openModes.length ? t.menu.lead : t.closedBanner}

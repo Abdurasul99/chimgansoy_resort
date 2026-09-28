@@ -32,8 +32,13 @@ export default async function RestaurantTablesPage({ params }: PageProps) {
 
   return (
     <div className="rest bg-[#fcf4e6]">
-      {preview && <PreviewBanner locale={locale} />}
-      <RestaurantPageHead eyebrow={t.tables.eyebrow} title={t.tables.title} lead={t.tables.lead} name={pickText(settings.name, locale)} />
+      <RestaurantPageHead
+        eyebrow={t.tables.eyebrow}
+        title={t.tables.title}
+        lead={t.tables.lead}
+        name={pickText(settings.name, locale)}
+        notice={preview ? <PreviewBanner locale={locale} /> : null}
+      />
       <section className="relative overflow-hidden px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
         <Rosette size={480} className="rest-spin pointer-events-none absolute -left-52 top-10 opacity-[0.07]" colors={["#17a3b0", "#2c9a5b", "#f4a52a"]} />
         <div className="relative mx-auto max-w-3xl">

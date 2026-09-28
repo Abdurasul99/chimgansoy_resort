@@ -1882,6 +1882,12 @@ html { scroll-behavior: smooth; }
   filter: drop-shadow(0 0 3px rgba(255,255,255,0.90))
           drop-shadow(0 5px 14px rgba(15,23,42,0.34));
 }
+/* Белый логотип над фото: тень тёмная — белый ореол вокруг белых букв
+   ничего бы не отделил от светлого неба. */
+.logo-img.logo-img-light {
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.55))
+          drop-shadow(0 4px 14px rgba(0,0,0,0.45));
+}
 
 /* ── Winter logo: white outline halo so dark text is readable on dark bg ─── */
 
