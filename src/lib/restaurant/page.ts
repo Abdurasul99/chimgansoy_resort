@@ -38,13 +38,12 @@ export function openNow(settings: RestaurantSettings, now = Date.now()): boolean
   return withinHours(settings, tashkentNow(now).minutes);
 }
 
-const SUFFIX: Record<"landing" | "menu" | "tables", Record<Locale, string>> = {
-  landing: { ru: "ресторан в CHIMGAN DARBAZA", uz: "CHIMGAN DARBAZA restorani", en: "restaurant at CHIMGAN DARBAZA" },
-  menu: { ru: "меню и заказ онлайн — CHIMGAN DARBAZA", uz: "menyu va onlayn buyurtma — CHIMGAN DARBAZA", en: "menu and online ordering — CHIMGAN DARBAZA" },
+const SUFFIX: Record<"landing" | "tables", Record<Locale, string>> = {
+  landing: { ru: "меню и заказ — ресторан в CHIMGAN DARBAZA", uz: "menyu va buyurtma — CHIMGAN DARBAZA restorani", en: "menu and ordering — restaurant at CHIMGAN DARBAZA" },
   tables: { ru: "бронь стола — CHIMGAN DARBAZA", uz: "stol bandi — CHIMGAN DARBAZA", en: "book a table — CHIMGAN DARBAZA" },
 };
 
-export function restaurantSeo(settings: RestaurantSettings, kind: "landing" | "menu" | "tables"): PageSeo {
+export function restaurantSeo(settings: RestaurantSettings, kind: "landing" | "tables"): PageSeo {
   const name = (l: Locale) => pickText(settings.name, l);
   const desc = (l: Locale) => pickText(settings.tagline, l) + ". " + pickText(settings.about, l);
   return {

@@ -44,8 +44,11 @@ export type CheckoutSettings = {
 };
 
 const field =
-  "w-full min-h-13 rounded-2xl border border-[#e8d6b8] bg-white px-4 py-3 text-base text-[#1f1712] outline-none transition placeholder:text-[#b3a28f] focus:border-[#ff6a2b] focus:ring-4 focus:ring-[#ff6a2b]/15";
-const label = "mb-1.5 block text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8a7867]";
+  "w-full min-h-12 rounded-xl border border-[#e3e3e3] bg-white px-4 py-3 text-base text-[#1c1c1c] outline-none transition placeholder:text-[#a8a8a8] focus:border-[#1c1c1c]";
+const label = "mb-1.5 block text-[13px] font-semibold text-[#6b6b6b]";
+const box = "rounded-3xl border border-[#ececec] p-5 sm:p-6";
+const heading = "text-lg font-bold text-[#1c1c1c]";
+const note = "rounded-2xl bg-[#f6f5f2] px-4 py-3 text-sm text-[#4a4a4a]";
 
 const noop = () => () => {};
 
@@ -140,33 +143,32 @@ export function CheckoutForm({
   const maxDate = now === null ? undefined : addDaysISO(tashkentNow(now).date, mode === "preorder" ? TABLE_MAX_AHEAD_DAYS : MAX_AHEAD_DAYS);
 
   if (!mounted) {
-    return <div className="h-96 animate-pulse rounded-[2rem] bg-white/60" />;
+    return <div className="h-96 animate-pulse rounded-3xl bg-[#f6f5f2]" />;
   }
 
   if (sent) {
     return (
-      <div className="mx-auto max-w-xl rounded-[2rem] bg-[#1f1712] px-6 py-14 text-center text-white">
-        <span className="rest-pop mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#ffa53d] to-[#d6352b]">
-          <RestIcon name="check" className="h-8 w-8" />
+      <div className="mx-auto max-w-xl rounded-3xl bg-[#f6f5f2] px-6 py-14 text-center">
+        <span className="rest-pop mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#22a45d] text-white">
+          <RestIcon name="check" className="h-7 w-7" />
         </span>
-        <p className="mt-5 font-serif text-3xl font-bold">{t.status.order_labels.new.title}</p>
-        <p className="mt-2 text-white/70">{t.status.order_labels.new.text}</p>
+        <p className="mt-5 text-2xl font-bold text-[#1c1c1c]">{t.status.order_labels.new.title}</p>
+        <p className="mt-2 text-[#6b6b6b]">{t.status.order_labels.new.text}</p>
       </div>
     );
   }
 
   if (lines.length === 0) {
     return (
-      <div className="mx-auto max-w-xl rounded-[2rem] border border-dashed border-[#e0c9a4] bg-white/70 px-6 py-14 text-center">
-        <RestIcon name="bag" className="mx-auto h-12 w-12 text-[#ff6a2b]" />
-        <p className="mt-4 font-serif text-3xl font-bold text-[#1f1712]">{c.empty}</p>
-        <p className="mt-2 text-[#6b5a4c]">{c.emptyText}</p>
+      <div className="mx-auto max-w-xl rounded-3xl bg-[#f6f5f2] px-6 py-14 text-center">
+        <RestIcon name="bag" className="mx-auto h-11 w-11 text-[#cdc5b8]" />
+        <p className="mt-4 text-2xl font-bold text-[#1c1c1c]">{c.empty}</p>
+        <p className="mt-2 text-[#6b6b6b]">{c.emptyText}</p>
         <Link
-          href={localizePath(locale, "/restaurant/menu")}
+          href={localizePath(locale, "/restaurant")}
           prefetch={false}
-          className="btn-press mt-6 inline-flex h-12 items-center gap-2 rounded-full bg-gradient-to-r from-[#ffa53d] via-[#ff6a2b] to-[#d6352b] px-7 font-extrabold text-white"
+          className="btn-press mt-6 inline-flex h-12 items-center gap-2 rounded-2xl bg-[#f4a52a] px-6 font-bold text-[#3b2a0a]"
         >
-          <RestIcon name="menu" className="h-5 w-5" />
           {c.toMenu}
         </Link>
       </div>
@@ -223,8 +225,30 @@ export function CheckoutForm({
     });
   };
 
+  // Отправка, оговорка и ошибка — одним блоком: на компьютере он в колонке
+  // заказа, рядом с суммой; на телефоне — в конце формы, после контактов.
+  const submitBlock = (
+    <>
+      {preview && <p className="mb-3 rounded-2xl bg-[#e7f5f6] px-4 py-3 text-sm text-[#0e5f67]">{c.testNote}</p>}
+      {error && (
+        <p role="alert" className="mb-3 rounded-2xl bg-[#fdecea] px-4 py-3 text-sm font-semibold text-[#b42318]">
+          {error}
+        </p>
+      )}
+      <button
+        type="submit"
+        disabled={pending || !mode}
+        className="btn-press flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-[#f4a52a] px-6 text-base font-bold text-[#3b2a0a] transition-colors hover:bg-[#eb9b1c] disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {pending ? c.sending : c.submit}
+        {!pending && <span className="tabular-nums">· {money(total)} {currency}</span>}
+      </button>
+      <p className="mt-3 text-xs leading-5 text-[#8c8c8c]">{c.notice}</p>
+    </>
+  );
+
   return (
-    <form onSubmit={submit} className="ym-disable-keys grid gap-6 lg:grid-cols-[1fr_24rem] lg:items-start">
+    <form onSubmit={submit} className="ym-disable-keys grid gap-4 lg:grid-cols-[minmax(0,1fr)_23rem] lg:items-start lg:gap-8">
       <input type="hidden" name="locale" value={locale} />
       <PageContextFields />
       <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
@@ -234,48 +258,52 @@ export function CheckoutForm({
         </label>
       </div>
 
-      {/* Корзина — на телефоне первой: гость должен видеть, что заказывает. */}
-      <aside className="order-first rounded-[2rem] bg-[#1f1712] p-5 text-white shadow-[0_30px_70px_-35px_rgba(20,15,12,0.9)] sm:p-6 lg:order-last lg:sticky lg:top-24">
+      {/* Состав заказа — на телефоне первым: гость должен видеть, что заказывает. */}
+      <aside className="rest-side order-first rounded-3xl bg-[#f6f5f2] p-5 lg:sticky lg:order-last">
         <div className="flex items-center justify-between">
-          <p className="font-serif text-2xl font-bold">{c.cart}</p>
-          <Link href={localizePath(locale, "/restaurant/menu")} prefetch={false} className="text-sm font-bold text-[#ffb35c] hover:underline">
+          <p className="text-lg font-bold text-[#1c1c1c]">{c.cart}</p>
+          <Link href={localizePath(locale, "/restaurant")} prefetch={false} className="text-sm font-semibold text-[#6b6b6b] hover:text-[#1c1c1c]">
             + {t.menu.title}
           </Link>
         </div>
-        <ul className="mt-4 divide-y divide-white/10">
+        <ul className="mt-4 space-y-3">
           {priced.map((p) => {
             const title = p.dish ? pickText(p.dish.title, locale) : `#${p.dishId}`;
             const bad = p.problem ?? serverProblems.find((s) => s.dishId === p.dishId)?.problem ?? null;
             return (
-              <li key={p.dishId} className="flex gap-3 py-3">
-                <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl">
-                  <DishVisual image={p.dish?.image ?? ""} title={title} seed={p.dishId} />
+              <li key={p.dishId} className="flex items-center gap-3">
+                <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl">
+                  <DishVisual image={p.dish?.image ?? ""} title={title} />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-bold">{title}</p>
-                  <p className="text-xs text-white/55">
-                    {p.dish?.portion ? `${p.dish.portion} · ` : ""}
-                    {p.dish ? `${money(p.dish.price)} ${currency}` : ""}
-                  </p>
-                  {bad && <p className="mt-1 text-xs font-bold text-[#ff8a6b]">{t.errors.problem[bad]}</p>}
+                  <p className="line-clamp-2 text-sm leading-5 text-[#1c1c1c]">{title}</p>
+                  {bad ? (
+                    <p className="text-xs font-semibold text-[#b42318]">{t.errors.problem[bad]}</p>
+                  ) : (
+                    <p className="text-[13px] font-semibold tabular-nums text-[#1c1c1c]">
+                      {p.dish ? `${money(p.dish.price * p.qty)} ${currency}` : ""}
+                    </p>
+                  )}
                 </div>
-                <div className="flex shrink-0 flex-col items-end gap-1.5">
-                  <div className="inline-flex items-center rounded-full bg-white/10 p-0.5">
-                    <button type="button" onClick={() => setQty(p.dishId, p.qty - 1)} className="btn-press flex h-8 w-8 items-center justify-center rounded-full hover:bg-white/10" aria-label="−">
-                      <RestIcon name="minus" className="h-3.5 w-3.5" />
-                    </button>
-                    <span className="min-w-6 text-center text-sm font-extrabold tabular-nums">{p.qty}</span>
-                    <button
-                      type="button"
-                      onClick={() => setQty(p.dishId, p.qty + 1)}
-                      disabled={Boolean(bad)}
-                      className="btn-press flex h-8 w-8 items-center justify-center rounded-full bg-[#ff6a2b] disabled:opacity-40"
-                      aria-label="+"
-                    >
-                      <RestIcon name="plus" className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                  <span className="text-sm font-bold tabular-nums">{p.dish && !bad ? money(p.dish.price * p.qty) : "—"}</span>
+                <div className="flex shrink-0 items-center rounded-xl bg-white">
+                  <button
+                    type="button"
+                    onClick={() => setQty(p.dishId, p.qty - 1)}
+                    className="btn-press flex h-9 w-9 items-center justify-center rounded-xl hover:bg-black/5"
+                    aria-label="−"
+                  >
+                    <RestIcon name="minus" className="h-3.5 w-3.5" />
+                  </button>
+                  <span className="min-w-5 text-center text-sm font-semibold tabular-nums">{p.qty}</span>
+                  <button
+                    type="button"
+                    onClick={() => setQty(p.dishId, p.qty + 1)}
+                    disabled={Boolean(bad)}
+                    className="btn-press flex h-9 w-9 items-center justify-center rounded-xl hover:bg-black/5 disabled:opacity-30"
+                    aria-label="+"
+                  >
+                    <RestIcon name="plus" className="h-3.5 w-3.5" />
+                  </button>
                 </div>
               </li>
             );
@@ -290,39 +318,43 @@ export function CheckoutForm({
               setServerProblems([]);
               setError("");
             }}
-            className="btn-press mt-2 w-full rounded-full border border-[#ff8a6b]/50 px-4 py-2.5 text-sm font-bold text-[#ffb09a]"
+            className="btn-press mt-3 w-full rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-[#b42318]"
           >
             {c.removeAll}
           </button>
         )}
 
-        <div className="mt-4 space-y-1.5 border-t border-white/10 pt-4 text-sm">
-          <div className="flex justify-between text-white/70">
+        <div className="mt-4 space-y-1.5 border-t border-[#e6e3dd] pt-4 text-sm">
+          <div className="flex justify-between text-[#6b6b6b]">
             <span>{c.dishes}</span>
-            <span className="tabular-nums">{money(subtotal)} {currency}</span>
+            <span className="tabular-nums">
+              {money(subtotal)} {currency}
+            </span>
           </div>
           {(mode === "delivery" || mode === "room") && (
-            <div className="flex justify-between text-white/70">
+            <div className="flex justify-between text-[#6b6b6b]">
               <span>{c.fee[mode]}</span>
               <span className="tabular-nums">{fee.pending ? c.feePending : fee.fee ? `${money(fee.fee)} ${currency}` : c.free}</span>
             </div>
           )}
-          <div className="flex items-baseline justify-between pt-2">
-            <span className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#ffb35c]">{c.total}</span>
-            <span className="font-serif text-3xl font-bold tabular-nums">
-              {money(total)} <span className="font-sans text-sm text-white/60">{currency}</span>
+          <div className="flex items-baseline justify-between pt-1 text-[#1c1c1c]">
+            <span className="font-semibold">{c.total}</span>
+            <span className="text-xl font-bold tabular-nums">
+              {money(total)} {currency}
             </span>
           </div>
-          {fee.pending && <p className="text-right text-xs text-white/55">{c.totalPending}</p>}
+          {fee.pending && <p className="text-right text-xs text-[#8c8c8c]">{c.totalPending}</p>}
         </div>
+
+        <div className="mt-5 hidden lg:block">{submitBlock}</div>
       </aside>
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         {/* Способ получения */}
-        <fieldset className="rounded-[2rem] border border-[#ecdcc0] bg-white p-5 sm:p-7">
+        <fieldset className={box}>
           <legend className="sr-only">{c.how}</legend>
-          <p className="font-serif text-2xl font-bold text-[#1f1712]">{c.how}</p>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <p className={heading}>{c.how}</p>
+          <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
             {openModes.map((m) => {
               const on = mode === m;
               return (
@@ -335,16 +367,16 @@ export function CheckoutForm({
                     setError("");
                   }}
                   aria-pressed={on}
-                  className={`btn-press flex items-start gap-3 rounded-2xl border-2 p-4 text-left transition-all ${
-                    on ? "border-[#ff6a2b] bg-gradient-to-br from-[#fff4e6] to-[#ffe7d4] shadow-[0_14px_30px_-20px_rgba(255,106,43,0.9)]" : "border-[#efe1c8] hover:border-[#ffb37a]"
+                  className={`btn-press flex items-start gap-3 rounded-2xl border p-4 text-left transition-colors ${
+                    on ? "border-[#1c1c1c] ring-1 ring-[#1c1c1c]" : "border-[#e3e3e3] hover:border-[#bdbdbd]"
                   }`}
                 >
-                  <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${on ? "bg-gradient-to-br from-[#ff6a2b] to-[#d6352b] text-white" : "bg-[#f6e7cf] text-[#c2410c]"}`}>
+                  <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${on ? "bg-[#f4a52a] text-[#3b2a0a]" : "bg-[#f6f5f2] text-[#1c1c1c]"}`}>
                     <RestIcon name={MODE_ICON[m]} className="h-5 w-5" />
                   </span>
                   <span className="min-w-0">
-                    <span className="block font-extrabold text-[#1f1712]">{t.modes[m].title}</span>
-                    <span className="mt-0.5 block text-xs leading-5 text-[#6b5a4c]">{t.modes[m].hint}</span>
+                    <span className="block font-semibold text-[#1c1c1c]">{t.modes[m].title}</span>
+                    <span className="mt-0.5 block text-xs leading-5 text-[#8c8c8c]">{t.modes[m].hint}</span>
                   </span>
                 </button>
               );
@@ -353,9 +385,7 @@ export function CheckoutForm({
 
           {mode === "delivery" && (
             <div className="mt-5 grid gap-4">
-              {settings.deliveryNote && (
-                <p className="rounded-2xl bg-[#17a3b0]/10 px-4 py-3 text-sm font-semibold text-[#0e6f78]">{settings.deliveryNote}</p>
-              )}
+              {settings.deliveryNote && <p className={note}>{settings.deliveryNote}</p>}
               <label className="block">
                 <span className={label}>{c.locality}</span>
                 <input name="locality" required maxLength={160} value={locality} onChange={(e) => setLocality(e.target.value)} placeholder={c.localityPh} className={field} />
@@ -369,18 +399,18 @@ export function CheckoutForm({
 
           {mode === "room" && (
             <div className="mt-5 grid gap-4">
-              <p className="rounded-2xl bg-[#2c9a5b]/10 px-4 py-3 text-sm font-semibold text-[#1d6b3f]">{c.breakfastNote}</p>
+              <p className={note}>{c.breakfastNote}</p>
               <div className="grid grid-cols-[auto_1fr] gap-3">
                 <div>
                   <span className={label}>{c.unitType}</span>
-                  <div className="inline-flex rounded-2xl border border-[#e8d6b8] bg-white p-1">
+                  <div className="inline-flex rounded-xl bg-[#f6f5f2] p-1">
                     {(["aframe", "chalet"] as const).map((u) => (
                       <button
                         key={u}
                         type="button"
                         onClick={() => setUnitType(u)}
                         aria-pressed={unitType === u}
-                        className={`rounded-xl px-4 py-2.5 text-sm font-extrabold transition ${unitType === u ? "bg-[#1f1712] text-[#ffc46b]" : "text-[#5b4a3d]"}`}
+                        className={`rounded-lg px-4 py-2.5 text-sm font-semibold transition ${unitType === u ? "bg-white text-[#1c1c1c] shadow-sm" : "text-[#6b6b6b]"}`}
                       >
                         {u === "aframe" ? "A-frame" : "Chalet"}
                       </button>
@@ -404,16 +434,16 @@ export function CheckoutForm({
         </fieldset>
 
         {/* Когда */}
-        <fieldset className="rounded-[2rem] border border-[#ecdcc0] bg-white p-5 sm:p-7">
+        <fieldset className={box}>
           <legend className="sr-only">{c.when}</legend>
-          <p className="font-serif text-2xl font-bold text-[#1f1712]">{c.when}</p>
-          <div className="mt-4 inline-flex rounded-full border border-[#e8d6b8] bg-[#fcf4e6] p-1">
+          <p className={heading}>{c.when}</p>
+          <div className="mt-4 inline-flex rounded-xl bg-[#f6f5f2] p-1">
             {asapAllowed && (
               <button
                 type="button"
                 onClick={() => setAsap(true)}
                 aria-pressed={effectiveAsap}
-                className={`rounded-full px-4 py-2.5 text-sm font-extrabold transition ${effectiveAsap ? "bg-[#1f1712] text-[#ffc46b]" : "text-[#5b4a3d]"}`}
+                className={`rounded-lg px-4 py-2.5 text-sm font-semibold transition ${effectiveAsap ? "bg-white text-[#1c1c1c] shadow-sm" : "text-[#6b6b6b]"}`}
               >
                 {c.asap}
               </button>
@@ -422,7 +452,7 @@ export function CheckoutForm({
               type="button"
               onClick={() => setAsap(false)}
               aria-pressed={!effectiveAsap}
-              className={`rounded-full px-4 py-2.5 text-sm font-extrabold transition ${!effectiveAsap ? "bg-[#1f1712] text-[#ffc46b]" : "text-[#5b4a3d]"}`}
+              className={`rounded-lg px-4 py-2.5 text-sm font-semibold transition ${!effectiveAsap ? "bg-white text-[#1c1c1c] shadow-sm" : "text-[#6b6b6b]"}`}
             >
               {c.scheduled}
             </button>
@@ -463,16 +493,16 @@ export function CheckoutForm({
                     </option>
                   ))}
                 </select>
-                {date && slots.length === 0 && <span className="mt-1.5 block text-xs font-semibold text-[#c2410c]">{c.noSlots}</span>}
+                {date && slots.length === 0 && <span className="mt-1.5 block text-xs font-semibold text-[#b42318]">{c.noSlots}</span>}
               </label>
             </div>
           )}
         </fieldset>
 
         {/* Контакты */}
-        <fieldset className="rounded-[2rem] border border-[#ecdcc0] bg-white p-5 sm:p-7">
+        <fieldset className={box}>
           <legend className="sr-only">{c.contacts}</legend>
-          <p className="font-serif text-2xl font-bold text-[#1f1712]">{c.contacts}</p>
+          <p className={heading}>{c.contacts}</p>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <label className="block">
               <span className={label}>{mode === "room" ? c.fullName : c.name}</span>
@@ -489,38 +519,19 @@ export function CheckoutForm({
           </label>
 
           <label className="mt-5 flex cursor-pointer items-start gap-3">
-            <input type="checkbox" name="privacyConsent" required className="mt-0.5 h-5 w-5 shrink-0 accent-[#ff6a2b]" />
-            <span className="text-sm leading-6 text-[#5b4a3d]">
+            <input type="checkbox" name="privacyConsent" required className="mt-0.5 h-5 w-5 shrink-0 accent-[#f4a52a]" />
+            <span className="text-sm leading-6 text-[#4a4a4a]">
               {c.consent.before}
-              <a href={localizePath(locale, "/legal/privacy-policy")} target="_blank" rel="noopener noreferrer" className="font-bold text-[#c2410c] underline underline-offset-2">
+              <a href={localizePath(locale, "/legal/privacy-policy")} target="_blank" rel="noopener noreferrer" className="font-semibold text-[#1c1c1c] underline underline-offset-2">
                 {c.consent.link}
               </a>
               {c.consent.after}
             </span>
           </label>
-
-          <p className="mt-5 rounded-2xl bg-[#fcf4e6] px-4 py-3 text-sm leading-6 text-[#5b4a3d]">{c.notice}</p>
-          {preview && <p className="mt-3 rounded-2xl bg-[#17a3b0]/10 px-4 py-3 text-sm font-bold text-[#0e6f78]">{c.testNote}</p>}
-
-          {error && (
-            <p role="alert" className="mt-4 rounded-2xl bg-[#d6352b]/10 px-4 py-3 text-sm font-bold text-[#b42318]">
-              {error}
-            </p>
-          )}
-
-          <button
-            type="submit"
-            disabled={pending || !mode}
-            className="btn-press mt-5 flex h-15 w-full items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#ffa53d] via-[#ff6a2b] to-[#d6352b] px-8 text-lg font-extrabold text-white shadow-[0_20px_44px_-16px_rgba(214,53,43,0.95)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {pending ? c.sending : c.submit}
-            {!pending && (
-              <span className="tabular-nums text-white/85">· {money(total)} {currency}</span>
-            )}
-          </button>
         </fieldset>
+
+        <div className="lg:hidden">{submitBlock}</div>
       </div>
     </form>
   );
 }
-

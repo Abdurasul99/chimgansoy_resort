@@ -236,6 +236,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
           restaurantLabels={{
             cart: restaurantCopy[locale as Locale].menu.viewCart,
             menu: restaurantCopy[locale as Locale].menu.title,
+            table: restaurantCopy[locale as Locale].tables.eyebrow,
           }}
         />
         <main id="main">{children}</main>

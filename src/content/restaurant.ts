@@ -21,8 +21,6 @@ export type RestaurantCopy = {
   actions: {
     menu: { title: string; text: string };
     tables: { title: string; text: string };
-    delivery: { title: string; text: string };
-    room: { title: string; text: string };
   };
   hours: string;
   hoursUnknown: string;
@@ -30,24 +28,21 @@ export type RestaurantCopy = {
   closedNow: string;
   byPhone: string;
   phone: string;
-  howTitle: string;
-  howSteps: { title: string; text: string }[];
   closedBanner: string;
   hiddenPreview: string;
   previewExit: string;
-  teaserEyebrow: string;
-  teaserTitle: string;
-  teaserCta: string;
-  teaserEmpty: string;
-  marquee: string[];
-  fireTitle: string;
-  fireText: string;
+  noOnlinePay: string;
+  confirmByPhone: string;
+  aboutTitle: string;
+  call: string;
+  backToMenu: string;
+  sections: string;
+  cartEmpty: string;
+  cartEmptyHint: string;
   roomNoteTitle: string;
   roomNote: string;
   menu: {
-    eyebrow: string;
     title: string;
-    lead: string;
     search: string;
     all: string;
     empty: string;
@@ -63,12 +58,12 @@ export type RestaurantCopy = {
     notHere: string;
     count: (n: number) => string;
     checkout: string;
+    toCheckout: string;
     viewCart: string;
   };
   modes: Record<OrderMode, ModeCopy>;
   channelNames: { hall: string; takeaway: string; delivery: string; room: string };
   checkout: {
-    eyebrow: string;
     title: string;
     lead: string;
     cart: string;
@@ -183,8 +178,6 @@ export const restaurantCopy: Record<Locale, RestaurantCopy> = {
     actions: {
       menu: { title: "Посмотреть меню", text: "Блюда, порции и цены — выберите и соберите заказ" },
       tables: { title: "Забронировать стол", text: "Дата, время и сколько вас — администратор подтвердит" },
-      delivery: { title: "Заказать доставку", text: "Привезём по согласованному адресу — зону подтвердит менеджер" },
-      room: { title: "Заказать в номер", text: "Подача в A-frame и Chalet для гостей комплекса" },
     },
     hours: "Часы работы",
     hoursUnknown: "Часы работы уточняйте у администратора",
@@ -192,28 +185,21 @@ export const restaurantCopy: Record<Locale, RestaurantCopy> = {
     closedNow: "Сейчас закрыто",
     byPhone: "по телефону",
     phone: "Телефон ресторана",
-    howTitle: "Как это работает",
-    howSteps: [
-      { title: "Выберите блюда", text: "Меню с ценами и порциями — прямо на сайте" },
-      { title: "Отправьте заявку", text: "Самовывоз, доставка, в номер или к визиту" },
-      { title: "Ресторан подтвердит", text: "Менеджер уточнит состав, время и оплату" },
-    ],
     closedBanner: "Приём заказов на сайте откроется совсем скоро. Меню уже можно посмотреть.",
     hiddenPreview: "Предпросмотр: раздел скрыт от гостей. Заказы отсюда помечаются как тестовые.",
     previewExit: "Выйти из предпросмотра",
-    teaserEyebrow: "Меню",
-    teaserTitle: "Что сегодня на кухне",
-    teaserCta: "Открыть всё меню",
-    teaserEmpty: "Меню скоро появится здесь — кухня уже готовит список.",
-    marquee: ["Огонь", "Казан", "Мангал", "Горный воздух", "Долгий ужин", "Чай с видом", "1700 м"],
-    fireTitle: "Живой огонь и горный воздух",
-    fireText: "Мангал, казан и неспешный ужин с видом на Чимган. Закажите к столу, заберите с собой или попросите принести к домику.",
+    noOnlinePay: "Без онлайн-оплаты",
+    confirmByPhone: "Заказ подтверждают по телефону",
+    aboutTitle: "О ресторане",
+    call: "Позвонить",
+    backToMenu: "Назад в меню",
+    sections: "Разделы меню",
+    cartEmpty: "В корзине пока пусто",
+    cartEmptyHint: "Добавьте блюда — сумма появится здесь",
     roomNoteTitle: "Для гостей комплекса",
     roomNote: "Заказ в номер — это платные блюда из меню ресторана. Завтрак, включённый в проживание, и питание по тарифу «Всё включено» заказываются у администратора и сюда не входят.",
     menu: {
-      eyebrow: "Меню ресторана",
       title: "Меню",
-      lead: "Выберите блюда и способ получения. Сумма — предварительная: состав и стоимость подтвердит ресторан.",
       search: "Найти блюдо",
       all: "Все блюда",
       empty: "Меню скоро появится — кухня уже готовит список блюд.",
@@ -222,13 +208,14 @@ export const restaurantCopy: Record<Locale, RestaurantCopy> = {
       unavailable: "Временно нет",
       preorder: "По предзаказу",
       preorderHint: "Только предзаказом к визиту",
-      add: "В корзину",
+      add: "Добавить",
       inCart: "в корзине",
       close: "Закрыть",
       channels: "Можно заказать",
       notHere: "Не подаётся этим способом",
       count: (n) => `${n} ${n % 10 === 1 && n % 100 !== 11 ? "позиция" : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? "позиции" : "позиций"}`,
       checkout: "Оформить",
+      toCheckout: "Оформить заказ",
       viewCart: "Корзина",
     },
     modes: {
@@ -239,8 +226,7 @@ export const restaurantCopy: Record<Locale, RestaurantCopy> = {
     },
     channelNames: { hall: "В зале", takeaway: "С собой", delivery: "Доставка", room: "В номер" },
     checkout: {
-      eyebrow: "Оформление",
-      title: "Ваш заказ",
+      title: "Оформление заказа",
       lead: "Проверьте блюда, выберите способ получения и оставьте контакты — ресторан свяжется для подтверждения.",
       cart: "Корзина",
       empty: "Корзина пуста",
@@ -384,8 +370,6 @@ export const restaurantCopy: Record<Locale, RestaurantCopy> = {
     actions: {
       menu: { title: "Menyuni ko'rish", text: "Taomlar, porsiyalar va narxlar — tanlang va buyurtma yig'ing" },
       tables: { title: "Stol band qilish", text: "Sana, vaqt va necha kishi — administrator tasdiqlaydi" },
-      delivery: { title: "Yetkazib berish", text: "Kelishilgan manzilga olib boramiz — hududni menejer tasdiqlaydi" },
-      room: { title: "Uychaga buyurtma", text: "Majmua mehmonlari uchun A-frame va Chalet'ga xizmat" },
     },
     hours: "Ish vaqti",
     hoursUnknown: "Ish vaqtini administratordan aniqlang",
@@ -393,28 +377,21 @@ export const restaurantCopy: Record<Locale, RestaurantCopy> = {
     closedNow: "Hozir yopiq",
     byPhone: "telefon orqali",
     phone: "Restoran telefoni",
-    howTitle: "Qanday ishlaydi",
-    howSteps: [
-      { title: "Taomlarni tanlang", text: "Narx va porsiyalar bilan menyu — to'g'ridan-to'g'ri saytda" },
-      { title: "Ariza yuboring", text: "Olib ketish, yetkazib berish, uychaga yoki tashrifga" },
-      { title: "Restoran tasdiqlaydi", text: "Menejer tarkib, vaqt va to'lovni aniqlaydi" },
-    ],
     closedBanner: "Saytda buyurtma qabul qilish tez orada ochiladi. Menyuni hozirdan ko'rish mumkin.",
     hiddenPreview: "Oldindan ko'rish: bo'lim mehmonlardan yashirin. Bu yerdan buyurtmalar test sifatida belgilanadi.",
     previewExit: "Oldindan ko'rishdan chiqish",
-    teaserEyebrow: "Menyu",
-    teaserTitle: "Bugun oshxonada nima bor",
-    teaserCta: "Butun menyuni ochish",
-    teaserEmpty: "Menyu tez orada shu yerda paydo bo'ladi — oshxona ro'yxatni tayyorlamoqda.",
-    marquee: ["Olov", "Qozon", "Mangal", "Tog' havosi", "Shoshilmas kechki ovqat", "Manzarali choy", "1700 m"],
-    fireTitle: "Jonli olov va tog' havosi",
-    fireText: "Mangal, qozon va Chimgon manzarasi bilan shoshilmasdan kechki ovqat. Stolga buyurtma bering, olib keting yoki uychangizga keltirishni so'rang.",
+    noOnlinePay: "Onlayn to'lovsiz",
+    confirmByPhone: "Buyurtma telefon orqali tasdiqlanadi",
+    aboutTitle: "Restoran haqida",
+    call: "Qo'ng'iroq",
+    backToMenu: "Menyuga qaytish",
+    sections: "Menyu bo'limlari",
+    cartEmpty: "Savat hozircha bo'sh",
+    cartEmptyHint: "Taom qo'shing — summa shu yerda ko'rinadi",
     roomNoteTitle: "Majmua mehmonlari uchun",
     roomNote: "Uychaga buyurtma — restoran menyusidagi pullik taomlar. Yashashga kiritilgan nonushta va «Hammasi kiritilgan» tarifidagi ovqatlar administrator orqali buyurtma qilinadi va bu yerga kirmaydi.",
     menu: {
-      eyebrow: "Restoran menyusi",
       title: "Menyu",
-      lead: "Taomlarni va olish usulini tanlang. Summa taxminiy: tarkib va narxni restoran tasdiqlaydi.",
       search: "Taom qidirish",
       all: "Barcha taomlar",
       empty: "Menyu tez orada paydo bo'ladi — oshxona taomlar ro'yxatini tayyorlamoqda.",
@@ -423,13 +400,14 @@ export const restaurantCopy: Record<Locale, RestaurantCopy> = {
       unavailable: "Vaqtincha yo'q",
       preorder: "Oldindan buyurtma",
       preorderHint: "Faqat tashrifga oldindan buyurtma",
-      add: "Savatga",
+      add: "Qo'shish",
       inCart: "savatda",
       close: "Yopish",
       channels: "Buyurtma qilish mumkin",
       notHere: "Bu usulda berilmaydi",
       count: (n) => `${n} ta taom`,
       checkout: "Buyurtma",
+      toCheckout: "Buyurtma berish",
       viewCart: "Savat",
     },
     modes: {
@@ -440,8 +418,7 @@ export const restaurantCopy: Record<Locale, RestaurantCopy> = {
     },
     channelNames: { hall: "Zalda", takeaway: "Olib ketish", delivery: "Yetkazish", room: "Uychaga" },
     checkout: {
-      eyebrow: "Rasmiylashtirish",
-      title: "Buyurtmangiz",
+      title: "Buyurtmani rasmiylashtirish",
       lead: "Taomlarni tekshiring, olish usulini tanlang va aloqa ma'lumotlarini qoldiring — restoran tasdiqlash uchun bog'lanadi.",
       cart: "Savat",
       empty: "Savat bo'sh",
@@ -581,8 +558,6 @@ export const restaurantCopy: Record<Locale, RestaurantCopy> = {
     actions: {
       menu: { title: "See the menu", text: "Dishes, portions and prices — pick and build your order" },
       tables: { title: "Book a table", text: "Date, time and party size — the administrator confirms" },
-      delivery: { title: "Order delivery", text: "Brought to an agreed address — the manager confirms the area" },
-      room: { title: "Order to your cabin", text: "Served to A-frame and Chalet guests on the grounds" },
     },
     hours: "Opening hours",
     hoursUnknown: "Please check the hours with the administrator",
@@ -590,28 +565,21 @@ export const restaurantCopy: Record<Locale, RestaurantCopy> = {
     closedNow: "Closed now",
     byPhone: "by phone",
     phone: "Restaurant phone",
-    howTitle: "How it works",
-    howSteps: [
-      { title: "Choose your dishes", text: "The menu with prices and portions, right here" },
-      { title: "Send the request", text: "Pick-up, delivery, to your cabin or for your visit" },
-      { title: "The restaurant confirms", text: "The manager confirms the order, time and payment" },
-    ],
     closedBanner: "Online ordering opens very soon. You can already browse the menu.",
     hiddenPreview: "Preview: this section is hidden from guests. Orders placed here are marked as tests.",
     previewExit: "Leave preview",
-    teaserEyebrow: "Menu",
-    teaserTitle: "What's in the kitchen today",
-    teaserCta: "Open the full menu",
-    teaserEmpty: "The menu will appear here soon — the kitchen is putting it together.",
-    marquee: ["Fire", "Kazan", "Mangal", "Mountain air", "Slow dinners", "Tea with a view", "1700 m"],
-    fireTitle: "Open fire and mountain air",
-    fireText: "Mangal, kazan and an unhurried dinner facing Chimgan. Order to your table, take it with you or have it brought to your cabin.",
+    noOnlinePay: "No online payment",
+    confirmByPhone: "Orders are confirmed by phone",
+    aboutTitle: "About the restaurant",
+    call: "Call",
+    backToMenu: "Back to menu",
+    sections: "Menu sections",
+    cartEmpty: "Your cart is empty",
+    cartEmptyHint: "Add dishes — the total shows up here",
     roomNoteTitle: "For guests staying with us",
     roomNote: "Cabin orders are paid dishes from the restaurant menu. Breakfast included with your stay and meals on the All-Inclusive rate are arranged with the administrator and are not ordered here.",
     menu: {
-      eyebrow: "Restaurant menu",
       title: "Menu",
-      lead: "Pick your dishes and how you'd like to get them. The total is an estimate: the restaurant confirms the order and the price.",
       search: "Find a dish",
       all: "All dishes",
       empty: "The menu is coming soon — the kitchen is putting the list together.",
@@ -627,6 +595,7 @@ export const restaurantCopy: Record<Locale, RestaurantCopy> = {
       notHere: "Not served this way",
       count: (n) => `${n} ${n === 1 ? "item" : "items"}`,
       checkout: "Checkout",
+      toCheckout: "Go to checkout",
       viewCart: "Cart",
     },
     modes: {
@@ -637,8 +606,7 @@ export const restaurantCopy: Record<Locale, RestaurantCopy> = {
     },
     channelNames: { hall: "Dine-in", takeaway: "Pick-up", delivery: "Delivery", room: "Cabin" },
     checkout: {
-      eyebrow: "Checkout",
-      title: "Your order",
+      title: "Checkout",
       lead: "Check your dishes, choose how to get them and leave your contacts — the restaurant will call to confirm.",
       cart: "Cart",
       empty: "Your cart is empty",

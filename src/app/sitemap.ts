@@ -49,7 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
    */
   // Ресторан — только открытый или в анонсе. Оформление и статус заказа в
   // карту не идут никогда: это служебные страницы (и в robots они закрыты).
-  const restaurantPaths = (await restaurantListed()) ? ["/restaurant", "/restaurant/menu", "/restaurant/tables"] : [];
+  const restaurantPaths = (await restaurantListed()) ? ["/restaurant", "/restaurant/tables"] : [];
 
   const legalPaths = policies
     .filter((policy) => policy.indexable)

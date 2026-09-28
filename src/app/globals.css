@@ -2019,192 +2019,73 @@ footer {
 
 /* ══════════════════════════════════════════════════════════════════
    РЕСТОРАН «САЗАНЧИК»
-   Своя тёплая палитра внутри фирменной системы: ночь, угли, огонь и
-   цвета узбекского иката (абр) — рубин, шафран, бирюза, изумруд. Шрифты,
-   кнопки и отступы — общие с сайтом, чтобы раздел не выглядел чужим.
-
-   Переменные — на контейнере .rest, а не на :root и не анимируются: см.
-   заметку про кадровый бюджет (переменная на корне пересчитывает стиль
-   всего документа).
+   Светлая витрина по образцу приложений доставки (с 28.09.2026): белый
+   фон, серые плашки, одна золотая кнопка действия. Цвета — прямо в
+   классах, без переменных сайта: --ink зимой меняется на светлый, а
+   витрина должна оставаться одинаковой круглый год.
    ══════════════════════════════════════════════════════════════════ */
-.rest {
-  --r-night: #140f0c;
-  --r-night-2: #1f1712;
-  --r-coal: #2b2019;
-  --r-ember: #ff6a2b;
-  --r-flame: #ffa53d;
-  --r-ruby: #d6352b;
-  --r-saffron: #f4a52a;
-  --r-turq: #17a3b0;
-  --r-emerald: #2c9a5b;
-  --r-cream: #fcf4e6;
-  --r-cream-2: #f6e7cf;
-}
 
-/* Фото шапки медленно «дышит» — живой кадр без видео. */
-@keyframes rest-kenburns {
-  from { transform: scale(1.14) translate3d(0, -1.5%, 0); }
-  to   { transform: scale(1.03) translate3d(0, 0, 0); }
-}
-.rest-kenburns {
-  animation: rest-kenburns 24s var(--ease-smooth) infinite alternate;
-  will-change: transform;
-}
-
-/* Искры над мангалом. Параметры у каждой свои — задаются в style. */
-@keyframes rest-ember {
-  0%   { transform: translate3d(0, 0, 0) scale(1); opacity: 0; }
-  12%  { opacity: 1; }
-  100% { transform: translate3d(var(--drift, 24px), -72vh, 0) scale(0.25); opacity: 0; }
-}
-.rest-ember {
-  position: absolute;
-  bottom: -12px;
-  border-radius: 9999px;
-  background: radial-gradient(circle, #ffe2a0 0%, #ff8a3d 42%, rgba(255, 106, 43, 0) 70%);
-  animation: rest-ember var(--dur, 9s) linear infinite;
-  animation-delay: var(--delay, 0s);
-  pointer-events: none;
-  mix-blend-mode: screen;
-}
-
-/* Надпись-пламя: переливается шафраном и углём. */
-@keyframes rest-flame-text {
-  from { background-position: 0% 50%; }
-  to   { background-position: 200% 50%; }
-}
-.rest-flame-text {
-  background: linear-gradient(100deg, #ffe0a1 0%, #ffa53d 18%, #ff6a2b 36%, #ffe0a1 54%, #ffa53d 72%, #ff6a2b 90%, #ffe0a1 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: rest-flame-text 9s linear infinite;
-}
-
-/* Бегущая строка и полоса иката. */
-.rest-ticker {
-  overflow: hidden;
-  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-}
-.rest-ticker__track {
-  display: flex;
-  width: max-content;
-  animation: marquee-left 42s linear infinite;
-  will-change: transform;
-}
-.rest-ticker__track--slow { animation-duration: 90s; }
-.rest-ticker__track--reverse { animation-direction: reverse; }
-
-/* Узор-розетка (сюзане) медленно вращается в углу шапки. */
-@keyframes rest-spin { to { transform: rotate(360deg); } }
-.rest-spin { animation: rest-spin 90s linear infinite; }
-
-/* Пар над блюдом. */
-@keyframes rest-steam {
-  0%   { transform: translate3d(0, 12px, 0) scaleX(1); opacity: 0; }
-  30%  { opacity: 0.5; }
-  100% { transform: translate3d(0, -46px, 0) scaleX(1.7); opacity: 0; }
-}
-.rest-steam {
-  animation: rest-steam 4.2s ease-out infinite;
-  animation-delay: var(--delay, 0s);
-}
-
-/* «Открыто сейчас» — живая точка. */
-@keyframes rest-live {
-  0%   { box-shadow: 0 0 0 0 rgba(52, 211, 120, 0.65); }
-  100% { box-shadow: 0 0 0 10px rgba(52, 211, 120, 0); }
-}
-.rest-live { animation: rest-live 1.8s ease-out infinite; }
-
-/* Отклик на «в корзину»: кнопка подпрыгивает, полоса корзины вздрагивает. */
+/* Отклик на «Добавить»: счётчик появляется с толчком, значок корзины вздрагивает. */
 @keyframes rest-pop {
-  0%   { transform: scale(1); }
-  35%  { transform: scale(1.22); }
+  0%   { transform: scale(0.96); }
+  45%  { transform: scale(1.03); }
   100% { transform: scale(1); }
 }
-.rest-pop { animation: rest-pop 420ms var(--ease-premium); }
+.rest-pop { animation: rest-pop 320ms var(--ease-premium); }
 @keyframes rest-bump {
   0%, 100% { transform: translateY(0); }
-  30%      { transform: translateY(-7px); }
+  30%      { transform: translateY(-5px); }
   60%      { transform: translateY(1px); }
 }
-.rest-bump { animation: rest-bump 560ms var(--ease-premium); }
+.rest-bump { animation: rest-bump 520ms var(--ease-premium); }
 
 /* Появление нижней полосы корзины. */
 @keyframes rest-rise {
   from { transform: translateY(120%); opacity: 0; }
   to   { transform: translateY(0); opacity: 1; }
 }
-.rest-rise { animation: rest-rise 520ms var(--ease-premium) both; }
+.rest-rise { animation: rest-rise 480ms var(--ease-premium) both; }
 
-/* Плитка действия: свечение идёт за пальцем/курсором (--mx/--my в style). */
-.rest-tile {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  transition: transform 0.5s var(--ease-premium), box-shadow 0.5s var(--ease-premium), border-color 0.4s;
-}
-.rest-tile::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgba(255, 166, 61, 0.30), transparent 45%);
-  opacity: 0;
-  transition: opacity 0.4s;
-}
-.rest-tile:hover { transform: translateY(-4px); }
-.rest-tile:hover::before,
-.rest-tile:focus-visible::before { opacity: 1; }
-
-/* Карточка блюда: фото приближается, ценник светится. */
-.rest-dish { transition: transform 0.5s var(--ease-premium), box-shadow 0.5s var(--ease-premium); }
-.rest-dish:hover { transform: translateY(-3px); box-shadow: 0 22px 50px -24px rgba(90, 40, 10, 0.45); }
-.rest-dish__img { transition: transform 0.9s var(--ease-premium); }
-.rest-dish:hover .rest-dish__img { transform: scale(1.07); }
-
-/* Лента категорий — прокрутка пальцем без полосы прокрутки. */
+/* Лента разделов — прокрутка пальцем без полосы прокрутки. */
 .rest-chips { scrollbar-width: none; -ms-overflow-style: none; }
 .rest-chips::-webkit-scrollbar { display: none; }
 
-/* Лист с блюдом снизу экрана. */
+/* Окно с блюдом: на телефоне выезжает снизу, на компьютере — проявляется. */
 @keyframes rest-sheet-in {
   from { transform: translateY(100%); }
   to   { transform: translateY(0); }
 }
-.rest-sheet { animation: rest-sheet-in 420ms var(--ease-premium) both; }
+.rest-sheet { animation: rest-sheet-in 380ms var(--ease-premium) both; }
 @media (min-width: 640px) {
   @keyframes rest-sheet-in-desktop {
-    from { transform: translateY(24px) scale(0.97); opacity: 0; }
+    from { transform: translateY(16px) scale(0.98); opacity: 0; }
     to   { transform: none; opacity: 1; }
   }
   .rest-sheet { animation-name: rest-sheet-in-desktop; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rest-kenburns,
-  .rest-flame-text,
-  .rest-ticker__track,
-  .rest-spin,
-  .rest-steam,
-  .rest-live,
   .rest-pop,
   .rest-bump,
   .rest-rise,
   .rest-sheet { animation: none !important; }
-  .rest-ember { display: none; }
-  .rest-tile:hover, .rest-dish:hover { transform: none; }
 }
 
-/* Лента разделов меню ресторана: под шапкой, пока шапка видна; у края —
-   когда шапка уехала вверх (атрибут data-header ставит Header). */
+/* Липкие панели витрины встают под шапку, пока она видна, и поднимаются к
+   краю, когда шапка уехала вверх (атрибут data-header ставит Header).
+   .rest-stick — лента разделов на телефоне, .rest-side — колонки разделов и
+   корзины на компьютере (с воздухом сверху). */
 .rest-stick {
   top: 4.5rem;
   transition: top 420ms var(--ease-premium);
 }
 html[data-header="hidden"] .rest-stick {
   top: 0;
+}
+.rest-side {
+  top: 5.5rem;
+  transition: top 420ms var(--ease-premium);
+}
+html[data-header="hidden"] .rest-side {
+  top: 1rem;
 }

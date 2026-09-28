@@ -3,42 +3,38 @@ import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
 import { restaurantText } from "@/content/restaurant";
 import { getRestaurantSettings } from "@/lib/restaurant/live";
+import { heroImage } from "@/lib/restaurant/page";
 import { pickText } from "@/lib/restaurant/rules";
-import { Embers, IkatBand } from "./Ornaments";
 import { RestIcon } from "./RestIcon";
 
 /**
  * Врезка «Ресторан» на страницах сайта комплекса — там, где гость ищет еду
  * (страница «Кухня и меню»). Показывается, только когда раздел открыт или в
- * анонсе: скрытый ресторан ссылкой не выдаём.
+ * анонсе: скрытый ресторан ссылкой не выдаём. Вид — карточка заведения из
+ * приложения доставки: фото, название, одна кнопка.
  */
 export async function RestaurantTeaser({ locale }: { locale: Locale }) {
   const settings = await getRestaurantSettings();
   const t = restaurantText(locale);
   const name = pickText(settings.name, locale);
   return (
-    <section className="rest px-4 py-10 sm:px-6 lg:px-8">
+    <section className="px-4 py-10 sm:px-6 lg:px-8">
       <Link
         href={localizePath(locale, "/restaurant")}
         prefetch={false}
-        className="group relative mx-auto block max-w-7xl overflow-hidden rounded-[2rem] bg-[#140f0c] text-white shadow-[0_30px_70px_-35px_rgba(214,53,43,0.8)]"
+        className="group mx-auto flex max-w-7xl items-center gap-4 rounded-3xl bg-[#f6f5f2] p-3 pr-5 transition-colors hover:bg-[#efede9] sm:gap-6"
       >
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_120%_at_85%_100%,rgba(255,106,43,0.5),transparent_65%)]" />
-        <Embers count={12} />
-        <div className="relative flex flex-col gap-5 p-7 sm:flex-row sm:items-center sm:justify-between sm:p-10">
-          <div>
-            <p className="text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#ffc46b]">{t.eyebrow}</p>
-            <p className="mt-2 font-serif text-5xl font-bold italic leading-none">
-              <span className="rest-flame-text">{name}</span>
-            </p>
-            <p className="mt-3 max-w-xl text-white/75">{t.actions.menu.text}</p>
-          </div>
-          <span className="inline-flex h-14 shrink-0 items-center gap-2 self-start rounded-full bg-gradient-to-r from-[#ffa53d] via-[#ff6a2b] to-[#d6352b] px-7 font-extrabold sm:self-auto">
-            {t.actions.menu.title}
-            <RestIcon name="arrow" className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-          </span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={heroImage(settings)} alt="" loading="lazy" className="h-24 w-24 shrink-0 rounded-2xl object-cover sm:h-32 sm:w-48" />
+        <div className="min-w-0 flex-1">
+          <p className="text-[13px] text-[#8c8c8c]">{t.eyebrow}</p>
+          <p className="mt-0.5 truncate text-2xl font-bold text-[#1c1c1c]">{name}</p>
+          <p className="mt-1 line-clamp-2 text-sm text-[#6b6b6b]">{t.actions.menu.text}</p>
         </div>
-        <IkatBand height={14} animated />
+        <span className="hidden h-11 shrink-0 items-center gap-2 rounded-2xl bg-[#f4a52a] px-5 text-sm font-bold text-[#3b2a0a] sm:inline-flex">
+          {t.actions.menu.title}
+          <RestIcon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+        </span>
       </Link>
     </section>
   );

@@ -23,11 +23,11 @@ type HeaderProps = {
    */
   restaurant?: NavigationItem | null;
   /**
-   * Две подписи кнопки в разделе ресторана — строками, а не всем словарём
+   * Подписи кнопки в разделе ресторана — строками, а не всем словарём
    * ресторана: шапка стоит на каждой странице, и тащить в неё три языка
    * текстов ресторана значило бы утяжелить весь сайт.
    */
-  restaurantLabels?: { cart: string; menu: string };
+  restaurantLabels?: { cart: string; menu: string; table: string };
 };
 
 /**
@@ -88,17 +88,21 @@ export function Header({ locale, restaurant = null, restaurantLabels }: HeaderPr
   const bookReload = !dayProduct;
 
   /*
-   * В разделе ресторана золотая кнопка — не бронь домика, а меню или корзина:
-   * гость, выбирающий ужин, не должен улетать в каталог домиков (та же
-   * ошибка, что была с тюбингом 06.08.2026).
+   * В разделе ресторана золотая кнопка — не бронь домика, а корзина, меню или
+   * стол: гость, выбирающий ужин, не должен улетать в каталог домиков (та же
+   * ошибка, что была с тюбингом 06.08.2026). На самой витрине меню уже перед
+   * глазами — там пустая корзина ведёт к брони стола.
    */
-  const inRestaurant = pathname.startsWith(localizePath(locale, "/restaurant"));
+  const restaurantHome = localizePath(locale, "/restaurant");
+  const inRestaurant = pathname.startsWith(restaurantHome);
   const inCart = cartCount(cart);
   const cta =
     inRestaurant && restaurantLabels
       ? inCart > 0
         ? { href: localizePath(locale, "/restaurant/checkout"), label: `${restaurantLabels.cart} · ${inCart}`, reload: false }
-        : { href: localizePath(locale, "/restaurant/menu"), label: restaurantLabels.menu, reload: false }
+        : pathname === restaurantHome
+          ? { href: localizePath(locale, "/restaurant/tables"), label: restaurantLabels.table, reload: false }
+          : { href: restaurantHome, label: restaurantLabels.menu, reload: false }
       : { href: bookHref, label: HEADER_CTA[locale] ?? dict.bookNow, reload: bookReload };
 
   // Scrolling down past the hero tucks the bar away; any upward move brings it
@@ -125,9 +129,9 @@ export function Header({ locale, restaurant = null, restaurantLabels }: HeaderPr
     return () => unlock();
   }, [isOpen]);
 
-  // У ресторана каждая страница начинается с тёмной шапки под фото — светлая
-  // стеклянная полоса поверх неё смотрелась бы заплаткой.
-  const isHeroPage = pathname.split("/").length <= 2 || inRestaurant;
+  // Прозрачная шапка — только над фото первого экрана главной. Ресторан с
+  // 28.09.2026 светлая витрина без тёмной обложки, у него обычная шапка.
+  const isHeroPage = pathname.split("/").length <= 2;
   const isHeaderOnHero = isHeroPage && !scrolled;
   // The burger lives in the bar, so the bar has to stay put while the drawer is
   // open. Derived rather than pushed into state via an effect.

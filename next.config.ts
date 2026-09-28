@@ -25,6 +25,14 @@ const nextConfig: NextConfig = {
     ],
   },
 
+  // Меню ресторана с 28.09.2026 живёт на его главной — витрина по образцу
+  // приложений доставки. Старые ссылки (QR, сторис, закладки) ведут туда же;
+  // ?mode=… Next переносит сам. Временный редирект: постоянный браузер
+  // запомнил бы навсегда, и вернуть отдельную страницу меню было бы нельзя.
+  async redirects() {
+    return [{ source: "/:locale(ru|uz|en)/restaurant/menu", destination: "/:locale/restaurant", permanent: false }];
+  },
+
   // Long-lived browser cache for hashed static assets — they're content-addressed
   // so safe to cache for a year. Public images get a week; HTML pages stay
   // revalidate-on-request (default Next.js behavior). Nginx still has the final

@@ -4,10 +4,8 @@ import { restaurantText } from "@/content/restaurant";
 import { getLocaleParam } from "@/lib/content";
 import { buildMetadata } from "@/lib/metadata";
 import { heroImage, restaurantPage, restaurantSeo } from "@/lib/restaurant/page";
-import { pickText } from "@/lib/restaurant/rules";
 import { TableForm } from "@/components/restaurant/TableForm";
-import { PreviewBanner, RestaurantPageHead } from "@/components/restaurant/RestaurantSections";
-import { Rosette } from "@/components/restaurant/Ornaments";
+import { PageTitle, PreviewBanner } from "@/components/restaurant/RestaurantSections";
 import { RestIcon } from "@/components/restaurant/RestIcon";
 
 type PageProps = { params: Promise<{ locale: string }> };
@@ -31,31 +29,32 @@ export default async function RestaurantTablesPage({ params }: PageProps) {
   const phone = settings.phones[0] || contacts.phone;
 
   return (
-    <div className="rest bg-[#fcf4e6]">
-      <RestaurantPageHead
-        eyebrow={t.tables.eyebrow}
-        title={t.tables.title}
-        lead={t.tables.lead}
-        name={pickText(settings.name, locale)}
-        notice={preview ? <PreviewBanner locale={locale} /> : null}
-      />
-      <section className="relative overflow-hidden px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
-        <Rosette size={480} className="rest-spin pointer-events-none absolute -left-52 top-10 opacity-[0.07]" colors={["#17a3b0", "#2c9a5b", "#f4a52a"]} />
-        <div className="relative mx-auto max-w-3xl">
+    <div className="rest bg-white">
+      <div className="mx-auto max-w-3xl px-4 pb-20 pt-6 sm:px-6">
+        {preview && (
+          <div className="mb-5">
+            <PreviewBanner locale={locale} />
+          </div>
+        )}
+        <PageTitle locale={locale} title={t.tables.title} lead={t.tables.lead} />
+        <div className="mt-6">
           {tablesOpen ? (
             <TableForm locale={locale} hours={{ hoursOpen: settings.hoursOpen, hoursClose: settings.hoursClose }} />
           ) : (
-            <div className="rounded-[2rem] bg-[#1f1712] p-8 text-center text-white">
-              <RestIcon name="table" className="mx-auto h-12 w-12 text-[#17a3b0]" />
-              <p className="mt-4 font-serif text-2xl font-bold">{t.tables.closed}</p>
-              <a href={`tel:${phone.replace(/[^\d+]/g, "")}`} className="btn-press mt-6 inline-flex h-12 items-center gap-2 rounded-full bg-gradient-to-r from-[#17a3b0] to-[#2c9a5b] px-7 font-extrabold">
+            <div className="rounded-3xl bg-[#f6f5f2] px-6 py-12 text-center">
+              <RestIcon name="table" className="mx-auto h-10 w-10 text-[#cdc5b8]" />
+              <p className="mx-auto mt-4 max-w-md font-semibold text-[#1c1c1c]">{t.tables.closed}</p>
+              <a
+                href={`tel:${phone.replace(/[^\d+]/g, "")}`}
+                className="btn-press mt-5 inline-flex h-12 items-center gap-2 rounded-2xl bg-[#f4a52a] px-6 font-bold text-[#3b2a0a]"
+              >
                 <RestIcon name="phone" className="h-5 w-5" />
                 {phone}
               </a>
             </div>
           )}
         </div>
-      </section>
+      </div>
     </div>
   );
 }

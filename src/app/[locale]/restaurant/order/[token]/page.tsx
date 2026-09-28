@@ -12,8 +12,6 @@ import type { Order, TableRequest } from "@/lib/restaurant/model";
 import { maskPhone, pickText } from "@/lib/restaurant/rules";
 import { getOrderByToken, getTableByToken } from "@/lib/restaurant/store";
 import { AutoRefresh } from "@/components/restaurant/AutoRefresh";
-import { IkatBand, Rosette } from "@/components/restaurant/Ornaments";
-import { RestIcon } from "@/components/restaurant/RestIcon";
 
 type PageProps = {
   params: Promise<{ locale: string; token: string }>;
@@ -80,74 +78,57 @@ export default async function RestaurantStatusPage({ params, searchParams }: Pag
   const final = failed || status === "done";
   const reason = order?.cancelReason || table?.cancelReason || "";
 
+  const dt = "text-[13px] text-[#8c8c8c]";
+  const dd = "mt-0.5 font-semibold text-[#1c1c1c]";
+
   return (
-    <div className="rest bg-[#fcf4e6]">
+    <div className="rest bg-white">
       {!final && <AutoRefresh />}
-      <section className="relative isolate -mt-[4.5rem] overflow-hidden bg-[#140f0c] text-white">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(70%_90%_at_80%_0%,rgba(255,106,43,0.45),transparent_60%)]" />
-        <Rosette size={380} className="rest-spin pointer-events-none absolute -right-36 -top-32 -z-10 opacity-[0.14]" />
-        <div className="mx-auto max-w-3xl px-4 pb-10 pt-28 sm:px-6 sm:pt-36">
-          <p className="text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#ffc46b]">
-            {name} · {order ? `${s.order} #${order.number}` : `${s.table} #${table!.number}`}
+      <div className="mx-auto max-w-2xl px-4 pb-20 pt-6 sm:px-6 sm:pt-10">
+        <p className="text-sm text-[#8c8c8c]">
+          {name} · {order ? `${s.order} #${order.number}` : `${s.table} #${table!.number}`}
+        </p>
+        <h1 className={`mt-2 text-3xl font-bold tracking-tight sm:text-4xl ${failed ? "text-[#b42318]" : "text-[#1c1c1c]"}`}>{labels.title}</h1>
+        <p className="mt-2 text-[15px] leading-6 text-[#6b6b6b]">{labels.text}</p>
+        {again && <p className="mt-4 rounded-2xl bg-[#fff4e0] px-4 py-3 text-sm text-[#6b4700]">{s.again_note}</p>}
+        {failed && reason && locale === "ru" && (
+          <p className="mt-3 text-sm text-[#8c8c8c]">
+            {s.reason}: {reason}
           </p>
-          <h1 className="mt-4 font-serif text-[clamp(2.6rem,8vw,4.8rem)] font-bold italic leading-[0.92]">
-            <span className={failed ? "text-[#ff8a6b]" : "rest-flame-text"}>{labels.title}</span>
-          </h1>
-          <p className="mt-4 max-w-xl text-lg leading-8 text-white/75">{labels.text}</p>
-          {again && (
-            <p className="mt-4 max-w-xl rounded-2xl border border-[#ffa53d]/40 bg-[#ff6a2b]/15 px-4 py-3 text-sm font-semibold text-white">
-              {s.again_note}
-            </p>
-          )}
-          {failed && reason && locale === "ru" && (
-            <p className="mt-3 text-sm text-white/60">
-              {s.reason}: {reason}
-            </p>
-          )}
-          {(order?.isTest || table?.isTest) && (
-            <p className="mt-4 inline-flex rounded-full bg-[#17a3b0] px-4 py-1.5 text-xs font-extrabold uppercase tracking-wider">{s.test}</p>
-          )}
+        )}
+        {(order?.isTest || table?.isTest) && (
+          <p className="mt-4 inline-flex rounded-full bg-[#e7f5f6] px-3 py-1.5 text-xs font-semibold text-[#0e5f67]">{s.test}</p>
+        )}
 
-          {!failed && (
-            <ol className="mt-8 flex items-start">
-              {stepKeys.map((k, i) => {
-                const done = i <= reached;
-                const current = i === reached && !final;
-                return (
-                  <li key={k} className="flex flex-1 flex-col items-center text-center">
-                    <div className="flex w-full items-center">
-                      <span className={`h-1 flex-1 rounded-full ${i === 0 ? "opacity-0" : done ? "bg-gradient-to-r from-[#ffa53d] to-[#ff6a2b]" : "bg-white/15"}`} />
-                      <span
-                        className={`relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-extrabold ${
-                          done ? "bg-gradient-to-br from-[#ffa53d] to-[#d6352b] text-white" : "bg-white/10 text-white/50"
-                        } ${current ? "rest-live" : ""}`}
-                      >
-                        {done && !current ? <RestIcon name="check" className="h-4 w-4" /> : i + 1}
-                      </span>
-                      <span className={`h-1 flex-1 rounded-full ${i === stepKeys.length - 1 ? "opacity-0" : i < reached ? "bg-gradient-to-r from-[#ff6a2b] to-[#ffa53d]" : "bg-white/15"}`} />
-                    </div>
-                    <span className={`mt-2 text-[11px] font-bold leading-tight sm:text-xs ${done ? "text-white" : "text-white/45"}`}>{stepNames[i]}</span>
-                  </li>
-                );
-              })}
-            </ol>
-          )}
-        </div>
-        <IkatBand height={16} animated />
-      </section>
+        {/* Ход заказа — полосками, как трекер в приложении доставки. */}
+        {!failed && (
+          <ol className="mt-7 grid gap-1.5" style={{ gridTemplateColumns: `repeat(${stepKeys.length}, minmax(0, 1fr))` }}>
+            {stepKeys.map((k, i) => {
+              const done = i <= reached;
+              const current = i === reached && !final;
+              return (
+                <li key={k}>
+                  <span className={`block h-1.5 rounded-full ${done ? "bg-[#f4a52a]" : "bg-[#ececec]"} ${current ? "animate-pulse" : ""}`} />
+                  <span className={`mt-2 block text-[11px] leading-tight sm:text-xs ${current ? "font-semibold text-[#1c1c1c]" : done ? "text-[#4a4a4a]" : "text-[#a8a8a8]"}`}>
+                    {stepNames[i]}
+                  </span>
+                </li>
+              );
+            })}
+          </ol>
+        )}
 
-      <section className="px-4 py-10 sm:px-6 sm:py-14">
-        <div className="ym-hide-content mx-auto grid max-w-3xl gap-4">
-          <div className="rounded-[2rem] border border-[#ecdcc0] bg-white p-6 sm:p-8">
+        <div className="ym-hide-content mt-8 grid gap-4">
+          <div className="rounded-3xl border border-[#ececec] p-5 sm:p-6">
             <dl className="grid gap-4 text-sm sm:grid-cols-2">
               <div>
-                <dt className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8a7867]">{s.placed}</dt>
-                <dd className="mt-1 font-bold text-[#1f1712]">{placed(order ? order.createdAt : table!.createdAt)}</dd>
+                <dt className={dt}>{s.placed}</dt>
+                <dd className={dd}>{placed(order ? order.createdAt : table!.createdAt)}</dd>
               </div>
               {order && (
                 <div>
-                  <dt className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8a7867]">{s.mode}</dt>
-                  <dd className="mt-1 font-bold text-[#1f1712]">
+                  <dt className={dt}>{s.mode}</dt>
+                  <dd className={dd}>
                     {t.modes[order.mode].title}
                     {order.mode === "room" && order.details.unitType
                       ? ` · ${order.details.unitType === "aframe" ? "A-frame" : "Chalet"} №${order.details.unitNo ?? ""}`
@@ -157,80 +138,79 @@ export default async function RestaurantStatusPage({ params, searchParams }: Pag
               )}
               {order?.mode === "delivery" && (
                 <div className="sm:col-span-2">
-                  <dt className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8a7867]">{t.checkout.address}</dt>
-                  <dd className="mt-1 font-bold text-[#1f1712]">{[order.details.locality, order.details.address].filter(Boolean).join(", ")}</dd>
+                  <dt className={dt}>{t.checkout.address}</dt>
+                  <dd className={dd}>{[order.details.locality, order.details.address].filter(Boolean).join(", ")}</dd>
                 </div>
               )}
               <div>
-                <dt className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8a7867]">{s.when}</dt>
-                <dd className="mt-1 font-bold text-[#1f1712]">
-                  {order ? when(order.desiredTime, t.checkout.asap) : when(`${table!.date} ${table!.time}`, "")}
-                </dd>
+                <dt className={dt}>{s.when}</dt>
+                <dd className={dd}>{order ? when(order.desiredTime, t.checkout.asap) : when(`${table!.date} ${table!.time}`, "")}</dd>
               </div>
               {order?.confirmedTime && (
                 <div>
-                  <dt className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8a7867]">{s.confirmedAt}</dt>
-                  <dd className="mt-1 font-bold text-[#2c9a5b]">{order.confirmedTime}</dd>
+                  <dt className={dt}>{s.confirmedAt}</dt>
+                  <dd className={`${dd} text-[#1a7f47]`}>{order.confirmedTime}</dd>
                 </div>
               )}
               {(table || order?.details.guests) && (
                 <div>
-                  <dt className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8a7867]">{s.guests}</dt>
-                  <dd className="mt-1 font-bold text-[#1f1712]">
-                    {table ? `${table.adults}${table.kids ? ` + ${table.kids}` : ""}` : order?.details.guests}
-                  </dd>
+                  <dt className={dt}>{s.guests}</dt>
+                  <dd className={dd}>{table ? `${table.adults}${table.kids ? ` + ${table.kids}` : ""}` : order?.details.guests}</dd>
                 </div>
               )}
               <div>
-                <dt className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8a7867]">{t.checkout.phone}</dt>
-                <dd className="mt-1 font-bold text-[#1f1712]">{maskPhone(order ? order.phone : table!.phone)}</dd>
+                <dt className={dt}>{t.checkout.phone}</dt>
+                <dd className={dd}>{maskPhone(order ? order.phone : table!.phone)}</dd>
               </div>
             </dl>
           </div>
 
           {order && (
-            <div className="rounded-[2rem] bg-[#1f1712] p-6 text-white sm:p-8">
-              <p className="font-serif text-2xl font-bold">{s.items}</p>
-              <ul className="mt-4 divide-y divide-white/10">
+            <div className="rounded-3xl bg-[#f6f5f2] p-5 sm:p-6">
+              <p className="text-lg font-bold text-[#1c1c1c]">{s.items}</p>
+              <ul className="mt-3 divide-y divide-[#e6e3dd] text-sm">
                 {order.items.map((i) => (
-                  <li key={i.dishId} className="flex items-baseline justify-between gap-4 py-2.5">
+                  <li key={i.dishId} className="flex items-baseline justify-between gap-4 py-2.5 text-[#1c1c1c]">
                     <span>
-                      <span className="font-extrabold text-[#ffb35c]">{i.qty}×</span> {i.titleLocal || i.title}
-                      {i.portion && <span className="text-white/50"> · {i.portion}</span>}
+                      <span className="font-semibold">{i.qty} ×</span> {i.titleLocal || i.title}
+                      {i.portion && <span className="text-[#8c8c8c]"> · {i.portion}</span>}
                     </span>
                     <span className="shrink-0 tabular-nums">{money(i.qty * i.price)}</span>
                   </li>
                 ))}
               </ul>
-              <div className="mt-4 flex items-baseline justify-between border-t border-white/10 pt-4">
-                <span className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#ffb35c]">{s.total}</span>
-                <span className="font-serif text-3xl font-bold tabular-nums">
-                  {money(order.total)} <span className="font-sans text-sm text-white/60">{currency}</span>
+              <div className="mt-3 flex items-baseline justify-between border-t border-[#e6e3dd] pt-3 text-[#1c1c1c]">
+                <span className="font-semibold">{s.total}</span>
+                <span className="text-xl font-bold tabular-nums">
+                  {money(order.total)} {currency}
                 </span>
               </div>
-              {order.feePending && <p className="mt-1 text-right text-xs text-white/55">{s.feePending}</p>}
+              {order.feePending && <p className="mt-1 text-right text-xs text-[#8c8c8c]">{s.feePending}</p>}
             </div>
           )}
 
-          <div className="flex flex-col gap-3 rounded-[2rem] border border-[#ecdcc0] bg-white p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+          <div className="flex flex-col gap-4 rounded-3xl border border-[#ececec] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
             <div>
-              <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8a7867]">{s.contact}</p>
-              <a href={`tel:${phone.replace(/[^\d+]/g, "")}`} className="mt-1 block font-serif text-3xl font-bold text-[#1f1712] hover:text-[#c2410c]">
+              <p className={dt}>{s.contact}</p>
+              <a href={`tel:${phone.replace(/[^\d+]/g, "")}`} className="mt-0.5 block text-xl font-bold text-[#1c1c1c]">
                 {phone}
               </a>
-              {!final && <p className="mt-1 text-xs text-[#8a7867]">{s.refresh} · {s.keepLink}</p>}
+              {!final && (
+                <p className="mt-1 text-xs text-[#8c8c8c]">
+                  {s.refresh} · {s.keepLink}
+                </p>
+              )}
             </div>
             <Link
-              href={localizePath(locale, "/restaurant/menu")}
+              href={localizePath(locale, "/restaurant")}
               prefetch={false}
-              className="btn-press inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#ffa53d] via-[#ff6a2b] to-[#d6352b] px-6 font-extrabold text-white"
+              className="btn-press inline-flex h-12 shrink-0 items-center justify-center rounded-2xl bg-[#f4a52a] px-6 font-bold text-[#3b2a0a]"
             >
-              <RestIcon name="menu" className="h-5 w-5" />
               {s.again}
             </Link>
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 }

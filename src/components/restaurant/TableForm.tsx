@@ -13,8 +13,8 @@ import { TABLE_MAX_AHEAD_DAYS, addDaysISO, normalizePhone, tashkentNow, timeSlot
 import { RestIcon } from "./RestIcon";
 
 const field =
-  "w-full min-h-13 rounded-2xl border border-[#e8d6b8] bg-white px-4 py-3 text-base text-[#1f1712] outline-none transition placeholder:text-[#b3a28f] focus:border-[#17a3b0] focus:ring-4 focus:ring-[#17a3b0]/15";
-const label = "mb-1.5 block text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8a7867]";
+  "w-full min-h-12 rounded-xl border border-[#e3e3e3] bg-white px-4 py-3 text-base text-[#1c1c1c] outline-none transition placeholder:text-[#a8a8a8] focus:border-[#1c1c1c]";
+const label = "mb-1.5 block text-[13px] font-semibold text-[#6b6b6b]";
 
 function subscribeMinute(cb: () => void) {
   const id = setInterval(cb, 15_000);
@@ -133,18 +133,18 @@ export function TableForm({
 
   if (sent) {
     return (
-      <div className="rounded-[2rem] bg-[#1f1712] px-6 py-14 text-center text-white">
-        <span className="rest-pop mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#17a3b0] to-[#2c9a5b]">
-          <RestIcon name="check" className="h-8 w-8" />
+      <div className="rounded-3xl bg-[#f6f5f2] px-6 py-14 text-center">
+        <span className="rest-pop mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#22a45d] text-white">
+          <RestIcon name="check" className="h-7 w-7" />
         </span>
-        <p className="mt-5 font-serif text-3xl font-bold">{t.status.table_labels.new.title}</p>
-        <p className="mx-auto mt-2 max-w-md text-white/70">{tt.note}</p>
+        <p className="mt-5 text-2xl font-bold text-[#1c1c1c]">{t.status.table_labels.new.title}</p>
+        <p className="mx-auto mt-2 max-w-md text-[#6b6b6b]">{tt.note}</p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={submit} className="ym-disable-keys rounded-[2rem] border border-[#ecdcc0] bg-white p-5 shadow-[0_30px_70px_-40px_rgba(90,40,10,0.45)] sm:p-8">
+    <form onSubmit={submit} className="ym-disable-keys rounded-3xl border border-[#ececec] p-5 sm:p-7">
       <input type="hidden" name="locale" value={locale} />
       <PageContextFields />
       <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
@@ -177,7 +177,7 @@ export function TableForm({
               </option>
             ))}
           </select>
-          {date && slots.length === 0 && <span className="mt-1.5 block text-xs font-semibold text-[#c2410c]">{t.checkout.noSlots}</span>}
+          {date && slots.length === 0 && <span className="mt-1.5 block text-xs font-semibold text-[#b42318]">{t.checkout.noSlots}</span>}
         </label>
         <label className="block">
           <span className={label}>{tt.adults}</span>
@@ -202,20 +202,20 @@ export function TableForm({
       </label>
 
       <label className="mt-5 flex cursor-pointer items-start gap-3">
-        <input type="checkbox" name="privacyConsent" required className="mt-0.5 h-5 w-5 shrink-0 accent-[#17a3b0]" />
-        <span className="text-sm leading-6 text-[#5b4a3d]">
+        <input type="checkbox" name="privacyConsent" required className="mt-0.5 h-5 w-5 shrink-0 accent-[#f4a52a]" />
+        <span className="text-sm leading-6 text-[#4a4a4a]">
           {t.checkout.consent.before}
-          <a href={localizePath(locale, "/legal/privacy-policy")} target="_blank" rel="noopener noreferrer" className="font-bold text-[#0e6f78] underline underline-offset-2">
+          <a href={localizePath(locale, "/legal/privacy-policy")} target="_blank" rel="noopener noreferrer" className="font-semibold text-[#1c1c1c] underline underline-offset-2">
             {t.checkout.consent.link}
           </a>
           {t.checkout.consent.after}
         </span>
       </label>
 
-      <p className="mt-5 rounded-2xl bg-[#17a3b0]/10 px-4 py-3 text-sm font-semibold leading-6 text-[#0e6f78]">{tt.note}</p>
+      <p className="mt-5 rounded-2xl bg-[#f6f5f2] px-4 py-3 text-sm leading-6 text-[#4a4a4a]">{tt.note}</p>
 
       {error && (
-        <p role="alert" className="mt-4 rounded-2xl bg-[#d6352b]/10 px-4 py-3 text-sm font-bold text-[#b42318]">
+        <p role="alert" className="mt-4 rounded-2xl bg-[#fdecea] px-4 py-3 text-sm font-semibold text-[#b42318]">
           {error}
         </p>
       )}
@@ -223,7 +223,7 @@ export function TableForm({
       <button
         type="submit"
         disabled={pending}
-        className="btn-press mt-5 flex h-15 w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#17a3b0] to-[#2c9a5b] px-8 text-lg font-extrabold text-white shadow-[0_20px_44px_-16px_rgba(23,163,176,0.9)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+        className="btn-press mt-5 flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-[#f4a52a] px-6 text-base font-bold text-[#3b2a0a] transition-colors hover:bg-[#eb9b1c] disabled:cursor-not-allowed disabled:opacity-60"
       >
         <RestIcon name="table" className="h-5 w-5" />
         {pending ? tt.sending : tt.submit}

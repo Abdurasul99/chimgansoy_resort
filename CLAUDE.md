@@ -123,7 +123,9 @@ The floating "Вопросы / Savollar / FAQ" button opens **`FaqPanel`** — a
 
 ### Restaurant «Сазанчик» (since 26.09.2026)
 
-Built from the spec `CHIMGAN_DARBAZA_TZ_RESTAURANT_2026-09-25.docx`: the restaurant lives **inside** this site at `/[locale]/restaurant` — landing, `/menu` (cart in localStorage), `/checkout`, `/tables`, `/order/[token]` (private status page). No online payment: every order is a request the restaurant confirms by phone.
+Built from the spec `CHIMGAN_DARBAZA_TZ_RESTAURANT_2026-09-25.docx`: the restaurant lives **inside** this site at `/[locale]/restaurant` — one storefront page (menu + cart, cart in localStorage), `/checkout`, `/tables`, `/order/[token]` (private status page). No online payment: every order is a request the restaurant confirms by phone.
+
+- **Look (since 28.09.2026): a light, minimal "marketplace" storefront** — the owner asked for delivery-app habits (Yandex Eda / Wolt / Uzum Tezkor): cover + name + hours, order-mode pills, categories sidebar (sticky chips on phones), dish grid with price-first cards and a full-width «+ Добавить» that turns into a stepper, cart column on the right (bottom bar on phones). One gold action colour `#f4a52a`; no dark hero, ikat bands, embers or tickers — don't bring them back. `/restaurant/menu` is a 307 redirect to `/restaurant` (`next.config.ts`), `?mode=` is kept.
 
 - Data is in Postgres, not in `src/content`: tables `restaurant_*`, created by the app itself on first use (`src/lib/restaurant/schema.ts`, one DDL transaction under an advisory lock). Domain code — `src/lib/restaurant/` (`rules.ts` is the single price/time/status calculator shared by browser and server).
 - Order path (`src/app/actions/restaurant.ts`): validate → re-price from the DB → **save** (idempotency key per attempt) → only then Telegram (`notify.ts`, same bot `TELEGRAM_STAFF_BOT_TOKEN`, chat `TELEGRAM_RESTAURANT_CHAT_ID` or `TELEGRAM_ADMIN_CHAT_ID`). Unsent notifications are retried on the next order and when staff open the panel.
