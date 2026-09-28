@@ -11,6 +11,15 @@ import { Icon } from "@/components/ui/Icon";
 import { poolClosure } from "@/content/pool-closure";
 import { promotions } from "@/content/promotions";
 import { promoBookable, promoBreakdown, promoCheapestNight } from "@/lib/promo-nights";
+import { restaurantCopy } from "@/content/restaurant";
+import { RestIcon } from "@/components/restaurant/RestIcon";
+
+/** Подпись под кнопкой ресторана — что там есть, без обещания сроков и цен. */
+const restaurantHint: Record<Locale, string> = {
+  ru: "Кухня на огне · меню, бронь стола, еда в домик",
+  uz: "Olovdagi oshxona · menyu, stol band qilish, uychaga taom",
+  en: "Cooked over fire · menu, tables, food to your cabin",
+};
 
 type HeroProps = {
   locale: Locale;
@@ -332,6 +341,35 @@ export function Hero({ locale, pricing }: HeroProps) {
                   </span>
                 </a>
               ))}
+
+              {/* Ресторан — во всю ширину под парой дневных услуг. Ссылка есть
+                  всегда, даже пока раздел скрыт из меню сайта: владелец попросил
+                  вход с главной (28.09.2026). Тёплый огненный круг — цвет самого
+                  раздела, чтобы кнопка читалась как вход в ресторан, а не третья
+                  дневная услуга. */}
+              <a
+                data-hero-restaurant
+                href={localizePath(locale, "/restaurant")}
+                className="btn-press group col-span-2 flex items-center gap-2.5 rounded-2xl border border-[#ffa53d]/45 bg-[#2a1208]/45 px-3.5 py-3 text-white backdrop-blur-md transition-all duration-300 hover:border-[#ffa53d]/70 hover:bg-[#2a1208]/60 sm:gap-3 sm:px-5 sm:py-3.5"
+              >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#ffa53d] via-[#ff6a2b] to-[#d6352b] shadow-[0_6px_18px_-6px_rgba(255,106,43,0.9)] sm:h-11 sm:w-11">
+                  <RestIcon name="cloche" className="h-[1.15rem] w-[1.15rem] sm:h-6 sm:w-6" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[0.9rem] font-extrabold leading-tight sm:text-[1.05rem]">
+                    {restaurantCopy[locale].navLabel}
+                  </span>
+                  <span className="mt-0.5 block text-[0.7rem] font-semibold leading-snug text-white/70 sm:text-[0.78rem]">
+                    {restaurantHint[locale]}
+                  </span>
+                </span>
+                <span
+                  aria-hidden
+                  className="shrink-0 text-lg font-bold text-[#ffb35c] transition-transform duration-300 group-hover:translate-x-1"
+                >
+                  →
+                </span>
+              </a>
             </div>
 
             <BookingWidget locale={locale} variant="hero" />
