@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Hero } from "@/components/sections/Hero";
-import { LeisureShowcase } from "@/components/sections/LeisureShowcase";
 import { RoomCatalog } from "@/components/sections/RoomCatalog";
 import { Faq } from "@/components/sections/Faq";
 import { MapBlock } from "@/components/sections/MapBlock";
@@ -28,7 +27,6 @@ import { imageStyle } from "@/lib/images";
 import { text } from "@/lib/localize";
 import { localizePath } from "@/i18n/routing";
 import { getRoomPrices, priceChip } from "@/lib/room-price";
-import { homeServiceCards } from "@/lib/service-cards";
 import { clock } from "@/components/ui/Clock";
 import { stayRules } from "@/content/pricing";
 import { poolClosure } from "@/content/pool-closure";
@@ -128,8 +126,6 @@ export default async function HomePage({ params }: PageProps) {
   // RoomCatalog is a client component. Six-hour cache, and an unreachable
   // engine simply yields no chip — see lib/room-price.ts.
   const prices = await getRoomPrices();
-  // Состав и порядок карточек «чем занять день» задаёт оператор в /admin/uslugi.
-  const homeCards = await homeServiceCards(locale);
   const priceChips = Object.fromEntries(
     Object.entries(prices).map(([slug, value]) => [slug, priceChip(value, locale)]),
   );
@@ -371,84 +367,18 @@ export default async function HomePage({ params }: PageProps) {
         })}
       </section>
 
-      {/* ── About — editorial split ───────────────────── */}
-      <section className="overflow-hidden bg-[var(--paper)] px-4 py-14 sm:py-24 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-10 sm:gap-16 lg:grid-cols-[1fr_1.1fr] lg:items-center">
-
-            <div className="motion-reveal">
-              <p className="mb-4 font-serif text-[clamp(5rem,12vw,9rem)] font-bold leading-none text-[var(--surface)]" aria-hidden="true">01</p>
-              <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGAN DARBAZA</p>
-              <h2 className="motion-reveal-mask display-md font-serif font-semibold text-[var(--ink)]">
-                {dict.home.aboutTitle}
-              </h2>
-              <p className="mt-6 text-base leading-8 text-[var(--muted)]">{dict.home.aboutText}</p>
-              <div className="mt-10 flex flex-wrap gap-3">
-                <ButtonLink href={localizePath(locale, "/about")} variant="secondary" className="btn-press">
-                  {dict.details}
-                </ButtonLink>
-                <ButtonLink href={localizePath(locale, "/place")} variant="ghost" className="btn-press">
-                  {dict.viewAll}
-                </ButtonLink>
-              </div>
-            </div>
-
-            <div className="relative motion-reveal" data-delay="150">
-              {/* The framed photo drifts; the two badges stay put — that speed
-                  difference is what reads as depth. */}
-              <div
-                data-parallax="0.06"
-                className="img-reveal-wrapper aspect-[4/5] overflow-hidden rounded-3xl shadow-[var(--shadow-card-hover)]"
-              >
-                {/* The drive, not the cabins. This was the June A-frame shot of
-                    open shells, then aframeLawn — which has a tower crane
-                    standing in the sky between the second and third cabin. The
-                    badge over this frame reads "45 мин от Ташкента", so the
-                    mountains you drive into say it better than a cabin does,
-                    and it is the last construction artefact left on this page. */}
-                <div
-                  className="h-full w-full bg-cover bg-center transition-transform duration-[1500ms] ease-out hover:scale-110"
-                  style={imageStyle(resortImages.chimganMountains)}
-                  role="img"
-                  aria-label={text(resortImages.chimganMountains.alt, locale)}
-                />
-              </div>
-              {/* Top-right floating badge — cream surface, brand text (Stitch style) */}
-              <div className="editorial-badge absolute -right-6 -top-6 hidden lg:block">
-                <p className="font-serif text-4xl font-bold leading-none text-[var(--forest-dark)]">45</p>
-                <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">
-                  {locale === "ru" ? "мин от Ташкента" : locale === "uz" ? "min Toshkentdan" : "min from Tashkent"}
-                </p>
-              </div>
-              {/* Bottom-left floating badge — forest green, white text (Stitch style).
-                  Was "08–18 open hours", which is the day-visit window and read
-                  as "we close before dinner" next to a stay-led headline. */}
-              <div className="editorial-badge editorial-badge--accent absolute -bottom-6 -left-6 hidden lg:block">
-                <p className="font-serif text-4xl font-bold leading-none text-[var(--sun)]">{stayRules.checkIn}</p>
-                <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-white/80">
-                  {clock(
-                    locale === "ru"
-                      ? `заезд · выезд ${stayRules.checkOut}`
-                      : locale === "uz"
-                        ? `kirish · chiqish ${stayRules.checkOut}`
-                        : `check-in · out ${stayRules.checkOut}`,
-                    "dark",
-                  )}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Здесь стоял блок «01 · Горный курорт в 45 минутах от Ташкента» — фото
+          гор с плашками «45 мин» и «15:00 заезд». Владелец снял его 30.09.2026
+          как неактуальный; текст остался на странице /about. */}
 
       {/* ── Weather panel — live mountain conditions ──── */}
       <section className="py-10 sm:py-14">
         <WeatherPanel locale={locale} />
       </section>
 
-      {/* ── На территории — three cards; the BBQ one is last in services[] and
-             is deliberately cut here, staying on /services ── */}
-      <LeisureShowcase locale={locale} items={homeCards} limit={3} />
+      {/* Блок «На территории · Чем занять день» (LeisureShowcase, карточки из
+          /admin/uslugi с галочкой «на главной») владелец снял 30.09.2026 как
+          неактуальный. Услуги остаются на /services. */}
 
       {/* A "Что мы строим" section used to sit here — three CGI renders of the
           master plan, the padel courts and the mini-football pitch, framed as
