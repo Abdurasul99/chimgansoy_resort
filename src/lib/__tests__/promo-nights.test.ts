@@ -103,28 +103,20 @@ describe("что показать гостю под датами", () => {
 
 describe("срок акций", () => {
   // Правила при заданном сроке — в promo-deadline.test.ts (срок там подставлен).
-  it("«2+1» и «Всё включено» без срока — оператор повторил условия 30.09.2026 без даты", () => {
-    // Раньше обе висели «до 30 сентября» и сами пропали с сайта и визитки,
-    // хотя оператор их не снимал.
-    for (const slug of ["2plus1", "all-inclusive"]) {
-      expect(promotions.find((p) => p.slug === slug)?.until).toBeUndefined();
-    }
-    expect(promoActive("2026-10-01")).toBe(true);
-    expect(promoBookable("2026-10-01")).toBe(true);
-    expect(promoLastCheckin()).toBe("");
+  // Поведение акции без срока — в promo-open.test.ts (срок там снят).
+  it("«2+1» — сентябрьская: последняя ночь 30.09, в октябре её нет", () => {
+    // Оператор, 30.09.2026: «почему не убрал его» — в октябре «2+1» нет.
+    expect(promotions.find((p) => p.slug === "2plus1")?.until).toBe("2026-09-30");
+    expect(promoLastCheckin()).toBe("2026-09-28");
+    expect(promoBookable("2026-09-28")).toBe(true);
+    expect(promoBookable("2026-09-29")).toBe(false);
+    expect(promoActive("2026-10-01")).toBe(false);
+    expect(rangeQualifies("2026-10-04", "2026-10-07", "2026-10-01")).toBe(false);
+    expect(promoHint("2026-10-05", "2026-10-07", "2026-10-01")).toBeNull();
   });
 
-  it("в октябре схемы работают как в сентябре", () => {
-    // 04.10.2026 — воскресенье, 05.10 — понедельник.
-    expect(rangeQualifies("2026-10-04", "2026-10-07", "2026-10-01")).toBe(true);
-    expect(promoHint("2026-10-05", "2026-10-07", "2026-10-01")).toEqual({ kind: "offer-third", extendTo: "2026-10-08" });
-    // Схемы при этом прежние: из среды три ночи уходят в субботу.
-    expect(rangeQualifies("2026-10-07", "2026-10-10", "2026-10-01")).toBe(false);
-  });
-
-  it("без срока подсказка не пугает сроком", () => {
-    // Вт→Пт две недели спустя — схема верная, и «too-late» без срока не бывает.
-    expect(promoHint("2026-10-13", "2026-10-16", "2026-10-01")).toEqual({ kind: "third-free" });
+  it("«Всё включено» сроком не ограничена", () => {
+    expect(promotions.find((p) => p.slug === "all-inclusive")?.until).toBeUndefined();
   });
 
   it("«Выходной без спешки» сроком не ограничен", () => {
