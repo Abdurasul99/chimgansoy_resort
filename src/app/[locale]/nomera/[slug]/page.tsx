@@ -406,7 +406,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
               )}
 
               {/* Amenities + Features */}
-              <div className="mt-12 grid gap-10 sm:grid-cols-2 motion-reveal" data-delay="100">
+              <div className="mt-12 grid grid-cols-1 gap-10 sm:grid-cols-2 motion-reveal" data-delay="100">
                 <div>
                   <h2 className="font-serif text-2xl font-semibold text-[var(--ink)]">{dict.detailLabels.amenities}</h2>
                   <ul className="mt-5 space-y-3">
