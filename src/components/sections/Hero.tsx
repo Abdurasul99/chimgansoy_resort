@@ -101,13 +101,13 @@ export function Hero({ locale, pricing }: HeroProps) {
   // форма ниже выбрать не даст.
   const showPromo = promoBookable();
   /**
-   * Когда «2+1» не идёт, место на первом экране занимает акция на шале
-   * (оператор, 30.09.2026: «−20% на Chalet весь октябрь»). Карточка гаснет
-   * по сроку акции — 1 ноября её здесь уже нет.
+   * Акция на шале — второй карточкой под «2+1» (оператор, 30.09.2026: «−20% на
+   * Chalet весь октябрь», в октябре идут обе). Гаснет по сроку акции — 1
+   * ноября её здесь уже нет.
    */
   const chaletPromo = promotions.find((p) => p.slug === "chalet-october");
   const chalet =
-    !showPromo && chaletPromo?.discount && (!chaletPromo.until || todayTashkent() <= chaletPromo.until)
+    chaletPromo?.discount && (!chaletPromo.until || todayTashkent() <= chaletPromo.until)
       ? { title: chaletPromo.title, d: discountMath(chaletPromo.discount) }
       : null;
   // «от»: база — будничная ночь, в пятницу и субботу ночь дороже.

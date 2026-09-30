@@ -10,7 +10,6 @@ import {
   promoCheapestNight,
   promoCheapestPerPerson,
   promoHint,
-  promoLastCheckin,
   rangeQualifies,
 } from "@/lib/promo-nights";
 
@@ -104,15 +103,17 @@ describe("что показать гостю под датами", () => {
 describe("срок акций", () => {
   // Правила при заданном сроке — в promo-deadline.test.ts (срок там подставлен).
   // Поведение акции без срока — в promo-open.test.ts (срок там снят).
-  it("«2+1» — сентябрьская: последняя ночь 30.09, в октябре её нет", () => {
-    // Оператор, 30.09.2026: «почему не убрал его» — в октябре «2+1» нет.
-    expect(promotions.find((p) => p.slug === "2plus1")?.until).toBe("2026-09-30");
-    expect(promoLastCheckin()).toBe("2026-09-28");
-    expect(promoBookable("2026-09-28")).toBe(true);
-    expect(promoBookable("2026-09-29")).toBe(false);
-    expect(promoActive("2026-10-01")).toBe(false);
-    expect(rangeQualifies("2026-10-04", "2026-10-07", "2026-10-01")).toBe(false);
-    expect(promoHint("2026-10-05", "2026-10-07", "2026-10-01")).toBeNull();
+  it("«2+1» без срока — в октябре идёт вместе с «−20% на Chalet»", () => {
+    // Оператор, 30.09.2026: в октябре четыре акции — «Всё включено», «2+1»,
+    // «−20%», «Выходной без спешки».
+    expect(promotions.find((p) => p.slug === "2plus1")?.until).toBeUndefined();
+    expect(promoActive("2026-10-01")).toBe(true);
+    expect(promoBookable("2026-10-15")).toBe(true);
+    expect(rangeQualifies("2026-10-04", "2026-10-07", "2026-10-01")).toBe(true);
+  });
+
+  it("в октябре четыре акции", () => {
+    expect(promotions.map((p) => p.slug).sort()).toEqual(["2plus1", "all-inclusive", "chalet-october", "slow-weekend"]);
   });
 
   it("«Всё включено» сроком не ограничена", () => {
