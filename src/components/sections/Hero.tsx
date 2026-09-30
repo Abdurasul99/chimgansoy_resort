@@ -10,7 +10,7 @@ import { HeroScrollCue } from "@/components/ui/HeroScrollCue";
 import { Icon } from "@/components/ui/Icon";
 import { poolClosure } from "@/content/pool-closure";
 import { promotions } from "@/content/promotions";
-import { promoBookable, promoBreakdown, promoCheapestNight } from "@/lib/promo-nights";
+import { discountMath, promoBookable, promoBreakdown, promoCheapestNight, todayTashkent } from "@/lib/promo-nights";
 import { restaurantCopy } from "@/content/restaurant";
 import { RestIcon } from "@/components/restaurant/RestIcon";
 
@@ -100,6 +100,24 @@ export function Hero({ locale, pricing }: HeroProps) {
   // ни одна дата под неё не подходит, и первый экран рекламировал бы то, что
   // форма ниже выбрать не даст.
   const showPromo = promoBookable();
+  /**
+   * Когда «2+1» не идёт, место на первом экране занимает акция на шале
+   * (оператор, 30.09.2026: «−20% на Chalet весь октябрь»). Карточка гаснет
+   * по сроку акции — 1 ноября её здесь уже нет.
+   */
+  const chaletPromo = promotions.find((p) => p.slug === "chalet-october");
+  const chalet =
+    !showPromo && chaletPromo?.discount && (!chaletPromo.until || todayTashkent() <= chaletPromo.until)
+      ? { title: chaletPromo.title, d: discountMath(chaletPromo.discount) }
+      : null;
+  // «от»: база — будничная ночь, в пятницу и субботу ночь дороже.
+  const chaletHint = chalet
+    ? {
+        ru: `Ночь от ${money(chalet.d.price)} сум вместо ${money(chalet.d.base)} · при ${chalet.d.guests} гостях — ${money(chalet.d.perPerson)} с человека`,
+        uz: `Kecha ${money(chalet.d.price)} so'mdan, ${money(chalet.d.base)} o'rniga · ${chalet.d.guests} kishiga — kishi boshiga ${money(chalet.d.perPerson)}`,
+        en: `A night from ${money(chalet.d.price)} UZS instead of ${money(chalet.d.base)} · ${money(chalet.d.perPerson)} per person for ${chalet.d.guests}`,
+      }[locale]
+    : "";
   /**
    * Условие под карточкой: заезд в воскресенье, понедельник или вторник.
    *
@@ -299,6 +317,31 @@ export function Hero({ locale, pricing }: HeroProps) {
                 →
               </span>
             </a>
+            )}
+            {chalet && (
+              <a
+                data-hero-promo
+                href="#offers"
+                className="btn-press group mb-3 flex items-center gap-3 rounded-2xl bg-gradient-to-b from-[var(--sun)] to-[var(--sun-dark)] px-4 py-3.5 text-[var(--ink)] shadow-[0_10px_30px_rgba(0,0,0,.28)] transition-shadow duration-300 hover:shadow-[0_14px_38px_rgba(0,0,0,.36)] sm:px-5 sm:py-4"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-black/12 text-[0.82rem] font-black leading-none sm:h-12 sm:w-12 sm:text-[0.92rem]">
+                  −{chalet.d.percent}%
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[0.95rem] font-extrabold leading-tight sm:text-[1.1rem]">
+                    {chalet.title[locale]}
+                  </span>
+                  <span className="mt-0.5 block text-[0.72rem] font-semibold leading-snug opacity-75 sm:text-[0.82rem]">
+                    {chaletHint}
+                  </span>
+                </span>
+                <span
+                  aria-hidden
+                  className="shrink-0 text-2xl font-bold transition-transform duration-300 group-hover:translate-x-1"
+                >
+                  →
+                </span>
+              </a>
             )}
             {showPromo && promoNote && (
               <p
