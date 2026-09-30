@@ -172,7 +172,7 @@ export async function HomeDayCards({ locale, pricing }: { locale: Locale; pricin
               {restaurantChips.map((c) => (
                 <li key={c} className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.08] px-3 py-1.5 text-[13px] font-semibold text-white/90">
                   <Icon name="check" className="h-3 w-3 shrink-0 text-[var(--sun)]" />
-                  {clock(c, "dark")}
+                  <span className="min-w-0">{clock(c, "dark")}</span>
                 </li>
               ))}
             </ul>

@@ -78,7 +78,7 @@ export async function DayProductPage({ locale, slug }: { locale: Locale; slug: "
             {list(product.highlights, locale).map((item) => (
               <li key={item} className="flex items-start gap-3 text-sm text-[var(--muted)]">
                 <Icon name="check" className="mt-0.5 h-4 w-4 shrink-0 text-[var(--green)]" />
-                {clock(item)}
+                <span className="min-w-0">{clock(item)}</span>
               </li>
             ))}
           </ul>

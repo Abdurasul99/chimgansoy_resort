@@ -424,7 +424,10 @@ export default async function RoomDetailPage({ params }: PageProps) {
                     {(live?.features(locale) ?? list(room.features, locale)).map((item) => (
                       <li key={item} className="flex items-start gap-3 text-sm text-[var(--muted)]">
                         <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
-                        {clock(item)}
+                        {/* Одним элементом: clock() режет строку на части, и в
+                            flex каждая становилась отдельной колонкой — текст
+                            переставал переноситься и вылезал за экран. */}
+                        <span className="min-w-0">{clock(item)}</span>
                       </li>
                     ))}
                   </ul>

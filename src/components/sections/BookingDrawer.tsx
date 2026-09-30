@@ -92,7 +92,7 @@ export function BookingDrawer({ locale, roomTitle, roomSlug, priceFrom }: Bookin
         {perks.map((item) => (
           <li key={item} className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--green)]" />
-            {clock(item)}
+            <span className="min-w-0">{clock(item)}</span>
           </li>
         ))}
       </ul>
