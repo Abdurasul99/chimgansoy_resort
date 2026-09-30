@@ -85,12 +85,9 @@ export const rooms: Room[] = [
       // The AUGUST set is 1802×2400 and sharp, but every frame of it is
       // portrait — there is no wide A-frame exterior in it at all.
       //
-      // So the lead is aframeGableSky: the triangular silhouette against the
-      // sky, which is the one frame that reads as "this is what you are
-      // renting" even cropped. It is top-anchored in images.ts, so the double-
-      // wide 4:3 crop spends itself on the grass and keeps the apex.
-      // aframeTerraceRail follows — a detail, in the place a detail belongs.
-      "aframeGableSky",
+      // The lead was aframeGableSky (the railing close-up under the gable) —
+      // the owner removed it from the gallery on 30.09.2026. aframeTerraceRail
+      // leads now: the whole A-frame front with its windows and terrace.
       "aframeTerraceRail",
       "aframeRoom",
       "aframeBed",
