@@ -68,6 +68,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   );
 }
 
+/**
+ * Куда ведёт «Забронировать» со страницы услуги.
+ *
+ * Раньше — всегда на /bron, в бронь НОМЕРОВ: гость читал про пикник-зону,
+ * жал «Забронировать» и попадал в выбор домика (оператор, 30.09.2026: «при
+ * переходе из /services/picnic-zone отправляет на бронь номеров»). У дневных
+ * услуг своя форма заявки — туда и ведём. Форму дат заезда сверху страницы
+ * (она ищет номера) у таких услуг тоже не показываем.
+ *
+ * Услуги без записи здесь (прогулки рядом) остаются при брони проживания.
+ */
+const DAY_BOOKING: Record<string, { href: string; label: { ru: string; uz: string; en: string } }> = {
+  "picnic-zone": { href: "/topchan#request", label: { ru: "Забронировать топчан", uz: "Topchan bron qilish", en: "Book a topchan" } },
+  // Мангал и казан берут вместе с топчаном — заявка та же.
+  "outdoor-cooking": { href: "/topchan#request", label: { ru: "Забронировать топчан", uz: "Topchan bron qilish", en: "Book a topchan" } },
+  tubing: { href: "/tubing#request", label: { ru: "Забронировать тюбинг", uz: "Tubing bron qilish", en: "Book tubing" } },
+  restaurant: { href: "/restaurant/tables", label: { ru: "Забронировать стол", uz: "Stol band qilish", en: "Book a table" } },
+  // Бассейн закрыт — страница бассейна объясняет это вместо формы.
+  pool: { href: "/nomera/pool", label: { ru: "О бассейне", uz: "Basseyn haqida", en: "About the pool" } },
+};
+
 export default async function ServiceDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const locale = await getLocaleParam(params);
@@ -143,6 +164,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
   }
 
   const service = getService(slug);
+  const dayBooking = DAY_BOOKING[service.slug];
 
   return (
     <>
@@ -153,7 +175,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
         image={resortImages[service.image]}
         eyebrow={text(service.bestFor, locale)}
       />
-      <BookingWidget locale={locale} />
+      {!dayBooking && <BookingWidget locale={locale} />}
 
       {/* Открыт ресторан — первым делом ведём в него: там меню с ценами и заказ. */}
       {service.slug === "restaurant" && (await restaurantListed()) && <RestaurantTeaser locale={locale} />}
@@ -175,9 +197,15 @@ export default async function ServiceDetailPage({ params }: PageProps) {
               ))}
             </div>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href={localizePath(locale, "/bron")} variant="primary" reload>
-                {dict.bookNow}
-              </ButtonLink>
+              {dayBooking ? (
+                <ButtonLink href={localizePath(locale, dayBooking.href)} variant="primary">
+                  {dayBooking.label[locale]}
+                </ButtonLink>
+              ) : (
+                <ButtonLink href={localizePath(locale, "/bron")} variant="primary" reload>
+                  {dict.bookNow}
+                </ButtonLink>
+              )}
               <ButtonLink href={localizePath(locale, "/nomera")} variant="ghost">
                 {dict.pages.rooms.title}
               </ButtonLink>

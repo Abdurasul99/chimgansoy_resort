@@ -45,6 +45,18 @@ type HeaderProps = {
 const DAY_PRODUCT_PATHS = ["/topchan", "/tubing"] as const;
 
 /**
+ * Страницы услуг, которые продаются формой дневного продукта. С них кнопка
+ * тоже ведёт в эту форму, а не в каталог домиков: с /services/picnic-zone
+ * гость попадал в бронь номеров (оператор, 30.09.2026). Та же карта, что
+ * DAY_BOOKING на странице услуги.
+ */
+const SERVICE_DAY_PRODUCT: Record<string, (typeof DAY_PRODUCT_PATHS)[number]> = {
+  "/services/picnic-zone": "/topchan",
+  "/services/outdoor-cooking": "/topchan",
+  "/services/tubing": "/tubing",
+};
+
+/**
  * Своя надпись, а не общая dict.bookNow.
  *
  * Тот же ключ стоит на кнопках внутри страниц домиков и услуг, где он ведёт в
@@ -70,7 +82,9 @@ export function Header({ locale, restaurant = null, restaurantLabels }: HeaderPr
   const dict = dictionaries[locale];
 
   // The request form on every day-product page is anchored #request.
-  const dayProduct = DAY_PRODUCT_PATHS.find((p) => pathname.endsWith(localizePath(locale, p)));
+  const dayProduct =
+    DAY_PRODUCT_PATHS.find((p) => pathname.endsWith(localizePath(locale, p))) ??
+    Object.entries(SERVICE_DAY_PRODUCT).find(([p]) => pathname.endsWith(localizePath(locale, p)))?.[1];
   /**
    * На страницах домиков и услуг — к форме заявки; везде остальное — в каталог
    * домиков.
