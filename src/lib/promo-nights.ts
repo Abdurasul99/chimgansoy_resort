@@ -194,6 +194,10 @@ export type PromoRow = {
   total: number;
   /** Сколько выходит за ночь, если разделить на три. */
   perNight: number;
+  /** Гостей в цене домика (глэмпинг — 2, шале — 4). */
+  guests: number;
+  /** Ночь с человека при полном размещении — «от 500 000 с человека». */
+  perPerson: number;
 };
 
 export function promoBreakdown(): PromoRow[] {
@@ -204,7 +208,15 @@ export function promoBreakdown(): PromoRow[] {
     // Округляем до тысячи: 3 000 000 / 3 делится ровно, но тариф может
     // смениться на число, которое не делится.
     perNight: Math.round((s.amount * 2) / 3 / 1000) * 1000,
+    guests: s.guests,
+    perPerson: Math.round((s.amount * 2) / 3 / s.guests / 1000) * 1000,
   }));
+}
+
+/** Самая низкая цена ночи с человека по акции — довод оператора. */
+export function promoCheapestPerPerson(): number {
+  const rows = promoBreakdown();
+  return rows.length ? Math.min(...rows.map((r) => r.perPerson)) : 0;
 }
 
 /** Самая низкая цена ночи по акции — крючок для первого экрана. */

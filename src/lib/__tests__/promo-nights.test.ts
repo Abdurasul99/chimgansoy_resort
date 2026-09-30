@@ -6,6 +6,7 @@ import {
   promoBookable,
   promoBreakdown,
   promoCheapestNight,
+  promoCheapestPerPerson,
   promoHint,
   promoLastCheckin,
   rangeQualifies,
@@ -154,6 +155,37 @@ describe("расчёт «2+1» — как его объясняет операт
 
   it("на первый экран идёт самая дешёвая ночь — 1 000 000", () => {
     expect(promoCheapestNight()).toBe(1_000_000);
+  });
+
+  it("с человека при полном размещении — 500 000: глэмпинг на двоих, шале на четверых", () => {
+    // Довод оператора (30.09.2026): «всего от 500 000 сум с человека за ночь».
+    // Шале рассчитано на четверых — прежнее «гости сверх двоих» в условиях
+    // брало бы доплату с третьего и четвёртого гостя шале.
+    const rows = promoBreakdown();
+    expect(rows.map((r) => [r.label.ru, r.guests, r.perPerson])).toEqual([
+      ["Глэмпинг", 2, 500_000],
+      ["Шале", 4, 500_000],
+    ]);
+    expect(promoCheapestPerPerson()).toBe(500_000);
+  });
+
+  it("цифра «с человека» в условиях совпадает с расчётом", () => {
+    // Условия — текст, расчёт — из тарифа. Поменяют тариф — тест покажет, что
+    // строка в условиях врёт.
+    const promo = promotions.find((p) => p.slug === "2plus1")!;
+    const per = String(promoCheapestPerPerson()).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    expect(promo.terms.ru.join(" ")).toContain(`от ${per} сум с человека за ночь`);
+    expect(promo.terms.uz.join(" ")).toContain(`kechasiga ${per} so'mdan`);
+    expect(promo.terms.en.join(" ")).toContain(`from ${per} UZS per person per night`);
+    expect(promo.terms.ru.join(" ")).toContain("Завтраки включены");
+    expect(JSON.stringify(promo.terms)).not.toContain("сверх двоих");
+  });
+
+  it("бейдж — «Будни», как у оператора", () => {
+    // Оператор вернул своё слово 30.09.2026; дни заезда — в условиях рядом.
+    const promo = promotions.find((p) => p.slug === "2plus1")!;
+    expect(promo.badge.ru).toBe("Будни · −33%");
+    expect(promo.terms.ru[0]).toContain("воскресенье");
   });
 });
 

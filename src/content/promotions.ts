@@ -1,4 +1,5 @@
 import type { LocalizedList, LocalizedString } from "./types";
+import { cabinOccupancy } from "./pricing";
 
 /**
  * Действующие акции курорта.
@@ -16,8 +17,11 @@ export type Promotion = {
   badge: LocalizedString;
   title: LocalizedString;
   description: LocalizedString;
-  /** Строки выгоды: подпись и сумма. Пусто, если выгода не в деньгах. */
-  savings?: { label: LocalizedString; amount: number }[];
+  /**
+   * Строки выгоды: подпись, сумма и сколько гостей входит в цену домика.
+   * Пусто, если выгода не в деньгах. По гостям считается цена «с человека».
+   */
+  savings?: { label: LocalizedString; amount: number; guests: number }[];
   /** Условия — то, из-за чего на ресепшене спорят, если о них умолчать. */
   terms: LocalizedList;
   /**
@@ -47,16 +51,35 @@ export type Promotion = {
   hiddenOnSite?: boolean;
 };
 
+/**
+ * Выгода «2+1» по домикам: будничная ночь и сколько гостей входит в цену.
+ * Отдельной константой — из неё же считается строка «от … с человека» в
+ * условиях: цена, вписанная текстом, не поменялась бы вместе с тарифом.
+ */
+const TWO_PLUS_ONE_SAVINGS = [
+  { label: { ru: "Глэмпинг", uz: "Glemping", en: "Glamping" }, amount: 1_500_000, guests: cabinOccupancy.glamping.base },
+  { label: { ru: "Шале", uz: "Shale", en: "Chalet" }, amount: 3_000_000, guests: cabinOccupancy.cottage.base },
+];
+
+/**
+ * Ночь с человека при полном размещении: две оплаченные ночи из трёх,
+ * поделённые на гостей домика. Тот же расчёт, что promoBreakdown в
+ * lib/promo-nights.ts; совпадение держит тест.
+ */
+const perPersonFrom = Math.min(
+  ...TWO_PLUS_ONE_SAVINGS.map((s) => Math.round((s.amount * 2) / 3 / s.guests / 1000) * 1000),
+);
+const fmt = (n: number) => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+const [glampingGuests, chaletGuests] = TWO_PLUS_ONE_SAVINGS.map((s) => s.guests);
+
 export const promotions: Promotion[] = [
   {
     slug: "2plus1",
-    // «Будни» здесь стояло до 24.09.2026, пока заезд был только в Пн или Вт.
-    // С воскресным заездом это слово обманывает: гость читает «будни» как
-    // понедельник–пятницу. «Вс–Чт» — это ночи акции: все три схемы ложатся на
-    // них, так же подписана таблица расчёта и тариф «Всё включено» рядом. Дни
-    // заезда названы отдельно, в условиях. Прежнее «Вс–Пт» читалось как «и
-    // ночь пятницы по акции», а её нет ни в одной схеме.
-    badge: { ru: "Вс–Чт · −33%", uz: "Ya–Pay · −33%", en: "Sun–Thu · −33%" },
+    // «Будни» — слово оператора. С 24.09 по 30.09.2026 здесь стояло «Вс–Чт»:
+    // с воскресным заездом «будни» казались неточными. Оператор 30.09 вернул
+    // «Будни» своим текстом («сохранить как было ранее») — дни заезда названы
+    // рядом, в условиях, и «Вс→Ср» там стоит первым.
+    badge: { ru: "Будни · −33%", uz: "Ish kunlari · −33%", en: "Weekdays · −33%" },
     title: {
       ru: "«2+1» — третья ночь в подарок",
       uz: "«2+1» — uchinchi kecha sovg'a",
@@ -67,10 +90,7 @@ export const promotions: Promotion[] = [
       uz: "Ikki kecha uchun to'laysiz, uchinchisi bepul. Kirish yakshanba, dushanba yoki seshanba — tog'larda shoshilmasdan uch kecha.",
       en: "Pay for two nights, get the third free. Arrive on Sunday, Monday or Tuesday — three unhurried nights in the mountains.",
     },
-    savings: [
-      { label: { ru: "Глэмпинг", uz: "Glemping", en: "Glamping" }, amount: 1_500_000 },
-      { label: { ru: "Шале", uz: "Shale", en: "Chalet" }, amount: 3_000_000 },
-    ],
+    savings: TWO_PLUS_ONE_SAVINGS,
     terms: {
       ru: [
         "Заезд в воскресенье, понедельник или вторник — ровно 3 ночи",
@@ -79,7 +99,9 @@ export const promotions: Promotion[] = [
         "Заезд в понедельник ➔ выезд в четверг (3 ночи)",
         "Заезд во вторник ➔ выезд в пятницу (3 ночи)",
         "Не суммируется с тарифом «Всё включено»",
-        "Гости сверх двоих — по тарифу за каждую ночь",
+        "Завтраки включены",
+        `При полном размещении — от ${fmt(perPersonFrom)} сум с человека за ночь: глэмпинг на ${glampingGuests} гостей, шале на ${chaletGuests}`,
+        "Дополнительное размещение оплачивается отдельно согласно тарифу за каждую ночь",
       ],
       uz: [
         "Kirish yakshanba, dushanba yoki seshanba — aynan 3 kecha",
@@ -88,7 +110,9 @@ export const promotions: Promotion[] = [
         "Kirish dushanba ➔ chiqish payshanba (3 kecha)",
         "Kirish seshanba ➔ chiqish juma (3 kecha)",
         "«Hammasi kiritilgan» tarifi bilan jamlanmaydi",
-        "Ikki kishidan ortiq mehmonlar — har bir kecha uchun tarif bo'yicha",
+        "Nonushta kiritilgan",
+        `To'liq joylashganda — kishi boshiga kechasiga ${fmt(perPersonFrom)} so'mdan: glemping ${glampingGuests} mehmonga, shale ${chaletGuests} mehmonga`,
+        "Qo'shimcha joylashtirish har bir kecha uchun tarif bo'yicha alohida to'lanadi",
       ],
       en: [
         "Arrive on Sunday, Monday or Tuesday — exactly 3 nights",
@@ -97,7 +121,9 @@ export const promotions: Promotion[] = [
         "Monday arrival ➔ Thursday departure (3 nights)",
         "Tuesday arrival ➔ Friday departure (3 nights)",
         "Does not combine with the All-Inclusive rate",
-        "Guests beyond two are charged per night at the standard rate",
+        "Breakfast included",
+        `At full occupancy — from ${fmt(perPersonFrom)} UZS per person per night: glamping for ${glampingGuests} guests, chalet for ${chaletGuests}`,
+        "Extra beds are charged separately at the rate for each night",
       ],
     },
   },

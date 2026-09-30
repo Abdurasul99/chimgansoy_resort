@@ -4,7 +4,15 @@ import { ridesRu } from "@/lib/tariff";
 import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 import { poolClosure } from "@/content/pool-closure";
 import { promotions } from "@/content/promotions";
-import { promoActive, promoBookable, promoBreakdown, promoLastCheckin, promoLastDay, todayTashkent } from "@/lib/promo-nights";
+import {
+  promoActive,
+  promoBookable,
+  promoBreakdown,
+  promoCheapestPerPerson,
+  promoLastCheckin,
+  promoLastDay,
+  todayTashkent,
+} from "@/lib/promo-nights";
 
 /** 50000 -> "50 000" */
 export function money(n: number): string {
@@ -36,6 +44,13 @@ function promoMath(): string {
   return promoBreakdown()
     .map((r) => `${r.label.ru.toLowerCase()}: 3 ночи за ${money(r.total)} сум вместо ${money(r.night * 3)}, то есть ${money(r.perNight)} сум за ночь`)
     .join("; ");
+}
+
+/** «глэмпинг на 2 гостей, шале на 4 гостей» — сколько человек в цене домика. */
+function promoGuests(): string {
+  return promoBreakdown()
+    .map((r) => `${r.label.ru.toLowerCase()} на ${r.guests} гостей`)
+    .join(", ");
 }
 
 function promoSavings(): string {
@@ -72,7 +87,7 @@ function promoBlock(today = todayTashkent()): string {
         promoLastDay()
           ? `СРОК: действует до ${ruDate(promoLastDay())} — это последняя НОЧЬ по акции, поэтому последний заезд — ${ruDate(promoLastCheckin())}; даты позже под акцию не подходят.`
           : "СРОК: дата окончания не объявлена — акция действует сейчас; конкретные даты подтверждает администратор."
-      } Выгода ${promoSavings()}. Как считать: ${promoMath()}. Завтрак входит, как в любое проживание. Тариф «Всё включено» (завтрак, обед и ужин по сет-меню) с акцией НЕ суммируется — это два разных предложения, гость выбирает одно; обед и ужин при «2+1» — по меню ресторана за отдельную плату. Цена акции — на ДВОИХ; гости сверх двоих оплачиваются отдельно за каждую ночь по обычному тарифу доп. места.`,
+      } Выгода ${promoSavings()}. Как считать: ${promoMath()}. Завтрак входит, как в любое проживание. Тариф «Всё включено» (завтрак, обед и ужин по сет-меню) с акцией НЕ суммируется — это два разных предложения, гость выбирает одно; обед и ужин при «2+1» — по меню ресторана за отдельную плату. Цена акции — за домик: ${promoGuests()}. При полном размещении выходит от ${money(promoCheapestPerPerson())} сум с человека за ночь, 3 ночи с завтраками — от ${money(promoCheapestPerPerson() * 3)} сум с человека. Дополнительное размещение сверх этого — отдельно за каждую ночь по тарифу доп. места.`,
     );
   }
   if (twoPlusOne && !promoBookable(today) && promoActive(today)) {
