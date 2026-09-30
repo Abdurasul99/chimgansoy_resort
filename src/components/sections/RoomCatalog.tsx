@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState, type ReactNode } from "react";
 import { resortImages } from "@/content/images";
-import { roomCategories, rooms, EXELY_ROOM_TYPE, INCLUDED_LABEL, type RoomCategory } from "@/content/rooms";
+import { roomCategories, rooms, EXELY_ROOM_TYPE, INCLUDED_LABEL, includedPerks, type RoomCategory } from "@/content/rooms";
+import type { ImageAsset } from "@/content/types";
 import { dictionaries } from "@/content/translations";
 import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
-import { imageStyle } from "@/lib/images";
 import { list, text } from "@/lib/localize";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Icon } from "@/components/ui/Icon";
@@ -44,8 +44,8 @@ const ONE_CLICK: Record<string, string> = {
 
 export function RoomCatalog({ locale, limit, priceChips = {} }: RoomCatalogProps) {
   const [filter, setFilter] = useState<Filter>("all");
-  // Which room the viewer is showing, by slug — null when closed.
-  const [gallery, setGallery] = useState<string | null>(null);
+  // Which room the viewer is showing, by slug, and from which frame — null when closed.
+  const [gallery, setGallery] = useState<{ slug: string; index: number } | null>(null);
   const dict = dictionaries[locale];
   // Only truly-built rooms are bookable here; `available: false` hides the rest.
   // Закрытый бассейн уходит из каталога, но остаётся страницей: карточка
@@ -94,25 +94,25 @@ export function RoomCatalog({ locale, limit, priceChips = {} }: RoomCatalogProps
 
       <div className="grid gap-5 sm:gap-8 lg:grid-cols-2">
         {visibleRooms.map((room) => {
-          const image = resortImages[room.image];
+          const photos = roomGalleryOf(room);
+          const perks = includedPerks(room);
 
           return (
             <article
               key={room.slug}
               className="editorial-card group relative overflow-hidden rounded-3xl bg-[var(--ink)] shadow-[var(--shadow-card)]"
             >
-              {/* Full-bleed image — now a button that opens the room's whole
-                  shoot. It used to be inert, so the only way to see more than
-                  one photo of a room was to open its page. */}
-              <button
-                type="button"
-                onClick={() => setGallery(room.slug)}
-                aria-label={`${text(room.title, locale)} — ${roomGalleryOf(room).length} фото`}
-                className="img-reveal-wrapper relative block h-[65vw] max-h-[500px] min-h-[260px] w-full cursor-zoom-in bg-cover bg-center text-left transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04] sm:min-h-[320px]"
-                style={imageStyle(image)}
+              {/* Вся съёмка домика — лентой, листается свайпом влево-вправо
+                  (оператор, 30.09.2026: «чтобы через свайп лево-право галерея
+                  номера»). Раньше здесь был один кадр, а остальные прятались
+                  за нажатием. Нажатие на кадр по-прежнему открывает его во
+                  весь экран. */}
+              <SwipeGallery
+                photos={photos}
+                title={text(room.title, locale)}
+                locale={locale}
+                onOpen={(index) => setGallery({ slug: room.slug, index })}
               >
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,18,14,1.0)_0%,rgba(12,18,14,0.55)_45%,rgba(12,18,14,0.08)_100%)]" />
 
                 {/* Floating price badge */}
                 {/* There WAS a price badge here. It is gone on purpose.
@@ -125,21 +125,12 @@ export function RoomCatalog({ locale, limit, priceChips = {} }: RoomCatalogProps
                     with the two other facts a guest is comparing (capacity and
                     area) instead of floating over the roofline. */}
 
-                {/* Photo count — tells the guest there is something behind the click */}
-                <span className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-black/45 px-3 py-1.5 text-[11px] font-bold text-white/90 backdrop-blur-sm transition-colors group-hover:bg-black/65">
-                  <svg aria-hidden className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="5" width="14" height="14" rx="2" />
-                    <path d="M21 7v10a2 2 0 0 1-2 2M7 13l2.5-2.5 3 3L15 11" />
-                  </svg>
-                  {roomGalleryOf(room).length}
-                </span>
-
                 {/* Room title overlay */}
-                <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50">{text(room.eyebrow, locale)}</p>
                   <h3 className="mt-2 font-serif text-4xl font-bold leading-tight sm:text-5xl">{text(room.title, locale)}</h3>
                 </div>
-              </button>
+              </SwipeGallery>
 
               {/* Info block */}
               <div className="room-info-block bg-[var(--paper)] px-6 pb-6 pt-5 sm:px-8 sm:pb-8">
@@ -181,13 +172,13 @@ export function RoomCatalog({ locale, limit, priceChips = {} }: RoomCatalogProps
                     slow shine because it is the non-obvious one: guests have no
                     reason to assume a separately-sold day product is free with
                     a stay unless the page says so. */}
-                {room.included && room.included.length > 0 && (
+                {perks.length > 0 && (
                   <div className="mt-6 rounded-2xl border border-[color:var(--line)] bg-[var(--surface-warm)] px-4 py-3.5">
                     <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]">
                       {text(INCLUDED_LABEL, locale)}
                     </p>
                     <ul className="mt-2.5 flex flex-wrap gap-1.5">
-                      {room.included.map((perk, i) => (
+                      {perks.map((perk, i) => (
                         <li
                           key={text(perk.label, locale)}
                           className={`perk-chip${perk.highlight ? " perk-chip--hero" : ""}`}
@@ -235,13 +226,129 @@ export function RoomCatalog({ locale, limit, priceChips = {} }: RoomCatalogProps
           card was clicked. */}
       {gallery && (
         <Lightbox
-          key={gallery}
-          images={roomGalleryOf(bookableRooms.find((r) => r.slug === gallery)!)}
+          key={`${gallery.slug}-${gallery.index}`}
+          images={roomGalleryOf(bookableRooms.find((r) => r.slug === gallery.slug)!)}
           locale={locale}
+          startIndex={gallery.index}
           open
           onClose={() => setGallery(null)}
         />
       )}
+    </div>
+  );
+}
+
+const PREV: Record<string, string> = { ru: "Предыдущее фото", uz: "Oldingi surat", en: "Previous photo" };
+const NEXT: Record<string, string> = { ru: "Следующее фото", uz: "Keyingi surat", en: "Next photo" };
+
+/**
+ * Лента фотографий домика: свайп пальцем на телефоне, стрелки на компьютере,
+ * счётчик «3 / 14» в углу. Нативная прокрутка со scroll-snap, а не своя
+ * анимация: палец ведёт кадр сам, инерция и доводка — от браузера.
+ *
+ * Кадры — <img> с lazy: съёмка домика — полтора десятка тяжёлых фото, и
+ * фоном через CSS браузер скачал бы их все сразу при открытии главной.
+ */
+function SwipeGallery({
+  photos,
+  title,
+  locale,
+  onOpen,
+  children,
+}: {
+  photos: ImageAsset[];
+  title: string;
+  locale: Locale;
+  onOpen: (index: number) => void;
+  children: ReactNode;
+}) {
+  const track = useRef<HTMLDivElement>(null);
+  const [index, setIndex] = useState(0);
+  const count = photos.length;
+
+  const onScroll = () => {
+    const el = track.current;
+    if (!el || !el.clientWidth) return;
+    const i = Math.round(el.scrollLeft / el.clientWidth);
+    if (i !== index) setIndex(i);
+  };
+  const go = (to: number) => {
+    const el = track.current;
+    if (!el) return;
+    const i = (to + count) % count;
+    el.scrollTo({ left: i * el.clientWidth, behavior: "smooth" });
+  };
+
+  return (
+    <div className="relative h-[65vw] max-h-[500px] min-h-[260px] overflow-hidden sm:min-h-[320px]">
+      <div
+        ref={track}
+        onScroll={onScroll}
+        className="rest-chips flex h-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain"
+        role="region"
+        aria-roledescription="carousel"
+        aria-label={title}
+      >
+        {photos.map((photo, i) => (
+          <button
+            key={`${photo.localSrc ?? photo.src}-${i}`}
+            type="button"
+            onClick={() => onOpen(i)}
+            className="relative h-full w-full shrink-0 snap-center snap-always cursor-zoom-in"
+            aria-label={`${title} — ${i + 1} / ${count}`}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={photo.localSrc ?? photo.src}
+              alt={text(photo.alt, locale)}
+              loading={i === 0 ? "eager" : "lazy"}
+              decoding="async"
+              draggable={false}
+              className="h-full w-full select-none object-cover"
+              style={{ objectPosition: photo.position ?? "center" }}
+            />
+          </button>
+        ))}
+      </div>
+
+      {/* Затемнение снизу — под заголовок; клики проходят сквозь него. */}
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,rgba(12,18,14,1.0)_0%,rgba(12,18,14,0.55)_45%,rgba(12,18,14,0.08)_100%)]" />
+
+      {/* Счётчик — видно, что кадров много и их можно листать. */}
+      <span className="pointer-events-none absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-black/45 px-3 py-1.5 text-[11px] font-bold tabular-nums text-white/90 backdrop-blur-sm">
+        <svg aria-hidden className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="5" width="14" height="14" rx="2" />
+          <path d="M21 7v10a2 2 0 0 1-2 2M7 13l2.5-2.5 3 3L15 11" />
+        </svg>
+        {index + 1} / {count}
+      </span>
+
+      {count > 1 && (
+        <>
+          <button
+            type="button"
+            onClick={() => go(index - 1)}
+            aria-label={PREV[locale]}
+            className="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition hover:bg-black/60 sm:left-4 sm:h-11 sm:w-11"
+          >
+            <svg aria-hidden className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+              <path d="m15 5-7 7 7 7" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            onClick={() => go(index + 1)}
+            aria-label={NEXT[locale]}
+            className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition hover:bg-black/60 sm:right-4 sm:h-11 sm:w-11"
+          >
+            <svg aria-hidden className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+              <path d="m9 5 7 7-7 7" />
+            </svg>
+          </button>
+        </>
+      )}
+
+      {children}
     </div>
   );
 }

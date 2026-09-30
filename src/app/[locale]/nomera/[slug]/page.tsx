@@ -13,7 +13,7 @@ import { StayRequestForm } from "@/components/sections/StayRequestForm";
 import { getPricing } from "@/lib/pricing-live";
 import type { LivePricing } from "@/lib/pricing-resolve";
 import { Icon } from "@/components/ui/Icon";
-import { rooms, EXELY_ROOM_TYPE, INCLUDED_LABEL } from "@/content/rooms";
+import { rooms, EXELY_ROOM_TYPE, INCLUDED_LABEL, includedPerks } from "@/content/rooms";
 import { resortImages } from "@/content/images";
 import { cabinOccupancy, extraGuestPricing, stayRules, touristTax } from "@/content/pricing";
 import { dictionaries } from "@/content/translations";
@@ -347,13 +347,13 @@ export default async function RoomDetailPage({ params }: PageProps) {
 
               {/* What the rate covers — same chips as the catalogue card, so a
                   guest who noticed the pool inclusion there sees it confirmed. */}
-              {room.included && room.included.length > 0 && (
+              {includedPerks(room).length > 0 && (
                 <div className="mt-10 rounded-2xl border border-[color:var(--line)] bg-[var(--surface-warm)] px-5 py-4 motion-reveal" data-delay="50">
                   <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]">
                     {text(INCLUDED_LABEL, locale)}
                   </p>
                   <ul className="mt-3 flex flex-wrap gap-2">
-                    {room.included.map((perk, i) => (
+                    {includedPerks(room).map((perk, i) => (
                       <li
                         key={text(perk.label, locale)}
                         className={`perk-chip${perk.highlight ? " perk-chip--hero" : ""}`}

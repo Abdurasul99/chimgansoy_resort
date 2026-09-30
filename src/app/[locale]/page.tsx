@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Hero } from "@/components/sections/Hero";
 import { RoomCatalog } from "@/components/sections/RoomCatalog";
+import { HomeDayCards } from "@/components/sections/HomeDayCards";
 import { Faq } from "@/components/sections/Faq";
 import { MapBlock } from "@/components/sections/MapBlock";
 import { OffersSection } from "@/components/sections/OffersSection";
@@ -213,6 +214,11 @@ export default async function HomePage({ params }: PageProps) {
           </div>
 
           <RoomCatalog locale={locale} limit={2} priceChips={priceChips} />
+
+          {/* Ресторан, пикник-зона и тюбинг — под домиками, тем же видом
+              карточек (оператор, 30.09.2026). Ресторан — крупным баннером:
+              он открыт для всех, не только для проживающих. */}
+          <HomeDayCards locale={locale} pricing={livePricing} />
 
           {/*
             Баннер бассейна снят: бассейн закрыт оператором 27.08.2026

@@ -1,4 +1,5 @@
 import { resortImages } from "./images";
+import { poolClosure } from "./pool-closure";
 import { poolPricing, stayRules } from "./pricing";
 import type { LocalizedList, LocalizedString } from "./types";
 
@@ -9,6 +10,8 @@ export type RoomPerk = {
   label: LocalizedString;
   /** Draws the eye — used for the pool, the headline inclusion. */
   highlight?: boolean;
+  /** Это бассейн: пока он закрыт (pool-closure.ts), в «включено» его нет. */
+  pool?: boolean;
 };
 
 /** Heading above the perk chips. Kept here so both render sites share one source. */
@@ -148,6 +151,7 @@ export const rooms: Room[] = [
       {
         label: { ru: "Бассейн", uz: "Basseyn", en: "Pool" },
         highlight: true,
+        pool: true,
       },
       {
         label: {
@@ -247,6 +251,7 @@ export const rooms: Room[] = [
       {
         label: { ru: "Бассейн", uz: "Basseyn", en: "Pool" },
         highlight: true,
+        pool: true,
       },
       {
         label: {
@@ -373,3 +378,12 @@ export const roomCategories = [
     label: { ru: "Бассейн", uz: "Basseyn", en: "Pool" },
   },
 ] as const;
+
+/**
+ * «Включено в стоимость» для показа гостю. Бассейн закрыт с 27.08.2026, а
+ * плашка «Бассейн» золотом всё ещё обещала его в каждом домике (оператор
+ * заметил на скриншоте 30.09.2026). Вернётся сама вместе с флагом closed.
+ */
+export function includedPerks(room: { included?: RoomPerk[] }): RoomPerk[] {
+  return (room.included ?? []).filter((perk) => !(perk.pool && poolClosure.closed));
+}

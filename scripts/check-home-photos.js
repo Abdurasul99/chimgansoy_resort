@@ -46,10 +46,10 @@ const marqueeSrc = read("src/components/sections/PhotoMarquee.tsx");
 const bentoSrc = read("src/components/sections/BentoGallery.tsx");
 const showcaseSrc = read("src/content/home-showcase.ts");
 const roomsSrc = read("src/content/rooms.ts");
-const servicesSrc = read("src/content/services.ts");
 const heroSrc = read("src/components/sections/HeroSlideshow.tsx");
 const pageSrc = read("src/app/[locale]/page.tsx");
 const promoSrc = read("src/components/sections/PromoBand.tsx");
+const dayCardsSrc = read("src/components/sections/HomeDayCards.tsx");
 
 /** localSrc/src path -> image key, so the hero's file paths can be compared. */
 function pathToKey() {
@@ -121,7 +121,9 @@ const SURFACES = {
   bento: imageFields(bentoSrc),
   showcase: imageFields(showcaseSrc),
   "room cards": imageFields(roomsSrc),
-  "service cards": imageFields(servicesSrc).slice(0, 3),
+  // Карточки услуг («Чем занять день») сняты с главной 30.09.2026; на их
+  // месте — ресторан, пикник-зона и тюбинг под домиками.
+  "day cards": inlineKeys(dayCardsSrc, "HomeDayCards.tsx"),
   archive: listFrom(images, /export const homeGallery = \[([\s\S]*?)\] as const/, "homeGallery"),
 };
 
