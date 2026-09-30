@@ -18,8 +18,9 @@ type Cell = {
 
 /**
  * Curated for impact, not for inventory. The full archive sits directly below
- * this mosaic on the homepage — this is the six frames that have to earn the
- * scroll, not a complete set.
+ * this mosaic on the homepage — these are the frames that have to earn the
+ * scroll, not a complete set. Five since 30.09.2026 (the A-frame railing
+ * close-up was removed by the owner).
  *
  * Five of the six are the August-2026 shoot: the bungalows against the sky, a
  * chalet up close, the mosaic on the pool floor, the bungalows at the water,
@@ -56,19 +57,13 @@ const CELLS: Cell[] = [
     caption: { ru: "Бунгало у воды", uz: "Suv bo'yidagi bungalolar", en: "Bungalows by the water" },
     span: "",
   },
-  {
-    // aframeRoom held this cell because no exterior frame of an A-frame was
-    // clean — every one had a tower crane in the sky. The operator's second
-    // 2026-08-04 drop finally supplied one, and the silhouette IS the product,
-    // so the mosaic can now argue the A-frame with a picture of an A-frame.
-    image: "aframeGableSky",
-    caption: { ru: "Глэмпинг A-frame", uz: "A-frame glemping", en: "A-frame glamping" },
-    span: "md:col-span-2",
-  },
+  // Здесь стоял aframeGableSky (перила A-frame крупно) — владелец убрал его из
+  // галереи 30.09.2026. Терраса шале встала на его место во всю ширину, иначе
+  // последний ряд был бы половинкой с пустотой рядом.
   {
     image: "chaletTerrace",
     caption: { ru: "Терраса шале", uz: "Shale terrasasi", en: "The chalet terrace" },
-    span: "md:col-span-2",
+    span: "col-span-2 md:col-span-4",
   },
 ];
 
