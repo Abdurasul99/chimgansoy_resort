@@ -35,13 +35,13 @@ describe("бассейн закрыт", () => {
 
   it("ИИ-консьерж и телеграм-бот знают о закрытии", () => {
     for (const text of [venueFacts(), venueCore()]) {
-      expect(text).toContain("БАССЕЙН ВРЕМЕННО НЕ РАБОТАЕТ");
+      expect(text).toContain("БАССЕЙН ЗАКРЫТ ДО ЛЕТНЕГО СЕЗОНА");
       expect(text).toContain(poolClosure.since);
     }
   });
 
   it("ИИ не обещает дату открытия — её нет", () => {
-    expect(venueFacts()).toMatch(/НЕ ОБЕЩАЙ дату открытия|дату открытия не называем/);
+    expect(venueFacts()).toMatch(/НЕ ОБЕЩАЙ точную дату открытия|точную дату открытия не называем/);
   });
 
   it("тексты для гостя есть на всех трёх языках", () => {

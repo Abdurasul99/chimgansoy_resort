@@ -21,11 +21,14 @@ export const poolClosure = {
   /** Дата распоряжения оператора — попадает в примечание и в брифинг ИИ. */
   since: "27.08.2026",
 
-  /** Заголовок на странице бассейна и в карточках. */
+  /**
+   * Заголовок на странице бассейна и в карточках. С 30.09.2026 — «не сезон»
+   * (оператор): бассейн летний, и к осени закрыт не на ремонт, а до сезона.
+   */
   title: {
-    ru: "Бассейн временно не работает",
-    uz: "Basseyn vaqtincha ishlamaydi",
-    en: "The pool is temporarily closed",
+    ru: "Бассейн закрыт до летнего сезона",
+    uz: "Basseyn yozgi mavsumgacha yopiq",
+    en: "The pool is closed until the summer season",
   } satisfies LocalizedString,
 
   /**
@@ -33,9 +36,9 @@ export const poolClosure = {
    * потом сдвинут, злит сильнее, чем её отсутствие.
    */
   text: {
-    ru: "Бассейн закрыт на технические работы. Заявки на посещение бассейна сейчас не принимаются. Об открытии сообщим на сайте и в Instagram.",
-    uz: "Basseyn texnik ishlar sababli yopiq. Hozircha basseynga arizalar qabul qilinmaydi. Ochilishi haqida saytda va Instagram'da xabar beramiz.",
-    en: "The pool is closed for maintenance. We are not accepting pool requests at the moment. We will announce the reopening on the site and on Instagram.",
+    ru: "Купальный сезон завершён — бассейн откроется с началом летнего сезона. Сейчас заявки на посещение бассейна не принимаются. Об открытии сообщим на сайте и в Instagram.",
+    uz: "Cho'milish mavsumi yakunlandi — basseyn yozgi mavsum boshlanishi bilan ochiladi. Hozircha basseynga arizalar qabul qilinmaydi. Ochilishi haqida saytda va Instagram'da xabar beramiz.",
+    en: "The swimming season is over — the pool reopens when the summer season starts. We are not accepting pool requests at the moment. We will announce the reopening on the site and on Instagram.",
   } satisfies LocalizedString,
 
   /** Что предложить вместо него — гость пришёл отдыхать, а не читать отказ. */
@@ -47,8 +50,8 @@ export const poolClosure = {
 
   /** Ответ формы, если заявку всё же попытались отправить. */
   formError: {
-    ru: "Бассейн временно не работает — заявки не принимаются. Позвоните нам, если нужен топчан или тюбинг.",
-    uz: "Basseyn vaqtincha ishlamaydi — arizalar qabul qilinmaydi. Topchan yoki tyubing kerak bo'lsa, qo'ng'iroq qiling.",
-    en: "The pool is temporarily closed — requests are not accepted. Call us if you need a topchan or tubing.",
+    ru: "Бассейн закрыт до летнего сезона — заявки не принимаются. Позвоните нам, если нужен топчан или тюбинг.",
+    uz: "Basseyn yozgi mavsumgacha yopiq — arizalar qabul qilinmaydi. Topchan yoki tyubing kerak bo'lsa, qo'ng'iroq qiling.",
+    en: "The pool is closed until the summer season — requests are not accepted. Call us if you need a topchan or tubing.",
   } satisfies LocalizedString,
 } as const;
