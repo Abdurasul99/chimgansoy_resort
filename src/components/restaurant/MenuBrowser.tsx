@@ -121,15 +121,15 @@ export function MenuBrowser({
 
   const preorderOpen = openModes.includes("preorder");
   const hasMenu = dishes.length > 0;
-  // Колонки на компьютере: разделы — если есть меню, корзина — если заказы
-  // открыты. Пока заказы закрыты, об этом говорит плашка над витриной.
+  // Колонки на компьютере: разделы и корзина — только когда есть меню. Корзина
+  // ещё и при открытых заказах: пустая корзина рядом с пустым меню — лишняя
+  // рамка, положить в неё нечего. Закрытые заказы объясняет плашка над витриной.
+  const showCart = orderable && hasMenu;
   const cols = hasMenu
-    ? orderable
+    ? showCart
       ? "lg:grid-cols-[12.5rem_minmax(0,1fr)_20rem] xl:grid-cols-[13.5rem_minmax(0,1fr)_21.5rem]"
       : "lg:grid-cols-[12.5rem_minmax(0,1fr)]"
-    : orderable
-      ? "lg:grid-cols-[minmax(0,1fr)_20rem]"
-      : "";
+    : "";
 
   const searchField = (autoFocus: boolean) => (
     <label className="relative flex min-w-0 items-center">
@@ -261,13 +261,13 @@ export function MenuBrowser({
       </div>
 
       {/* Справа — корзина. */}
-      {orderable && (
+      {showCart && (
         <aside className="rest-side sticky hidden lg:block">
           <CartPanel locale={locale} dishes={dishes} fees={fees} />
         </aside>
       )}
 
-      {orderable && <CartBar locale={locale} dishes={dishes} />}
+      {showCart && <CartBar locale={locale} dishes={dishes} />}
     </div>
   );
 }
