@@ -76,7 +76,7 @@ export function CountInput({
    * от экранных чтецов: поле с клавиатуры и так меняется стрелками.
    */
   const btn =
-    "absolute top-1/2 flex h-9 w-9 -translate-y-1/2 select-none items-center justify-center rounded-lg bg-[var(--ink)]/[0.06] text-lg font-bold leading-none text-[var(--ink)] transition active:scale-95 disabled:opacity-30";
+    "absolute top-1/2 flex h-10 w-10 -translate-y-1/2 select-none items-center justify-center rounded-lg bg-[var(--ink)]/[0.06] text-lg font-bold leading-none text-[var(--ink)] transition active:scale-95 disabled:opacity-30";
 
   return (
     <span className="relative block">
@@ -114,7 +114,7 @@ export function CountInput({
         aria-hidden="true"
         disabled={current <= min}
         onClick={() => step(-1)}
-        className={`${btn} left-2`}
+        className={`${btn} left-1.5`}
       >
         −
       </button>
@@ -124,7 +124,7 @@ export function CountInput({
         aria-hidden="true"
         disabled={max !== undefined && current >= max}
         onClick={() => step(1)}
-        className={`${btn} right-2`}
+        className={`${btn} right-1.5`}
       >
         +
       </button>

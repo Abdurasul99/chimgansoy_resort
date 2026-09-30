@@ -335,7 +335,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
       {/* ── Main content + sticky booking panel ──────── */}
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className={`grid gap-16 lg:items-start [&>*]:min-w-0 ${isPool ? "" : "lg:grid-cols-[1fr_380px]"}`}>
+          <div className={`grid grid-cols-1 gap-16 lg:items-start [&>*]:min-w-0 ${isPool ? "" : "lg:grid-cols-[1fr_380px]"}`}>
 
             {/* Left — content */}
             <div>
