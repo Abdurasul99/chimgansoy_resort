@@ -6,7 +6,6 @@ import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
 import { text } from "@/lib/localize";
 import { hiddenServiceSlugs } from "@/lib/services-live";
-import { restaurantListed } from "@/lib/restaurant/live";
 import { ContactForm } from "@/components/layout/ContactForm";
 
 type FooterProps = {
@@ -46,26 +45,28 @@ export async function Footer({ locale }: FooterProps) {
   // Услуга, выключенная в /admin/uslugi, не должна оставаться ссылкой в подвале:
   // её страница уже не отвечает, и гость упирается в тупик на каждой странице
   // сайта сразу. Подвал — единственное место, где эти адреса записаны руками.
-  const [hidden, listed] = await Promise.all([hiddenServiceSlugs(), restaurantListed()]);
-  // Пока ресторан скрыт, в подвале остаётся прежняя «Кухня и меню»; открыт —
-  // та же строка ведёт в ресторан, а рядом появляется бронь стола.
-  const groups = listed
-    ? footerNavigation.map((g) =>
-        g.links.some((l) => l.href === "/services/restaurant")
-          ? {
-              ...g,
-              links: g.links.flatMap((l) =>
-                l.href === "/services/restaurant"
-                  ? [
-                      { href: "/restaurant", label: { ru: "Ресторан и меню", uz: "Restoran va menyu", en: "Restaurant & menu" } },
-                      { href: "/restaurant/tables", label: { ru: "Бронь стола", uz: "Stol band qilish", en: "Book a table" } },
-                    ]
-                  : [l],
-              ),
-            }
-          : g,
-      )
-    : footerNavigation;
+  const hidden = await hiddenServiceSlugs();
+  // «Кухня и меню» (/services/restaurant) в подвале всегда ведёт в ресторан, а
+  // рядом — бронь стола. Раньше подмена шла только после открытия ресторана в
+  // админке, а пока он «скрыт», строка вела на выключенную услугу — и её
+  // вычёркивал фильтр ниже: ресторана в подвале не было вовсе, хотя главная
+  // уже зовёт в него крупной кнопкой (оператор, 30.09.2026: «линк ресторана не
+  // работает»).
+  const groups = footerNavigation.map((g) =>
+    g.links.some((l) => l.href === "/services/restaurant")
+      ? {
+          ...g,
+          links: g.links.flatMap((l) =>
+            l.href === "/services/restaurant"
+              ? [
+                  { href: "/restaurant", label: { ru: "Ресторан и меню", uz: "Restoran va menyu", en: "Restaurant & menu" } },
+                  { href: "/restaurant/tables", label: { ru: "Бронь стола", uz: "Stol band qilish", en: "Book a table" } },
+                ]
+              : [l],
+          ),
+        }
+      : g,
+  );
   const isHidden = (href: string) => {
     const slug = href.startsWith("/services/") ? href.slice("/services/".length) : null;
     return slug !== null && hidden.includes(slug);
