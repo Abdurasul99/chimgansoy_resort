@@ -10,7 +10,7 @@ import { HeroScrollCue } from "@/components/ui/HeroScrollCue";
 import { Icon } from "@/components/ui/Icon";
 import { poolClosure } from "@/content/pool-closure";
 import { promotions } from "@/content/promotions";
-import { discountMath, promoBookable, promoBreakdown, promoCheapestNight, todayTashkent } from "@/lib/promo-nights";
+import { discountMath, promoBookable, promoCheapestNight, todayTashkent } from "@/lib/promo-nights";
 import { restaurantCopy } from "@/content/restaurant";
 import { RestIcon } from "@/components/restaurant/RestIcon";
 
@@ -118,24 +118,9 @@ export function Hero({ locale, pricing }: HeroProps) {
         en: `A night from ${money(chalet.d.price)} UZS instead of ${money(chalet.d.base)} · ${money(chalet.d.perPerson)} per person for ${chalet.d.guests}`,
       }[locale]
     : "";
-  /**
-   * Условие под карточкой: заезд в воскресенье, понедельник или вторник.
-   *
-   * С 24.09.2026 у акции три схемы — Вс→Ср, Пн→Чт и Вт→Пт: ровно три ночи и
-   * выезд не позже пятницы. Гость должен увидеть это до того, как откроет
-   * календарь и выберет четверг.
-   *
-   * Цена — трёх ночей глэмпинга на двоих, из того же расчёта, что и таблица
-   * в секции акций. Числа в тексте нет.
-   */
-  const promoRow = promoBreakdown()[0];
-  const promoNote = promoRow
-    ? {
-        ru: `Заезд Вс, Пн или Вт · 3 ночи на двоих — ${money(promoRow.total)} сум`,
-        uz: `Kirish Ya, Du yoki Se · 2 kishiga 3 kecha — ${money(promoRow.total)} so'm`,
-        en: `Sun, Mon or Tue arrival · 3 nights for two — ${money(promoRow.total)} UZS`,
-      }[locale]
-    : "";
+  // Строка «Заезд Вс, Пн или Вт · 3 ночи на двоих — 3 000 000 сум» под
+  // карточкой «2+1» снята (оператор, 30.09.2026: «убери этот текст»). Условия
+  // заезда — в блоке акций, куда ведёт карточка.
   const heroPromo = {
     title: { ru: "Третья ночь в подарок", uz: "Uchinchi kecha sovg'a", en: "Third night free" }[locale],
     /*
@@ -342,14 +327,6 @@ export function Hero({ locale, pricing }: HeroProps) {
                   →
                 </span>
               </a>
-            )}
-            {showPromo && promoNote && (
-              <p
-                data-hero-promo-note
-                className="mb-3 -mt-1.5 px-1 text-[0.72rem] font-semibold leading-snug text-white/85 [text-shadow:0_1px_3px_rgba(0,0,0,0.55)] sm:text-[0.8rem]"
-              >
-                {promoNote}
-              </p>
             )}
 
             {/* Topchan and tubing, side by side under the pool. Glass over the

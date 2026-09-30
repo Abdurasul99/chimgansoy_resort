@@ -83,7 +83,7 @@ const DAY_BOOKING: Record<string, { href: string; label: { ru: string; uz: strin
   "picnic-zone": { href: "/topchan#request", label: { ru: "Забронировать топчан", uz: "Topchan bron qilish", en: "Book a topchan" } },
   // Мангал и казан берут вместе с топчаном — заявка та же.
   "outdoor-cooking": { href: "/topchan#request", label: { ru: "Забронировать топчан", uz: "Topchan bron qilish", en: "Book a topchan" } },
-  tubing: { href: "/tubing#request", label: { ru: "Забронировать тюбинг", uz: "Tubing bron qilish", en: "Book tubing" } },
+  tubing: { href: "/tubing#request", label: { ru: "Купить билет", uz: "Chipta sotib olish", en: "Buy a ticket" } },
   restaurant: { href: "/restaurant/tables", label: { ru: "Забронировать стол", uz: "Stol band qilish", en: "Book a table" } },
   // Бассейн закрыт — страница бассейна объясняет это вместо формы.
   pool: { href: "/nomera/pool", label: { ru: "О бассейне", uz: "Basseyn haqida", en: "About the pool" } },

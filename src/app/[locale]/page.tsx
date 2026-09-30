@@ -319,8 +319,10 @@ export default async function HomePage({ params }: PageProps) {
       </section>
 
       {/* ── Editorial showcase ────────────────────────── */}
+      {/* Один слайд. Второй — «Шале с кухней-залом — для семьи и компании» —
+          владелец снял 30.09.2026; запись осталась в home-showcase.ts. */}
       <section className="overflow-hidden bg-[var(--ink)]" aria-label="Showcase">
-        {homeShowcase.slice(0, 2).map((item, index) => {
+        {homeShowcase.slice(0, 1).map((item, index) => {
           const image = resortImages[item.image];
           const isEven = index % 2 === 0;
           return (

@@ -96,7 +96,7 @@ const COPY = {
       uz: ["160 m trassa", "Avtomatik ko'targich", "Kechqurun yoritiladi", "Tubing joyida beriladi", "Bolalar — 5 yoshdan va 110 sm dan"],
       en: ["160 m track", "Powered lift", "Lit in the evening", "Tube provided on site", "Children from age 5 and 110 cm"],
     } as LL,
-    book: { ru: "Забронировать тюбинг", uz: "Tubing bron qilish", en: "Book tubing" } as L,
+    book: { ru: "Купить билет", uz: "Chipta sotib olish", en: "Buy a ticket" } as L,
   },
   daily: { ru: "Ежедневно", uz: "Har kuni", en: "Daily" } as L,
 };
