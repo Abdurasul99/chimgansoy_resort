@@ -144,9 +144,9 @@ export function Hero({ locale, pricing }: HeroProps) {
      * вписана текстом: поменяется цена — поменяется и подпись.
      */
     hint: {
-      ru: `Ночь от ${money(promoCheapestNight())} сум · ночи Вс–Чт`,
-      uz: `Kecha ${money(promoCheapestNight())} so'mdan · Ya–Pay kechalari`,
-      en: `A night from ${money(promoCheapestNight())} UZS · Sun–Thu nights`,
+      ru: `Ночь от ${money(promoCheapestNight())} сум`,
+      uz: `Kecha ${money(promoCheapestNight())} so'mdan`,
+      en: `A night from ${money(promoCheapestNight())} UZS`,
     }[locale],
     slug: lead.slug,
   };

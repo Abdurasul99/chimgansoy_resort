@@ -559,8 +559,11 @@ describe("акции", () => {
     // Связь гость должен видеть на той карточке, которую открыл, — иначе
     // выяснять её придётся на ресепшене, когда деньги уже уплачены.
     const byslug = (s: string) => promotions.find((p) => p.slug === s)!;
-    expect(byslug("2plus1").terms.ru.join(" ")).toContain("Не суммируется с тарифом «Всё включено»");
-    expect(byslug("all-inclusive").terms.ru.join(" ")).toContain("Не суммируется с акцией «2+1»");
+    // С 30.09.2026 — одной фразой у всех акций, без перекрёстных ссылок
+    // («убрать тавтологию»).
+    for (const p of promotions) {
+      expect(p.terms.ru, p.slug).toContain("Не суммируется с другими акциями и специальными предложениями");
+    }
     expect(JSON.stringify(promotions)).not.toContain("питание уже входит");
   });
 
