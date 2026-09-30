@@ -132,7 +132,7 @@ export function StoreHeader({
           <div>
             <p className="font-semibold text-[#1c1c1c]">{t.phone}</p>
             {phones.map((p) => (
-              <a key={p} href={telHref(p)} className="mt-1 block hover:text-[#1c1c1c]">
+              <a key={p} href={telHref(p)} className="flex min-h-10 items-center hover:text-[#1c1c1c]">
                 {p}
               </a>
             ))}

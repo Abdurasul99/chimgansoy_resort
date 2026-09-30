@@ -14,6 +14,8 @@ import { getPricing } from "@/lib/pricing-live";
 import type { LivePricing } from "@/lib/pricing-resolve";
 import { Icon } from "@/components/ui/Icon";
 import { rooms, EXELY_ROOM_TYPE, INCLUDED_LABEL, includedPerks } from "@/content/rooms";
+import { RoomGallery } from "@/components/sections/RoomGallery";
+import { StickyFormCta } from "@/components/ui/StickyFormCta";
 import { resortImages } from "@/content/images";
 import { cabinOccupancy, extraGuestPricing, stayRules, touristTax } from "@/content/pricing";
 import { dictionaries } from "@/content/translations";
@@ -21,7 +23,7 @@ import { getLocaleParam, getRoom } from "@/lib/content";
 import { buildMetadata } from "@/lib/metadata";
 import { list, text } from "@/lib/localize";
 import { clock } from "@/components/ui/Clock";
-import { frameStyle, imageStyle } from "@/lib/images";
+import { imageStyle } from "@/lib/images";
 import { localizePath } from "@/i18n/routing";
 import { poolClosure } from "@/content/pool-closure";
 import { ButtonLink } from "@/components/ui/ButtonLink";
@@ -333,7 +335,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
       {/* ── Main content + sticky booking panel ──────── */}
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className={`grid gap-16 lg:items-start ${isPool ? "" : "lg:grid-cols-[1fr_380px]"}`}>
+          <div className={`grid gap-16 lg:items-start [&>*]:min-w-0 ${isPool ? "" : "lg:grid-cols-[1fr_380px]"}`}>
 
             {/* Left — content */}
             <div>
@@ -395,9 +397,12 @@ export default async function RoomDetailPage({ params }: PageProps) {
               {/* Форма заявки прямо здесь: кнопка с карточки ведёт сюда, а не в
                   движок. Якорь zayavka — на него указывает RoomCatalog. */}
               {room.slug !== "pool" && (
-                <div id="zayavka" className="mt-10 scroll-mt-28">
-                  <StayRequestForm locale={locale} room={room.slug} maxGuests={occ?.max ?? 8} />
-                </div>
+                <>
+                  <StickyFormCta targetId="zayavka" label={oneClickCta[locale]} />
+                  <div id="zayavka" className="mt-10 scroll-mt-28">
+                    <StayRequestForm locale={locale} room={room.slug} maxGuests={occ?.max ?? 8} />
+                  </div>
+                </>
               )}
 
               {/* Amenities + Features */}
@@ -431,22 +436,10 @@ export default async function RoomDetailPage({ params }: PageProps) {
                 <p className="mb-5 text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">
                   {locale === "ru" ? "Фотографии" : locale === "uz" ? "Fotosuratlar" : "Gallery"}
                 </p>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {/* Frames, not registry keys: the gallery may now mix the
-                      studio set with photographs the operator uploaded, and
-                      the page renders both the same way. */}
-                  {galleryFrames.map((frame, i) => (
-                    <div
-                      key={frame.src}
-                      className={`overflow-hidden rounded-2xl bg-cover bg-center transition-transform duration-700 hover:scale-[1.02] ${
-                        i === 0 ? "aspect-[4/3] sm:col-span-2" : "aspect-[4/3]"
-                      }`}
-                      style={frameStyle(frame)}
-                      role="img"
-                      aria-label={frame.alt}
-                    />
-                  ))}
-                </div>
+                {/* Frames, not registry keys: the gallery may mix the studio
+                    set with photographs the operator uploaded. Две колонки на
+                    телефоне и открытие во весь экран — см. RoomGallery. */}
+                <RoomGallery frames={galleryFrames} locale={locale} />
               </div>
 
               {/* The chalet walkthrough, under its photographs.

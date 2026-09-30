@@ -84,7 +84,7 @@ export default async function LegalPage({ params }: PageProps) {
           )}
           {policy.sections.map((section, index) => (
             <section key={text(section.title, locale)} className={index === policy.sections.length - 1 ? "" : "mb-10"}>
-              <h2 className="font-serif text-3xl font-semibold text-[var(--ink)]">{text(section.title, locale)}</h2>
+              <h2 className="font-serif text-2xl font-semibold text-[var(--ink)] [overflow-wrap:anywhere] sm:text-3xl">{text(section.title, locale)}</h2>
               <ul className="mt-5 space-y-3 text-sm leading-7 text-[var(--muted)]">
                 {list(section.items, locale).map((item) => (
                   <li key={item}>{clock(item)}</li>

@@ -15,6 +15,7 @@ import { text } from "@/lib/localize";
 import { isWeekendISO, money } from "@/lib/tariff";
 import type { Locale } from "@/i18n/config";
 import { PageContextFields } from "@/components/ui/PageContextFields";
+import { poolClosure } from "@/content/pool-closure";
 
 const COPY: Record<
   Locale,
@@ -390,6 +391,10 @@ export function TopchanRequestForm({
             })}
           </div>
 
+          {/* Бассейн закрыт до летнего сезона — добавить его к топчану нельзя.
+              Поля вернутся вместе с флагом closed: false. */}
+          {!poolClosure.closed && (
+          <>
           <p className="mt-5 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]">{t.poolTitle}</p>
           <div className="mt-3 grid gap-3 sm:grid-cols-3">
             <label className="block">
@@ -406,6 +411,8 @@ export function TopchanRequestForm({
             </label>
 
           </div>
+          </>
+          )}
         </div>
 
         {/* Running total. The administrator confirms it, but a guest should not

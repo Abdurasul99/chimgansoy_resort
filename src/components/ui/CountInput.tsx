@@ -60,33 +60,74 @@ export function CountInput({
     return max === undefined ? bottom : Math.min(bottom, max);
   };
 
+  const current = text === "" ? min : clamp(Number(text));
+  const step = (d: number) => {
+    const n = clamp(current + d);
+    setText(String(n));
+    onValue(n);
+  };
+
+  /*
+   * Кнопки «−» и «+» внутри поля — на телефоне попасть в них пальцем проще,
+   * чем набирать цифру на экранной клавиатуре (30.09.2026, аудит мобильной
+   * вёрстки). Поле ввода стоит в разметке ПЕРВЫМ: формы оборачивают счётчик в
+   * <label>, а подпись «нажимает» первый элемент внутри — окажись там «−»,
+   * тап по слову «Гостей» уменьшал бы число. Кнопки вне порядка Tab и скрыты
+   * от экранных чтецов: поле с клавиатуры и так меняется стрелками.
+   */
+  const btn =
+    "absolute top-1/2 flex h-9 w-9 -translate-y-1/2 select-none items-center justify-center rounded-lg bg-[var(--ink)]/[0.06] text-lg font-bold leading-none text-[var(--ink)] transition active:scale-95 disabled:opacity-30";
+
   return (
-    <input
-      id={id}
-      name={name}
-      type="number"
-      inputMode="numeric"
-      step={1}
-      min={min}
-      max={max}
-      className={className}
-      value={text}
-      onFocus={() => {
-        focused.current = true;
-      }}
-      onChange={(e) => {
-        // Цифры и пусто. Минус и запятая в счётчике гостей смысла не имеют, а
-        // «e» браузер пускает в number-поле сам — и оно приходит сюда как "".
-        const next = e.target.value.replace(/[^\d]/g, "");
-        setText(next);
-        onValue(next === "" ? 0 : clamp(Number(next)));
-      }}
-      onBlur={() => {
-        focused.current = false;
-        const n = text === "" ? min : clamp(Number(text));
-        setText(String(n));
-        onValue(n);
-      }}
-    />
+    <span className="relative block">
+      <input
+        id={id}
+        name={name}
+        type="number"
+        inputMode="numeric"
+        step={1}
+        min={min}
+        max={max}
+        className={`${className ?? ""} [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
+        style={{ paddingLeft: "3.25rem", paddingRight: "3.25rem", textAlign: "center" }}
+        value={text}
+        onFocus={() => {
+          focused.current = true;
+        }}
+        onChange={(e) => {
+          // Цифры и пусто. Минус и запятая в счётчике гостей смысла не имеют, а
+          // «e» браузер пускает в number-поле сам — и оно приходит сюда как "".
+          const next = e.target.value.replace(/[^\d]/g, "");
+          setText(next);
+          onValue(next === "" ? 0 : clamp(Number(next)));
+        }}
+        onBlur={() => {
+          focused.current = false;
+          const n = text === "" ? min : clamp(Number(text));
+          setText(String(n));
+          onValue(n);
+        }}
+      />
+      <button
+        type="button"
+        tabIndex={-1}
+        aria-hidden="true"
+        disabled={current <= min}
+        onClick={() => step(-1)}
+        className={`${btn} left-2`}
+      >
+        −
+      </button>
+      <button
+        type="button"
+        tabIndex={-1}
+        aria-hidden="true"
+        disabled={max !== undefined && current >= max}
+        onClick={() => step(1)}
+        className={`${btn} right-2`}
+      >
+        +
+      </button>
+    </span>
   );
 }

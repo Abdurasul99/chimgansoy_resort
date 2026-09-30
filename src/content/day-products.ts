@@ -2,6 +2,7 @@ import type { resortImages } from "./images";
 import type { LocalizedList, LocalizedString } from "./types";
 import { tubing100cmPolicySections } from "./tubing-100cm-rules";
 import { topchanPricing, tubingPricing } from "./pricing";
+import { poolClosure } from "./pool-closure";
 
 /** Same key type the room catalogue uses, so a typo fails the build. */
 export type ImageKey = keyof typeof resortImages;
@@ -75,9 +76,9 @@ export const dayProducts: DayProduct[] = [
      * are kept below in `sections` rather than merged into this paragraph.
      */
     description: {
-      ru: `CHIMGAN DARBAZA — это место для комфортного отдыха в горах на высоте 1700 м. Топчан принимает гостей ежедневно ${topchanPricing.hours}. Топчан — традиционная деревянная платформа с курпачами: один рассчитан до 8 гостей и оплачивается целиком, а не с человека. Если вас больше, администратор соберёт рядом несколько. К топчану можно добавить доступ в бассейн.`,
-      uz: `CHIMGAN DARBAZA — 1700 metr balandlikdagi tog' dam olish maskani. Topchan mehmonlarni har kuni ${topchanPricing.hours} qabul qiladi. Topchan — kurpachali an'anaviy yog'och maydoncha: bittasi 8 kishigacha mo'ljallangan va bir kishidan emas, butunlay to'lanadi. Agar ko'proq bo'lsangiz, administrator yonma-yon bir nechtasini yig'adi. Topchanga basseynga kirishni qo'shish mumkin.`,
-      en: `CHIMGAN DARBAZA is a place for a comfortable day in the mountains at 1,700 m, open daily ${topchanPricing.hours}. A topchan is a traditional raised wooden platform spread with kurpacha cushions: one seats up to 8 guests and is charged as a whole rather than per person. For a larger group the administrator puts several side by side. Pool access can be added to a topchan booking.`,
+      ru: `CHIMGAN DARBAZA — это место для комфортного отдыха в горах на высоте 1700 м. Топчан принимает гостей ежедневно ${topchanPricing.hours}. Топчан — традиционная деревянная платформа с курпачами: один рассчитан до 8 гостей и оплачивается целиком, а не с человека. Если вас больше, администратор соберёт рядом несколько.${poolClosure.closed ? "" : " К топчану можно добавить доступ в бассейн."}`,
+      uz: `CHIMGAN DARBAZA — 1700 metr balandlikdagi tog' dam olish maskani. Topchan mehmonlarni har kuni ${topchanPricing.hours} qabul qiladi. Topchan — kurpachali an'anaviy yog'och maydoncha: bittasi 8 kishigacha mo'ljallangan va bir kishidan emas, butunlay to'lanadi. Agar ko'proq bo'lsangiz, administrator yonma-yon bir nechtasini yig'adi.${poolClosure.closed ? "" : " Topchanga basseynga kirishni qo'shish mumkin."}`,
+      en: `CHIMGAN DARBAZA is a place for a comfortable day in the mountains at 1,700 m, open daily ${topchanPricing.hours}. A topchan is a traditional raised wooden platform spread with kurpacha cushions: one seats up to 8 guests and is charged as a whole rather than per person. For a larger group the administrator puts several side by side.${poolClosure.closed ? "" : " Pool access can be added to a topchan booking."}`,
     },
     highlights: {
       ru: [

@@ -72,4 +72,39 @@ describe("CountInput", () => {
     fireEvent.blur(field());
     expect(field().value).toBe("7");
   });
+
+  it('«+» и «−» меняют число и не выходят за границы', () => {
+    const { container } = render(<Harness initial={7} max={8} />);
+    const [minus, plus] = container.querySelectorAll('button');
+    fireEvent.click(plus);
+    expect(screen.getByTestId('value').textContent).toBe('8');
+    fireEvent.click(plus);
+    expect(screen.getByTestId('value').textContent).toBe('8');
+    expect((plus as HTMLButtonElement).disabled).toBe(true);
+    for (let i = 0; i < 12; i++) fireEvent.click(minus);
+    expect(screen.getByTestId('value').textContent).toBe('0');
+    expect((minus as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it('тап по подписи фокусирует поле, а не нажимает «−»', () => {
+    // Формы оборачивают счётчик в <label>: подпись «нажимает» первый элемент
+    // внутри. Первым должно быть поле, иначе тап по «Гостей» уменьшал бы число.
+    function Labelled() {
+      const [n, setN] = useState(3);
+      return (
+        <>
+          <label>
+            <span>Гостей</span>
+            <CountInput name='g' value={n} onValue={setN} />
+          </label>
+          <output data-testid='value'>{n}</output>
+        </>
+      );
+    }
+    const { container } = render(<Labelled />);
+    const label = container.querySelector('label')!;
+    expect((label.control as HTMLElement).tagName).toBe('INPUT');
+    fireEvent.click(screen.getByText('Гостей'));
+    expect(screen.getByTestId('value').textContent).toBe('3');
+  });
 });

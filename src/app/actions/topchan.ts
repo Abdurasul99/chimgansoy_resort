@@ -1,6 +1,7 @@
 "use server";
 
 import { contacts } from "@/content/contacts";
+import { poolClosure } from "@/content/pool-closure";
 import { topchanPricing } from "@/content/pricing";
 import { getPricing } from "@/lib/pricing-live";
 import { esc } from "@/lib/telegram";
@@ -101,11 +102,13 @@ export async function submitTopchanRequest(formData: FormData): Promise<TopchanR
   const mangal = num(((formData.get("mangal") as string | null) ?? "").trim(), 50);
   const firewood = num(((formData.get("firewood") as string | null) ?? "").trim(), 50);
   const charcoal = num(((formData.get("charcoal") as string | null) ?? "").trim(), 50);
-  const towels = num(((formData.get("towels") as string | null) ?? "").trim(), 50);
+  // Бассейн закрыт (pool-closure.ts): его строки в заявку не попадают.
+  const poolOpen = !poolClosure.closed;
+  const towels = poolOpen ? num(((formData.get("towels") as string | null) ?? "").trim(), 50) : 0;
   // Pool upsell — the CMO's «Добавить доступ в бассейн». Charged per head at the
   // published pool tariff, so it has to know the age split.
-  const poolAdults = num(((formData.get("poolAdults") as string | null) ?? "").trim(), 200);
-  const poolKids = num(((formData.get("poolKids") as string | null) ?? "").trim(), 200);
+  const poolAdults = poolOpen ? num(((formData.get("poolAdults") as string | null) ?? "").trim(), 200) : 0;
+  const poolKids = poolOpen ? num(((formData.get("poolKids") as string | null) ?? "").trim(), 200) : 0;
 
   const weekend = isWeekend(date);
   const tariff = weekend ? "Пт–Вс" : "Пн–Чт";

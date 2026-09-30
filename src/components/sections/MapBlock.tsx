@@ -25,7 +25,7 @@ export function MapBlock({ locale }: MapBlockProps) {
           href={contacts.googleMapsUrl}
           target="_blank"
           rel="noreferrer"
-          className="mt-3 inline-flex text-sm font-semibold text-[var(--accent-strong)] transition hover:text-[var(--green)]"
+          className="mt-2 inline-flex min-h-10 items-center text-sm font-semibold text-[var(--accent-strong)] transition hover:text-[var(--green)]"
         >
           {text(googleMapsIntegration.placeName, locale)}
         </a>
