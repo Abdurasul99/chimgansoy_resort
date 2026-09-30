@@ -70,7 +70,7 @@ export const dictionaries = {
       finalOfferTitle: "Забронируйте лучшие даты заранее",
       finalOfferText: "Выберите даты онлайн или напишите в WhatsApp — поможем выбрать между шале и глэмпингом и подтвердим бронь.",
       offersEyebrow: "Действующие акции",
-      offersTitle: "Поводы приехать в сентябре",
+      offersTitle: "Поводы приехать",
       offersSaving: "Ваша выгода",
     },
     pages: {
@@ -177,7 +177,7 @@ export const dictionaries = {
       finalOfferTitle: "Eng yaxshi sanalarni oldindan bron qiling",
       finalOfferText: "Sanalarni onlayn tanlang yoki WhatsApp'ga yozing — shale va glemping o'rtasida tanlashga yordam beramiz va bronni tasdiqlaymiz.",
       offersEyebrow: "Amaldagi aksiyalar",
-      offersTitle: "Sentyabrda kelish uchun sabablar",
+      offersTitle: "Kelish uchun sabablar",
       offersSaving: "Sizning foydangiz",
     },
     pages: {
@@ -284,7 +284,7 @@ export const dictionaries = {
       finalOfferTitle: "Book the best dates early",
       finalOfferText: "Pick your dates online or message us on WhatsApp — we'll help you choose between a chalet and a glamping cabin and confirm the booking.",
       offersEyebrow: "Current offers",
-      offersTitle: "Reasons to come in September",
+      offersTitle: "Reasons to come",
       offersSaving: "You save",
     },
     pages: {

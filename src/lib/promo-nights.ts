@@ -3,9 +3,10 @@ import { promotions } from "@/content/promotions";
 /**
  * Акция «2+1» на конкретных датах: три ночи по цене двух.
  *
- * Условия оператора (24.09.2026): заезд в воскресенье, понедельник или
- * вторник, ровно три ночи, выезд не позже пятницы, действует до конца сентября
- * 2026. Все три схемы ложатся на ночи с воскресенья по четверг — те, что
+ * Условия оператора (24.09.2026, повторены 30.09 уже без срока): заезд в
+ * воскресенье, понедельник или вторник, ровно три ночи, выезд не позже
+ * пятницы. Срок — поле until в promotions.ts; нет его — акция бессрочная, и
+ * все проверки срока ниже пропускаются. Все три схемы ложатся на ночи с воскресенья по четверг — те, что
  * в прайсе стоят по будничной цене, — поэтому расчёт акции от заезда не
  * зависит.
  *
@@ -23,15 +24,16 @@ export function todayTashkent(): string {
 
 const promo = promotions.find((p) => p.slug === "2plus1");
 
-/** Последний день действия акции включительно, из данных акции. */
+/** Последний день действия акции включительно; пусто — срока нет. */
 export function promoLastDay(): string {
   return promo?.until ?? "";
 }
 
 /** Акция ещё действует на указанную дату (по умолчанию — сегодня). */
 export function promoActive(today = todayTashkent()): boolean {
+  if (!promo) return false;
   const last = promoLastDay();
-  return Boolean(last) && today <= last;
+  return !last || today <= last;
 }
 
 const day = (iso: string) => new Date(`${iso}T12:00:00Z`).getUTCDay(); // 0=вс … 6=сб
@@ -104,6 +106,8 @@ export function promoLastCheckin(): string {
  * рекламировала бы то, что форма ниже не даст выбрать.
  */
 export function promoBookable(today = todayTashkent()): boolean {
+  if (!promo) return false;
+  if (!promoLastDay()) return true;
   const last = promoLastCheckin();
   return Boolean(last) && today <= last;
 }
@@ -116,7 +120,8 @@ export function rangeQualifies(checkin: string, checkout: string, today = todayT
   if (!promoActive(today)) return false;
   if (!checkin || !checkout) return false;
   // Последняя ночь — ночь перед выездом.
-  if (shiftDays(checkout, -1) > promoLastDay()) return false;
+  const last = promoLastDay();
+  if (last && shiftDays(checkout, -1) > last) return false;
   return matchesPattern(checkin, checkout);
 }
 
@@ -149,12 +154,13 @@ export function promoHint(checkin: string, checkout: string, today = todayTashke
   if (!promoActive(today)) return null;
   const nights = nightsBetween(checkin, checkout);
   if (!nights) return null;
+  const last = promoLastDay();
   // Заезд уже после конца акции — объяснять её схемы значит звать гостя
-  // подгонять октябрьские даты под предложение, которого в октябре нет.
-  if (checkin > promoLastDay()) return null;
-  // Заезд позже последнего возможного (29–30.09) — никакая схема уже не
-  // сработает, и список схем гостю ничего не даст: причина в сроке.
-  if (checkin > promoLastCheckin()) {
+  // подгонять даты под предложение, которого тогда уже нет.
+  if (last && checkin > last) return null;
+  // Заезд позже последнего возможного (два дня до срока) — никакая схема уже
+  // не сработает, и список схем гостю ничего не даст: причина в сроке.
+  if (last && checkin > promoLastCheckin()) {
     return { kind: "too-late", lastCheckin: promoLastCheckin(), until: promoLastDay() };
   }
   if (nights === 3 && rangeQualifies(checkin, checkout, today)) return { kind: "third-free" };
@@ -164,7 +170,7 @@ export function promoHint(checkin: string, checkout: string, today = todayTashke
   }
   // Схема верная, подвёл только срок — так и говорим.
   const asThree = nights === 2 ? nextDay(checkout) : nights === 3 ? checkout : "";
-  if (asThree && matchesPattern(checkin, asThree)) {
+  if (last && asThree && matchesPattern(checkin, asThree)) {
     return { kind: "too-late", lastCheckin: promoLastCheckin(), until: promoLastDay() };
   }
   // Одна-три ночи выбраны, но условия не сошлись — объясняем какие нужны.

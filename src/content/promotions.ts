@@ -27,10 +27,13 @@ export type Promotion = {
    */
   howItWorks?: { title: LocalizedString; lines: LocalizedList };
   /**
-   * Последний день действия, включительно (ISO). Без него акция висела бы
-   * на сайте и первого октября — и гость приехал бы за скидкой, которой уже
-   * нет. Проверку делает src/lib/promo-nights.ts, она же гасит подсказку в
-   * форме заявки и карточку на первом экране.
+   * Последний день действия, включительно (ISO). Нет поля — акция действует,
+   * пока оператор её не снимет. Есть — карточки, подсказка в форме заявки и
+   * брифинг ИИ гаснут сами: src/lib/promo-nights.ts.
+   *
+   * Срок ставить, только когда оператор его назвал. С 30.09.2026 у «2+1» и
+   * «Всё включено» срока нет: до этого они висели «до 30 сентября» и сами
+   * пропали с сайта и визитки, а оператор их не снимал.
    */
   until?: string;
   /**
@@ -68,7 +71,6 @@ export const promotions: Promotion[] = [
       { label: { ru: "Глэмпинг", uz: "Glemping", en: "Glamping" }, amount: 1_500_000 },
       { label: { ru: "Шале", uz: "Shale", en: "Chalet" }, amount: 3_000_000 },
     ],
-    until: "2026-09-30",
     terms: {
       ru: [
         "Заезд в воскресенье, понедельник или вторник — ровно 3 ночи",
@@ -78,8 +80,6 @@ export const promotions: Promotion[] = [
         "Заезд во вторник ➔ выезд в пятницу (3 ночи)",
         "Не суммируется с тарифом «Всё включено»",
         "Гости сверх двоих — по тарифу за каждую ночь",
-        "Действует до 30 сентября 2026 года — это последняя ночь по акции",
-        "Последний заезд — 28 сентября",
       ],
       uz: [
         "Kirish yakshanba, dushanba yoki seshanba — aynan 3 kecha",
@@ -89,8 +89,6 @@ export const promotions: Promotion[] = [
         "Kirish seshanba ➔ chiqish juma (3 kecha)",
         "«Hammasi kiritilgan» tarifi bilan jamlanmaydi",
         "Ikki kishidan ortiq mehmonlar — har bir kecha uchun tarif bo'yicha",
-        "2026-yil 30-sentabrgacha amal qiladi — bu aksiya bo'yicha oxirgi kecha",
-        "Oxirgi kirish kuni — 28-sentabr",
       ],
       en: [
         "Arrive on Sunday, Monday or Tuesday — exactly 3 nights",
@@ -100,8 +98,6 @@ export const promotions: Promotion[] = [
         "Tuesday arrival ➔ Friday departure (3 nights)",
         "Does not combine with the All-Inclusive rate",
         "Guests beyond two are charged per night at the standard rate",
-        "Valid through 30 September 2026 — the last night under the offer",
-        "Last arrival: 28 September",
       ],
     },
   },
@@ -112,9 +108,7 @@ export const promotions: Promotion[] = [
     // действует», а не «заезд», и она сохранена дословно: «заезд по четверг»
     // гость прочёл бы как питание и в пятницу с субботой.
     //
-    // Срок — сентябрь: без даты карточка висела бы и в октябре, а гость
-    // приехал бы за питанием, которого в тарифе уже нет.
-    until: "2026-09-30",
+    // Срока нет с 30.09.2026 — оператор повторил условия без даты окончания.
     badge: { ru: "Вс–Чт", uz: "Ya–Pay", en: "Sun–Thu" },
     title: {
       ru: "Тариф «Всё включено»",
@@ -153,19 +147,16 @@ export const promotions: Promotion[] = [
       ru: [
         "Блюда по расписанию в ресторане или с доставкой в домик",
         "Тариф действует с воскресенья по четверг включительно",
-        "Действует до 30 сентября 2026 года",
         "Не суммируется с акцией «2+1»",
       ],
       uz: [
         "Taomlar jadval bo'yicha restoranda yoki uyga yetkazib beriladi",
         "Tarif yakshanbadan payshanbagacha (payshanba ham) amal qiladi",
-        "2026-yil 30-sentabrgacha amal qiladi",
         "«2+1» aksiyasi bilan jamlanmaydi",
       ],
       en: [
         "Meals on schedule in the restaurant or delivered to your cabin",
         "Valid Sunday through Thursday inclusive",
-        "Valid through 30 September 2026",
         "Does not combine with the 2+1 offer",
       ],
     },
