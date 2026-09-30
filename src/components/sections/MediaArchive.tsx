@@ -42,10 +42,20 @@ type Props = {
  * operator has not shot any — and an empty "Видео" heading over blank space
  * would read as a broken page rather than as a section awaiting content.
  */
+const MOBILE_TILES = 6;
+const SHOW_ALL: Record<Locale, (n: number) => string> = {
+  ru: (n) => `Показать все ${n} фото`,
+  uz: (n) => `Barcha ${n} ta suratni ko'rsatish`,
+  en: (n) => `Show all ${n} photos`,
+};
+
 export function MediaArchive({ locale, images, videos = [], exclude = [] }: Props) {
   const t = COPY[locale] ?? COPY.ru;
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
+  // На телефоне — первые шесть кадров и кнопка «показать все»: шестнадцать
+  // плиток в две колонки занимали почти два экрана. С планшета — все сразу.
+  const [all, setAll] = useState(false);
 
   const shown = images.filter((key) => !exclude.includes(key));
   const assets = shown.map((key) => resortImages[key]).filter(Boolean);
@@ -71,13 +81,22 @@ export function MediaArchive({ locale, images, videos = [], exclude = [] }: Prop
                   setOpen(true);
                 }}
                 aria-label={text(asset.alt, locale)}
-                className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-cover bg-center ring-1 ring-[color:var(--line)] transition-transform duration-500 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sun)]"
+                className={`${!all && i >= MOBILE_TILES ? "hidden sm:block " : ""}group relative aspect-[4/3] overflow-hidden rounded-2xl bg-cover bg-center ring-1 ring-[color:var(--line)] transition-transform duration-500 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sun)]`}
                 style={imageStyle(asset)}
               >
                 <span className="absolute inset-0 bg-[linear-gradient(0deg,rgba(12,18,14,0.45)_0%,transparent_55%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
               </button>
             ))}
           </div>
+          {!all && assets.length > MOBILE_TILES && (
+            <button
+              type="button"
+              onClick={() => setAll(true)}
+              className="btn-press mt-4 flex min-h-12 w-full items-center justify-center rounded-2xl border border-[color:var(--line-strong)] text-sm font-semibold text-[var(--ink)] sm:hidden"
+            >
+              {SHOW_ALL[locale](assets.length)}
+            </button>
+          )}
           {/* Mounted only while open and keyed by the tile that opened it.
               Lightbox seeds its own index from startIndex on mount and ignores
               later prop changes, so a permanently-mounted instance would open

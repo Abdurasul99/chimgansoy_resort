@@ -169,7 +169,7 @@ export function PageTitle({ locale, title, lead }: { locale: Locale; title: stri
       <Link
         href={localizePath(locale, "/restaurant")}
         prefetch={false}
-        className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#6b6b6b] transition-colors hover:text-[#1c1c1c]"
+        className="inline-flex min-h-10 items-center gap-1.5 text-sm font-semibold text-[#6b6b6b] transition-colors hover:text-[#1c1c1c]"
       >
         <RestIcon name="arrow" className="h-4 w-4 rotate-180" />
         {t.backToMenu}

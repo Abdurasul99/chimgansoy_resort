@@ -16,14 +16,14 @@ export function Faq({ locale, pricing }: FaqProps) {
   return (
     <div className="divide-y divide-[color:var(--line)] rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] shadow-[var(--shadow-card)]">
       {items.map((item) => (
-        <details key={text(item.question, locale)} className="group p-5 sm:p-6">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-[var(--ink)]">
+        <details key={text(item.question, locale)} className="group">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 text-base font-semibold text-[var(--ink)] sm:p-6 [&::-webkit-details-marker]:hidden">
             <span>{text(item.question, locale)}</span>
             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--surface)] transition group-open:rotate-45">
               <Icon name="arrow" className="h-4 w-4 rotate-90" />
             </span>
           </summary>
-          <p className="mt-4 max-w-3xl text-sm leading-7 text-[var(--muted)]">{clock(text(item.answer, locale))}</p>
+          <p className="-mt-1 max-w-3xl px-5 pb-5 text-sm leading-7 text-[var(--muted)] sm:px-6 sm:pb-6">{clock(text(item.answer, locale))}</p>
         </details>
       ))}
     </div>

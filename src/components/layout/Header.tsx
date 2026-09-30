@@ -117,7 +117,7 @@ export function Header({ locale, restaurant = null, restaurantLabels }: HeaderPr
         : pathname === restaurantHome
           ? { href: localizePath(locale, "/restaurant/tables"), label: restaurantLabels.table, reload: false }
           : { href: restaurantHome, label: restaurantLabels.menu, reload: false }
-      : { href: bookHref, label: HEADER_CTA[locale] ?? dict.bookNow, reload: bookReload };
+      : { href: bookHref, label: HEADER_CTA[locale] ?? dict.bookNow, short: dict.bookNow, reload: bookReload };
 
   // Scrolling down past the hero tucks the bar away; any upward move brings it
   // straight back. Reads from the shared scroll loop rather than adding a second
@@ -183,7 +183,7 @@ export function Header({ locale, restaurant = null, restaurantLabels }: HeaderPr
             aria-hidden="true"
           />
         )}
-        <div className="relative z-10 mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
+        <div className="relative z-10 mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between gap-3 px-4 sm:gap-6 sm:px-6 lg:px-8">
           {/* Logo */}
           <Link
             href={localizePath(locale)}
@@ -196,8 +196,8 @@ export function Header({ locale, restaurant = null, restaurantLabels }: HeaderPr
                 название комплекса на первом экране было почти не видно. На
                 светлой стеклянной шапке после прокрутки — обычный тёмный.
                 Смена — через прозрачность, без перезагрузки картинки. */}
-            <div className="px-2 py-1">
-              <div className="relative h-[62px] w-[100px] lg:h-[70px] lg:w-[112px]">
+            <div className="px-1 py-1 sm:px-2">
+              <div className="relative h-[55px] w-[88px] min-[380px]:h-[62px] min-[380px]:w-[100px] lg:h-[70px] lg:w-[112px]">
                 <img
                   src="/images/resort/chimgan_darbaza.svg"
                   alt="CHIMGAN DARBAZA Resort"
@@ -303,15 +303,17 @@ export function Header({ locale, restaurant = null, restaurantLabels }: HeaderPr
           <a
             href={cta.href}
             {...(cta.reload || inRestaurant ? {} : { "data-anchor": "request" })}
-            className="btn-press mr-1 inline-flex h-9 shrink-0 items-center justify-center rounded-full bg-[var(--sun)] px-2.5 text-[10px] font-bold leading-tight text-[var(--on-accent)] shadow-[0_8px_20px_-8px_rgba(220,140,0,0.8)] sm:px-4 sm:text-[12px] lg:hidden"
+            className="btn-press ml-auto inline-flex h-10 shrink-0 items-center justify-center whitespace-nowrap rounded-full bg-[var(--sun)] px-3.5 text-[12px] font-bold text-[var(--on-accent)] shadow-[0_8px_20px_-8px_rgba(220,140,0,0.8)] min-[380px]:px-4 min-[380px]:text-[13px] lg:hidden"
           >
-            {cta.label}
+            {/* На телефоне — короткая подпись («Забронировать»), с планшета — полная. */}
+            <span className="sm:hidden">{"short" in cta && cta.short ? cta.short : cta.label}</span>
+            <span className="hidden sm:inline">{cta.label}</span>
           </a>
 
           {/* Mobile burger */}
           <button
             type="button"
-            className={`inline-flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-300 lg:hidden ${
+            className={`-mr-2 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors duration-300 lg:hidden ${
               isHeaderOnHero ? "text-white" : "text-[var(--ink)]"
             }`}
             aria-expanded={isOpen}
@@ -401,7 +403,7 @@ export function Header({ locale, restaurant = null, restaurantLabels }: HeaderPr
           <div className="flex items-center justify-between">
             <a
               href={`tel:${contacts.phone.replaceAll(" ", "")}`}
-              className="text-sm font-semibold text-[var(--muted)] hover:text-[var(--ink)] transition-colors"
+              className="inline-flex min-h-11 items-center text-sm font-semibold text-[var(--muted)] hover:text-[var(--ink)] transition-colors"
             >
               {contacts.phone}
             </a>

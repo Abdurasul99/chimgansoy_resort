@@ -152,10 +152,10 @@ export async function Footer({ locale }: FooterProps) {
               </p>
               <div className="mt-4 space-y-2 text-sm text-[var(--muted)]">
                 <p>{text(contacts.address, locale)}</p>
-                <a href={`tel:${contacts.phone.replaceAll(" ", "")}`} className="block transition-colors hover:text-[var(--sun)]">
+                <a href={`tel:${contacts.phone.replaceAll(" ", "")}`} className="flex min-h-10 items-center transition-colors hover:text-[var(--sun)] sm:block sm:min-h-0">
                   {contacts.phone}
                 </a>
-                <a href={`mailto:${contacts.email}`} className="block transition-colors hover:text-[var(--sun)]">
+                <a href={`mailto:${contacts.email}`} className="flex min-h-10 items-center transition-colors hover:text-[var(--sun)] sm:block sm:min-h-0">
                   {contacts.email}
                 </a>
               </div>
@@ -165,13 +165,13 @@ export async function Footer({ locale }: FooterProps) {
               {groups.map((group) => (
                 <div key={text(group.title, locale)}>
                   <h3 className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">{text(group.title, locale)}</h3>
-                  <ul className="mt-4 space-y-2.5">
+                  <ul className="mt-2 sm:mt-4 sm:space-y-2.5">
                     {group.links.filter((item) => !isHidden(item.href)).map((item) => (
                       <li key={item.href}>
                         <Link
                           href={localizePath(locale, item.href)}
                           prefetch={false}
-                          className="text-sm text-[var(--muted)] transition-colors hover:text-[var(--sun)]"
+                          className="inline-flex min-h-10 items-center text-sm text-[var(--muted)] transition-colors hover:text-[var(--sun)] sm:inline sm:min-h-0"
                         >
                           {text(item.label, locale)}
                         </Link>

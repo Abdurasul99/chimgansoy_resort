@@ -195,7 +195,7 @@ export default async function HomePage({ params }: PageProps) {
                   <li key={c.href}>
                     <Link
                       href={localizePath(locale, c.href)}
-                      className="inline-flex min-h-9 items-center rounded-full border border-[color:var(--line-strong)] bg-[var(--surface-warm)] px-4 py-1.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-strong)]"
+                      className="inline-flex min-h-10 items-center rounded-full border border-[color:var(--line-strong)] bg-[var(--surface-warm)] px-4 py-1.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-strong)]"
                     >
                       {c.label[locale]}
                     </Link>
@@ -294,19 +294,21 @@ export default async function HomePage({ params }: PageProps) {
       </section>
 
       {/* ── Numbers band — editorial oversized numerals ── */}
-      <section className="bg-[var(--surface-warm)] border-y border-[var(--line)] px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+      {/* На телефоне — 2×2, а не столбиком: четыре цифры одна под другой
+          занимали три четверти экрана. */}
+      <section className="bg-[var(--surface-warm)] border-y border-[var(--line)] px-4 py-10 sm:px-6 sm:py-20 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="grid divide-y divide-[color:var(--line)] sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
+          <div className="grid grid-cols-2 gap-x-5 gap-y-8 lg:grid-cols-4 lg:gap-y-0 lg:divide-x lg:divide-[color:var(--line)]">
             {stats.map((stat, i) => (
               <div
                 key={stat.value}
-                className="motion-reveal flex flex-col gap-2 py-6 sm:py-2 lg:px-8 lg:first:pl-0 lg:last:pr-0"
+                className="motion-reveal flex flex-col gap-1.5 sm:gap-2 lg:px-8 lg:first:pl-0 lg:last:pr-0"
                 data-delay={String(i * 80)}
               >
                 <span className="font-serif text-sm italic text-[var(--muted)]/70">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <p className="motion-reveal-mask font-serif text-[clamp(3.5rem,7vw,5.5rem)] font-bold leading-none tracking-tight text-[var(--ink)]">
+                <p className="motion-reveal-mask font-serif text-[clamp(2.75rem,11vw,5.5rem)] font-bold leading-none tracking-tight text-[var(--ink)]">
                   <AnimatedStat value={parseInt(stat.value)} />
                 </p>
                 <p className="max-w-[12rem] text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]">

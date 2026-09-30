@@ -999,7 +999,11 @@ html { scroll-behavior: smooth; }
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--ink);
-  white-space: nowrap;
+  /* Переносится, а не обрезается: «Тюбинг: спуск каждому гостю» на 320–375 px
+     шире карточки, и золотая плашка резала текст на полуслове. */
+  max-width: 100%;
+  white-space: normal;
+  line-height: 1.3;
   animation: perk-in 520ms var(--ease-premium) both;
 }
 
@@ -2088,4 +2092,12 @@ html[data-header="hidden"] .rest-stick {
 }
 html[data-header="hidden"] .rest-side {
   top: 1rem;
+}
+
+/* ── Телефоны: подписи не мельче 11 px ─────────────────────────────
+   Надзаголовки, подписи полей и прогноз были 10 px заглавными — на экране
+   телефона это на грани читаемого. Правило вне слоёв, поэтому перекрывает
+   утилиту Tailwind; с 481 px всё как в макете. */
+@media (max-width: 480px) {
+  .text-\[10px\] { font-size: 11px; }
 }

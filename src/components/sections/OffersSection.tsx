@@ -9,6 +9,9 @@ import { priceLabels } from "@/content/pricing";
 
 type Props = { locale: Locale };
 
+const TERMS_LABEL: Record<Locale, string> = { ru: "Условия акции", uz: "Aksiya shartlari", en: "Offer terms" };
+const BOOK_LABEL: Record<Locale, string> = { ru: "Забронировать", uz: "Bron qilish", en: "Book now" };
+
 /** Подписи расчёта скидки («−20% на Chalet»): формулировки оператора. */
 const DISCOUNT_COPY = {
   ru: {
@@ -100,11 +103,17 @@ export function OffersSection({ locale }: Props) {
     const discount = promo.discount ? discountMath(promo.discount) : null;
     // Во всю ширину — ведущая и любая с расчётом: таблице в полколонки тесно.
     const wide = lead || rows.length > 0 || discount !== null;
+    const terms = list(promo.terms, locale);
     return (
-      <a
+      /*
+       * Карточка — article со «растянутой» ссылкой (кнопка внизу, after:inset-0),
+       * а не одна большая <a>: внутри неё на телефоне раскрываются условия, а
+       * раскрывашка внутри ссылки — недопустимая вложенность, и нажатие на неё
+       * уводило бы в бронь. Вся карточка по-прежнему нажимается целиком.
+       */
+      <article
         key={promo.slug}
-        href={href(promo.slug)}
-        className={`group relative flex flex-col overflow-hidden rounded-3xl border border-[color:var(--line)] bg-[var(--paper)] p-7 shadow-[var(--shadow-card)] transition-shadow duration-200 hover:shadow-[var(--shadow-card-hover)] ${wide ? "sm:col-span-2" : ""}`}
+        className={`group relative flex flex-col overflow-hidden rounded-3xl border border-[color:var(--line)] bg-[var(--paper)] p-5 shadow-[var(--shadow-card)] transition-shadow duration-200 hover:shadow-[var(--shadow-card-hover)] sm:p-7 ${wide ? "sm:col-span-2" : ""}`}
       >
         <span className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-transparent via-[var(--sun)] to-transparent" />
         <span
@@ -185,12 +194,33 @@ export function OffersSection({ locale }: Props) {
           <DiscountCalc d={discount} label={text(promo.discount.label, locale)} locale={locale} />
         ) : null}
 
-        <ul className="mt-auto pt-5 text-[12.5px] leading-6 text-[var(--muted)]">
-          {list(promo.terms, locale).map((t) => (
+        {/* Условия: на компьютере — списком, на телефоне — свёрнуты. Девять
+            строк мелкого текста растягивали одну карточку «2+1» на экран. */}
+        <ul className="mt-auto hidden pt-5 text-[12.5px] leading-6 text-[var(--muted)] sm:block">
+          {terms.map((t) => (
             <li key={t}>· {t}</li>
           ))}
         </ul>
-      </a>
+        <details className="group/terms relative z-10 mt-auto pt-4 sm:hidden">
+          <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 rounded-xl bg-[var(--surface-warm)] px-4 text-sm font-semibold text-[var(--ink)] [&::-webkit-details-marker]:hidden">
+            {TERMS_LABEL[locale]}
+            <span aria-hidden className="text-lg leading-none transition-transform group-open/terms:rotate-45">+</span>
+          </summary>
+          <ul className="mt-2 space-y-1 px-1 text-[13px] leading-5 text-[var(--muted)]">
+            {terms.map((t) => (
+              <li key={t}>· {t}</li>
+            ))}
+          </ul>
+        </details>
+
+        <a
+          href={href(promo.slug)}
+          className="mt-4 inline-flex min-h-11 items-center gap-2 self-start text-sm font-bold text-[var(--accent-strong)] after:absolute after:inset-0 after:content-[''] sm:mt-5"
+        >
+          {BOOK_LABEL[locale]}
+          <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+        </a>
+      </article>
     );
   };
 

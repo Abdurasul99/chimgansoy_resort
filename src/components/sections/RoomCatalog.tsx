@@ -79,7 +79,7 @@ export function RoomCatalog({ locale, limit, priceChips = {} }: RoomCatalogProps
             <button
               type="button"
               key={category.id}
-              className={`btn-press relative rounded-full border px-4 py-1.5 sm:px-5 sm:py-2 text-xs sm:text-sm font-semibold transition-all duration-300 ${
+              className={`btn-press relative inline-flex min-h-10 items-center rounded-full border px-4 py-1.5 sm:px-5 sm:py-2 text-xs sm:text-sm font-semibold transition-all duration-300 ${
                 filter === category.id
                   ? "border-[var(--mountain)] bg-[var(--mountain)] text-white"
                   : "border-[color:var(--line)] bg-[var(--paper)] text-[var(--muted)] hover:border-[var(--mountain)]/40 hover:text-[var(--ink)]"
