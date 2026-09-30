@@ -542,10 +542,11 @@ describe("возраст ребёнка при заселении (операт�
 });
 
 describe("акции", () => {
-  it("три акции с метками, совпадающими с визиткой", () => {
+  it("метки акций совпадают с визиткой", () => {
     // slug уходит в utm_content и на сайте, и в визитке из шапки Instagram —
     // иначе статистика по одной и той же акции разъедется на два счётчика.
-    expect(promotions.map((p) => p.slug)).toEqual(["2plus1", "all-inclusive", "slow-weekend"]);
+    // «chalet-october» пока только на сайте (оператор, 30.09.2026: «на сайт»).
+    expect(promotions.map((p) => p.slug)).toEqual(["2plus1", "chalet-october", "all-inclusive", "slow-weekend"]);
   });
 
   it("связь акций объяснена на обеих карточках, а не в одной", () => {
@@ -592,6 +593,15 @@ describe("акции", () => {
     expect(october).toContain("«Всё включено» — трёхразовое питание");
     expect(october).toContain("дата окончания не объявлена");
     expect(october).not.toContain("до 30 сентября");
+  });
+
+  it("ИИ знает «−20% на Chalet» весь октябрь и не суммирует её с другими", () => {
+    const october = venueFacts(undefined, "2026-10-05");
+    expect(october).toContain("«−20% на Chalet весь октябрь»");
+    expect(october).toContain("3 000 000 → 2 400 000 сум за ночь");
+    expect(october).toContain("НЕ суммируется с другими акциями");
+    // С ноября бот её не предлагает.
+    expect(venueFacts(undefined, "2026-11-01")).not.toContain("«−20% на Chalet весь октябрь»");
   });
 
   it("ИИ считает цену «2+1» за домик: шале на четверых, а не «на двоих»", () => {

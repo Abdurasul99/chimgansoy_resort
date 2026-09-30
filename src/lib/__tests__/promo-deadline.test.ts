@@ -13,7 +13,10 @@ vi.mock("@/content/promotions", async (importOriginal) => {
   const mod = await importOriginal<typeof import("@/content/promotions")>();
   return {
     ...mod,
-    promotions: mod.promotions.map((p) => (p.slug === "slow-weekend" ? p : { ...p, until: "2026-09-30" })),
+    // Срок подставлен только сентябрьским акциям — у «−20% на Chalet» свой.
+    promotions: mod.promotions.map((p) =>
+      p.slug === "2plus1" || p.slug === "all-inclusive" ? { ...p, until: "2026-09-30" } : p,
+    ),
   };
 });
 

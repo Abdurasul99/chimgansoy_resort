@@ -13,7 +13,7 @@ import { cabinOccupancy } from "./pricing";
  * акция привела гостя. Совпадает с метками на визитке из шапки Instagram.
  */
 export type Promotion = {
-  slug: "2plus1" | "all-inclusive" | "slow-weekend";
+  slug: "2plus1" | "chalet-october" | "all-inclusive" | "slow-weekend";
   badge: LocalizedString;
   title: LocalizedString;
   description: LocalizedString;
@@ -22,6 +22,12 @@ export type Promotion = {
    * Пусто, если выгода не в деньгах. По гостям считается цена «с человека».
    */
   savings?: { label: LocalizedString; amount: number; guests: number }[];
+  /**
+   * Скидка в процентах на ночь домика — расчёт «было → стало, экономия, с
+   * человека» строится из этих чисел (lib/promo-nights.ts, discountMath), а не
+   * из текста: цена, вписанная словами, не поменялась бы вместе с тарифом.
+   */
+  discount?: { label: LocalizedString; base: number; percent: number; guests: number };
   /** Условия — то, из-за чего на ресепшене спорят, если о них умолчать. */
   terms: LocalizedList;
   /**
@@ -124,6 +130,47 @@ export const promotions: Promotion[] = [
         "Breakfast included",
         `At full occupancy — from ${fmt(perPersonFrom)} UZS per person per night: glamping for ${glampingGuests} guests, chalet for ${chaletGuests}`,
         "Extra beds are charged separately at the rate for each night",
+      ],
+    },
+  },
+  {
+    // Оператор, 30.09.2026: «−20% на Chalet весь октябрь». Тексты — его, без
+    // правок по смыслу. Базовая цена — будничная ночь шале из прайса (та же, что
+    // в выгоде «2+1»); срок — последний день октября, дальше карточка гаснет сама.
+    slug: "chalet-october",
+    until: "2026-10-31",
+    badge: { ru: "−20% · Октябрь", uz: "−20% · Oktabr", en: "−20% · October" },
+    title: {
+      ru: "−20% на Chalet весь октябрь",
+      uz: "Butun oktabr Chalet'ga −20%",
+      en: "20% off the Chalet all October",
+    },
+    description: {
+      ru: "Бронируйте Chalet в октябре и получайте скидку 20% на проживание. Большой Chalet для отдыха семьёй или компанией: отдельные спальни, кухня, санузлы и просторная терраса с видом на горы.",
+      uz: "Oktabrda Chalet'ni bron qiling va yashashga 20% chegirma oling. Oila yoki do'stlar davrasida dam olish uchun katta Chalet: alohida yotoqxonalar, oshxona, sanuzellar va tog'larga qaragan keng terrasa.",
+      en: "Book the Chalet in October and get 20% off your stay. A big Chalet for a family or a group of friends: separate bedrooms, a kitchen, bathrooms and a spacious terrace facing the mountains.",
+    },
+    discount: {
+      label: { ru: "Базовая стоимость Chalet", uz: "Chalet'ning asosiy narxi", en: "Chalet base rate" },
+      base: 3_000_000,
+      percent: 20,
+      guests: cabinOccupancy.cottage.base,
+    },
+    terms: {
+      ru: [
+        "Акция действует весь октябрь на проживание в Chalet",
+        "Дополнительное размещение оплачивается отдельно согласно действующим тарифам",
+        "Не суммируется с другими акциями и специальными предложениями",
+      ],
+      uz: [
+        "Aksiya butun oktabr davomida Chalet'da yashash uchun amal qiladi",
+        "Qo'shimcha joylashtirish amaldagi tariflar bo'yicha alohida to'lanadi",
+        "Boshqa aksiyalar va maxsus takliflar bilan jamlanmaydi",
+      ],
+      en: [
+        "Valid for Chalet stays throughout October",
+        "Extra beds are charged separately at the current rates",
+        "Does not combine with other offers or special deals",
       ],
     },
   },

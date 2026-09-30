@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { promotions } from "@/content/promotions";
+import { stayNightRates } from "@/content/pricing";
 import {
+  discountMath,
   nightsBetween,
   promoActive,
   promoBookable,
@@ -186,6 +188,30 @@ describe("расчёт «2+1» — как его объясняет операт
     const promo = promotions.find((p) => p.slug === "2plus1")!;
     expect(promo.badge.ru).toBe("Будни · −33%");
     expect(promo.terms.ru[0]).toContain("воскресенье");
+  });
+});
+
+describe("«−20% на Chalet весь октябрь»", () => {
+  const chalet = promotions.find((p) => p.slug === "chalet-october")!;
+
+  it("расчёт оператора: 3 000 000 → 2 400 000, экономия 600 000, с человека 600 000", () => {
+    expect(discountMath(chalet.discount!)).toEqual({
+      base: 3_000_000,
+      price: 2_400_000,
+      saving: 600_000,
+      percent: 20,
+      guests: 4,
+      perPerson: 600_000,
+    });
+  });
+
+  it("база — будничная ночь шале из прайса, срок — последний день октября", () => {
+    expect(chalet.discount!.base).toBe(stayNightRates.cottage.sunThu);
+    expect(chalet.until).toBe("2026-10-31");
+  });
+
+  it("не суммируется с другими акциями — сказано в условиях", () => {
+    expect(chalet.terms.ru.join(" ")).toContain("Не суммируется с другими акциями");
   });
 });
 

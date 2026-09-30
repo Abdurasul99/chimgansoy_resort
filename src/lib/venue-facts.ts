@@ -9,6 +9,7 @@ import {
   promoBookable,
   promoBreakdown,
   promoCheapestPerPerson,
+  discountMath,
   promoLastCheckin,
   promoLastDay,
   todayTashkent,
@@ -96,6 +97,13 @@ function promoBlock(today = todayTashkent()): string {
     // живут гости с заездом 27–28.09 и о которой спрашивают из Instagram.
     lines.push(
       `  • «2+1» — новые заезды по акции закрыты: последний заезд был ${ruDate(promoLastCheckin())}, акция действует до ${ruDate(promoLastDay())}. Брони, уже оформленные по акции, действуют; новые даты по ней не бронируются.`,
+    );
+  }
+  const chalet = promotions.find((p) => p.slug === "chalet-october");
+  if (chalet?.discount && (!chalet.until || today <= chalet.until)) {
+    const d = discountMath(chalet.discount);
+    lines.push(
+      `  • «−20% на Chalet весь октябрь» — скидка ${d.percent}% на проживание в шале в октябре: базовая стоимость ${money(d.base)} → ${money(d.price)} сум за ночь, экономия ${money(d.saving)} сум за каждую ночь. Завтрак включён. При ${d.guests} гостях — ${money(d.perPerson)} сум с человека за ночь. Базовая ${money(d.base)} — это ночь с воскресенья по четверг; на ночь пятницы и субботы скидка ${d.percent}% считается от их цены — точную сумму подтверждает администратор. Действует${chalet.until ? ` до ${ruDate(chalet.until)}` : ""}. Дополнительное размещение — отдельно по действующим тарифам. НЕ суммируется с другими акциями и спецпредложениями («2+1», «Всё включено»): гость выбирает одно.`,
     );
   }
   const allInclusive = promotions.find((p) => p.slug === "all-inclusive");

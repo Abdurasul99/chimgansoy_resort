@@ -1,4 +1,4 @@
-import { promotions } from "@/content/promotions";
+import { promotions, type Promotion } from "@/content/promotions";
 
 /**
  * Акция «2+1» на конкретных датах: три ночи по цене двух.
@@ -211,6 +211,32 @@ export function promoBreakdown(): PromoRow[] {
     guests: s.guests,
     perPerson: Math.round((s.amount * 2) / 3 / s.guests / 1000) * 1000,
   }));
+}
+
+/**
+ * Расчёт скидки на ночь домика — «3 000 000 → 2 400 000, экономия 600 000,
+ * при четверых — 600 000 с человека». Округление до тысячи: процент от
+ * будущей цены может дать хвост в сотнях сумов.
+ */
+export type DiscountMath = {
+  base: number;
+  price: number;
+  saving: number;
+  percent: number;
+  guests: number;
+  perPerson: number;
+};
+
+export function discountMath(d: NonNullable<Promotion["discount"]>): DiscountMath {
+  const price = Math.round((d.base * (100 - d.percent)) / 100 / 1000) * 1000;
+  return {
+    base: d.base,
+    price,
+    saving: d.base - price,
+    percent: d.percent,
+    guests: d.guests,
+    perPerson: Math.round(price / d.guests / 1000) * 1000,
+  };
 }
 
 /** Самая низкая цена ночи с человека по акции — довод оператора. */

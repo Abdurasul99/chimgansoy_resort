@@ -15,7 +15,10 @@ vi.mock("@/content/promotions", async (importOriginal) => {
   const mod = await importOriginal<typeof import("@/content/promotions")>();
   return {
     ...mod,
-    promotions: mod.promotions.map((p) => (p.slug === "slow-weekend" ? p : { ...p, until: "2026-09-30" })),
+    // Срок подставлен только сентябрьским акциям — у «−20% на Chalet» свой.
+    promotions: mod.promotions.map((p) =>
+      p.slug === "2plus1" || p.slug === "all-inclusive" ? { ...p, until: "2026-09-30" } : p,
+    ),
   };
 });
 
@@ -43,6 +46,22 @@ describe("блок акций по датам", () => {
     expect(screen.getByText("Тариф «Всё включено»")).toBeInTheDocument();
     expect(screen.getByText("Как это работает")).toBeInTheDocument();
     expect(screen.getByText("в день выезда — завтрак")).toBeInTheDocument();
+  });
+
+  it("05.10: «−20% на Chalet» с расчётом оператора", () => {
+    at("2026-10-05");
+    render(<OffersSection locale="ru" />);
+    expect(screen.getByText("−20% на Chalet весь октябрь")).toBeInTheDocument();
+    // 3 000 000 → 2 400 000, экономия 600 000, при четверых — 600 000 с человека.
+    expect(screen.getByText("2 400 000")).toBeInTheDocument();
+    expect(screen.getByText("600 000 сум за каждую ночь")).toBeInTheDocument();
+    expect(screen.getByText("Всего 600 000 сум / человек / ночь")).toBeInTheDocument();
+  });
+
+  it("01.11: октябрьская скидка на Chalet ушла сама", () => {
+    at("2026-11-01");
+    render(<OffersSection locale="ru" />);
+    expect(screen.queryByText("−20% на Chalet весь октябрь")).toBeNull();
   });
 
   it("01.10: акций со сроком 30.09 нет", () => {
