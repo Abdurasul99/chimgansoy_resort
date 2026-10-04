@@ -17,7 +17,7 @@ export function TelegramNotice({ ready, chats }: { ready: boolean; chats: number
   if (!ready) {
     return (
       <Notice title="Telegram не подключён — заказы сюда приходят, в чат нет">
-        Не задан токен бота <code>TELEGRAM_STAFF_BOT_TOKEN</code>. Заказы сохраняются и видны на
+        Не задан токен бота (<code>TELEGRAM_RESTAURANT_BOT_TOKEN</code> или <code>TELEGRAM_STAFF_BOT_TOKEN</code>). Заказы сохраняются и видны на
         этой странице, но уведомлений в Telegram не будет — держите страницу открытой.
       </Notice>
     );

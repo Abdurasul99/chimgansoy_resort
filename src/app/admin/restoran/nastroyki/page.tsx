@@ -1,7 +1,7 @@
 import { AdminHeading } from "../../AdminShell";
 import { getSession } from "@/lib/admin-auth";
 import type { RestaurantSettings } from "@/lib/restaurant/model";
-import { ownRestaurantChats, restaurantChats, telegramReady } from "@/lib/restaurant/notify";
+import { ownRestaurantChats, restaurantBotReady, restaurantChats, telegramReady } from "@/lib/restaurant/notify";
 import { countNewOrders, dbConfigured, readSettings } from "@/lib/restaurant/store";
 import { RestoranTabs } from "../RestoranTabs";
 import { DbOffline, NoAccess, Notice, StoreError } from "../ui";
@@ -13,6 +13,8 @@ export const dynamic = "force-dynamic";
 function mask(id: string): string {
   return id.length > 4 ? `…${id.slice(-4)}` : id;
 }
+
+const RESTAURANT_BOT = "chimgandarbaza_restaurant_bot";
 
 export default async function RestaurantSettingsPage() {
   const session = await getSession();
@@ -80,8 +82,8 @@ export default async function RestaurantSettingsPage() {
             <div className="mt-3 space-y-3 text-sm leading-6">
               {!telegramReady() ? (
                 <Notice title="Бот не подключён">
-                  Не задан <code>TELEGRAM_STAFF_BOT_TOKEN</code> — заказы сохраняются и видны в панели, но в
-                  Telegram не уходят.
+                  Не задан ни <code>TELEGRAM_RESTAURANT_BOT_TOKEN</code>, ни <code>TELEGRAM_STAFF_BOT_TOKEN</code> —
+                  заказы сохраняются и видны в панели, но в Telegram не уходят.
                 </Notice>
               ) : chats.length === 0 ? (
                 <Notice title="Не задан чат для заказов">
@@ -89,16 +91,18 @@ export default async function RestaurantSettingsPage() {
                 </Notice>
               ) : (
                 <Notice tone="ok" title={`Заказы уходят в ${chats.length} ${chats.length === 1 ? "чат" : "чата"}`}>
-                  {own.length ? `Группа ресторана: ${own.map(mask).join(", ")}` : "Своей группы у ресторана нет — заказы идут в чат комплекса."}
+                  {own.length
+                    ? `Группа ресторана: ${own.map(mask).join(", ")} · пишет ${restaurantBotReady() ? `@${RESTAURANT_BOT}` : "общий бот @chimgandarbaza_bot"}`
+                    : "Своей группы у ресторана нет — заказы идут в чат комплекса."}
                   {own.length && settings.notifyHotel ? " · копия — в чат комплекса" : ""}
                 </Notice>
               )}
               <p className="text-[var(--muted)]">
-                Своя группа ресторана: добавьте в неё бота @chimgandarbaza_bot, напишите там <code>/id</code> — бот
-                ответит номером группы (с минусом). Этот номер — в <code>TELEGRAM_RESTAURANT_CHAT_ID</code> в файле{" "}
-                <code>/etc/chimgandarbaza.env</code>, затем перезапуск службы. Кнопки статусов в карточке заказа
-                работают только в этих чатах; ограничить конкретными сотрудниками —{" "}
-                <code>TELEGRAM_RESTAURANT_STAFF_IDS</code>.
+                Своя группа ресторана: добавьте в неё бота @{RESTAURANT_BOT} — он сразу напишет номер группы (с
+                минусом), его же можно спросить командой <code>/id</code>. Этот номер — в{" "}
+                <code>TELEGRAM_RESTAURANT_CHAT_ID</code> в файле <code>/etc/chimgandarbaza.env</code>, затем перезапуск
+                службы. Кнопки статусов в карточке заказа работают только в этих чатах; ограничить конкретными
+                сотрудниками — <code>TELEGRAM_RESTAURANT_STAFF_IDS</code>.
               </p>
               <TelegramTools />
             </div>

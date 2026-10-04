@@ -9,8 +9,9 @@
 export async function register() {
   if (process.env.NEXT_RUNTIME !== "nodejs") return;
   if (process.env.NEXT_PHASE === "phase-production-build") return;
-  if (!process.env.DATABASE_URL?.trim() || !process.env.TELEGRAM_STAFF_BOT_TOKEN?.trim()) return;
-  const { retryPendingNotifications } = await import("@/lib/restaurant/notify");
+  if (!process.env.DATABASE_URL?.trim()) return;
+  const { retryPendingNotifications, telegramReady } = await import("@/lib/restaurant/notify");
+  if (!telegramReady()) return;
   const timer = setInterval(() => {
     retryPendingNotifications().catch(() => {});
   }, 60_000);

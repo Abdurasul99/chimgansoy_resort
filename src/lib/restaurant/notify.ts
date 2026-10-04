@@ -1,4 +1,4 @@
-import { editMessageText, esc, sendMessage, type InlineKeyboard } from "@/lib/telegram";
+import { botToken, editMessageText, esc, sendMessage, type InlineKeyboard, type TgBot } from "@/lib/telegram";
 import { adminChatIds } from "@/lib/request-delivery";
 import { money } from "@/lib/tariff";
 import { CANCEL_REASONS, type Order, type RestaurantSettings, type StatusLogEntry, type TableRequest } from "./model";
@@ -36,11 +36,13 @@ import {
 /**
  * Заказы и столы — в Telegram ресторана, с кнопками статусов.
  *
- * Бот тот же, что у всех заявок сайта (TELEGRAM_STAFF_BOT_TOKEN). Чат —
- * TELEGRAM_RESTAURANT_CHAT_ID, если ресторан завёл свою группу; иначе
- * TELEGRAM_ADMIN_CHAT_ID комплекса. Номера сообщений сохраняются в заказе:
- * смена статуса — в панели или кнопкой — переписывает ту же карточку, и в
- * чате не растёт лента из «подтверждена», «готовится», «готова».
+ * Чат — TELEGRAM_RESTAURANT_CHAT_ID, если ресторан завёл свою группу; иначе
+ * TELEGRAM_ADMIN_CHAT_ID комплекса. В чаты ресторана пишет свой бот
+ * @chimgandarbaza_restaurant_bot (TELEGRAM_RESTAURANT_BOT_TOKEN), в чат
+ * комплекса — общий бот заявок (TELEGRAM_STAFF_BOT_TOKEN). Номера сообщений
+ * сохраняются в заказе: смена статуса — в панели или кнопкой — переписывает
+ * ту же карточку, и в чате не растёт лента из «подтверждена», «готовится»,
+ * «готова».
  */
 
 function split(raw: string | undefined): string[] {
@@ -79,8 +81,24 @@ export function staffAllowed(chatId: number | string, userId: number | string): 
   return users.length === 0 || users.includes(String(userId));
 }
 
+export function restaurantBotReady(): boolean {
+  return Boolean(botToken("restaurant"));
+}
+
+/**
+ * Какой бот пишет в этот чат.
+ *
+ * Карточку может переписать только тот бот, который её отправил, поэтому выбор
+ * зависит от чата, а не от заказа: группа ресторана — бот ресторана (если его
+ * токен задан), чат комплекса — общий бот. Без токена ресторана всё идёт через
+ * общий бот, как до появления отдельного.
+ */
+export function botFor(chatId: number | string): TgBot {
+  return restaurantBotReady() && ownRestaurantChats().includes(String(chatId)) ? "restaurant" : "staff";
+}
+
 export function telegramReady(): boolean {
-  return Boolean(process.env.TELEGRAM_STAFF_BOT_TOKEN?.trim());
+  return Boolean(botToken("staff") || botToken("restaurant"));
 }
 
 function adminLink(path: string): string | null {
@@ -246,7 +264,9 @@ async function settingsOrDefault(): Promise<RestaurantSettings> {
 
 async function sendAll(chats: string[], text: string, keyboard: InlineKeyboard) {
   const results = await Promise.all(
-    chats.map((chat) => sendMessage(chat, text, keyboard.length ? { reply_markup: { inline_keyboard: keyboard } } : {})),
+    chats.map((chat) =>
+      sendMessage(chat, text, { bot: botFor(chat), ...(keyboard.length ? { reply_markup: { inline_keyboard: keyboard } } : {}) }),
+    ),
   );
   return results
     .map((r, i) => {
@@ -324,7 +344,10 @@ export async function refreshOrderMessages(id: number, view: "main" | "cancel" =
     await Promise.all(
       targets.map((m) => {
         const kb = orderKeyboard(order, only ? view : "main");
-        return editMessageText(m.chat_id, m.message_id, text, kb.length ? { reply_markup: { inline_keyboard: kb } } : {});
+        return editMessageText(m.chat_id, m.message_id, text, {
+          bot: botFor(m.chat_id),
+          ...(kb.length ? { reply_markup: { inline_keyboard: kb } } : {}),
+        });
       }),
     );
   } catch (e) {
@@ -345,7 +368,10 @@ export async function refreshTableMessages(
     await Promise.all(
       targets.map((m) => {
         const kb = tableKeyboard(table, only ? view : "main");
-        return editMessageText(m.chat_id, m.message_id, text, kb.length ? { reply_markup: { inline_keyboard: kb } } : {});
+        return editMessageText(m.chat_id, m.message_id, text, {
+          bot: botFor(m.chat_id),
+          ...(kb.length ? { reply_markup: { inline_keyboard: kb } } : {}),
+        });
       }),
     );
   } catch (e) {

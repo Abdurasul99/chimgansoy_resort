@@ -4,6 +4,11 @@
  * Reads TELEGRAM_STAFF_BOT_TOKEN, TELEGRAM_WEBHOOK_SECRET and (optionally)
  * STAFF_BOT_WEBHOOK_URL from .env.local. No dependencies.
  *
+ * TELEGRAM_BOT=restaurant switches every command to the restaurant bot
+ * (TELEGRAM_RESTAURANT_BOT_TOKEN, webhook /api/telegram/restaurant). Its token
+ * lives only in the server's env file, so run it there:
+ *   TELEGRAM_BOT=restaurant node --env-file=/etc/chimgandarbaza.env scripts/telegram-setup.mjs set https://chimgansoy.com/api/telegram/restaurant
+ *
  * Usage (Windows / PowerShell):
  *   & 'C:\Program Files\nodejs\node.exe' .\scripts\telegram-setup.mjs set     https://chimgandarbaza.uz/api/telegram/staff
  *   & 'C:\Program Files\nodejs\node.exe' .\scripts\telegram-setup.mjs info
@@ -27,10 +32,17 @@ function env(name) {
   }
 }
 
-const TOKEN = env("TELEGRAM_STAFF_BOT_TOKEN");
-const SECRET = env("TELEGRAM_WEBHOOK_SECRET");
+const RESTAURANT = process.env.TELEGRAM_BOT === "restaurant";
+const TOKEN_VAR = RESTAURANT ? "TELEGRAM_RESTAURANT_BOT_TOKEN" : "TELEGRAM_STAFF_BOT_TOKEN";
+const TOKEN = env(TOKEN_VAR);
+const SECRET = (RESTAURANT && env("TELEGRAM_RESTAURANT_WEBHOOK_SECRET")) || env("TELEGRAM_WEBHOOK_SECRET");
 if (!TOKEN) {
-  console.error("✗ TELEGRAM_STAFF_BOT_TOKEN is not set in .env.local");
+  console.error(`✗ ${TOKEN_VAR} is not set`);
+  process.exit(1);
+}
+if (RESTAURANT && process.argv[2] === "set" && !SECRET) {
+  // The route refuses every request without a secret — the webhook would be dead.
+  console.error("✗ TELEGRAM_WEBHOOK_SECRET is not set");
   process.exit(1);
 }
 
@@ -56,7 +68,11 @@ switch (cmd) {
       // business_* are opt-in: Telegram withholds them unless they are listed
       // here, so the Business handler in staff-bot.ts stays dead code without
       // this line even after the account owner connects the bot.
-      allowed_updates: ["message", "callback_query", "business_connection", "business_message"],
+      // The restaurant bot needs my_chat_member to name a group's id the
+      // moment it is added there.
+      allowed_updates: RESTAURANT
+        ? ["message", "callback_query", "my_chat_member"]
+        : ["message", "callback_query", "business_connection", "business_message"],
       drop_pending_updates: true,
     });
     console.log(res.ok ? `✓ Webhook set → ${url}` : `✗ ${res.description}`);
@@ -100,6 +116,23 @@ switch (cmd) {
     break;
   }
   case "meta": {
+    if (RESTAURANT) {
+      const r1 = await api("setMyCommands", {
+        commands: [
+          { command: "id", description: "🆔 Номер этого чата — для подключения заказов" },
+          { command: "start", description: "🍽 Что умеет этот бот" },
+        ],
+      });
+      const r2 = await api("setMyShortDescription", {
+        short_description: "Служебный бот ресторана «Сазанчик» CHIMGAN DARBAZA: заказы и брони столов с сайта.",
+      });
+      const r3 = await api("setMyDescription", {
+        description:
+          "Служебный бот ресторана «Сазанчик»: присылает персоналу заказы и брони столов с сайта chimgandarbaza.uz.\n\nЗаказать еду или забронировать стол — на сайте, в разделе «Ресторан». Вопросы — @chimgandarbaza_bot.",
+      });
+      console.log("setMyCommands:", r1.ok, "| shortDescription:", r2.ok, "| description:", r3.ok);
+      break;
+    }
     // Bot profile polish: command list + descriptions (shown before /start).
     const commands = [
       { command: "start", description: "☰ Главное меню" },

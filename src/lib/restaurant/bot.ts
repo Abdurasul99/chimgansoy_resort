@@ -1,4 +1,4 @@
-import { answerCallbackQuery } from "@/lib/telegram";
+import { answerCallbackQuery, type TgBot } from "@/lib/telegram";
 import { CANCEL_REASONS, type OrderStatus, type TableStatus } from "./model";
 import {
   CANCEL_REASON_LABEL,
@@ -13,9 +13,11 @@ import { setOrderStatus, setTableStatus, type Actor } from "./store";
 /**
  * Кнопки статусов ресторана в Telegram.
  *
- * Вызывается из src/lib/staff-bot.ts ДО общего разбора кнопок: иначе
- * неизвестный там префикс «ro:» уходит в default и затирает карточку заказа
- * гостевым меню бота.
+ * Нажатие приходит тому боту, который прислал карточку: в группе ресторана —
+ * боту ресторана (src/lib/restaurant/bot-updates.ts), в чате комплекса —
+ * общему, где это вызывается из src/lib/staff-bot.ts ДО общего разбора кнопок:
+ * иначе неизвестный там префикс «ro:» уходит в default и затирает карточку
+ * заказа гостевым меню бота.
  */
 export type TgCallback = {
   id: string;
@@ -39,19 +41,21 @@ export function tgActorName(from: TgCallback["from"]): string {
 const PATTERN = /^r([ot]):(\d{1,12}):([a-z])(\d)?$/;
 
 /** true — это была кнопка ресторана, и она обработана (успешно или нет). */
-export async function handleRestaurantCallback(cq: TgCallback): Promise<boolean> {
+export async function handleRestaurantCallback(cq: TgCallback, bot: TgBot = "staff"): Promise<boolean> {
   if (!PATTERN.test(cq.data ?? "")) return false;
+  // Ответ на нажатие принимает только бот, которому оно пришло.
+  const answer = (text?: string) => answerCallbackQuery(cq.id, text, bot);
   try {
-    return await handle(cq);
+    return await handle(cq, answer);
   } catch (e) {
     // База не ответила — говорим об этом сразу, а не оставляем кнопку крутиться.
     console.error(`[restaurant] кнопка ${cq.data} не сработала:`, e);
-    await answerCallbackQuery(cq.id, "Не удалось — попробуйте ещё раз или откройте панель").catch(() => null);
+    await answer("Не удалось — попробуйте ещё раз или откройте панель").catch(() => null);
     return true;
   }
 }
 
-async function handle(cq: TgCallback): Promise<boolean> {
+async function handle(cq: TgCallback, answer: (text?: string) => Promise<unknown>): Promise<boolean> {
   const m = PATTERN.exec(cq.data ?? "");
   if (!m) return false;
   const [, kind, idRaw, code, idxRaw] = m;
@@ -59,7 +63,7 @@ async function handle(cq: TgCallback): Promise<boolean> {
 
   if (!cq.message || !staffAllowed(cq.message.chat.id, cq.from.id)) {
     console.warn(`[restaurant] кнопка ${cq.data} отклонена: чат ${cq.message?.chat.id}, пользователь ${cq.from.id}`);
-    await answerCallbackQuery(cq.id, "Нет доступа");
+    await answer("Нет доступа");
     return true;
   }
 
@@ -70,12 +74,12 @@ async function handle(cq: TgCallback): Promise<boolean> {
   if (kind === "o") {
     // Меню причин и возврат из него меняют только эту карточку.
     if (code === "x" && idx === null) {
-      await answerCallbackQuery(cq.id, "Выберите причину отмены");
+      await answer("Выберите причину отмены");
       await refreshOrderMessages(id, "cancel", here);
       return true;
     }
     if (code === "b") {
-      await answerCallbackQuery(cq.id);
+      await answer();
       await refreshOrderMessages(id, "main", here);
       return true;
     }
@@ -86,13 +90,12 @@ async function handle(cq: TgCallback): Promise<boolean> {
       reason = CANCEL_REASON_LABEL[CANCEL_REASONS[idx]];
     }
     if (!to) {
-      await answerCallbackQuery(cq.id, "Неизвестная кнопка");
+      await answer("Неизвестная кнопка");
       return true;
     }
     const res = await setOrderStatus(id, to, actor, reason);
     console.log(`[restaurant] заказ ${id} → ${to} (${res.ok ? "ок" : res.error}) · ${actor.name}`);
-    await answerCallbackQuery(
-      cq.id,
+    await answer(
       res.ok
         ? `Статус: ${ORDER_STATUS_LABEL[to]}`
         : res.error === "not_found"
@@ -105,12 +108,12 @@ async function handle(cq: TgCallback): Promise<boolean> {
 
   // Столы.
   if ((code === "x" || code === "n") && idx === null) {
-    await answerCallbackQuery(cq.id, code === "n" ? "Причина отказа?" : "Причина отмены?");
+    await answer(code === "n" ? "Причина отказа?" : "Причина отмены?");
     await refreshTableMessages(id, code === "n" ? "decline" : "cancel", here);
     return true;
   }
   if (code === "b") {
-    await answerCallbackQuery(cq.id);
+    await answer();
     await refreshTableMessages(id, "main", here);
     return true;
   }
@@ -121,13 +124,12 @@ async function handle(cq: TgCallback): Promise<boolean> {
     reason = TABLE_REASON_LABEL[TABLE_REASONS[idx]];
   }
   if (!to) {
-    await answerCallbackQuery(cq.id, "Неизвестная кнопка");
+    await answer("Неизвестная кнопка");
     return true;
   }
   const res = await setTableStatus(id, to, actor, reason);
   console.log(`[restaurant] стол ${id} → ${to} (${res.ok ? "ок" : res.error}) · ${actor.name}`);
-  await answerCallbackQuery(
-    cq.id,
+  await answer(
     res.ok
       ? `Статус: ${TABLE_STATUS_LABEL[to]}`
       : res.error === "not_found"

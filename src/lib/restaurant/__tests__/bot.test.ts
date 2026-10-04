@@ -9,6 +9,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const h = vi.hoisted(() => ({
   answer: vi.fn(async () => null),
   edit: vi.fn(async () => null),
+  send: vi.fn(async () => ({ message_id: 1 })),
   setOrderStatus: vi.fn(),
   setTableStatus: vi.fn(),
 }));
@@ -17,7 +18,7 @@ vi.mock("@/lib/telegram", async (orig) => ({
   ...(await orig<typeof import("@/lib/telegram")>()),
   answerCallbackQuery: h.answer,
   editMessageText: h.edit,
-  sendMessage: vi.fn(async () => ({ message_id: 1 })),
+  sendMessage: h.send,
 }));
 vi.mock("../store", () => ({
   setOrderStatus: h.setOrderStatus,
@@ -29,7 +30,8 @@ vi.mock("../store", () => ({
 }));
 
 const { handleRestaurantCallback, tgActorName } = await import("../bot");
-const { orderKeyboard, tableKeyboard, staffAllowed } = await import("../notify");
+const { botFor, orderKeyboard, tableKeyboard, staffAllowed } = await import("../notify");
+const { handleRestaurantUpdate } = await import("../bot-updates");
 
 const cq = (data: string, chat = -1001, user = 42) => ({
   id: "cb1",
@@ -51,7 +53,7 @@ afterEach(() => vi.unstubAllEnvs());
 describe("доступ к кнопкам", () => {
   it("чужой чат — «нет доступа», статус не меняется", async () => {
     expect(await handleRestaurantCallback(cq("ro:5:c", 999))).toBe(true);
-    expect(h.answer).toHaveBeenCalledWith("cb1", "Нет доступа");
+    expect(h.answer).toHaveBeenCalledWith("cb1", "Нет доступа", "staff");
     expect(h.setOrderStatus).not.toHaveBeenCalled();
   });
 
@@ -80,7 +82,7 @@ describe("статусы кнопками", () => {
   it("подтверждение пишет, кто нажал", async () => {
     await handleRestaurantCallback(cq("ro:5:c"));
     expect(h.setOrderStatus).toHaveBeenCalledWith(5, "confirmed", { name: "Азиз @aziz (tg 42)", via: "telegram" }, undefined);
-    expect(h.answer).toHaveBeenCalledWith("cb1", "Статус: Подтверждена");
+    expect(h.answer).toHaveBeenCalledWith("cb1", "Статус: Подтверждена", "staff");
   });
 
   it("отмена сначала спрашивает причину, потом отменяет с ней", async () => {
@@ -93,7 +95,7 @@ describe("статусы кнопками", () => {
   it("кто-то успел раньше — честно говорим, что уже изменено", async () => {
     h.setOrderStatus.mockResolvedValue({ ok: false, error: "race", current: "cooking" });
     await handleRestaurantCallback(cq("ro:5:r"));
-    expect(h.answer).toHaveBeenCalledWith("cb1", "Уже изменён: Готовится");
+    expect(h.answer).toHaveBeenCalledWith("cb1", "Уже изменён: Готовится", "staff");
   });
 
   it("стол: отказ — с причиной из своего списка", async () => {
@@ -104,7 +106,7 @@ describe("статусы кнопками", () => {
   it("база не ответила — кнопка получает ответ, а не крутится", async () => {
     h.setOrderStatus.mockRejectedValue(new Error("db down"));
     expect(await handleRestaurantCallback(cq("ro:5:c"))).toBe(true);
-    expect(h.answer).toHaveBeenCalledWith("cb1", expect.stringMatching(/Не удалось/));
+    expect(h.answer).toHaveBeenCalledWith("cb1", expect.stringMatching(/Не удалось/), "staff");
   });
 
   it("мусор в данных кнопки не проходит", async () => {
@@ -130,5 +132,58 @@ describe("клавиатуры", () => {
 
   it("имя сотрудника без фамилии и логина", () => {
     expect(tgActorName({ id: 7 })).toBe("Сотрудник (tg 7)");
+  });
+});
+
+describe("отдельный бот ресторана", () => {
+  it("группа ресторана — свой бот, чат комплекса — общий", () => {
+    vi.stubEnv("TELEGRAM_RESTAURANT_BOT_TOKEN", "1:r");
+    expect(botFor(-1001)).toBe("restaurant");
+    expect(botFor("555")).toBe("staff");
+  });
+
+  it("без токена ресторана всё идёт через общий бот, как раньше", () => {
+    vi.stubEnv("TELEGRAM_RESTAURANT_BOT_TOKEN", "");
+    expect(botFor(-1001)).toBe("staff");
+  });
+
+  it("нажатие в группе ресторана отвечает ботом ресторана", async () => {
+    await handleRestaurantUpdate({ callback_query: cq("ro:5:c") });
+    expect(h.setOrderStatus).toHaveBeenCalled();
+    expect(h.answer).toHaveBeenCalledWith("cb1", "Статус: Подтверждена", "restaurant");
+  });
+
+  it("чужая кнопка всё равно получает ответ — без смены статуса", async () => {
+    await handleRestaurantUpdate({ callback_query: cq("menu") });
+    expect(h.setOrderStatus).not.toHaveBeenCalled();
+    expect(h.answer).toHaveBeenCalledWith("cb1", undefined, "restaurant");
+  });
+
+  it("/id в новой группе называет её номер", async () => {
+    await handleRestaurantUpdate({ message: { chat: { id: -1002, type: "group" }, text: "/id@chimgandarbaza_restaurant_bot" } });
+    expect(h.send).toHaveBeenCalledWith(-1002, expect.stringContaining("<code>-1002</code>"), { bot: "restaurant" });
+  });
+
+  it("в подключённой группе /id говорит, что всё уже работает", async () => {
+    await handleRestaurantUpdate({ message: { chat: { id: -1001, type: "supergroup" }, text: "/id" } });
+    expect(h.send).toHaveBeenCalledWith(-1001, expect.stringContaining("подключён"), { bot: "restaurant" });
+  });
+
+  it("бота добавили в группу — он сам пишет номер", async () => {
+    await handleRestaurantUpdate({ my_chat_member: { chat: { id: -1003, type: "group" }, new_chat_member: { status: "member" } } });
+    expect(h.send).toHaveBeenCalledWith(-1003, expect.stringContaining("-1003"), { bot: "restaurant" });
+    h.send.mockClear();
+    await handleRestaurantUpdate({ my_chat_member: { chat: { id: -1003, type: "group" }, new_chat_member: { status: "left" } } });
+    expect(h.send).not.toHaveBeenCalled();
+  });
+
+  it("в группе на болтовню персонала молчит", async () => {
+    await handleRestaurantUpdate({ message: { chat: { id: -1001, type: "group" }, text: "кто на смене?" } });
+    expect(h.send).not.toHaveBeenCalled();
+  });
+
+  it("гостю в личке — куда идти за заказом", async () => {
+    await handleRestaurantUpdate({ message: { chat: { id: 7, type: "private" }, text: "хочу плов" } });
+    expect(h.send).toHaveBeenCalledWith(7, expect.stringContaining("/restaurant"), { bot: "restaurant" });
   });
 });

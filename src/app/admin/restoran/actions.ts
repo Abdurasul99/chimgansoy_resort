@@ -22,6 +22,7 @@ import {
 import { expireRestaurant } from "@/lib/restaurant/live";
 import {
   type NotifyResult,
+  botFor,
   notifyOrder,
   notifyTable,
   refreshOrderMessages,
@@ -152,7 +153,7 @@ export async function resendOrder(_prev: ActionState, form: FormData): Promise<A
     await requireRole(...ANY);
     const orderId = id(form);
     if (!orderId) return { error: "Неверные данные." };
-    if (!telegramReady()) return { error: "Бот не настроен: нет TELEGRAM_STAFF_BOT_TOKEN." };
+    if (!telegramReady()) return { error: "Бот не настроен: не задан токен Telegram." };
     const res = await notifyOrder(orderId);
     revalidatePath("/admin/restoran");
     return resendResult(res);
@@ -185,7 +186,7 @@ export async function resendTable(_prev: ActionState, form: FormData): Promise<A
     await requireRole(...ANY);
     const tableId = id(form);
     if (!tableId) return { error: "Неверные данные." };
-    if (!telegramReady()) return { error: "Бот не настроен: нет TELEGRAM_STAFF_BOT_TOKEN." };
+    if (!telegramReady()) return { error: "Бот не настроен: не задан токен Telegram." };
     const res = await notifyTable(tableId);
     revalidatePath("/admin/restoran/stoly");
     return resendResult(res);
@@ -495,11 +496,13 @@ export async function uploadHeroImage(_prev: ActionState, form: FormData): Promi
 export async function sendTestMessage(): Promise<ActionState> {
   try {
     await requireRole(...EDITORS);
-    if (!telegramReady()) return { error: "Бот не настроен: нет TELEGRAM_STAFF_BOT_TOKEN." };
+    if (!telegramReady()) return { error: "Бот не настроен: не задан токен Telegram." };
     const chats = restaurantChats(await store.readSettings());
     if (chats.length === 0) return { error: "Не задан ни TELEGRAM_RESTAURANT_CHAT_ID, ни TELEGRAM_ADMIN_CHAT_ID." };
     const results = await Promise.all(
-      chats.map((c) => sendMessage(c, "🍽 <b>Проверка связи</b>\nСюда будут приходить заказы и брони столов ресторана.")),
+      chats.map((c) =>
+        sendMessage(c, "🍽 <b>Проверка связи</b>\nСюда будут приходить заказы и брони столов ресторана.", { bot: botFor(c) }),
+      ),
     );
     const ok = results.filter(Boolean).length;
     return ok === chats.length
