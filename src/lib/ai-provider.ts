@@ -1,5 +1,5 @@
 /**
- * Кто отвечает гостю: xAI напрямую, а при отказе — через шлюз Vercel.
+ * Кто отвечает гостю.
  *
  * Оба ассистента — консьерж на сайте (app/api/chat) и телеграм-бот
  * (lib/staff-ai) — ходят сюда. Раньше у каждого был свой цикл перебора, и это
@@ -7,20 +7,21 @@
  * повторы и разбор ошибок живут в одном месте, а вызывающий получает готовый
  * ответ.
  *
- * ТРИ ПРОВАЙДЕРА, В ЭТОМ ПОРЯДКЕ
- *   1. Groq — api.groq.com, ключ GROQ_API_KEY, модель llama-3.1-8b-instant.
- *      Берёт на себя обычные вопросы: цены, услуги, часы, бронирование. Быстрая
- *      и бесплатная в рамках тарифа, поэтому стоит первой.
+ * ПРОВАЙДЕРЫ
+ *   1. Groq — api.groq.com, ключи GROQ_API_KEY и GROQ_API_KEY_2, модели
+ *      gpt-oss-20b (обычные вопросы) и gpt-oss-120b (расчёты). Бесплатно в
+ *      рамках тарифа: 8000 токенов в минуту НА КАЖДУЮ модель и каждый ключ.
  *   2. xAI напрямую — api.x.ai, ключ XAI_API_KEY. Платим xAI без посредника.
  *   3. Шлюз Vercel — ai-gateway.vercel.sh, ключ AI_GATEWAY_API_KEY. Та же
  *      модель Grok, но счёт идёт через Vercel.
  *
- * Groq участвует ТОЛЬКО в простых вопросах. Смету на группу 8b-модель не
- * потянет, и подсовывать её туда — это арифметика, за которую потом извиняется
- * администратор; расчёты сразу уходят к Grok.
+ * Вторая модель Groq стоит в цепочке как запас первой. Это не про качество, а
+ * про минутную квоту: вопрос с инструментом — два захода по ~6000 токенов, и
+ * второй упирается в лимит первой модели. С октября 2026 xAI не подключён, а
+ * шлюз отвечает 401 (аккаунт Vercel заблокирован), так что вне Groq запаса нет.
  *
  * Никакого grok.com, cookies и веб-сессий: только официальные API по ключу.
- * Все три ключа читаются из process.env на сервере и в браузер не попадают —
+ * Все ключи читаются из process.env на сервере и в браузер не попадают —
  * ни один не помечен NEXT_PUBLIC_.
  */
 
@@ -60,6 +61,8 @@ const GATEWAY_URL = "https://ai-gateway.vercel.sh/v1/chat/completions";
  * следующая замена модели не требовала деплоя.
  */
 const GROQ_MODEL_FAQ = process.env.GROQ_MODEL_FAQ?.trim() || "openai/gpt-oss-20b";
+/** Модель для расчётов — выбор оператора. У неё своя минутная квота. */
+const GROQ_MODEL_HARD = process.env.GROQ_MODEL_HARD?.trim() || "openai/gpt-oss-120b";
 
 const XAI_MODEL_FAQ = process.env.XAI_MODEL_FAQ?.trim() || "grok-4.1-fast-non-reasoning";
 const XAI_MODEL_HARD = process.env.XAI_MODEL_HARD?.trim() || "grok-4.1-fast-reasoning";
@@ -114,48 +117,43 @@ export function answerBudget(kind: AiKind): number {
   return kind === "hard" ? 2000 : FAQ_BUDGET;
 }
 
-/** Адресаты по порядку. Пустой ключ выпадает из цепочки молча. */
+/**
+ * Адресаты по порядку. Пустой ключ выпадает из цепочки молча.
+ *
+ *   faq:  Groq 20b → Groq 120b → xAI → шлюз
+ *   hard: xAI → Groq 120b → шлюз → Groq 20b
+ *
+ * Расчёт сначала идёт к сильной модели, а 20b — последний шанс ответить вместо
+ * телефона администратора. Внутри каждой модели — оба ключа Groq подряд.
+ */
 export function aiTargets(kind: AiKind = "faq"): AiTarget[] {
-  const out: AiTarget[] = [];
   const groqKey = process.env.GROQ_API_KEY?.trim();
   const groqKey2 = process.env.GROQ_API_KEY_2?.trim();
   const xaiKey = process.env.XAI_API_KEY?.trim();
   const gwKey = process.env.AI_GATEWAY_API_KEY?.trim();
 
-  // Только простые вопросы: 8b-модель хороша на «сколько стоит» и беспомощна
-  // на смете для группы из пятнадцати человек.
-  if (groqKey && kind === "faq") {
-    out.push({ label: "groq", url: GROQ_URL, key: groqKey, model: GROQ_MODEL_FAQ });
-  }
   /**
    * Второй аккаунт Groq — вторая минутная квота.
    *
    * Бесплатный тариф даёт 8000 токенов в минуту, а один вопрос вместе с
    * брифингом стоит около 5400. То есть второй вопрос в ту же минуту почти
-   * гарантированно получает 429 и уходит дальше по цепочке. Ключ второго
-   * аккаунта лежал в переменных окружения с 4 августа, но код его не читал —
-   * платная запасная модель включалась там, где хватило бы бесплатной.
+   * гарантированно получает 429 и уходит дальше по цепочке. Одинаковые ключи —
+   * это одна квота, а не две, поэтому второй такой же не добавляется.
    */
-  if (groqKey2 && groqKey2 !== groqKey && kind === "faq") {
-    out.push({ label: "groq-2", url: GROQ_URL, key: groqKey2, model: GROQ_MODEL_FAQ });
-  }
-  if (xaiKey) {
-    out.push({
-      label: "xai",
-      url: XAI_URL,
-      key: xaiKey,
-      model: kind === "hard" ? XAI_MODEL_HARD : XAI_MODEL_FAQ,
-    });
-  }
-  if (gwKey) {
-    out.push({
-      label: "gateway",
-      url: GATEWAY_URL,
-      key: gwKey,
-      model: kind === "hard" ? GW_MODEL_HARD : GW_MODEL_FAQ,
-    });
-  }
-  return out;
+  const groq = (model: string): AiTarget[] => [
+    ...(groqKey ? [{ label: "groq", url: GROQ_URL, key: groqKey, model }] : []),
+    ...(groqKey2 && groqKey2 !== groqKey ? [{ label: "groq-2", url: GROQ_URL, key: groqKey2, model }] : []),
+  ];
+  const xai: AiTarget[] = xaiKey
+    ? [{ label: "xai", url: XAI_URL, key: xaiKey, model: kind === "hard" ? XAI_MODEL_HARD : XAI_MODEL_FAQ }]
+    : [];
+  const gateway: AiTarget[] = gwKey
+    ? [{ label: "gateway", url: GATEWAY_URL, key: gwKey, model: kind === "hard" ? GW_MODEL_HARD : GW_MODEL_FAQ }]
+    : [];
+
+  return kind === "hard"
+    ? [...xai, ...groq(GROQ_MODEL_HARD), ...gateway, ...groq(GROQ_MODEL_FAQ)]
+    : [...groq(GROQ_MODEL_FAQ), ...groq(GROQ_MODEL_HARD), ...xai, ...gateway];
 }
 
 // ── разбор ответа ────────────────────────────────────────────────────────────
@@ -191,6 +189,17 @@ const CREDIT_WORDS =
   /credit|billing|balance|spend(ing)?[ _-]?limit|purchase|payment|insufficient|out of funds|top ?up/i;
 
 /**
+ * Лимит частоты, а не деньги — даже если в тексте есть «billing».
+ *
+ * Groq на минутный лимит отвечает «Rate limit reached … Please try again in
+ * 23.5s. Need more tokens? Upgrade … console.groq.com/settings/billing». Слово
+ * «billing» из ссылки делало каждый такой отказ «кончились кредиты»: без
+ * повтора, сразу к следующему — а следующих живых не было, и бот отвечал гостю
+ * «помощник недоступен» на вопрос, который через полминуты прошёл бы.
+ */
+const RATE_WORDS = /rate limit reached|rate_limit_exceeded|per minute|per day|try again in/i;
+
+/**
  * 404 бывает про разное, и разница существенная.
  *
  * «Модели нет у этого провайдера» — повод спросить следующего: у него она
@@ -224,7 +233,7 @@ export function classify(status: number, body: string): Verdict {
   // Слишком большой запрос: сначала урезаем контекст и пробуем ещё раз здесь же.
   if (status === 413) return "shrink";
 
-  if (status === 429) return CREDIT_WORDS.test(body) ? "credits" : "retry";
+  if (status === 429) return !RATE_WORDS.test(body) && CREDIT_WORDS.test(body) ? "credits" : "retry";
   if (status >= 500) return "fallback";
   return "fallback";
 }
@@ -257,31 +266,54 @@ function shrinkBody(body: Record<string, unknown>): Record<string, unknown> | nu
 }
 
 /**
- * Пауза перед повтором при 429.
- *
- * Уважаем Retry-After, если он есть: провайдер знает лучше. Иначе растущая
- * задержка. Потолок в три секунды — за этой чертой гость в чате решает, что
- * бот умер, и уходит; лучше ответить со шлюза.
+ * Сколько провайдер просит подождать: Retry-After, а без него — «try again in
+ * 23.5s» / «7m12s» из текста Groq. null — не сказал.
  */
-function backoffMs(attempt: number, retryAfter: string | null): number {
-  const told = Number(retryAfter) * 1000;
-  if (Number.isFinite(told) && told > 0) return Math.min(told, 3_000);
-  return Math.min(400 * 3 ** attempt, 3_000); // 400 мс → 1200 мс → 3000 мс
+export function retryAfterMs(header: string | null, body: string): number | null {
+  const told = Number(header) * 1000;
+  if (header && Number.isFinite(told) && told > 0) return told;
+  const m = /try again in\s+(?:(\d+)m)?\s*(?:([\d.]+)s)?/i.exec(body);
+  if (!m || (!m[1] && !m[2])) return null;
+  return Math.round((Number(m[1] ?? 0) * 60 + Number(m[2] ?? 0)) * 1000);
+}
+
+/**
+ * Дольше этого у одного провайдера не ждём — сразу идём к следующему.
+ *
+ * За этой чертой гость в чате решает, что бот умер; у следующего в цепочке
+ * (у Groq — другая модель со своей квотой) ответ, скорее всего, есть сейчас.
+ */
+const WAIT_NOW_MS = 3_000;
+
+/**
+ * Последний шанс: все отказали, но кто-то просил подождать не дольше этого.
+ *
+ * Минутная квота Groq восстанавливается за полминуты, и ответ через 20 секунд
+ * лучше, чем «помощник недоступен» и телефон. Дольше — уже нет: вебхук
+ * Telegram и гость на сайте ждут не бесконечно.
+ */
+const LAST_WAIT_MS = 25_000;
+
+/** Пауза перед повтором при 429 без подсказки провайдера: 400 мс → 1200 мс → 3000 мс. */
+function backoffMs(attempt: number): number {
+  return Math.min(400 * 3 ** attempt, WAIT_NOW_MS);
 }
 
 /**
  * Сколько раз повторять при 429, прежде чем уйти к следующему.
  *
- * У Groq — одна короткая попытка: он бесплатный и первый в очереди, ждать у
- * него дольше секунды незачем, за ним стоят двое платных. У xAI — две: там уже
- * заплачено, и вернуться к нему выгоднее, чем уходить на шлюз.
+ * У Groq — одна короткая попытка: за ним в цепочке его же вторая модель со
+ * своей квотой. У xAI — две: там уже заплачено, и вернуться к нему выгоднее,
+ * чем уходить на шлюз.
  *
  * Ни в одном случае это не «бесконечные повторы»: после исчерпания попыток
  * адресат меняется, а не опрашивается снова.
  */
 function maxRetriesFor(label: string): number {
-  return label === "groq" ? 1 : 2;
+  return label.startsWith("groq") ? 1 : 2;
 }
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /**
  * Кредиты у xAI кончились — не долбиться в него каждым запросом.
@@ -341,12 +373,20 @@ export async function askAi(
     return { ok: false, error: "no_keys" };
   }
 
+  // Почему отказал каждый — для администратора: «unavailable» без причин
+  // ничего не говорит человеку, который читает тревогу в Telegram.
+  const tried: string[] = [];
+  // Кто просил подождать, но недолго: к нему вернёмся, если не ответит никто.
+  let soonest: { target: AiTarget; payload: Record<string, unknown>; at: number } | null = null;
+
   for (const target of targets) {
+    const name = `${target.label} ${target.model.replace(/^.*\//, "")}`;
     // xAI на паузе из-за кредитов — не тратим на него время гостя.
     if (target.label === "xai" && Date.now() < xaiBlockedUntil) {
       console.warn(
         "[ai] xai пропущен: кредиты кончились, пауза до " + new Date(xaiBlockedUntil).toISOString(),
       );
+      tried.push(`${name}: пауза — кончились кредиты`);
       continue;
     }
 
@@ -362,6 +402,7 @@ export async function askAi(
         console.warn(
           `[ai] ${target.label} ${target.model} не ответил (${e instanceof Error ? e.name : e})`,
         );
+        tried.push(`${name}: не ответил`);
         break;
       }
 
@@ -388,28 +429,66 @@ export async function askAi(
         // Урезать больше нечего: дальше по цепочке, а если никто не возьмёт —
         // вызывающий получит too_large и покажет гостю телефон.
         console.error(`[ai] ${target.label} 413 и после урезания — идём к следующему`);
+        tried.push(`${name}: 413 запрос велик`);
         break;
       }
 
       if (verdict === "credits") {
         if (target.label === "xai") xaiBlockedUntil = Date.now() + CREDIT_PAUSE_MS;
-        console.error(`[ai] ${target.label}: кончились кредиты (${res.status}) — к следующему`);
+        console.error(`[ai] ${name}: кончились кредиты (${res.status}) — к следующему`);
+        tried.push(`${name}: ${res.status} кончились кредиты`);
         break;
       }
 
       if (res.status === 401 || res.status === 403) critical(target.label, res.status, detail);
 
-      if (verdict === "retry" && attempt < maxRetriesFor(target.label)) {
-        const wait = backoffMs(attempt, res.headers.get("retry-after"));
-        console.warn(`[ai] ${target.label} 429 (лимит частоты), повтор через ${wait} мс`);
-        await new Promise((r) => setTimeout(r, wait));
-        continue;
+      if (verdict === "retry") {
+        const told = retryAfterMs(res.headers.get("retry-after"), detail);
+        if (told === null && attempt < maxRetriesFor(target.label)) {
+          const wait = backoffMs(attempt);
+          console.warn(`[ai] ${name} 429 (лимит частоты), повтор через ${wait} мс`);
+          await sleep(wait);
+          continue;
+        }
+        if (told !== null && told <= WAIT_NOW_MS && attempt < maxRetriesFor(target.label)) {
+          console.warn(`[ai] ${name} 429 (лимит частоты), повтор через ${told} мс`);
+          await sleep(told);
+          continue;
+        }
+        // Ждать долго — к следующему, но запомнить: если откажут все, вернёмся сюда.
+        if (told !== null && told <= LAST_WAIT_MS && (!soonest || Date.now() + told < soonest.at)) {
+          soonest = { target, payload, at: Date.now() + told };
+        }
+        const after = told === null ? "" : `, просит подождать ${Math.ceil(told / 1000)} с`;
+        console.warn(`[ai] ${name} 429 (лимит частоты${after}) — к следующему`);
+        tried.push(`${name}: 429 лимит в минуту${after}`);
+        break;
       }
 
-      console.warn(`[ai] ${target.label} ${target.model} отдал ${res.status} — к следующему`);
+      console.warn(`[ai] ${name} отдал ${res.status} — к следующему`);
+      tried.push(`${name}: ${res.status}`);
       break;
     }
   }
 
-  return { ok: false, error: "unavailable" };
+  /**
+   * Никто не ответил сразу, но кто-то просил подождать недолго — ждём и
+   * спрашиваем его ещё раз. Так одна бесплатная квота Groq отвечает на вопрос
+   * с инструментом, второй заход которого не помещается в ту же минуту.
+   */
+  if (soonest) {
+    const { target, payload, at } = soonest;
+    const wait = Math.max(0, at - Date.now()) + 250;
+    console.warn(`[ai] все отказали — ждём ${target.label} ${target.model} ${wait} мс и пробуем ещё раз`);
+    await sleep(wait);
+    try {
+      const res = await post(target, payload, timeoutMs);
+      if (res.ok) return { ok: true, res, target };
+      tried.push(`${target.label} ${target.model.replace(/^.*\//, "")} после ожидания: ${res.status}`);
+    } catch (e) {
+      tried.push(`${target.label} после ожидания: ${e instanceof Error ? e.name : "ошибка"}`);
+    }
+  }
+
+  return { ok: false, error: "unavailable", detail: tried.join("; ").slice(0, 600) };
 }

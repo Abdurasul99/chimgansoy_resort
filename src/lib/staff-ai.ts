@@ -282,7 +282,7 @@ async function retryForText(kind: AiKind, messages: GroqMsg[]): Promise<string |
   return text || null;
 }
 
-export type GuestAiResult = { ok: true; text: string } | { ok: false; error: string };
+export type GuestAiResult = { ok: true; text: string } | { ok: false; error: string; detail?: string };
 
 // Short per-chat memory so follow-ups («а на воскресенье?») keep their context.
 // In-process only: survives while the lambda/process is warm, resets on cold
@@ -336,7 +336,7 @@ export async function answerGuestQuestion(
       const out = await callFirstAvailable(kind, messages, true);
       // Ошибку различаем по виду: bad_request чинит разработчик, unavailable —
       // это «все заняты». Администратору уйдёт именно этот код.
-      if (!out.ok) return { ok: false, error: out.error };
+      if (!out.ok) return { ok: false, error: out.error, detail: out.detail };
       const msg = ((await out.res.json()) as GroqResponse).choices?.[0]?.message;
       if (!msg) return { ok: false, error: "ai_empty" };
 
@@ -363,7 +363,7 @@ export async function answerGuestQuestion(
 
     // Tool budget exhausted — force a final answer from what's gathered.
     const out = await callFirstAvailable(kind, messages, false);
-    if (!out.ok) return { ok: false, error: out.error };
+    if (!out.ok) return { ok: false, error: out.error, detail: out.detail };
     const text = ((await out.res.json()) as GroqResponse).choices?.[0]?.message?.content?.trim();
     if (text) return finish(question, text, opts.chatId);
     const second = await retryForText(kind, messages);

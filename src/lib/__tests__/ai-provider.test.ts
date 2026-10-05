@@ -6,6 +6,7 @@ import {
   classify,
   isHardQuestion,
   resetXaiPause,
+  retryAfterMs,
   xaiPausedUntil,
 } from "../ai-provider";
 
@@ -32,28 +33,54 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-/** Отвечает по списку: [status, body] на каждый последующий запрос. */
-function mockSequence(steps: Array<[number, string?]>) {
+/** Отвечает по списку: [status, body, headers] на каждый последующий запрос. */
+function mockSequence(steps: Array<[number, string?, Record<string, string>?]>) {
   const seen: { url: string; model: string }[] = [];
   let i = 0;
   vi.stubGlobal(
     "fetch",
     vi.fn(async (url: string, init: RequestInit) => {
       seen.push({ url: String(url), model: JSON.parse(String(init.body)).model });
-      const [status, body = "{}"] = steps[Math.min(i++, steps.length - 1)];
-      return new Response(body, { status });
+      const [status, body = "{}", headers] = steps[Math.min(i++, steps.length - 1)];
+      return new Response(body, { status, headers });
     }),
   );
   return seen;
 }
 
+/** «groq:gpt-oss-20b» — кто и с какой моделью стоит в цепочке. */
+const chain = (kind: "faq" | "hard") => aiTargets(kind).map((t) => `${t.label}:${t.model.replace(/^.*\//, "")}`);
+
+/** Настоящий ответ Groq на минутный лимит (04.10.2026, проверено с сервера). */
+const GROQ_TPM =
+  '{"error":{"message":"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_x` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 5536, Requested 5599. Please try again in 23.5125s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing","type":"tokens","code":"rate_limit_exceeded"}}';
+
 describe("порядок провайдеров", () => {
-  it("простой вопрос: Groq → xAI → шлюз", () => {
-    expect(aiTargets("faq").map((t) => t.label)).toEqual(["groq", "xai", "gateway"]);
+  it("простой вопрос: Groq 20b → Groq 120b → xAI → шлюз", () => {
+    // Вторая модель Groq — запас первой: у неё своя минутная квота.
+    expect(chain("faq")).toEqual([
+      "groq:gpt-oss-20b",
+      "groq:gpt-oss-120b",
+      "xai:grok-4.1-fast-non-reasoning",
+      "gateway:grok-4.1-fast-non-reasoning",
+    ]);
   });
 
-  it("расчёт минует Groq: 8b-модель смету не потянет", () => {
-    expect(aiTargets("hard").map((t) => t.label)).toEqual(["xai", "gateway"]);
+  it("расчёт: сначала сильные модели, 20b — последний шанс вместо телефона", () => {
+    expect(chain("hard")).toEqual([
+      "xai:grok-4.1-fast-reasoning",
+      "groq:gpt-oss-120b",
+      "gateway:grok-4.1-fast-reasoning",
+      "groq:gpt-oss-20b",
+    ]);
+  });
+
+  it("без xAI и шлюза расчёт всё равно идёт в Groq, а не в никуда", () => {
+    // Так было с октября 2026: xAI не подключён, шлюз отвечает 401, а цепочка
+    // «hard» состояла только из них — каждый расчёт кончался «недоступен».
+    delete process.env.XAI_API_KEY;
+    delete process.env.AI_GATEWAY_API_KEY;
+    expect(chain("hard")).toEqual(["groq:gpt-oss-120b", "groq:gpt-oss-20b"]);
   });
 
   it("простой вопрос идёт в лёгкую модель Groq", () => {
@@ -69,7 +96,7 @@ describe("порядок провайдеров", () => {
 
   it("отсутствующий ключ просто выпадает из цепочки", () => {
     delete process.env.XAI_API_KEY;
-    expect(aiTargets("faq").map((t) => t.label)).toEqual(["groq", "gateway"]);
+    expect(aiTargets("faq").map((t) => t.label)).toEqual(["groq", "groq", "gateway"]);
   });
 
   it("ключи только серверные — ни один не NEXT_PUBLIC_", () => {
@@ -101,6 +128,12 @@ describe("разбор кодов ошибок", () => {
   it("429 сам по себе — это лимит частоты, а НЕ конец кредитов", () => {
     expect(classify(429, "Rate limit reached for requests per minute")).toBe("retry");
     expect(classify(429, "")).toBe("retry");
+  });
+
+  it("минутный лимит Groq со ссылкой на billing — всё равно лимит, не деньги", () => {
+    // Из-за слова «billing» в ссылке каждый такой отказ считался «кончились
+    // кредиты»: без повтора и сразу дальше, где живых не было.
+    expect(classify(429, GROQ_TPM)).toBe("retry");
   });
 
   it("429 со словами про деньги — кредиты", () => {
@@ -156,7 +189,7 @@ describe("askAi — что происходит на самом деле", () =>
     expect(seen).toHaveLength(1);
   });
 
-  it("429 у Groq: одна короткая попытка, потом следующий провайдер", async () => {
+  it("429 у Groq без подсказки: одна короткая попытка, потом следующая модель", async () => {
     vi.useFakeTimers();
     const seen = mockSequence([[429, "rate limit"], [429, "rate limit"], [200]]);
     const p = askAi("faq", { messages: [] });
@@ -164,30 +197,72 @@ describe("askAi — что происходит на самом деле", () =>
     const out = await p;
     vi.useRealTimers();
 
-    // groq, groq (повтор), затем xai — и никаких бесконечных повторов.
+    // 20b, 20b (повтор), затем 120b со своей квотой — и никаких бесконечных повторов.
+    expect(seen.map((s) => s.model)).toEqual(["openai/gpt-oss-20b", "openai/gpt-oss-20b", "openai/gpt-oss-120b"]);
+    expect(out.ok && out.target.model).toBe("openai/gpt-oss-120b");
+  });
+
+  it("Groq просит подождать 24 с — не ждём, сразу идём к его второй модели", async () => {
+    const seen = mockSequence([[429, GROQ_TPM, { "retry-after": "24" }], [200]]);
+    const started = Date.now();
+    const out = await askAi("faq", { messages: [] });
+    expect(Date.now() - started).toBeLessThan(1000);
+    expect(seen.map((s) => s.model)).toEqual(["openai/gpt-oss-20b", "openai/gpt-oss-120b"]);
+    expect(out.ok && out.target.model).toBe("openai/gpt-oss-120b");
+  });
+
+  it("отказали все, но Groq просил подождать недолго — ждём и получаем ответ", async () => {
+    // Случай из журнала 04.10.2026: вопрос «26 декабря» — второй заход после
+    // запроса в Exely не влез в минутную квоту, а шлюз Vercel отвечает 401.
+    delete process.env.XAI_API_KEY;
+    vi.useFakeTimers();
+    const seen = mockSequence([
+      [429, GROQ_TPM, { "retry-after": "20" }], // 20b
+      [429, GROQ_TPM, { "retry-after": "8" }], // 120b
+      [401, '{"error":{"type":"authentication_error"}}'], // шлюз
+      [200], // 120b после ожидания
+    ]);
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const p = askAi("faq", { messages: [] });
+    await vi.runAllTimersAsync();
+    const out = await p;
+    vi.useRealTimers();
+
+    expect(out.ok && out.target.model).toBe("openai/gpt-oss-120b");
     expect(seen.map((s) => new URL(s.url).host)).toEqual([
       "api.groq.com",
       "api.groq.com",
-      "api.x.ai",
+      "ai-gateway.vercel.sh",
+      "api.groq.com",
     ]);
-    expect(out.ok && out.target.label).toBe("xai");
+  });
+
+  it("просит ждать минуты — не ждём, честно отвечаем «недоступен» с причинами", async () => {
+    delete process.env.XAI_API_KEY;
+    delete process.env.AI_GATEWAY_API_KEY;
+    mockSequence([[429, "Rate limit reached on tokens per day (TPD). Please try again in 7m12s."]]);
+    const out = await askAi("faq", { messages: [] });
+    expect(out).toMatchObject({ ok: false, error: "unavailable" });
+    expect(!out.ok && out.detail).toContain("groq gpt-oss-20b: 429");
   });
 
   it("у xAI кончились кредиты — уходим на шлюз и не возвращаемся", async () => {
     const seen = mockSequence([
-      [500], // groq упал
+      [500], // groq 20b упал
+      [500], // groq 120b упал
       [429, "You have run out of credits, please purchase more"],
       [200], // шлюз
     ]);
     const out = await askAi("faq", { messages: [] });
     expect(out.ok && out.target.label).toBe("gateway");
-    expect(seen).toHaveLength(3);
+    expect(seen).toHaveLength(4);
     expect(xaiPausedUntil()).toBeGreaterThan(Date.now());
 
     // Следующий запрос xAI уже не трогает — деньги не появятся за секунду.
-    const again = mockSequence([[500], [200]]);
+    const again = mockSequence([[500], [500], [200]]);
     const out2 = await askAi("faq", { messages: [] });
     expect(again.map((s) => new URL(s.url).host)).toEqual([
+      "api.groq.com",
       "api.groq.com",
       "ai-gateway.vercel.sh",
     ]);
@@ -208,12 +283,16 @@ describe("askAi — что происходит на самом деле", () =>
       }),
     );
     const out = await askAi("faq", { messages: [] });
-    expect(out.ok && out.target.label).toBe("xai");
+    expect(out.ok && out.target.model).toBe("openai/gpt-oss-120b");
   });
 
-  it("никто не ответил — unavailable, вызывающий покажет телефон", async () => {
+  it("никто не ответил — unavailable с причинами, вызывающий покажет телефон", async () => {
     mockSequence([[500]]);
-    expect(await askAi("faq", { messages: [] })).toEqual({ ok: false, error: "unavailable" });
+    const out = await askAi("faq", { messages: [] });
+    expect(out).toMatchObject({ ok: false, error: "unavailable" });
+    expect(!out.ok && out.detail).toBe(
+      "groq gpt-oss-20b: 500; groq gpt-oss-120b: 500; xai grok-4.1-fast-non-reasoning: 500; gateway grok-4.1-fast-non-reasoning: 500",
+    );
   });
 
   it("400 останавливает перебор на первом же провайдере", async () => {
@@ -262,6 +341,21 @@ describe("askAi — что происходит на самом деле", () =>
   });
 });
 
+describe("сколько просят подождать", () => {
+  it("Retry-After в секундах — главнее текста", () => {
+    expect(retryAfterMs("24", GROQ_TPM)).toBe(24_000);
+  });
+
+  it("без заголовка — из текста Groq", () => {
+    expect(retryAfterMs(null, GROQ_TPM)).toBe(23_513);
+    expect(retryAfterMs(null, "Please try again in 7m12s.")).toBe(432_000);
+  });
+
+  it("не сказал — null", () => {
+    expect(retryAfterMs(null, "rate limit")).toBeNull();
+  });
+});
+
 describe("какой вопрос считается расчётом", () => {
   it("узнаёт смету", () => {
     for (const q of [
@@ -291,7 +385,7 @@ describe("второй аккаунт Groq — вторая минутная к�
     vi.stubEnv("XAI_API_KEY", "xai_ключ");
     vi.stubEnv("AI_GATEWAY_API_KEY", "gw_ключ");
 
-    expect(aiTargets("faq").map((t) => t.label)).toEqual(["groq", "groq-2", "xai", "gateway"]);
+    expect(aiTargets("faq").map((t) => t.label)).toEqual(["groq", "groq-2", "groq", "groq-2", "xai", "gateway"]);
   });
 
   it("одинаковые ключи не дублируются — это не две квоты, а одна", () => {
@@ -300,16 +394,22 @@ describe("второй аккаунт Groq — вторая минутная к�
     vi.stubEnv("XAI_API_KEY", "");
     vi.stubEnv("AI_GATEWAY_API_KEY", "");
 
-    expect(aiTargets("faq").map((t) => t.label)).toEqual(["groq"]);
+    expect(chain("faq")).toEqual(["groq:gpt-oss-20b", "groq:gpt-oss-120b"]);
   });
 
-  it("в расчётах второй ключ не участвует — там нужна модель посильнее", () => {
+  it("в расчётах оба ключа — сначала на большой модели", () => {
     vi.stubEnv("GROQ_API_KEY", "gsk_первый");
     vi.stubEnv("GROQ_API_KEY_2", "gsk_второй");
     vi.stubEnv("AI_GATEWAY_API_KEY", "gw_ключ");
     vi.stubEnv("XAI_API_KEY", "");
 
-    expect(aiTargets("hard").map((t) => t.label)).toEqual(["gateway"]);
+    expect(chain("hard")).toEqual([
+      "groq:gpt-oss-120b",
+      "groq-2:gpt-oss-120b",
+      "gateway:grok-4.1-fast-reasoning",
+      "groq:gpt-oss-20b",
+      "groq-2:gpt-oss-20b",
+    ]);
   });
 });
 
@@ -336,19 +436,9 @@ describe("бюджет ответа", () => {
 });
 
 describe("платный запас включается там, где бесплатный не справился", () => {
-  it("цепочка «hard» начинается мимо Groq — обоих ключей", () => {
-    // Пустой ответ от бесплатной модели означает, что вопрос ей не по
-    // бюджету. Просить её ещё раз — потратить квоту и получить ту же
-    // пустоту, поэтому повтор идёт по цепочке «hard».
-    vi.stubEnv("GROQ_API_KEY", "gsk_первый");
-    vi.stubEnv("GROQ_API_KEY_2", "gsk_второй");
-    vi.stubEnv("XAI_API_KEY", "");
-    vi.stubEnv("AI_GATEWAY_API_KEY", "gw_ключ");
-
-    const labels = aiTargets("hard").map((t) => t.label);
-    expect(labels).not.toContain("groq");
-    expect(labels).not.toContain("groq-2");
-    expect(labels).toContain("gateway");
+  it("расчёт начинается с платного Grok, если он подключён", () => {
+    vi.stubEnv("XAI_API_KEY", "xai_ключ");
+    expect(aiTargets("hard")[0].label).toBe("xai");
   });
 
   it("повтору дают больше места, чем первой попытке", () => {

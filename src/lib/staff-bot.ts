@@ -842,6 +842,7 @@ export async function handleGuestUpdate(update: TgUpdate): Promise<void> {
           [
             "⚠️ <b>ИИ-помощник не ответил гостю</b>",
             `Код: <code>${esc(ai.error)}</code>`,
+            ...(ai.detail ? [`Почему: ${esc(ai.detail)}`] : []),
             `Вопрос: ${esc(text.slice(0, 300))}`,
           ].join("\n"),
         ).catch(() => {});
