@@ -12,7 +12,8 @@ import {
   touristTax,
   tubingPricing,
 } from "@/content/pricing";
-import { stayNightBand, stayNightRates } from "@/content/pricing";
+import { lateCheckOutNote, stayNightBand, stayNightRates } from "@/content/pricing";
+import { faqItems } from "@/content/faq";
 import { policies } from "@/content/policies";
 import { promotions } from "@/content/promotions";
 import { rooms } from "@/content/rooms";
@@ -254,6 +255,13 @@ describe("stay rules — what the AI is briefed on", () => {
       // The two briefings word it differently — "ранний заезд" in the compact
       // one, "раннее заселение" in the full one — but both must say PAID.
       expect(text).toMatch(/(ранний заезд|раннее заселение) и поздний выезд платные/i);
+    });
+
+    it(`${name}() names the late check-out price approved on 05.10.2026`, () => {
+      // «50 % до 18:00, стоимость от суммы тарифа на день заезда» — Роман.
+      // Раньше брифинг запрещал называть сумму вовсе.
+      expect(text).toContain("до 18:00 — 50% тарифа на день заезда");
+      expect(text).not.toContain("${");
     });
 
     it(`${name}() carries the extra-person figures`, () => {
@@ -698,5 +706,20 @@ describe("прайс проживания по ночам — оператор, 
       stayNightRates.glamping.sunThu,
       stayNightRates.cottage.sunThu,
     ]);
+  });
+});
+
+describe("поздний выезд — Роман, 05.10.2026", () => {
+  it("одна фраза на трёх языках: до 18:00, 50 % тарифа на день заезда", () => {
+    expect(lateCheckOutNote.ru).toContain("до 18:00 — 50 % тарифа на день заезда");
+    expect(lateCheckOutNote.uz).toContain("18:00 gacha");
+    expect(lateCheckOutNote.en).toContain("until 18:00 costs 50% of the check-in day's rate");
+  });
+
+  it("вопросы перед поездкой называют её рядом с часами заезда и выезда", () => {
+    for (const locale of ["ru", "uz", "en"] as const) {
+      const all = faqItems().map((i) => i.answer[locale]).join("\n");
+      expect(all, locale).toContain(lateCheckOutNote[locale]);
+    }
   });
 });

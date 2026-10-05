@@ -503,6 +503,20 @@ export const earlyLateCheck = {
   nightArrivalHours: 22,
 } as const;
 
+const latePct = Math.round(earlyLateCheck.lateShare * 100);
+
+/**
+ * Поздний выезд — как его называют гостю. Утвердил Роман 05.10.2026: «50 % до
+ * 18:00, стоимость от суммы тарифа на день заезда». Одна фраза на страницы
+ * домиков, вопросы перед поездкой, консьержа и бота, чтобы цифра не разошлась.
+ * Оферта (п. 5.2.2) по просьбе оператора не тронута.
+ */
+export const lateCheckOutNote: LocalizedString = {
+  ru: `Поздний выезд до ${earlyLateCheck.lateFullAfter} — ${latePct} % тарифа на день заезда, при наличии свободных мест и по согласованию с администратором.`,
+  uz: `Kech chiqish ${earlyLateCheck.lateFullAfter} gacha — kirish kunidagi tarifning ${latePct}%, bo'sh joy bo'lsa va administrator bilan kelishilgan holda.`,
+  en: `Late check-out until ${earlyLateCheck.lateFullAfter} costs ${latePct}% of the check-in day's rate, subject to availability and agreed with the administrator.`,
+};
+
 /**
  * Отмена бронирования ПРОЖИВАНИЯ — оферта п. 6.4 и Политика возврата п. 2.1.
  *

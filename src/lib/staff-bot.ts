@@ -29,7 +29,7 @@ import { answerGuestQuestion } from "./staff-ai";
 import { getChimganWeather, t, weatherAdvice, weatherInfo } from "./bot-weather";
 import { checkAvailability } from "./exely";
 import { contacts } from "@/content/contacts";
-import { extraGuestPricing, parkingPricing, priceList, topchanPricing, tubingPricing } from "@/content/pricing";
+import { extraGuestPricing, lateCheckOutNote, parkingPricing, priceList, topchanPricing, tubingPricing } from "@/content/pricing";
 import { money } from "./venue-facts";
 import { ridesRu } from "./tariff";
 import { recentRequests, requestsByDate, storeConfigured, type StoredRequest } from "./requests-store";
@@ -311,7 +311,7 @@ async function renderPrices(): Promise<View> {
       `• Дети 0–${extraGuestPricing.freeThroughAge} лет — <b>бесплатно</b>`,
       `🚪 Гостевой визит в шале (без ночёвки) — <b>${money(live.extraGuest.guestVisitCottage)}</b>`,
       "",
-      "<i>Ранний заезд и поздний выезд — за доплату, по загрузке. С иностранных гостей при заселении взимается туристский сбор по действующей ставке.</i>",
+      `<i>${lateCheckOutNote.ru} Ранний заезд — за доплату, по загрузке. С иностранных гостей при заселении взимается туристский сбор по действующей ставке.</i>`,
     ].join("\n"),
     keyboard: [
       [
