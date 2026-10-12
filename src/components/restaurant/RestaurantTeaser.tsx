@@ -9,9 +9,9 @@ import { RestIcon } from "./RestIcon";
 
 /**
  * Врезка «Ресторан» на страницах сайта комплекса — там, где гость ищет еду
- * (страница «Кухня и меню»). Показывается, только когда раздел открыт или в
- * анонсе: скрытый ресторан ссылкой не выдаём. Вид — карточка заведения из
- * приложения доставки: фото, название, одна кнопка.
+ * (страница «Кухня и меню»). Показывается, только когда раздел виден гостям:
+ * скрытый ресторан ссылкой не выдаём. Вид — карточка заведения из приложения
+ * доставки: фото, название, одна кнопка.
  */
 export async function RestaurantTeaser({ locale }: { locale: Locale }) {
   const settings = await getRestaurantSettings();
@@ -29,10 +29,10 @@ export async function RestaurantTeaser({ locale }: { locale: Locale }) {
         <div className="min-w-0 flex-1">
           <p className="text-[13px] text-[#8c8c8c]">{t.eyebrow}</p>
           <p className="mt-0.5 truncate text-2xl font-bold text-[#1c1c1c]">{name}</p>
-          <p className="mt-1 line-clamp-2 text-sm text-[#6b6b6b]">{t.actions.menu.text}</p>
+          <p className="mt-1 line-clamp-2 text-sm text-[#6b6b6b]">{t.teaser.text}</p>
         </div>
         <span className="hidden h-11 shrink-0 items-center gap-2 rounded-2xl bg-[#f4a52a] px-5 text-sm font-bold text-[#3b2a0a] sm:inline-flex">
-          {t.actions.menu.title}
+          {t.teaser.title}
           <RestIcon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
         </span>
       </Link>

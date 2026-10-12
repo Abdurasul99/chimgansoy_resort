@@ -233,11 +233,6 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
               ? { href: "/restaurant", label: { ru: restaurantCopy.ru.navLabel, uz: restaurantCopy.uz.navLabel, en: restaurantCopy.en.navLabel } }
               : null
           }
-          restaurantLabels={{
-            cart: restaurantCopy[locale as Locale].menu.viewCart,
-            menu: restaurantCopy[locale as Locale].menu.title,
-            table: restaurantCopy[locale as Locale].tables.eyebrow,
-          }}
         />
         <main id="main">{children}</main>
         {/* Footer + FAQ widget hidden on /bron (Exely: no distractions on the
@@ -270,16 +265,11 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
               src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}
               strategy="afterInteractive"
             />
-            {/* Страница статуса заказа ресторана — секретная ссылка: её адрес и
-                содержимое в аналитику не уходят. Проверка — indexOf, а не
-                регулярное выражение: в шаблонной строке обратные слэши
-                пропадают, и выражение со слэшами становилось комментарием
-                «//», который ломал весь скрипт. */}
             <Script id="ga4-init" strategy="afterInteractive">{`
               window.dataLayer=window.dataLayer||[];
               function gtag(){dataLayer.push(arguments);}
               gtag('js',new Date());
-              if(location.pathname.indexOf("/restaurant/order/")<0){gtag('config','${GA4_ID}',{send_page_view:true});}
+              gtag('config','${GA4_ID}',{send_page_view:true});
             `}</Script>
           </>
         )}

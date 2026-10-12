@@ -2,9 +2,8 @@
 
 import { useActionState, type ReactNode } from "react";
 import type { AdminRole } from "@/lib/admin-auth";
-import type { OrderMode, RestaurantSettings } from "@/lib/restaurant/model";
-import { MODE_LABEL } from "@/lib/restaurant/labels";
-import { previewLink, saveRestaurantSettings, sendTestMessage, uploadHeroImage, type ActionState } from "../actions";
+import type { RestaurantSettings } from "@/lib/restaurant/model";
+import { previewLink, saveRestaurantSettings, uploadHeroImage, type ActionState } from "../actions";
 import { useKeptForm } from "../form-hooks";
 import { PhotoInput } from "../PhotoInput";
 import { Result, field, labelText, lineBtn, linkBtn, saveBtn } from "../ui";
@@ -19,26 +18,14 @@ const STATES: { value: RestaurantSettings["state"]; title: string; text: string 
   {
     value: "hidden",
     title: "Скрыт",
-    text: "Ресторана нет в меню и в поиске, заказы закрыты. Страница открывается по прямой ссылке chimgandarbaza.uz/restaurant — для рекламы и QR; тестовый заказ — через предпросмотр.",
-  },
-  {
-    value: "announce",
-    title: "Анонс",
-    text: "Страницы и меню видны гостям, пункт «Ресторан» есть в меню сайта. Заказы и брони столов с сайта закрыты.",
+    text: "Ресторана нет в меню сайта и в поиске. Страница открывается только по прямой ссылке chimgandarbaza.uz/restaurant — для рекламы и QR.",
   },
   {
     value: "open",
-    title: "Работает",
-    text: "Принимаются заказы по включённым ниже способам и брони столов.",
+    title: "Виден на сайте",
+    text: "Пункт «Ресторан» есть в меню сайта, меню и фото видны всем.",
   },
 ];
-
-const MODE_HINT: Record<OrderMode, string> = {
-  takeaway: "гость забирает сам",
-  delivery: "вне комплекса — зону и стоимость подтверждает менеджер",
-  room: "в A-frame и Chalet, проживание сверяет сотрудник",
-  preorder: "к визиту в зал — включать после согласования регламента кухни",
-};
 
 function Section({ title, hint, children }: { title: string; hint?: string; children: ReactNode }) {
   return (
@@ -86,21 +73,9 @@ function Localized({
   );
 }
 
-function Check({ name, label, hint, defaultChecked }: { name: string; label: string; hint?: string; defaultChecked: boolean }) {
-  return (
-    <label className="flex cursor-pointer items-start gap-3">
-      <input type="checkbox" name={name} defaultChecked={defaultChecked} className="mt-0.5 h-5 w-5 shrink-0 accent-[var(--sun)]" />
-      <span className="text-sm text-[var(--ink)]">
-        <b>{label}</b>
-        {hint && <span className="text-[var(--muted)]"> — {hint}</span>}
-      </span>
-    </label>
-  );
-}
-
 /**
- * Настройки ресторана. Всё, что ТЗ (п. 8) требует менять без программиста:
- * название, тексты, часы, контакты, способы заказа, сборы и баннер открытия.
+ * Настройки ресторана — всё, что меняется без программиста: видимость,
+ * название, тексты, часы, контакты и строка-объявление.
  */
 export function SettingsForm({ settings, role }: { settings: RestaurantSettings; role: AdminRole }) {
   const { state, pending, onSubmit, ref } = useKeptForm(saveRestaurantSettings);
@@ -112,7 +87,7 @@ export function SettingsForm({ settings, role }: { settings: RestaurantSettings;
         title="Видимость раздела"
         hint={owner ? "Показывать ли ресторан гостям сайта." : "Открывает раздел для гостей администратор сайта."}
       >
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-2">
           {STATES.map((s) => (
             <label
               key={s.value}
@@ -137,11 +112,11 @@ export function SettingsForm({ settings, role }: { settings: RestaurantSettings;
         </div>
       </Section>
 
-      <Section title="Название и тексты" hint="Публичное название утверждают обе стороны. Баннер — для «Открытие 10 октября», «Сегодня кухня до 20:00».">
+      <Section title="Название и тексты" hint="Публичное название утверждают обе стороны. Строка-объявление — для «Открытие 10 октября», «Сегодня кухня до 20:00».">
         <Localized name="name" label="Название ресторана" value={settings.name} required />
         <Localized name="tagline" label="Подзаголовок" value={settings.tagline} />
         <Localized name="about" label="О ресторане" value={settings.about} area />
-        <Localized name="announcement" label="Баннер на первом экране" value={settings.announcement} />
+        <Localized name="announcement" label="Строка-объявление над меню" value={settings.announcement} />
       </Section>
 
       <Section title="Часы и контакты">
@@ -156,8 +131,7 @@ export function SettingsForm({ settings, role }: { settings: RestaurantSettings;
           </label>
         </div>
         <p className="text-xs text-[var(--muted)]">
-          Без часов сайт не пишет «открыто сейчас», а время заказа предлагает с 08:00 до 23:30. Кухня за полночь —
-          закрытие меньше открытия, например 12:00–02:00.
+          Без часов сайт не пишет «открыто сейчас». Кухня за полночь — закрытие меньше открытия, например 12:00–02:00.
         </p>
         <label className="block">
           <span className={labelText}>Телефоны ресторана (через запятую)</span>
@@ -177,40 +151,6 @@ export function SettingsForm({ settings, role }: { settings: RestaurantSettings;
             <input name="telegram" type="url" defaultValue={settings.telegram} placeholder="https://t.me/…" className={field} />
           </label>
         </div>
-      </Section>
-
-      <Section title="Приём заказов" hint="Выключенный способ пропадает из оформления; меню и цены остаются видны.">
-        <div className="space-y-3">
-          {(Object.keys(MODE_LABEL) as OrderMode[]).map((m) => (
-            <Check key={m} name={`mode_${m}`} label={MODE_LABEL[m]} hint={MODE_HINT[m]} defaultChecked={settings.modes[m]} />
-          ))}
-          <Check name="tables" label="Брони столов" hint="форма заявки на стол" defaultChecked={settings.tables} />
-        </div>
-        <div className="grid gap-4 sm:grid-cols-3">
-          <label className="block">
-            <span className={labelText}>Сбор за доставку, сум</span>
-            <input name="deliveryFee" inputMode="numeric" defaultValue={settings.deliveryFee ?? ""} placeholder="пусто — уточнит менеджер" className={field} />
-          </label>
-          <label className="block">
-            <span className={labelText}>Подача в номер, сум</span>
-            <input name="roomFee" inputMode="numeric" defaultValue={settings.roomFee ?? ""} placeholder="пусто — уточнит менеджер" className={field} />
-          </label>
-          <label className="block">
-            <span className={labelText}>Предзаказ, часов заранее</span>
-            <input name="preorderLeadHours" type="number" min={1} max={168} defaultValue={settings.preorderLeadHours} className={field} />
-          </label>
-        </div>
-        <p className="text-xs text-[var(--muted)]">
-          Пока сбор не утверждён, оставьте поле пустым: корзина напишет «стоимость подтвердит менеджер», а не
-          придуманную сумму. 0 — бесплатно.
-        </p>
-        <Localized name="deliveryNote" label="Зона и условия доставки — для гостя" value={settings.deliveryNote} />
-        <Check
-          name="notifyHotel"
-          label="Дублировать заказы в чат комплекса"
-          hint="если у ресторана своя группа, копия уйдёт и в TELEGRAM_ADMIN_CHAT_ID"
-          defaultChecked={settings.notifyHotel}
-        />
       </Section>
 
       <div className="sticky bottom-0 z-10 -mx-5 flex flex-wrap items-center gap-4 border-t border-[color:var(--line)] bg-[var(--surface)]/95 px-5 py-4 backdrop-blur">
@@ -252,18 +192,6 @@ export function HeroPhoto({ url }: { url: string }) {
         </div>
       </div>
     </div>
-  );
-}
-
-export function TelegramTools() {
-  const [st, send, sending] = useActionState<ActionState>(sendTestMessage, {});
-  return (
-    <form action={send} className="flex flex-wrap items-center gap-3">
-      <button type="submit" disabled={sending} className={lineBtn}>
-        {sending ? "Отправляем…" : "Отправить проверочное сообщение"}
-      </button>
-      <Result state={st} pending={sending} className="" />
-    </form>
   );
 }
 

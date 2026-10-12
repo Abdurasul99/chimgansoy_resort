@@ -3,51 +3,29 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Locale } from "@/i18n/config";
 import { restaurantText } from "@/content/restaurant";
-import { setCartMode, useCart } from "@/lib/restaurant/cart";
-import type { Category, Dish, OrderMode, RestaurantSettings } from "@/lib/restaurant/model";
-import { dishVisibleIn, pickText } from "@/lib/restaurant/rules";
-import { CartBar, CartPanel } from "./CartBar";
+import type { Category, Dish } from "@/lib/restaurant/model";
+import { pickText } from "@/lib/restaurant/rules";
 import { DishCard } from "./DishCard";
-import { RestIcon, type RestIconName } from "./RestIcon";
-
-const MODE_ICON: Record<OrderMode, RestIconName> = {
-  takeaway: "takeaway",
-  delivery: "delivery",
-  room: "room",
-  preorder: "table",
-};
+import { RestIcon } from "./RestIcon";
 
 const OTHER: Record<Locale, string> = { ru: "Ещё", uz: "Yana", en: "More" };
 
 /**
- * Витрина ресторана — по привычной схеме приложений доставки (Яндекс Еда,
- * Wolt, Uzum Tezkor): способ получения сверху, разделы слева, блюда сеткой
- * в центре, корзина справа. На телефоне разделы — липкая лента, корзина —
- * полоса внизу. Гость знает эту раскладку и ничему не учится.
- *
- * Способ получения фильтрует меню (ТЗ, п. 3: «фильтры должны исключать
- * неподходящие блюда») — в режиме «В номер» гость не увидит блюд, которые в
- * домик не носят, и не узнает о запрете только на оформлении. Выбор
- * запоминается в корзине и переносится в оформление.
+ * Меню ресторана — по привычной схеме приложений доставки (Яндекс Еда, Wolt,
+ * Uzum Tezkor): разделы слева, блюда сеткой. На телефоне разделы — липкая
+ * лента. Гость знает эту раскладку и ничему не учится. Корзины нет: с
+ * 12.10.2026 сайт показывает меню, а не принимает заказы.
  */
 export function MenuBrowser({
   locale,
   categories,
   dishes,
-  openModes,
-  initialMode,
-  fees,
 }: {
   locale: Locale;
   categories: Category[];
   dishes: Dish[];
-  openModes: OrderMode[];
-  initialMode: OrderMode | null;
-  fees: Pick<RestaurantSettings, "deliveryFee" | "roomFee">;
 }) {
   const t = restaurantText(locale);
-  const cart = useCart();
-  const orderable = openModes.length > 0;
   const [query, setQuery] = useState("");
   // На телефоне поиск — лупа в ленте разделов: поле рядом с разделами
   // не помещалось и обрезало подсказку до «Найти бл».
@@ -57,21 +35,13 @@ export function MenuBrowser({
   const sectionRefs = useRef<Map<string, HTMLElement>>(new Map());
   const menuTop = useRef<HTMLDivElement>(null);
 
-  // Способ из ссылки (?mode=room) важнее запомненного: гость только что
-  // сказал, чего хочет.
-  useEffect(() => {
-    if (initialMode && openModes.includes(initialMode)) setCartMode(initialMode);
-  }, [initialMode, openModes]);
-
-  const mode = cart.mode && openModes.includes(cart.mode) ? cart.mode : null;
-
   const sections = useMemo(() => {
     const q = query.trim().toLowerCase();
     const match = (d: Dish) =>
       !q ||
       pickText(d.title, locale).toLowerCase().includes(q) ||
       pickText(d.description, locale).toLowerCase().includes(q);
-    const visible = dishes.filter((d) => dishVisibleIn(d, mode) && match(d));
+    const visible = dishes.filter((d) => d.state === "published" && match(d));
     const known = new Set(categories.map((c) => c.id));
     const out = categories
       .map((c) => ({ key: `c${c.id}`, title: pickText(c.title, locale), items: visible.filter((d) => d.categoryId === c.id) }))
@@ -79,7 +49,7 @@ export function MenuBrowser({
     const rest = visible.filter((d) => d.categoryId === null || !known.has(d.categoryId));
     if (rest.length) out.push({ key: "other", title: OTHER[locale], items: rest });
     return out;
-  }, [categories, dishes, mode, query, locale]);
+  }, [categories, dishes, query, locale]);
 
   // Подсветка раздела по мере прокрутки.
   useEffect(() => {
@@ -119,17 +89,9 @@ export function MenuBrowser({
     else window.scrollTo({ top: target, behavior: "smooth" });
   };
 
-  const preorderOpen = openModes.includes("preorder");
   const hasMenu = dishes.length > 0;
-  // Колонки на компьютере: разделы и корзина — только когда есть меню. Корзина
-  // ещё и при открытых заказах: пустая корзина рядом с пустым меню — лишняя
-  // рамка, положить в неё нечего. Закрытые заказы объясняет плашка над витриной.
-  const showCart = orderable && hasMenu;
-  const cols = hasMenu
-    ? showCart
-      ? "lg:grid-cols-[12.5rem_minmax(0,1fr)_20rem] xl:grid-cols-[13.5rem_minmax(0,1fr)_21.5rem]"
-      : "lg:grid-cols-[12.5rem_minmax(0,1fr)]"
-    : "";
+  // Колонка разделов на компьютере — только когда есть меню.
+  const cols = hasMenu ? "lg:grid-cols-[12.5rem_minmax(0,1fr)]" : "";
 
   const searchField = (autoFocus: boolean) => (
     <label className="relative flex min-w-0 items-center">
@@ -171,17 +133,6 @@ export function MenuBrowser({
       )}
 
       <div ref={menuTop} className="min-w-0">
-        {/* Способ получения — как «Доставка / Самовывоз» в приложениях. */}
-        {orderable && hasMenu && openModes.length > 1 && (
-          <div className="rest-chips -mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-            <ModeChip on={!mode} onClick={() => setCartMode(null)} label={t.menu.all} icon="menu" />
-            {openModes.map((m) => (
-              <ModeChip key={m} on={mode === m} onClick={() => setCartMode(m)} label={t.modes[m].title} icon={MODE_ICON[m]} />
-            ))}
-          </div>
-        )}
-        {mode && hasMenu && <p className="mt-2 text-[13px] text-[#8c8c8c]">{t.modes[mode].hint}</p>}
-
         {!hasMenu ? (
           <div className="rounded-3xl bg-[#f6f5f2] px-6 py-16 text-center">
             <RestIcon name="cloche" className="mx-auto h-12 w-12 text-[#cdc5b8]" />
@@ -235,7 +186,7 @@ export function MenuBrowser({
             </div>
 
             {sections.length === 0 ? (
-              <p className="mt-10 text-center text-base text-[#8c8c8c]">{query.trim() ? t.menu.nothingFound : t.menu.emptyFiltered}</p>
+              <p className="mt-10 text-center text-base text-[#8c8c8c]">{t.menu.nothingFound}</p>
             ) : (
               sections.map((s, i) => (
                 <section
@@ -250,7 +201,7 @@ export function MenuBrowser({
                   <h2 className="text-xl font-bold text-[#1c1c1c] sm:text-2xl">{s.title}</h2>
                   <div className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3">
                     {s.items.map((d) => (
-                      <DishCard key={d.id} dish={d} locale={locale} orderable={orderable} preorderOpen={preorderOpen} mode={mode} />
+                      <DishCard key={d.id} dish={d} locale={locale} />
                     ))}
                   </div>
                 </section>
@@ -259,31 +210,6 @@ export function MenuBrowser({
           </>
         )}
       </div>
-
-      {/* Справа — корзина. */}
-      {showCart && (
-        <aside className="rest-side sticky hidden lg:block">
-          <CartPanel locale={locale} dishes={dishes} fees={fees} />
-        </aside>
-      )}
-
-      {showCart && <CartBar locale={locale} dishes={dishes} />}
     </div>
-  );
-}
-
-function ModeChip({ on, onClick, label, icon }: { on: boolean; onClick: () => void; label: string; icon: RestIconName }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={on}
-      className={`btn-press inline-flex h-10 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-semibold transition-colors ${
-        on ? "bg-[#1c1c1c] text-white" : "bg-[#f6f5f2] text-[#1c1c1c] hover:bg-[#ecebe7]"
-      }`}
-    >
-      <RestIcon name={icon} className="h-4 w-4" />
-      {label}
-    </button>
   );
 }

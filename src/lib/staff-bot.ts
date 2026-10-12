@@ -14,7 +14,6 @@
  * serverless (Vercel) with no session store.
  */
 
-import { handleRestaurantCallback } from "@/lib/restaurant/bot";
 import {
   answerCallbackQuery,
   editMessageText,
@@ -630,8 +629,7 @@ type TgUpdate = {
   };
   callback_query?: {
     id: string;
-    // Имя и логин — для истории заказов ресторана: «кто подтвердил».
-    from: { id: number; first_name?: string; last_name?: string; username?: string };
+    from: { id: number };
     data?: string;
     message?: { chat: { id: number }; message_id: number };
   };
@@ -730,10 +728,6 @@ export async function handleGuestUpdate(update: TgUpdate): Promise<void> {
   // Callback (button taps) — edit the message in place (photos are special).
   if (update.callback_query) {
     const cq = update.callback_query;
-    // Кнопки статусов ресторана («ro:», «rt:») — раньше общего разбора: там
-    // незнакомый префикс уходит в default и затирает карточку заказа
-    // гостевым меню. Доступ проверяется внутри — бот публичный.
-    if (await handleRestaurantCallback(cq)) return;
     await answerCallbackQuery(cq.id);
     if (!cq.message) return;
     if ((cq.data || "") === "photos") {

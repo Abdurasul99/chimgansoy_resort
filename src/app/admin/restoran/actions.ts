@@ -2,36 +2,21 @@
 
 import { revalidatePath } from "next/cache";
 import sharp from "sharp";
-import { actorName, requireRole, type AdminSession } from "@/lib/admin-auth";
+import { actorName, requireRole } from "@/lib/admin-auth";
 import { del, put } from "@/lib/blob-store";
-import { sendMessage } from "@/lib/telegram";
 import type { LocalizedString } from "@/content/types";
 import {
   AVAILABILITY,
   DISH_STATES,
-  ORDER_MODES,
-  ORDER_STATUSES,
+  GALLERY_MAX,
   RESTAURANT_STATES,
-  TABLE_STATUSES,
   type Availability,
   type DishState,
-  type OrderStatus,
   type RestaurantSettings,
-  type TableStatus,
 } from "@/lib/restaurant/model";
 import { expireRestaurant } from "@/lib/restaurant/live";
-import {
-  type NotifyResult,
-  botFor,
-  notifyOrder,
-  notifyTable,
-  refreshOrderMessages,
-  refreshTableMessages,
-  restaurantChats,
-  telegramReady,
-} from "@/lib/restaurant/notify";
 import { LINK_TTL_MS, signPreview } from "@/lib/restaurant/preview";
-import { normalizeChannels, normalizeSettings, toMinutes } from "@/lib/restaurant/rules";
+import { normalizeSettings, toMinutes } from "@/lib/restaurant/rules";
 import * as store from "@/lib/restaurant/store";
 
 /**
@@ -39,8 +24,8 @@ import * as store from "@/lib/restaurant/store";
  *
  * Права — в каждом действии, а не только в layout (layout не защищает
  * server action):
- *   • заказы и столы — владелец, менеджер ресторана и сотрудник;
- *   • меню и настройки — владелец и менеджер;
+ *   • наличие блюда — владелец, менеджер ресторана и сотрудник;
+ *   • остальное меню, настройки и фото — владелец и менеджер;
  *   • показать раздел гостям (state) — только владелец: это решение о сайте
  *     комплекса, а не о ресторане.
  */
@@ -58,141 +43,6 @@ const id = (f: FormData, k = "id") => {
 function fail(e: unknown): ActionState {
   const msg = e instanceof Error ? e.message : String(e);
   return { error: msg === "Not authorised" ? "Нет прав на это действие." : `Не получилось: ${msg}` };
-}
-
-function actor(s: AdminSession): store.Actor {
-  return { name: actorName(s), via: "admin" };
-}
-
-const ERR_TEXT: Record<string, string> = {
-  not_found: "Не найдено.",
-  transition: "Из текущего статуса так нельзя — обновите страницу.",
-  race: "Статус уже изменили — обновите страницу.",
-  reason: "Укажите причину.",
-};
-
-function resendResult(res: NotifyResult): ActionState {
-  if (res === "sent") return { ok: "Отправлено в Telegram." };
-  if (res === "already") return { ok: "Уже доставлено." };
-  if (res === "busy") return { ok: "Отправляется прямо сейчас — обновите страницу через минуту." };
-  if (res === "partial") return { error: "Дошло не во все чаты — проверьте, что бот есть в группе ресторана." };
-  return { error: "Telegram не принял сообщение — проверьте чат и бота." };
-}
-
-// ─── Заказы ────────────────────────────────────────────────────────────────
-
-export async function changeOrderStatus(_prev: ActionState, form: FormData): Promise<ActionState> {
-  try {
-    const s = await requireRole(...ANY);
-    const orderId = id(form);
-    const to = str(form, "status", 20) as OrderStatus;
-    if (!orderId || !ORDER_STATUSES.includes(to)) return { error: "Неверные данные." };
-    const reason = [str(form, "reason", 120), str(form, "reasonText", 300)].filter(Boolean).join(" — ");
-    const res = await store.setOrderStatus(orderId, to, actor(s), reason);
-    if (!res.ok) return { error: ERR_TEXT[res.error] };
-    await refreshOrderMessages(orderId);
-    revalidatePath("/admin/restoran");
-    return { ok: "Статус изменён." };
-  } catch (e) {
-    return fail(e);
-  }
-}
-
-export async function setConfirmedTime(_prev: ActionState, form: FormData): Promise<ActionState> {
-  try {
-    const s = await requireRole(...ANY);
-    const orderId = id(form);
-    const time = str(form, "time", 40);
-    if (!orderId) return { error: "Неверные данные." };
-    const res = await store.setOrderConfirmedTime(orderId, time, actor(s));
-    if (!res) return { error: "Заказ не найден." };
-    await refreshOrderMessages(orderId);
-    revalidatePath("/admin/restoran");
-    return { ok: time ? "Время сохранено." : "Время снято." };
-  } catch (e) {
-    return fail(e);
-  }
-}
-
-/** Сбор за доставку или подачу в номер, утверждённый по телефону. */
-export async function setFee(_prev: ActionState, form: FormData): Promise<ActionState> {
-  try {
-    const s = await requireRole(...ANY);
-    const orderId = id(form);
-    const raw = str(form, "fee", 20).replace(/[\s\u00a0]/g, "");
-    if (!orderId) return { error: "Неверные данные." };
-    if (!/^\d{1,8}$/.test(raw)) return { error: "Сбор — число в сумах, 0 — бесплатно." };
-    const res = await store.setOrderFee(orderId, Number(raw), actor(s));
-    if (!res) return { error: "Сбор бывает только у доставки и подачи в номер." };
-    await refreshOrderMessages(orderId);
-    revalidatePath("/admin/restoran");
-    return { ok: "Сбор записан, итог пересчитан." };
-  } catch (e) {
-    return fail(e);
-  }
-}
-
-export async function setPayment(_prev: ActionState, form: FormData): Promise<ActionState> {
-  try {
-    const s = await requireRole(...ANY);
-    const orderId = id(form);
-    if (!orderId) return { error: "Неверные данные." };
-    const paid = str(form, "paid", 3) === "1";
-    const res = await store.setOrderPayment(orderId, paid, actor(s));
-    if (!res) return { error: "Заказ не найден." };
-    await refreshOrderMessages(orderId);
-    revalidatePath("/admin/restoran");
-    return { ok: paid ? "Отмечен оплаченным." : "Оплата снята." };
-  } catch (e) {
-    return fail(e);
-  }
-}
-
-export async function resendOrder(_prev: ActionState, form: FormData): Promise<ActionState> {
-  try {
-    await requireRole(...ANY);
-    const orderId = id(form);
-    if (!orderId) return { error: "Неверные данные." };
-    if (!telegramReady()) return { error: "Бот не настроен: не задан токен Telegram." };
-    const res = await notifyOrder(orderId);
-    revalidatePath("/admin/restoran");
-    return resendResult(res);
-  } catch (e) {
-    return fail(e);
-  }
-}
-
-// ─── Столы ─────────────────────────────────────────────────────────────────
-
-export async function changeTableStatus(_prev: ActionState, form: FormData): Promise<ActionState> {
-  try {
-    const s = await requireRole(...ANY);
-    const tableId = id(form);
-    const to = str(form, "status", 20) as TableStatus;
-    if (!tableId || !TABLE_STATUSES.includes(to)) return { error: "Неверные данные." };
-    const reason = [str(form, "reason", 120), str(form, "reasonText", 300)].filter(Boolean).join(" — ");
-    const res = await store.setTableStatus(tableId, to, actor(s), reason);
-    if (!res.ok) return { error: ERR_TEXT[res.error] };
-    await refreshTableMessages(tableId);
-    revalidatePath("/admin/restoran/stoly");
-    return { ok: "Статус изменён." };
-  } catch (e) {
-    return fail(e);
-  }
-}
-
-export async function resendTable(_prev: ActionState, form: FormData): Promise<ActionState> {
-  try {
-    await requireRole(...ANY);
-    const tableId = id(form);
-    if (!tableId) return { error: "Неверные данные." };
-    if (!telegramReady()) return { error: "Бот не настроен: не задан токен Telegram." };
-    const res = await notifyTable(tableId);
-    revalidatePath("/admin/restoran/stoly");
-    return resendResult(res);
-  } catch (e) {
-    return fail(e);
-  }
 }
 
 // ─── Меню ──────────────────────────────────────────────────────────────────
@@ -263,10 +113,8 @@ export async function saveDish(_prev: ActionState, form: FormData): Promise<Acti
       portion: str(form, "portion", 40),
       price,
       availability: AVAILABILITY.includes(availability) ? availability : "available",
-      channels: normalizeChannels(form.getAll("channels").map(String)),
       state: DISH_STATES.includes(state) ? state : "published",
     };
-    if (input.channels.length === 0) return { error: "Отметьте хотя бы один способ подачи." };
     if (input.state === "published" && price === 0) {
       return { error: "Без цены блюдо нельзя опубликовать — сохраните его скрытым." };
     }
@@ -280,12 +128,16 @@ export async function saveDish(_prev: ActionState, form: FormData): Promise<Acti
   }
 }
 
-/** Быстрые действия из строки таблицы: наличие, публикация, порядок, цена. */
+/**
+ * Быстрые действия из строки таблицы: наличие, публикация, порядок, цена.
+ * Наличие может менять и сотрудник ресторана — «сегодня нет» знает смена, а не
+ * менеджер; остальное — только владелец и менеджер.
+ */
 export async function dishAction(_prev: ActionState, form: FormData): Promise<ActionState> {
   try {
-    await requireRole(...EDITORS);
-    const dishId = id(form);
     const op = str(form, "op", 20);
+    await requireRole(...(AVAILABILITY.includes(op as Availability) ? ANY : EDITORS));
+    const dishId = id(form);
     if (!dishId) return { error: "Неверные данные." };
     if (op === "up" || op === "down") await store.moveDish(dishId, op === "up" ? -1 : 1);
     else if (AVAILABILITY.includes(op as Availability)) await store.setDishAvailability(dishId, op as Availability);
@@ -399,7 +251,6 @@ export async function importMenu(_prev: ActionState, form: FormData): Promise<Ac
         portion: portion.slice(0, 40),
         price,
         availability: "available",
-        channels: ["hall", "takeaway", "delivery", "room"],
         state: publish && price > 0 ? "published" : "hidden",
       });
       added++;
@@ -425,13 +276,6 @@ export async function saveRestaurantSettings(_prev: ActionState, form: FormData)
       s.role === "owner" && RESTAURANT_STATES.includes(stateRaw as RestaurantSettings["state"])
         ? (stateRaw as RestaurantSettings["state"])
         : current.state;
-    const fee = (k: string) => {
-      const raw = str(form, k, 20).replace(/[\s ]/g, "");
-      return raw === "" ? null : /^\d{1,8}$/.test(raw) ? Number(raw) : undefined;
-    };
-    const deliveryFee = fee("deliveryFee");
-    const roomFee = fee("roomFee");
-    if (deliveryFee === undefined || roomFee === undefined) return { error: "Сбор — число в сумах или пусто." };
     const hoursOpen = str(form, "hoursOpen", 5);
     const hoursClose = str(form, "hoursClose", 5);
     if ((hoursOpen && toMinutes(hoursOpen) === null) || (hoursClose && toMinutes(hoursClose) === null)) {
@@ -452,13 +296,6 @@ export async function saveRestaurantSettings(_prev: ActionState, form: FormData)
         .filter(Boolean),
       instagram: str(form, "instagram", 300),
       telegram: str(form, "telegram", 300),
-      modes: Object.fromEntries(ORDER_MODES.map((m) => [m, form.get(`mode_${m}`) === "on"])),
-      tables: form.get("tables") === "on",
-      deliveryFee,
-      roomFee,
-      deliveryNote: ls(form, "deliveryNote", 400),
-      preorderLeadHours: Number(str(form, "preorderLeadHours", 4)) || current.preorderLeadHours,
-      notifyHotel: form.get("notifyHotel") === "on",
     });
     if (!next.name.ru) return { error: "Название ресторана по-русски обязательно." };
     await store.saveSettings(next, actorName(s));
@@ -493,21 +330,50 @@ export async function uploadHeroImage(_prev: ActionState, form: FormData): Promi
   }
 }
 
-export async function sendTestMessage(): Promise<ActionState> {
+// ─── Фотогалерея ───────────────────────────────────────────────────────────
+
+/**
+ * Одно фото в галерею. Вызывается из браузера напрямую, по фото за раз: снимки
+ * выбирают пачкой, а запрос к панели ограничен примерно мегабайтом — пачка
+ * целиком не прошла бы.
+ */
+export async function addGalleryPhoto(form: FormData): Promise<ActionState> {
   try {
-    await requireRole(...EDITORS);
-    if (!telegramReady()) return { error: "Бот не настроен: не задан токен Telegram." };
-    const chats = restaurantChats(await store.readSettings());
-    if (chats.length === 0) return { error: "Не задан ни TELEGRAM_RESTAURANT_CHAT_ID, ни TELEGRAM_ADMIN_CHAT_ID." };
-    const results = await Promise.all(
-      chats.map((c) =>
-        sendMessage(c, "🍽 <b>Проверка связи</b>\nСюда будут приходить заказы и брони столов ресторана.", { bot: botFor(c) }),
-      ),
-    );
-    const ok = results.filter(Boolean).length;
-    return ok === chats.length
-      ? { ok: `Сообщение ушло во все чаты (${ok}).` }
-      : { error: `Дошло в ${ok} из ${chats.length} чатов — проверьте, что бот добавлен в группу.` };
+    const s = await requireRole(...EDITORS);
+    const file = form.get("photo");
+    if (!(file instanceof File) || file.size === 0) return { error: "Выберите фото." };
+    const current = await store.readSettings();
+    if (current.gallery.length >= GALLERY_MAX) return { error: `В галерее уже ${GALLERY_MAX} фото — уберите лишние.` };
+    const url = await storeImage(file, "restaurant/gallery");
+    await store.saveSettings({ ...current, gallery: [...current.gallery, url] }, actorName(s));
+    expireRestaurant();
+    return { ok: "Фото добавлено." };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+/** Убрать фото или сдвинуть его в порядке показа. */
+export async function galleryAction(_prev: ActionState, form: FormData): Promise<ActionState> {
+  try {
+    const s = await requireRole(...EDITORS);
+    const url = str(form, "url", 400);
+    const op = str(form, "op", 10);
+    const current = await store.readSettings();
+    const i = current.gallery.indexOf(url);
+    if (i < 0) return { error: "Фото уже нет — обновите страницу." };
+    const gallery = [...current.gallery];
+    if (op === "remove") gallery.splice(i, 1);
+    else if (op === "up" || op === "down") {
+      const j = op === "up" ? i - 1 : i + 1;
+      if (j < 0 || j >= gallery.length) return { ok: "Готово." };
+      [gallery[i], gallery[j]] = [gallery[j], gallery[i]];
+    } else return { error: "Неизвестное действие." };
+    await store.saveSettings({ ...current, gallery }, actorName(s));
+    if (op === "remove") await del(url).catch(() => {});
+    expireRestaurant();
+    revalidatePath("/admin/restoran/nastroyki");
+    return { ok: op === "remove" ? "Фото убрано." : "Готово." };
   } catch (e) {
     return fail(e);
   }

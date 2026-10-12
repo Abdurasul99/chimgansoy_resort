@@ -59,14 +59,7 @@ const COPY = {
       en: ["Plov and kebabs", "Dishes from the grill", "Chimgan mountain views"],
     } as LL,
     hours: { ru: "Ежедневно", uz: "Har kuni", en: "Daily" } as L,
-    table: { ru: "Бронь стола", uz: "Stol bandi", en: "Table booking" } as L,
-    modes: {
-      takeaway: { ru: "С собой", uz: "Olib ketish", en: "Takeaway" } as L,
-      delivery: { ru: "Доставка", uz: "Yetkazib berish", en: "Delivery" } as L,
-      room: { ru: "Ужин в домик", uz: "Uychaga ovqat", en: "Dinner to your cabin" } as L,
-    },
-    menu: { ru: "Смотреть меню", uz: "Menyuni ko'rish", en: "See the menu" } as L,
-    book: { ru: "Забронировать стол", uz: "Stol band qilish", en: "Book a table" } as L,
+    menu: { ru: "Меню и фото", uz: "Menyu va suratlar", en: "Menu and photos" } as L,
   },
   picnic: {
     eyebrow: { ru: "Отдых на день · без ночёвки", uz: "Bir kunlik dam · tunamasdan", en: "A day out · no overnight stay" } as L,
@@ -118,14 +111,10 @@ export async function HomeDayCards({ locale, pricing }: { locale: Locale; pricin
   const tubing = dayProducts.find((p) => p.slug === "tubing");
   const r = COPY.restaurant;
 
-  // Плашки ресторана — только правда о нём сейчас: часы, если заданы в
-  // настройках; способы заказа — только когда приём открыт.
+  // Плашки ресторана — только правда о нём сейчас: часы — если заданы в
+  // настройках. Заказов и брони стола на сайте нет (с 12.10.2026).
   const hours = settings.hoursOpen && settings.hoursClose ? `${r.hours[locale]} ${settings.hoursOpen}–${settings.hoursClose}` : "";
-  const modes =
-    settings.state === "open"
-      ? (["takeaway", "delivery", "room"] as const).filter((m) => settings.modes[m]).map((m) => r.modes[m][locale])
-      : [];
-  const restaurantChips = [...r.facts[locale], ...(hours ? [hours] : []), ...modes, ...(settings.tables ? [r.table[locale]] : [])];
+  const restaurantChips = [...r.facts[locale], ...(hours ? [hours] : [])];
 
   const minRide = Math.min(...pricing.tubing.packages.map((p) => p.price));
   const rides = pricing.tubing.packages.map((p) => p.rides).join(locale === "en" ? " or " : locale === "uz" ? " yoki " : " или ");
@@ -185,12 +174,6 @@ export async function HomeDayCards({ locale, pricing }: { locale: Locale; pricin
             >
               {r.menu[locale]}
               <span aria-hidden className="text-xl leading-none">→</span>
-            </a>
-            <a
-              href={localizePath(locale, "/restaurant/tables")}
-              className="btn-press inline-flex items-center justify-center gap-2 rounded-full border border-white/30 px-6 py-3.5 text-sm font-bold text-white transition-colors hover:bg-white/10"
-            >
-              {r.book[locale]}
             </a>
           </div>
         </div>

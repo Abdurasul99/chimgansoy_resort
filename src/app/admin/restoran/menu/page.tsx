@@ -1,17 +1,18 @@
 import { AdminHeading } from "../../AdminShell";
 import { getSession } from "@/lib/admin-auth";
 import type { Category, Dish } from "@/lib/restaurant/model";
-import { countNewOrders, dbConfigured, listCategories, listDishes } from "@/lib/restaurant/store";
+import { dbConfigured, listCategories, listDishes } from "@/lib/restaurant/store";
 import { MenuEditor } from "../MenuEditor";
 import { RestoranTabs } from "../RestoranTabs";
-import { DbOffline, NoAccess, StoreError } from "../ui";
+import { DbOffline, StoreError } from "../ui";
 
 /**
  * Меню ресторана: блюда, цены, наличие, фото.
  *
- * Счётчики сверху — то, что мешает открыть раздел: блюда без фото и без
+ * Счётчики сверху — то, что мешает показать раздел: блюда без фото и без
  * перевода гость увидит первыми. Правка видна на сайте сразу — действия
- * сбрасывают кэш меню.
+ * сбрасывают кэш меню. Сотрудник ресторана видит только опубликованные блюда
+ * и переключатель наличия.
  */
 export const dynamic = "force-dynamic";
 
@@ -36,24 +37,18 @@ export default async function RestaurantMenuPage({ searchParams }: Props) {
   const { arhiv } = await searchParams;
   const session = await getSession();
   const role = session?.role ?? "staff";
+  const limited = role !== "owner" && role !== "manager";
 
   const heading = (
     <AdminHeading
       title="Ресторан — меню"
-      hint="Блюда, цены, наличие и фото. Сохранённое видно на сайте сразу. Нет перевода — гость увидит русский текст."
+      hint={
+        limited
+          ? "Отметьте «Нет», когда блюдо закончилось, — гости увидят «временно нет». Вернуть — «В наличии»."
+          : "Блюда, цены, наличие и фото. Сохранённое видно на сайте сразу. Нет перевода — гость увидит русский текст."
+      }
     />
   );
-
-  // Proxy и layout сюда сотрудника не пустят; проверка — на случай, если их когда-нибудь поменяют.
-  if (role !== "owner" && role !== "manager") {
-    return (
-      <>
-        {heading}
-        <RestoranTabs role={role} />
-        <NoAccess />
-      </>
-    );
-  }
 
   if (!dbConfigured()) {
     return (
@@ -67,14 +62,9 @@ export default async function RestaurantMenuPage({ searchParams }: Props) {
 
   let categories: Category[] = [];
   let dishes: Dish[] = [];
-  let counts: { orders: number; tables: number } | null = null;
   let error: string | null = null;
   try {
-    [categories, dishes, counts] = await Promise.all([
-      listCategories(),
-      listDishes({ withArchived: true }),
-      countNewOrders(),
-    ]);
+    [categories, dishes] = await Promise.all([listCategories(), listDishes({ withArchived: true })]);
   } catch (e) {
     error = e instanceof Error ? e.message : "База не отвечает";
   }
@@ -87,10 +77,12 @@ export default async function RestaurantMenuPage({ searchParams }: Props) {
   return (
     <>
       {heading}
-      <RestoranTabs role={role} counts={counts} />
+      <RestoranTabs role={role} />
 
       {error ? (
         <StoreError message={error} />
+      ) : limited ? (
+        <MenuEditor categories={categories} dishes={dishes} showArchived={false} limited />
       ) : (
         <>
           <div className="mb-2 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">

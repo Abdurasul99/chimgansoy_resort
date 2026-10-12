@@ -187,7 +187,9 @@ describe("роли панели (ресторан)", () => {
     expect(roleCanOpen("manager", "/admin/restoranX")).toBe(false);
     expect(roleCanOpen("manager", "/admin")).toBe(false);
     expect(roleCanOpen("staff", "/admin/restoran")).toBe(true);
-    expect(roleCanOpen("staff", "/admin/restoran/stoly")).toBe(true);
+    // С 12.10.2026 заказов и столов нет — сотруднику осталось меню.
+    expect(roleCanOpen("staff", "/admin/restoran/menu")).toBe(true);
+    expect(roleCanOpen("staff", "/admin/restoran/stoly")).toBe(false);
     expect(roleCanOpen("staff", "/admin/restoran/nastroyki")).toBe(false);
   });
 });

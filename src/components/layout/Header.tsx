@@ -6,7 +6,6 @@ import { useState, useEffect } from "react";
 import { contacts } from "@/content/contacts";
 import { mainNavigation } from "@/content/navigation";
 import type { NavigationItem } from "@/content/types";
-import { cartCount, useCart } from "@/lib/restaurant/cart";
 import { dictionaries } from "@/content/translations";
 import { locales, type Locale } from "@/i18n/config";
 import { localizePath, switchLocalePath } from "@/i18n/routing";
@@ -17,17 +16,11 @@ import { onScrollFrame } from "@/lib/scroll-engine";
 type HeaderProps = {
   locale: Locale;
   /**
-   * Ресторан в меню сайта — только когда владелец открыл раздел (анонс или
-   * работа). Решает сервер по настройкам; сам список пунктов живёт в
-   * navigation.ts и о ресторане не знает.
+   * Ресторан в меню сайта — только когда владелец показал раздел гостям.
+   * Решает сервер по настройкам; сам список пунктов живёт в navigation.ts и о
+   * ресторане не знает.
    */
   restaurant?: NavigationItem | null;
-  /**
-   * Подписи кнопки в разделе ресторана — строками, а не всем словарём
-   * ресторана: шапка стоит на каждой странице, и тащить в неё три языка
-   * текстов ресторана значило бы утяжелить весь сайт.
-   */
-  restaurantLabels?: { cart: string; menu: string; table: string };
 };
 
 /**
@@ -69,9 +62,8 @@ const HEADER_CTA: Record<string, string> = {
   en: "Book in one click",
 };
 
-export function Header({ locale, restaurant = null, restaurantLabels }: HeaderProps) {
+export function Header({ locale, restaurant = null }: HeaderProps) {
   const pathname = usePathname();
-  const cart = useCart();
   // Ресторан встаёт после «Услуг»: это тоже то, за чем приезжают на территорию.
   const nav = restaurant
     ? mainNavigation.flatMap((item) => (item.href === "/services" ? [item, restaurant] : [item]))
@@ -100,24 +92,7 @@ export function Header({ locale, restaurant = null, restaurantLabels }: HeaderPr
   // Якорь для плавной прокрутки нужен только там, где форма на этой же
   // странице. Каталогу домиков он ни к чему — прыгать не к чему.
   const bookReload = !dayProduct;
-
-  /*
-   * В разделе ресторана золотая кнопка — не бронь домика, а корзина, меню или
-   * стол: гость, выбирающий ужин, не должен улетать в каталог домиков (та же
-   * ошибка, что была с тюбингом 06.08.2026). На самой витрине меню уже перед
-   * глазами — там пустая корзина ведёт к брони стола.
-   */
-  const restaurantHome = localizePath(locale, "/restaurant");
-  const inRestaurant = pathname.startsWith(restaurantHome);
-  const inCart = cartCount(cart);
-  const cta =
-    inRestaurant && restaurantLabels
-      ? inCart > 0
-        ? { href: localizePath(locale, "/restaurant/checkout"), label: `${restaurantLabels.cart} · ${inCart}`, reload: false }
-        : pathname === restaurantHome
-          ? { href: localizePath(locale, "/restaurant/tables"), label: restaurantLabels.table, reload: false }
-          : { href: restaurantHome, label: restaurantLabels.menu, reload: false }
-      : { href: bookHref, label: HEADER_CTA[locale] ?? dict.bookNow, short: dict.bookNow, reload: bookReload };
+  const cta = { href: bookHref, label: HEADER_CTA[locale] ?? dict.bookNow, short: dict.bookNow, reload: bookReload };
 
   // Scrolling down past the hero tucks the bar away; any upward move brings it
   // straight back. Reads from the shared scroll loop rather than adding a second
@@ -286,7 +261,7 @@ export function Header({ locale, restaurant = null, restaurantLabels }: HeaderPr
                 гость выбирает домик и уходит в «забронировать в один клик». */}
             <a
               href={cta.href}
-              {...(cta.reload || inRestaurant ? {} : { "data-anchor": "request" })}
+              {...(cta.reload ? {} : { "data-anchor": "request" })}
               className="btn-press btn-glow-primary inline-flex h-10 items-center justify-center rounded-full px-5 text-[13px] font-bold"
             >
               {cta.label}
@@ -302,11 +277,11 @@ export function Header({ locale, restaurant = null, restaurantLabels }: HeaderPr
           */}
           <a
             href={cta.href}
-            {...(cta.reload || inRestaurant ? {} : { "data-anchor": "request" })}
+            {...(cta.reload ? {} : { "data-anchor": "request" })}
             className="btn-press ml-auto inline-flex h-10 shrink-0 items-center justify-center whitespace-nowrap rounded-full bg-[var(--sun)] px-3.5 text-[12px] font-bold text-[var(--on-accent)] shadow-[0_8px_20px_-8px_rgba(220,140,0,0.8)] min-[380px]:px-4 min-[380px]:text-[13px] lg:hidden"
           >
             {/* На телефоне — короткая подпись («Забронировать»), с планшета — полная. */}
-            <span className="sm:hidden">{"short" in cta && cta.short ? cta.short : cta.label}</span>
+            <span className="sm:hidden">{cta.short}</span>
             <span className="hidden sm:inline">{cta.label}</span>
           </a>
 

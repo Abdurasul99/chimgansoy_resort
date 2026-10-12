@@ -93,12 +93,11 @@ export async function isPreview(): Promise<boolean> {
  * Скрытый раздел не отвечает 404: ресторан живёт внутри сайта по адресу
  * /restaurant, и его ссылку раздают в рекламе, Instagram и QR-кодах (ТЗ,
  * п. 1) ещё до того, как пункт появится в меню сайта. «Скрыт» значит «не в
- * меню, не в поиске и без заказов»; заказы — только тестовые, из предпросмотра.
+ * меню сайта и не в поиске».
  */
 export async function restaurantAccess(): Promise<{ settings: RestaurantSettings; preview: boolean }> {
   const [settings, preview] = await Promise.all([getRestaurantSettings(), isPreview()]);
-  // Открытый раздел предпросмотр не нужен: иначе оставшаяся cookie помечала
-  // бы тестовыми настоящие заказы владельца.
+  // Открытому разделу плашка предпросмотра ни к чему.
   return { settings, preview: preview && settings.state !== "open" };
 }
 

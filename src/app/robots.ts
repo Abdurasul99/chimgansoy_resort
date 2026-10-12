@@ -12,10 +12,6 @@ export default function robots(): MetadataRoute.Robots {
       disallow: [
         "/admin",
         "/admin/",
-        // Оформление заказа и статус по секретной ссылке — ни в выдачу, ни в
-        // кэш поисковика: на странице статуса имя и маска телефона гостя.
-        "/*/restaurant/checkout",
-        "/*/restaurant/order/",
       ],
     },
     sitemap: `${primaryOrigin}/sitemap.xml`,

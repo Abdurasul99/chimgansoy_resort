@@ -25,12 +25,17 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  // Меню ресторана с 28.09.2026 живёт на его главной — витрина по образцу
-  // приложений доставки. Старые ссылки (QR, сторис, закладки) ведут туда же;
-  // ?mode=… Next переносит сам. Временный редирект: постоянный браузер
-  // запомнил бы навсегда, и вернуть отдельную страницу меню было бы нельзя.
+  // Ресторан — одна страница: меню и фото. Отдельное «Меню» (до 28.09.2026),
+  // оформление заказа, бронь стола и статус заказа (до 12.10.2026) больше не
+  // существуют; старые ссылки (QR, сторис, закладки) ведут на неё. Временный
+  // редирект: постоянный браузер запомнил бы навсегда, и вернуть страницу было
+  // бы нельзя.
   async redirects() {
-    return [{ source: "/:locale(ru|uz|en)/restaurant/menu", destination: "/:locale/restaurant", permanent: false }];
+    return ["menu", "checkout", "tables", "order/:token*"].map((page) => ({
+      source: `/:locale(ru|uz|en)/restaurant/${page}`,
+      destination: "/:locale/restaurant",
+      permanent: false,
+    }));
   },
 
   // Long-lived browser cache for hashed static assets — they're content-addressed

@@ -1,22 +1,21 @@
 "use client";
 
 import { money } from "@/lib/tariff";
-import { CHANNELS, type Availability, type Category, type Dish, type DishState } from "@/lib/restaurant/model";
-import { CHANNEL_LABEL } from "@/lib/restaurant/labels";
+import type { Availability, Category, Dish, DishState } from "@/lib/restaurant/model";
 import { saveDish } from "./actions";
 import { resetOnOk, useKeptForm } from "./form-hooks";
 import { Result, field, labelText, saveBtn } from "./ui";
 
 export const AVAILABILITY_OPTIONS: { value: Availability; label: string; hint: string }[] = [
-  { value: "available", label: "В наличии", hint: "заказывается обычно" },
-  { value: "unavailable", label: "Нет", hint: "видно в меню, заказать нельзя" },
-  { value: "preorder", label: "Предзаказ", hint: "только предзаказом к визиту" },
+  { value: "available", label: "В наличии", hint: "есть сегодня" },
+  { value: "unavailable", label: "Нет", hint: "видно в меню с пометкой «временно нет»" },
+  { value: "preorder", label: "Под заказ", hint: "готовим по предварительному заказу по телефону" },
 ];
 
 export const STATE_OPTIONS: { value: DishState; label: string; hint: string }[] = [
   { value: "published", label: "Опубликовано", hint: "гости видят" },
   { value: "hidden", label: "Скрыто", hint: "есть только здесь" },
-  { value: "archived", label: "Архив", hint: "больше не готовим; старые заказы на него ссылаются" },
+  { value: "archived", label: "Архив", hint: "больше не готовим; можно вернуть" },
 ];
 
 const LANGS = [
@@ -153,29 +152,9 @@ export function DishForm({
         </p>
       </fieldset>
 
-      <div className="grid gap-5 sm:grid-cols-3">
+      <div className="grid gap-5 sm:grid-cols-2">
         <Radios name="availability" legend="Наличие" options={AVAILABILITY_OPTIONS} value={d?.availability ?? "available"} />
         <Radios name="state" legend="Публикация" options={STATE_OPTIONS} value={d?.state ?? "published"} />
-        <fieldset>
-          <legend className={labelText}>Где подаём</legend>
-          <div className="space-y-1.5">
-            {CHANNELS.map((c) => (
-              <label key={c} className="flex items-center gap-2 text-sm text-[var(--ink)]">
-                <input
-                  type="checkbox"
-                  name="channels"
-                  value={c}
-                  defaultChecked={d ? d.channels.includes(c) : true}
-                  className="h-4 w-4 accent-[var(--sun)]"
-                />
-                {CHANNEL_LABEL[c]}
-              </label>
-            ))}
-          </div>
-          <p className="mt-1.5 text-xs text-[var(--muted)]">
-            Уберите «В номер» для блюд с сильным запахом, «Доставку» — для того, что не переживёт дорогу.
-          </p>
-        </fieldset>
       </div>
 
       <p className="text-xs text-[var(--muted)]">

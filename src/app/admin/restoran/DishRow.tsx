@@ -3,7 +3,6 @@
 import { useActionState, useState } from "react";
 import { money } from "@/lib/tariff";
 import type { Category, Dish } from "@/lib/restaurant/model";
-import { CHANNEL_LABEL } from "@/lib/restaurant/labels";
 import { dishAction, removeDishPhoto, uploadDishPhoto, type ActionState } from "./actions";
 import { submitKeeping } from "./form-hooks";
 import { AVAILABILITY_OPTIONS, DishForm, STATE_OPTIONS } from "./DishForm";
@@ -93,17 +92,23 @@ function Segmented({
 const arrow =
   "flex h-9 w-9 items-center justify-center rounded-lg border border-[color:var(--line)] text-sm font-bold text-[var(--ink)] transition hover:border-[var(--sun)] disabled:opacity-30";
 
-/** Строка блюда: всё, что меняют каждый день, — в один тап; остальное — в «Изменить». */
+/**
+ * Строка блюда: всё, что меняют каждый день, — в один тап; остальное — в
+ * «Изменить». `limited` — вход сотрудника ресторана: ему видно блюдо и
+ * переключатель наличия, и больше ничего.
+ */
 export function DishRow({
   dish,
   categories,
   first,
   last,
+  limited = false,
 }: {
   dish: Dish;
   categories: Category[];
   first: boolean;
   last: boolean;
+  limited?: boolean;
 }) {
   const [quick, act, pending] = useActionState<ActionState, FormData>(dishAction, {});
   const [rm, removePhoto, removing] = useActionState<ActionState, FormData>(removeDishPhoto, {});
@@ -138,24 +143,24 @@ export function DishRow({
                 </span>
               ))}
             </div>
-            <div className="mt-1 flex flex-wrap items-center gap-1">
-              <span className="mr-1 text-xs text-[var(--muted)]">{dish.portion || "порция не указана"}</span>
-              {dish.channels.map((c) => (
-                <span
-                  key={c}
-                  className="rounded-full bg-[var(--mist)] px-2 py-0.5 text-[10px] font-semibold text-[var(--ink)]"
-                >
-                  {CHANNEL_LABEL[c]}
-                </span>
-              ))}
-              {dish.channels.length === 0 && (
-                <span className="text-[10px] font-semibold text-[var(--rose,#b4413c)]">нигде не подаётся</span>
-              )}
-            </div>
+            <p className="mt-1 text-xs text-[var(--muted)]">
+              {dish.portion || "порция не указана"}
+              {limited && dish.price > 0 ? ` · ${money(dish.price)} сум` : ""}
+            </p>
           </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          {limited ? (
+            <Segmented
+              formId={formId}
+              label="Наличие"
+              value={dish.availability}
+              options={AVAILABILITY_OPTIONS}
+              pending={pending}
+            />
+          ) : (
+          <>
           {/* Цена — своя форма: Enter в поле не должен нажать чужую кнопку. */}
           <form onSubmit={submitKeeping(act)} className="flex items-center gap-1">
             <input type="hidden" name="id" value={dish.id} />
@@ -199,9 +204,14 @@ export function DishRow({
               ↓
             </button>
           </div>
+          </>
+          )}
         </div>
       </div>
 
+      {limited ? (
+        <Result state={quick} pending={pending} />
+      ) : (
       <div className="mt-3 flex flex-wrap items-center gap-3">
         <button
           type="button"
@@ -232,6 +242,7 @@ export function DishRow({
         <Result state={quick} pending={pending} className="" />
         <Result state={rm} pending={removing} className="" />
       </div>
+      )}
 
       {editing && (
         <div className="mt-4 border-t border-[color:var(--line)] pt-4">

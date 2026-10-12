@@ -119,7 +119,7 @@ export function roleCanOpen(role: AdminRole, pathname: string): boolean {
   if (role === "owner") return true;
   const p = pathname.replace(/\/+$/, "");
   if (role === "manager") return p === "/admin/restoran" || p.startsWith("/admin/restoran/");
-  return p === "/admin/restoran" || p === "/admin/restoran/stoly";
+  return p === "/admin/restoran" || p === "/admin/restoran/menu";
 }
 
 /** Where a role lands after sign-in. */

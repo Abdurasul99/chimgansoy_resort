@@ -16,9 +16,9 @@ import { RestIcon } from "@/components/restaurant/RestIcon";
 
 /** Подпись под кнопкой ресторана — что там есть, без обещания сроков и цен. */
 const restaurantHint: Record<Locale, string> = {
-  ru: "Кухня на огне · меню, бронь стола, еда в домик",
-  uz: "Olovdagi oshxona · menyu, stol band qilish, uychaga taom",
-  en: "Cooked over fire · menu, tables, food to your cabin",
+  ru: "Кухня на огне · меню и фото",
+  uz: "Olovdagi oshxona · menyu va suratlar",
+  en: "Cooked over fire · menu and photos",
 };
 
 type HeroProps = {

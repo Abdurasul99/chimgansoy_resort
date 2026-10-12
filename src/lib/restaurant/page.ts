@@ -1,31 +1,21 @@
 import type { Locale } from "@/i18n/config";
 import type { PageSeo } from "@/content/types";
-import { ORDER_MODES, type OrderMode, type RestaurantSettings } from "./model";
+import type { RestaurantSettings } from "./model";
 import { pickText, tashkentNow, withinHours } from "./rules";
 import { restaurantAccess } from "./live";
 
 /**
- * Общее для страниц ресторана: доступ, открытые способы заказа, SEO.
+ * Общее для страницы ресторана: доступ, обложка, «открыто сейчас», SEO.
  */
 export const FALLBACK_HERO = "/images/resort/stock/plov-lyagan.jpg";
 
 export type RestaurantPage = {
   settings: RestaurantSettings;
   preview: boolean;
-  /** Способы, которыми можно заказать прямо сейчас (пусто — заказы закрыты). */
-  openModes: OrderMode[];
-  tablesOpen: boolean;
 };
 
 export async function restaurantPage(): Promise<RestaurantPage> {
-  const { settings, preview } = await restaurantAccess();
-  const accepting = settings.state === "open" || preview;
-  return {
-    settings,
-    preview,
-    openModes: accepting ? ORDER_MODES.filter((m) => settings.modes[m]) : [],
-    tablesOpen: accepting && settings.tables,
-  };
+  return restaurantAccess();
 }
 
 export function heroImage(settings: RestaurantSettings): string {
@@ -38,19 +28,20 @@ export function openNow(settings: RestaurantSettings, now = Date.now()): boolean
   return withinHours(settings, tashkentNow(now).minutes);
 }
 
-const SUFFIX: Record<"landing" | "tables", Record<Locale, string>> = {
-  landing: { ru: "меню и заказ — ресторан в CHIMGAN DARBAZA", uz: "menyu va buyurtma — CHIMGAN DARBAZA restorani", en: "menu and ordering — restaurant at CHIMGAN DARBAZA" },
-  tables: { ru: "бронь стола — CHIMGAN DARBAZA", uz: "stol bandi — CHIMGAN DARBAZA", en: "book a table — CHIMGAN DARBAZA" },
+const SUFFIX: Record<Locale, string> = {
+  ru: "меню и фото — ресторан в CHIMGAN DARBAZA",
+  uz: "menyu va suratlar — CHIMGAN DARBAZA restorani",
+  en: "menu and photos — restaurant at CHIMGAN DARBAZA",
 };
 
-export function restaurantSeo(settings: RestaurantSettings, kind: "landing" | "tables"): PageSeo {
+export function restaurantSeo(settings: RestaurantSettings): PageSeo {
   const name = (l: Locale) => pickText(settings.name, l);
   const desc = (l: Locale) => pickText(settings.tagline, l) + ". " + pickText(settings.about, l);
   return {
     title: {
-      ru: `«${name("ru")}» — ${SUFFIX[kind].ru}`,
-      uz: `«${name("uz")}» — ${SUFFIX[kind].uz}`,
-      en: `${name("en")} — ${SUFFIX[kind].en}`,
+      ru: `«${name("ru")}» — ${SUFFIX.ru}`,
+      uz: `«${name("uz")}» — ${SUFFIX.uz}`,
+      en: `${name("en")} — ${SUFFIX.en}`,
     },
     description: {
       ru: desc("ru").slice(0, 300),

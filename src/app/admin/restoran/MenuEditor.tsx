@@ -190,12 +190,19 @@ export function MenuEditor({
   categories,
   dishes,
   showArchived,
+  limited = false,
 }: {
   categories: Category[];
   dishes: Dish[];
   showArchived: boolean;
+  /** Вход сотрудника ресторана: только наличие опубликованных блюд. */
+  limited?: boolean;
 }) {
-  const shown = showArchived ? dishes : dishes.filter((d) => d.state !== "archived");
+  const shown = limited
+    ? dishes.filter((d) => d.state === "published")
+    : showArchived
+      ? dishes
+      : dishes.filter((d) => d.state !== "archived");
   const known = new Set(categories.map((c) => c.id));
   const groups = [
     ...categories.map((c) => ({
@@ -215,7 +222,9 @@ export function MenuEditor({
 
   return (
     <div className="space-y-6">
-      <Fold title="Добавить блюдо" hint="Одно блюдо со всеми полями — переводы, наличие, где подаём.">
+      {!limited && (
+      <>
+      <Fold title="Добавить блюдо" hint="Одно блюдо со всеми полями — переводы, наличие, порция.">
         <DishForm categories={categories} />
       </Fold>
 
@@ -242,10 +251,12 @@ export function MenuEditor({
           </li>
         </ul>
       </section>
+      </>
+      )}
 
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <h2 className="font-serif text-2xl font-semibold text-[var(--ink)]">Блюда</h2>
-        {archivedCount > 0 && (
+        {archivedCount > 0 && !limited && (
           <Link
             href={showArchived ? "/admin/restoran/menu" : "/admin/restoran/menu?arhiv=1"}
             prefetch={false}
@@ -258,7 +269,7 @@ export function MenuEditor({
 
       {shown.length === 0 && (
         <p className="rounded-2xl border border-[color:var(--line)] bg-[var(--surface-warm)] p-5 text-sm text-[var(--muted)]">
-          Блюд пока нет. Добавьте первое выше или загрузите меню списком.
+          {limited ? "Опубликованных блюд пока нет." : "Блюд пока нет. Добавьте первое выше или загрузите меню списком."}
         </p>
       )}
 
@@ -279,7 +290,7 @@ export function MenuEditor({
           ) : (
             <ul className="space-y-2">
               {g.items.map((d, i) => (
-                <DishRow key={d.id} dish={d} categories={categories} first={i === 0} last={i === g.items.length - 1} />
+                <DishRow key={d.id} dish={d} categories={categories} first={i === 0} last={i === g.items.length - 1} limited={limited} />
               ))}
             </ul>
           )}

@@ -28,15 +28,12 @@ const NAV = [
 ];
 
 /** Вход ресторана видит только свой раздел — остальные пункты ему не нужны. */
-const RESTAURANT_NAV = [
-  { href: "/admin/restoran", label: "Заказы" },
-  { href: "/admin/restoran/stoly", label: "Столы" },
-];
+const RESTAURANT_NAV = [{ href: "/admin/restoran/menu", label: "Меню" }];
 
 export function AdminNav({ role = "owner" }: { role?: AdminRole }) {
   const pathname = usePathname();
   const items = role === "owner" ? NAV : role === "manager"
-    ? [...RESTAURANT_NAV, { href: "/admin/restoran/menu", label: "Меню" }, { href: "/admin/restoran/nastroyki", label: "Настройки" }]
+    ? [...RESTAURANT_NAV, { href: "/admin/restoran/nastroyki", label: "Настройки и фото" }]
     : RESTAURANT_NAV;
 
   return (
@@ -44,10 +41,7 @@ export function AdminNav({ role = "owner" }: { role?: AdminRole }) {
       {items.map((item) => {
         // Exact match for the dashboard, prefix for the rest — otherwise
         // "Сводка" stays lit on every screen, since every path starts /admin.
-        const on =
-          item.href === "/admin" || (role !== "owner" && item.href === "/admin/restoran")
-            ? pathname === item.href
-            : pathname.startsWith(item.href);
+        const on = item.href === "/admin" ? pathname === item.href : pathname.startsWith(item.href);
         return (
           <Link
             key={item.href}

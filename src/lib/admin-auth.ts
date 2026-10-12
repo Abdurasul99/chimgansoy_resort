@@ -9,17 +9,19 @@ export * from "./admin-session";
  *
  * There used to be exactly one administrator and one password. The restaurant
  * (see src/lib/restaurant) changed that: it is run by a different operating
- * party, and its manager and waiters must process orders without seeing hotel
- * bookings, guest phone numbers or prices. So there are now three roles, each
- * with its own password in the environment:
+ * party, and its people must edit their menu without seeing hotel bookings,
+ * guest phone numbers or prices. So there are three roles, each with its own
+ * password in the environment:
  *
  *   owner   — ADMIN_PASSWORD, the whole panel, as before;
- *   manager — RESTAURANT_MANAGER_PASSWORD, the restaurant section only;
- *   staff   — RESTAURANT_STAFF_PASSWORD, restaurant orders and tables only.
+ *   manager — RESTAURANT_MANAGER_PASSWORD, the restaurant menu and settings;
+ *   staff   — RESTAURANT_STAFF_PASSWORD, the menu, and only "what is out today".
+ *
+ * Until 12.10.2026 the restaurant took orders and staff processed them; the
+ * section is now a menu and a photo gallery, so staff kept the one job left.
  *
  * Still no user table: a role is a password, and the person's name is typed at
- * sign-in so the order history can say who pressed "confirm". Anyone with the
- * password could type any name — that is fine for a history meant to answer
+ * sign-in. Anyone with the password could type any name — that is fine for
  * "who was on shift", not to settle a dispute.
  *
  * The cookie carries the expiry, the role and the name, HMAC-signed with

@@ -44,9 +44,6 @@ export function YandexMetrica() {
 
   return (
     <>
-      {/* На странице статуса заказа ресторана (секретная ссылка с адресом
-          гостя) счётчик не запускается. Проверка — indexOf, а не регулярное
-          выражение: в шаблонной строке обратные слэши пропадают. */}
       <Script id="yandex-metrica" strategy="afterInteractive">
         {`
           (function(m,e,t,r,i,k,a){
@@ -55,7 +52,7 @@ export function YandexMetrica() {
             for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
             k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
           })(window, document, "script", "${tagUrl}", "ym");
-          if (location.pathname.indexOf("/restaurant/order/") < 0) ym(${id}, "init", {
+          ym(${id}, "init", {
             ssr: true,
             webvisor: true,
             clickmap: true,

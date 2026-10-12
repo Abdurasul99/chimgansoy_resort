@@ -91,10 +91,10 @@ describe("админский домен", () => {
       expect(new URL(res!.headers.get("location")!).pathname, path).toBe("/admin/restoran");
     }
     expect(proxy(req("chimgansoy.com", "/admin/restoran/menu", manager))?.headers.get("location")).toBeNull();
-    // Официант: заказы и столы — да, меню и настройки — нет.
-    expect(proxy(req("chimgansoy.com", "/admin/restoran/stoly", staff))?.headers.get("location")).toBeNull();
-    const menu = proxy(req("chimgansoy.com", "/admin/restoran/menu", staff));
-    expect(new URL(menu!.headers.get("location")!).pathname).toBe("/admin/restoran");
+    // Официант: меню — да (отметить, чего нет), настройки — нет.
+    expect(proxy(req("chimgansoy.com", "/admin/restoran/menu", staff))?.headers.get("location")).toBeNull();
+    const settings = proxy(req("chimgansoy.com", "/admin/restoran/nastroyki", staff));
+    expect(new URL(settings!.headers.get("location")!).pathname).toBe("/admin/restoran");
   });
 
   it("подделанная cookie роли не открывает ничего", () => {

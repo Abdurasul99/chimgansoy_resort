@@ -35,7 +35,7 @@ async function decode(file: File): Promise<ImageBitmap | HTMLImageElement> {
  * сервера. Сервер всё равно пережимает в WebP; здесь только везём меньше.
  * Не получилось декодировать (редкий формат, старый браузер) — отдаём исходник.
  */
-async function shrink(file: File): Promise<File> {
+export async function shrink(file: File): Promise<File> {
   try {
     const src = await decode(file);
     const w0 = "naturalWidth" in src ? src.naturalWidth : src.width;
