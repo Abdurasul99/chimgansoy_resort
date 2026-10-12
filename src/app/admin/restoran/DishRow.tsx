@@ -134,7 +134,7 @@ export function DishRow({
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-1.5">
               <span className="font-semibold text-[var(--ink)]">{dish.title.ru}</span>
-              {missing.map((l) => (
+              {!limited && missing.map((l) => (
                 <span
                   key={l}
                   className="rounded-full bg-[var(--sun)]/15 px-2 py-0.5 text-[10px] font-bold text-[var(--sun-dark)]"

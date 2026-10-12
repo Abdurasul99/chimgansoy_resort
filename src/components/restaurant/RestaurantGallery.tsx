@@ -28,7 +28,7 @@ export function RestaurantGallery({ photos, name, locale }: { photos: string[]; 
       <h2 className="text-lg font-bold text-[#1c1c1c]">
         {t.gallery.title} <span className="text-[15px] font-semibold text-[#8c8c8c]">{photos.length}</span>
       </h2>
-      <ul className="rest-chips -mx-4 mt-3 flex snap-x gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0 lg:grid lg:grid-cols-6 lg:overflow-visible">
+      <ul className="rest-chips -mx-4 mt-3 flex snap-x scroll-px-4 gap-2 overflow-x-auto px-4 sm:mx-0 sm:scroll-px-0 sm:px-0 lg:grid lg:grid-cols-6 lg:overflow-visible">
         {photos.map((src, i) => (
           <li key={src} className={`shrink-0 snap-start ${i >= DESKTOP_ROW ? "lg:hidden" : ""}`}>
             <button

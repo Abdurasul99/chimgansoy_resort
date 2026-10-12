@@ -54,7 +54,7 @@ export default async function RestaurantSettingsPage() {
           <section className="rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] p-5">
             <h2 className="font-serif text-xl font-semibold">Фотогалерея</h2>
             <p className="mt-1 text-sm text-[var(--muted)]">
-              Показывается на странице ресторана под меню, до {GALLERY_MAX} фото. Можно выбрать сразу несколько —
+              Показывается на странице ресторана под шапкой, перед меню, — до {GALLERY_MAX} фото. Первое фото гость видит первым. Можно выбрать сразу несколько —
               загрузятся по очереди. Только настоящие снимки ресторана, зала и блюд.
             </p>
             <div className="mt-4">
