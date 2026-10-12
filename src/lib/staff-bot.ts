@@ -33,6 +33,8 @@ import { money } from "./venue-facts";
 import { ridesRu } from "./tariff";
 import { recentRequests, requestsByDate, storeConfigured, type StoredRequest } from "./requests-store";
 import { getPricing } from "./pricing-live";
+import { poolClosure } from "@/content/pool-closure";
+import { topchanClosure } from "@/content/topchan-closure";
 
 const SITE = "https://chimgandarbaza.uz";
 const BOOK_URL = `${SITE}/ru/bron`;
@@ -281,7 +283,9 @@ async function renderPrices(): Promise<View> {
       "<b>🏷 Цены на день</b>",
       "<i>будни (Пн–Чт) / выходные (Пт–Вс), в сумах</i>",
       "",
-      `🛖 <b>Топчан</b> (до ${topchanPricing.capacity} чел.) — <b>${money(live.topchan.weekday)}</b> / <b>${money(live.topchan.weekend)}</b>`,
+      topchanClosure.closed
+        ? "🛖 <b>Топчан</b> — закрыт до нового сезона"
+        : `🛖 <b>Топчан</b> (до ${topchanPricing.capacity} чел.) — <b>${money(live.topchan.weekday)}</b> / <b>${money(live.topchan.weekend)}</b>`,
       "",
       // Tubing is priced per package of rides, so it cannot sit in the two-column
       // weekday/weekend table above without implying a band it does not have.
@@ -291,15 +295,19 @@ async function renderPrices(): Promise<View> {
       // Parking is charged to tubing visitors only, so it is stated beside
       // tubing rather than as a line everyone reads as applying to them.
       `🚗 <b>Парковка</b> (1 авто, только тюбинг) — <b>${money(live.parking)}</b> <i>(одна цена всю неделю)</i>`,
-      "<i>Проживающим, гостям бассейна и топчана парковка бесплатна (топчану — по наличию мест).</i>",
+      poolClosure.closed && topchanClosure.closed
+        ? "<i>Проживающим парковка бесплатна.</i>"
+        : "<i>Проживающим, гостям бассейна и топчана парковка бесплатна (топчану — по наличию мест).</i>",
       "",
       "<b>Аренда и расходники:</b>",
       ...rows,
       "",
       "Каждая позиция оплачивается отдельно. Блюда кухни — по меню.",
       "",
-      "🏊 <b>Бассейн</b> — тариф по возрастам, смотрите на сайте.",
-      "<i>Топчан и место у бассейна закрепляются после подтверждения администратора: без заявки свободное место не гарантировано.</i>",
+      poolClosure.closed ? "🏊 <b>Бассейн</b> — закрыт до летнего сезона." : "🏊 <b>Бассейн</b> — тариф по возрастам, смотрите на сайте.",
+      ...(poolClosure.closed && topchanClosure.closed
+        ? []
+        : ["<i>Топчан и место у бассейна закрепляются после подтверждения администратора: без заявки свободное место не гарантировано.</i>"]),
       "🏕 Проживание (глэмпинг, шале): цены зависят от дат — смотрите «🗓 Свободные даты и цены».",
       "",
       // The three charges that a guest only meets at the door if nobody says

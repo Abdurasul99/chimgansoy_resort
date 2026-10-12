@@ -5,6 +5,7 @@ import { rooms } from "@/content/rooms";
 import { services } from "@/content/services";
 import { hiddenServiceSlugs } from "@/lib/services-live";
 import { poolClosure } from "@/content/pool-closure";
+import { topchanClosure } from "@/content/topchan-closure";
 import { policies } from "@/content/policies";
 import { restaurantListed } from "@/lib/restaurant/live";
 
@@ -18,7 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/contact",
     "/bron",
     // Day products, each with its own request form.
-    "/topchan",
+    ...(topchanClosure.closed ? [] : ["/topchan"]),
     "/tubing",
   ];
   // Пока бассейн закрыт, его страница не идёт в карту сайта: она объясняет

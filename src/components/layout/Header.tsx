@@ -12,6 +12,7 @@ import { localizePath, switchLocalePath } from "@/i18n/routing";
 import { text } from "@/lib/localize";
 import { lock, unlock } from "@/lib/scroll-lock";
 import { onScrollFrame } from "@/lib/scroll-engine";
+import { topchanClosure } from "@/content/topchan-closure";
 
 type HeaderProps = {
   locale: Locale;
@@ -35,7 +36,8 @@ type HeaderProps = {
  * form that actually sells the thing being read about.
  */
 // Бассейн закрыт (pool-closure.ts) и убран из меню — подсвечивать нечего.
-const DAY_PRODUCT_PATHS = ["/topchan", "/tubing"] as const;
+// Топчаны закрыты (topchan-closure.ts) — их страница без формы, якорь вёл бы в пустоту.
+const DAY_PRODUCT_PATHS = (topchanClosure.closed ? ["/tubing"] : ["/topchan", "/tubing"]) as readonly ("/topchan" | "/tubing")[];
 
 /**
  * Страницы услуг, которые продаются формой дневного продукта. С них кнопка
@@ -44,8 +46,7 @@ const DAY_PRODUCT_PATHS = ["/topchan", "/tubing"] as const;
  * DAY_BOOKING на странице услуги.
  */
 const SERVICE_DAY_PRODUCT: Record<string, (typeof DAY_PRODUCT_PATHS)[number]> = {
-  "/services/picnic-zone": "/topchan",
-  "/services/outdoor-cooking": "/topchan",
+  ...(topchanClosure.closed ? {} : { "/services/picnic-zone": "/topchan", "/services/outdoor-cooking": "/topchan" }),
   "/services/tubing": "/tubing",
 };
 

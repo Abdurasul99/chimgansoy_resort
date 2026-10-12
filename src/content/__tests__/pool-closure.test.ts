@@ -8,6 +8,7 @@
  */
 import { describe, expect, it } from "vitest";
 import { poolClosure } from "@/content/pool-closure";
+import { topchanClosure } from "@/content/topchan-closure";
 import { mainNavigation, footerNavigation } from "@/content/navigation";
 import { rooms } from "@/content/rooms";
 import { venueFacts, venueCore } from "@/lib/venue-facts";
@@ -53,7 +54,14 @@ describe("бассейн закрыт", () => {
   });
 
   it("гостю предлагают то, что работает, а не только отказ", () => {
-    expect(poolClosure.alternative.ru).toMatch(/топчан/i);
     expect(poolClosure.alternative.ru).toMatch(/тюбинг/i);
+    // Топчаны закрыты с 12.10.2026 — тогда их не предлагают, предлагают ресторан.
+    if (topchanClosure.closed) {
+      expect(poolClosure.alternative.ru).not.toMatch(/топчан/i);
+      expect(poolClosure.formError.ru).not.toMatch(/топчан/i);
+      expect(poolClosure.alternative.ru).toMatch(/ресторан/i);
+    } else {
+      expect(poolClosure.alternative.ru).toMatch(/топчан/i);
+    }
   });
 });

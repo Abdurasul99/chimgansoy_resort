@@ -9,6 +9,7 @@ import { BookingWidget } from "@/components/sections/BookingWidget";
 import { HeroScrollCue } from "@/components/ui/HeroScrollCue";
 import { Icon } from "@/components/ui/Icon";
 import { poolClosure } from "@/content/pool-closure";
+import { topchanClosure } from "@/content/topchan-closure";
 import { promotions } from "@/content/promotions";
 import { discountMath, promoBookable, promoCheapestNight, todayTashkent } from "@/lib/promo-nights";
 import { restaurantCopy } from "@/content/restaurant";
@@ -66,7 +67,8 @@ function dayCtas(
   return [
     {
       href: "/topchan#request",
-      icon: "topchan",
+      closed: topchanClosure.closed,
+      icon: "topchan" as const,
       label: { ru: "Топчан", uz: "Topchan", en: "Topchan" }[locale],
       hint: {
         ru: `до ${cap} гостей · от ${topchan} сум`,
@@ -76,7 +78,8 @@ function dayCtas(
     },
     {
       href: "/tubing#request",
-      icon: "snowflake",
+      closed: false,
+      icon: "snowflake" as const,
       label: { ru: "Тюбинг горка", uz: "Tubing gorkasi", en: "Tubing hill" }[locale],
       hint: {
         ru: `${rides} спуска · от ${ride} сум`,
@@ -84,7 +87,10 @@ function dayCtas(
         en: `${rides} rides · from ${ride} UZS`,
       }[locale],
     },
-  ];
+  ]
+    // Закрытый продукт с первого экрана убирается целиком (топчаны — с 12.10.2026).
+    .filter((c) => !c.closed)
+    .map((c) => ({ href: c.href, icon: c.icon, label: c.label, hint: c.hint }));
 }
 
 export function Hero({ locale, pricing }: HeroProps) {

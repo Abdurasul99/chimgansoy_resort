@@ -1,4 +1,5 @@
 import type { LocalizedString } from "./types";
+import { openInstead, topchanClosure } from "./topchan-closure";
 
 /**
  * Бассейн временно не работает — один выключатель на весь сайт.
@@ -41,17 +42,28 @@ export const poolClosure = {
     en: "The swimming season is over — the pool reopens when the summer season starts. We are not accepting pool requests at the moment. We will announce the reopening on the site and on Instagram.",
   } satisfies LocalizedString,
 
-  /** Что предложить вместо него — гость пришёл отдыхать, а не читать отказ. */
-  alternative: {
-    ru: "Топчаны в пикник-зоне и тюбинговая горка работают как обычно.",
-    uz: "Piknik zonasidagi topchanlar va tyubing gorkasi odatdagidek ishlaydi.",
-    en: "The topchans in the picnic area and the tubing slope are open as usual.",
-  } satisfies LocalizedString,
+  /**
+   * Что предложить вместо него — гость пришёл отдыхать, а не читать отказ.
+   * Топчаны закрыты с 12.10.2026 (topchan-closure.ts) — тогда их не предлагаем.
+   */
+  alternative: (topchanClosure.closed
+    ? openInstead
+    : {
+        ru: "Топчаны в пикник-зоне и тюбинговая горка работают как обычно.",
+        uz: "Piknik zonasidagi topchanlar va tyubing gorkasi odatdagidek ishlaydi.",
+        en: "The topchans in the picnic area and the tubing slope are open as usual.",
+      }) satisfies LocalizedString,
 
   /** Ответ формы, если заявку всё же попытались отправить. */
-  formError: {
-    ru: "Бассейн закрыт до летнего сезона — заявки не принимаются. Позвоните нам, если нужен топчан или тюбинг.",
-    uz: "Basseyn yozgi mavsumgacha yopiq — arizalar qabul qilinmaydi. Topchan yoki tyubing kerak bo'lsa, qo'ng'iroq qiling.",
-    en: "The pool is closed until the summer season — requests are not accepted. Call us if you need a topchan or tubing.",
-  } satisfies LocalizedString,
+  formError: (topchanClosure.closed
+    ? {
+        ru: "Бассейн закрыт до летнего сезона — заявки не принимаются. Позвоните нам, если нужен тюбинг.",
+        uz: "Basseyn yozgi mavsumgacha yopiq — arizalar qabul qilinmaydi. Tyubing kerak bo'lsa, qo'ng'iroq qiling.",
+        en: "The pool is closed until the summer season — requests are not accepted. Call us if you need tubing.",
+      }
+    : {
+        ru: "Бассейн закрыт до летнего сезона — заявки не принимаются. Позвоните нам, если нужен топчан или тюбинг.",
+        uz: "Basseyn yozgi mavsumgacha yopiq — arizalar qabul qilinmaydi. Topchan yoki tyubing kerak bo'lsa, qo'ng'iroq qiling.",
+        en: "The pool is closed until the summer season — requests are not accepted. Call us if you need a topchan or tubing.",
+      }) satisfies LocalizedString,
 } as const;

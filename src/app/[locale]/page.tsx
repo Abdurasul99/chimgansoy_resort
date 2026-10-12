@@ -31,6 +31,7 @@ import { getRoomPrices, priceChip } from "@/lib/room-price";
 import { clock } from "@/components/ui/Clock";
 import { stayRules } from "@/content/pricing";
 import { poolClosure } from "@/content/pool-closure";
+import { topchanClosure } from "@/content/topchan-closure";
 
 /**
  * Revalidated every six hours because the «от …» chip is a LIVE price.
@@ -77,7 +78,7 @@ const STAY_CATEGORIES: { href: string; label: Record<string, string> }[] = [
   // the place rather than the product, which is what a guest scanning this
   // strip is choosing between.
   { href: "/services/picnic-zone", label: { ru: "Пикник-зона", uz: "Piknik zonasi", en: "Picnic area" } },
-];
+].filter((c) => !(topchanClosure.closed && c.href === "/services/picnic-zone"));
 
 /** Tariff line under the pool CTA, built from the single source in pricing.ts. */
 // Non-breaking, like lib/tariff.ts money(): a plain space let the

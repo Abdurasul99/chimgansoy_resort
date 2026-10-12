@@ -1,23 +1,29 @@
 import type { NavigationItem } from "./types";
 import { poolClosure } from "./pool-closure";
+import { topchanClosure } from "./topchan-closure";
 
 /**
- * Пока бассейн закрыт (см. pool-closure.ts), ссылки на него убираются из меню
- * и подвала: вести гостя на страницу «услуга не работает» из главного меню —
- * то же самое, что держать в витрине пустую полку.
+ * Пока бассейн или топчаны закрыты (pool-closure.ts, topchan-closure.ts), ссылки
+ * на них убираются из меню и подвала: вести гостя на страницу «услуга не
+ * работает» из главного меню — то же самое, что держать в витрине пустую полку.
  */
+const CLOSED_PATHS = [
+  ...(poolClosure.closed ? ["/nomera/pool"] : []),
+  ...(topchanClosure.closed ? ["/topchan", "/services/picnic-zone", "/services/outdoor-cooking"] : []),
+];
+
 const withoutClosedPool = <T extends { links?: { href: string }[]; href?: string }>(
   items: T[],
 ): T[] =>
-  !poolClosure.closed
+  CLOSED_PATHS.length === 0
     ? items
     : items
         .map((item) =>
           item.links
-            ? { ...item, links: item.links.filter((l) => l.href !== "/nomera/pool") }
+            ? { ...item, links: item.links.filter((l) => !CLOSED_PATHS.includes(l.href)) }
             : item,
         )
-        .filter((item) => item.href !== "/nomera/pool") as T[];
+        .filter((item) => !CLOSED_PATHS.includes(item.href ?? "")) as T[];
 
 const ALL_MAIN: NavigationItem[] = [
   {

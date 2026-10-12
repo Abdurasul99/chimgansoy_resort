@@ -13,6 +13,7 @@ import { pickText } from "@/lib/restaurant/rules";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Icon } from "@/components/ui/Icon";
 import { clock } from "@/components/ui/Clock";
+import { topchanClosure } from "@/content/topchan-closure";
 
 /**
  * Ресторан, пикник-зона и тюбинг — под карточками глэмпинга и шале.
@@ -179,8 +180,10 @@ export async function HomeDayCards({ locale, pricing }: { locale: Locale; pricin
         </div>
       </article>
 
-      {/* ── Пикник-зона и тюбинг — упрощённые карточки в стиле домиков ── */}
-      <div className="mt-5 grid gap-5 sm:mt-8 sm:gap-8 lg:grid-cols-2">
+      {/* ── Пикник-зона и тюбинг — упрощённые карточки в стиле домиков.
+          Топчаны закрыты (topchan-closure.ts) — тогда тюбинг один, во всю ширину. ── */}
+      <div className={`mt-5 grid gap-5 sm:mt-8 sm:gap-8 ${topchanClosure.closed ? "" : "lg:grid-cols-2"}`}>
+        {!topchanClosure.closed && (
         <DayCard
           locale={locale}
           image={resortImages.galTerritoryPanorama}
@@ -196,6 +199,7 @@ export async function HomeDayCards({ locale, pricing }: { locale: Locale; pricin
           bookHref={localizePath(locale, "/topchan#request")}
           bookLabel={COPY.picnic.book[locale]}
         />
+        )}
         <DayCard
           locale={locale}
           image={resortImages.tubingTubesTrack}

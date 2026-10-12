@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { resolvePricing } from "@/lib/pricing-resolve";
 import { faqItems } from "@/content/faq";
 import { poolClosure } from "@/content/pool-closure";
+import { topchanClosure } from "@/content/topchan-closure";
 import { venueCore, venueFacts, money } from "@/lib/venue-facts";
 import { buildSystemPrompt } from "@/lib/ai-context";
 
@@ -81,7 +82,8 @@ describe("правка цены доходит до каждой витрины"
 
   it("FAQ на главной — и он же уходит в Google как FAQPage", () => {
     const text = JSON.stringify(faqItems(patched));
-    expect(text).toContain(money(313_131));
+    // Цена топчана в FAQ — только пока он работает (content/topchan-closure.ts).
+    if (!topchanClosure.closed) expect(text).toContain(money(313_131));
     // Парковка названа в ответе «на день» — раньше там стояла цена бассейна.
     expect(text).toContain(money(121_212));
     // Цены бассейна в FAQ — только пока он работает; закрытый бассейн FAQ не

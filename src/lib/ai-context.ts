@@ -1,6 +1,8 @@
 import { contacts } from "@/content/contacts";
 import { money, venueCore } from "@/lib/venue-facts";
 import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
+import { poolClosure } from "@/content/pool-closure";
+import { topchanClosure } from "@/content/topchan-closure";
 
 /**
  * Builds the system prompt for the guest-facing AI concierge on the site.
@@ -28,10 +30,8 @@ ${venueCore(live)}
 
 ССЫЛКИ (вставляй их СТРОГО в формате Markdown [текст](URL); других ссылок не выдумывай):
 - Онлайн-бронирование: [страница бронирования](/${locale}/bron)
-- Заявка на топчан: [топчан](/${locale}/topchan)
-- Заявка на тюбинг: [тюбинг-горка](/${locale}/tubing)
-- Заявка на бассейн: [бассейн](/${locale}/nomera/pool)
-- Контакты и форма заявки: [контакты](/${locale}/contact)
+${topchanClosure.closed ? "" : `- Заявка на топчан: [топчан](/${locale}/topchan)\n`}- Заявка на тюбинг: [тюбинг-горка](/${locale}/tubing)
+${poolClosure.closed ? "" : `- Заявка на бассейн: [бассейн](/${locale}/nomera/pool)\n`}- Контакты и форма заявки: [контакты](/${locale}/contact)
 - Позвонить: [${contacts.phone}](${phoneHref})
 - Мессенджеры: [WhatsApp](${contacts.whatsapp}) · [Telegram](${contacts.telegram}) · [Instagram](${contacts.instagram})
 - Как добраться: [Google Карты](${contacts.googleMapsUrl}) · [Яндекс Карты](${contacts.yandexMapsUrl})

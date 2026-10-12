@@ -14,6 +14,8 @@ import { venueTopic, TOPICS, TOPIC_LABEL, type Topic } from "./venue-topics";
 import { contacts } from "@/content/contacts";
 import { answerBudget, askAi, isHardQuestion, type AiKind } from "./ai-provider";
 import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
+import { poolClosure } from "@/content/pool-closure";
+import { topchanClosure } from "@/content/topchan-closure";
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -180,9 +182,11 @@ function systemPrompt(live: LivePricing = resolvePricing()): string {
     // /ru/bron, which is the Exely stay engine and sells none of the three.
     "БРОНИРОВАНИЕ: проживание онлайн — https://chimgandarbaza.uz/ru/bron",
     "ДНЕВНЫЕ ЗАЯВКИ (давай ссылку строкой, целиком, без Markdown):",
-    "  топчан  — https://chimgandarbaza.uz/ru/topchan",
+    // Закрытые продукты ссылок не получают: бот не должен звать в форму,
+    // которая ответит «заявки не принимаются».
+    ...(topchanClosure.closed ? [] : ["  топчан  — https://chimgandarbaza.uz/ru/topchan"]),
     "  тюбинг  — https://chimgandarbaza.uz/ru/tubing",
-    "  бассейн — https://chimgandarbaza.uz/ru/nomera/pool",
+    ...(poolClosure.closed ? [] : ["  бассейн — https://chimgandarbaza.uz/ru/nomera/pool"]),
     "Гостю, который пишет по-узбекски или по-английски, давай ту же ссылку с /uz/ или /en/.",
     `В конце ответа с ЦЕНАМИ или ДОСТУПНОСТЬЮ добавляй строку: «Точную информацию подтвердит администратор: ${contacts.phone}».`,
     "НЕ добавляй эту строку в ответах про погоду, дорогу, парковку и прочую справку — там она ни к чему.",

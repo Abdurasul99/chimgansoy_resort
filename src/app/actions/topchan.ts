@@ -14,6 +14,8 @@ import {
   todayTashkent,
 } from "@/lib/request-delivery";
 import { pageLine, trafficSource } from "@/lib/request-context";
+import { topchanClosure } from "@/content/topchan-closure";
+import { text } from "@/lib/localize";
 
 export type TopchanResult = { ok: true } | { ok: false; error: string };
 
@@ -71,6 +73,9 @@ export async function submitTopchanRequest(formData: FormData): Promise<TopchanR
 
   const localeRaw = ((formData.get("locale") as string | null) ?? "").trim();
   const lang: Lang = localeRaw === "uz" || localeRaw === "en" ? localeRaw : "ru";
+  // Топчаны закрыты (topchan-closure.ts): страница формы не показывает, но
+  // открытая до закрытия вкладка ещё может её отправить.
+  if (topchanClosure.closed) return { ok: false, error: text(topchanClosure.formError, lang) };
   // Откуда пришла заявка: контекст обращения для оператора.
   const page = pageLine(formData);
   // Метки utm — словами: «визитка из шапки Instagram», а не три параметра.

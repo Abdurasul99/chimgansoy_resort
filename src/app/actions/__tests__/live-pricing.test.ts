@@ -32,6 +32,18 @@ vi.mock("@/content/pool-closure", () => ({
   },
 }));
 
+/** Топчаны закрыты 12.10.2026 — расчёт их цены проверяется на день, когда их откроют. */
+vi.mock("@/content/topchan-closure", () => ({
+  topchanClosure: {
+    closed: false,
+    since: "12.10.2026",
+    title: { ru: "", uz: "", en: "" },
+    text: { ru: "", uz: "", en: "" },
+    formError: { ru: "закрыты", uz: "yopiq", en: "closed" },
+  },
+  openInstead: { ru: "", uz: "", en: "" },
+}));
+
 const { readOverrides, deliverRequest } = vi.hoisted(() => ({
   readOverrides: vi.fn(),
   deliverRequest: vi.fn(async (opts: unknown) => {
@@ -386,6 +398,42 @@ describe("бассейн закрыт — сервер не принимает �
     expect(result.ok).toBe(false);
     expect(result.ok === false && result.error).toMatch(/временно не работает/i);
     // И ничего не ушло оператору: заявки на закрытую услугу в телеграм не идут.
+    expect(deliverRequest).not.toHaveBeenCalled();
+  });
+});
+
+describe("топчаны закрыты — сервер не принимает заявку", () => {
+  it("отказывает даже при полностью корректной форме", async () => {
+    vi.resetModules();
+    vi.doMock("@/content/topchan-closure", () => ({
+      topchanClosure: {
+        closed: true,
+        since: "12.10.2026",
+        title: { ru: "", uz: "", en: "" },
+        text: { ru: "", uz: "", en: "" },
+        formError: {
+          ru: "Топчаны закрыты до нового сезона — заявки не принимаются.",
+          uz: "Topchanlar yopiq.",
+          en: "The topchans are closed.",
+        },
+      },
+      openInstead: { ru: "", uz: "", en: "" },
+    }));
+
+    const { submitTopchanRequest: submitClosed } = await import("@/app/actions/topchan");
+    const fd = new FormData();
+    fd.set("locale", "ru");
+    fd.set("name", "Гость");
+    fd.set("phone", "+998 90 123 45 67");
+    fd.set("date", "2026-10-20");
+    fd.set("guests", "4");
+    fd.set("offerConsent", "on");
+    fd.set("privacyConsent", "on");
+
+    const result = await submitClosed(fd);
+
+    expect(result.ok).toBe(false);
+    expect(result.ok === false && result.error).toMatch(/закрыты до нового сезона/i);
     expect(deliverRequest).not.toHaveBeenCalled();
   });
 });

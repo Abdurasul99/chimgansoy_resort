@@ -300,8 +300,8 @@ export default async function RoomDetailPage({ params }: PageProps) {
               {text(poolClosure.alternative, locale)}
             </p>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-              <ButtonLink href={localizePath(locale, "/topchan")} variant="primary">
-                {text({ ru: "Топчан", uz: "Topchan", en: "Topchan" }, locale)}
+              <ButtonLink href={localizePath(locale, "/restaurant")} variant="primary">
+                {text({ ru: "Ресторан", uz: "Restoran", en: "Restaurant" }, locale)}
               </ButtonLink>
               <ButtonLink href={localizePath(locale, "/tubing")} variant="ghost">
                 {text({ ru: "Тюбинг-горка", uz: "Tyubing gorkasi", en: "Tubing hill" }, locale)}
