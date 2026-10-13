@@ -9,6 +9,7 @@ import { getDayProduct } from "@/content/day-products";
 import { getPricing } from "@/lib/pricing-live";
 import { resortImages } from "@/content/images";
 import { tubingVideos, extraTubingVideos } from "@/content/videos";
+import { poolClosure, poolVideoKeys } from "@/content/pool-closure";
 import { list, text } from "@/lib/localize";
 import { clock } from "@/components/ui/Clock";
 import type { Locale } from "@/i18n/config";
@@ -63,7 +64,13 @@ export async function DayProductPage({ locale, slug }: { locale: Locale; slug: "
       {/* Straight under the form: a guest who has just read the tariff is the
           one most worth showing the run to. Photography of the track never
           existed — this footage is the first real look at it. */}
-      {slug === "tubing" && <VideoReel locale={locale} clips={[...tubingVideos, ...extraTubingVideos]} />}
+      {slug === "tubing" && (
+        <VideoReel
+          locale={locale}
+          // Ролики у бассейна — только пока он работает (pool-closure.ts).
+          clips={[...tubingVideos, ...extraTubingVideos].filter((c) => !(poolClosure.closed && poolVideoKeys.includes(c.key)))}
+        />
+      )}
 
       <section className="px-4 py-14 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">

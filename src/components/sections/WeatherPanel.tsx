@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { poolClosure } from "@/content/pool-closure";
 import {
   formatTemp,
   moonPhase,
@@ -79,7 +80,7 @@ const T:{[l:string]:{[k:string]:string}} = {
     kmh:"км/ч",hpa:"гПа",masl:"м н.у.м.",
     openedYear:"Год открытия",formats:"Форматов",territory:"Территория",
     title:"Горный курорт рядом с Ташкентом",
-    desc:"CHIMGAN DARBAZA — в горах Чимгана. Шале, глэмпинг, бассейн и ресторан в 45 минутах от Ташкента.",
+    desc:`CHIMGAN DARBAZA — в горах Чимгана. Шале, глэмпинг, ${poolClosure.closed ? "ресторан и тюбинг-горка" : "бассейн и ресторан"} в 45 минутах от Ташкента.`,
   },
   uz:{
     badge:"KURORT ATMOSFERASI",location:"Chimgan Darbaza, O'zbekiston",
@@ -93,7 +94,7 @@ const T:{[l:string]:{[k:string]:string}} = {
     kmh:"km/soat",hpa:"gPa",masl:"m d.o.",
     openedYear:"Ochilgan yil",formats:"Formatlar",territory:"Hudud",
     title:"Toshkent yaqinidagi tog' kurorti",
-    desc:"CHIMGAN DARBAZA — Chimgon tog'larida. Shale, glemping, basseyn va restoran Toshkentdan 45 daqiqada.",
+    desc:`CHIMGAN DARBAZA — Chimgon tog'larida. Shale, glemping, ${poolClosure.closed ? "restoran va tubing gorkasi" : "basseyn va restoran"} Toshkentdan 45 daqiqada.`,
   },
   en:{
     badge:"RESORT ATMOSPHERE",location:"Chimgan Darbaza, Uzbekistan",
@@ -107,7 +108,7 @@ const T:{[l:string]:{[k:string]:string}} = {
     kmh:"km/h",hpa:"hPa",masl:"m a.s.l.",
     openedYear:"Opened",formats:"Stay types",territory:"Territory",
     title:"Mountain resort near Tashkent",
-    desc:"CHIMGAN DARBAZA — in the Chimgan mountains. Chalets, glamping, a pool and restaurant, 45 min from Tashkent.",
+    desc:`CHIMGAN DARBAZA — in the Chimgan mountains. Chalets, glamping, ${poolClosure.closed ? "a restaurant and a tubing hill" : "a pool and restaurant"}, 45 min from Tashkent.`,
   },
 };
 

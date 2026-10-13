@@ -1,3 +1,4 @@
+import { poolClosure } from "./pool-closure";
 import { resortImages } from "./images";
 import type { LocalizedString } from "./types";
 
@@ -34,9 +35,9 @@ export const attractions: Attraction[] = [
     distance: { ru: "от территории", uz: "hududdan", en: "from the territory" },
     image: "mountainWalks",
     description: {
-      ru: "Легкие маршруты можно совместить с завтраком, бассейном или ужином в ресторане.",
-      uz: "Yengil marshrutlarni nonushta, basseyn yoki restorandagi kechki ovqat bilan birlashtirish mumkin.",
-      en: "Gentle routes can be paired with breakfast, the pool, or dinner at the restaurant.",
+      ru: `Легкие маршруты можно совместить с завтраком${poolClosure.closed ? "" : ", бассейном"} или ужином в ресторане.`,
+      uz: `Yengil marshrutlarni nonushta${poolClosure.closed ? "" : ", basseyn"} yoki restorandagi kechki ovqat bilan birlashtirish mumkin.`,
+      en: `Gentle routes can be paired with breakfast${poolClosure.closed ? "" : ", the pool,"} or dinner at the restaurant.`,
     },
   },
   {

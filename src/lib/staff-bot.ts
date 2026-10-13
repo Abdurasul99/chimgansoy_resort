@@ -49,10 +49,14 @@ const HERO_PHOTO = `${IMG}/2026-08/pool-panorama.jpg`;
 // captioned "(визуализация)", which is an honest label but still answers "what
 // does it look like?" with a drawing. Those files are gone from the repo, so
 // these URLs would 404 if they had been left.
-const ALBUM: { url: string; caption: string }[] = [
+// Кадры бассейна — только пока он работает (pool-closure.ts).
+const POOL_ALBUM: { url: string; caption: string }[] = [
   { url: `${IMG}/2026-08/pool-panorama.jpg`, caption: "Бассейн и горы 🏔" },
   { url: `${IMG}/2026-08/pool-logo-tall.jpg`, caption: "Мозаика на дне бассейна" },
   { url: `${IMG}/2026-08/pool-cabanas-valley.jpg`, caption: "Бунгало у воды" },
+];
+const ALBUM: { url: string; caption: string }[] = [
+  ...(poolClosure.closed ? [] : POOL_ALBUM),
   { url: `${IMG}/2026-08/chalet-peaks.jpg`, caption: "Шале под гребнем Чимгана" },
   { url: `${IMG}/rooms/chalet-lounge.jpg`, caption: "Кухня-зал в шале" },
   { url: `${IMG}/rooms/aframe-room.jpg`, caption: "Глэмпинг A-frame внутри" },

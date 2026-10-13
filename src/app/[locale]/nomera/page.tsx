@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { poolClosure } from "@/content/pool-closure";
 import { PageHero } from "@/components/sections/PageHero";
 import { BookingWidget } from "@/components/sections/BookingWidget";
 import { RoomCatalog } from "@/components/sections/RoomCatalog";
@@ -116,7 +117,8 @@ export default async function RoomsPage({ params }: PageProps) {
               {t.perksTitle}
             </p>
             <ul className="mt-5 grid gap-3 sm:grid-cols-2">
-              {t.perks.map((perk) => (
+              {/* Пока бассейн закрыт (pool-closure.ts), «бассейн включён» не обещаем. */}
+              {t.perks.filter((perk) => !(poolClosure.closed && /бассейн|basseyn|pool/i.test(perk))).map((perk) => (
                 <li key={perk} className="flex items-start gap-3 text-sm leading-6 text-white/85">
                   <span aria-hidden className="mt-2 inline-block h-1 w-3 shrink-0 bg-[var(--sun)]" />
                   <span>{perk}</span>

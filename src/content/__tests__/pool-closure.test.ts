@@ -65,3 +65,22 @@ describe("бассейн закрыт", () => {
     }
   });
 });
+
+describe("бассейн закрыт — тексты сайта не обещают его как работающий (оператор, 12.10.2026)", () => {
+  it("каталог домиков, «О курорте», «Чем заняться», «Круглый год», «Место», SEO", async () => {
+    if (!poolClosure.closed) return;
+    const { dictionaries } = await import("@/content/translations");
+    const { attractions } = await import("@/content/attractions");
+    const { pageSeo } = await import("@/content/seo");
+    const texts = [
+      ...(["ru", "uz", "en"] as const).flatMap((l) => {
+        const h = dictionaries[l].home as unknown as Record<string, unknown>;
+        const p = (dictionaries[l] as unknown as { pages: Record<string, { lead: string }> }).pages;
+        return [h.thingsText, h.yearRoundText, p.rooms.lead, p.about.lead];
+      }),
+      JSON.stringify(attractions),
+      JSON.stringify(pageSeo),
+    ];
+    for (const t of texts) expect(t).not.toMatch(/бассейн|basseyn|\bpool\b/i);
+  });
+});

@@ -1,4 +1,12 @@
 import type { Locale } from "@/i18n/config";
+import { poolClosure } from "./pool-closure";
+import { topchanClosure } from "./topchan-closure";
+
+// Закрытые до сезона бассейн и пикник-зона в текстах не упоминаются как
+// работающие — и возвращаются вместе с флагами (pool-closure.ts, topchan-closure.ts).
+const pool = !poolClosure.closed;
+const picnic = !topchanClosure.closed;
+
 
 export const dictionaries = {
   ru: {
@@ -57,12 +65,12 @@ export const dictionaries = {
       // and Exely still say 5 and have to be raised there too.
       roomsText: "Глэмпинг A-frame на двоих, шале с двумя спальнями для компании до 6 человек — выберите формат и забронируйте.",
       thingsTitle: "Чем заняться на курорте",
-      thingsText: "Утро у бассейна, ужин на террасе, мангал и казан на территории, а рядом — горные маршруты, конные прогулки и канатные дороги Чимгана.",
+      thingsText: `${pool ? "Утро у бассейна, ужин" : "Ужин"} на террасе, ${picnic ? "мангал и казан" : "тюбинг-горка"} на территории, а рядом — горные маршруты, конные прогулки и канатные дороги Чимгана.`,
       territoryTitle: "Природа, воздух и приватность",
       territoryText: "9 гектаров среди гор Чимгана: сосны, чистый воздух и тишина в 45 минутах от Ташкента. На территории бассейн 680 м², летний ресторан и тюбинг-горка с пикник-зоной. Каждый домик стоит отдельно — со своей террасой и видом на хребет.",
       territoryPills: ["Шале", "Глэмпинг", "Бассейн", "Ресторан"],
       yearRoundTitle: "Круглый год в горах",
-      yearRoundText: "Летом — бассейн, терраса и ужин на воздухе. Осенью и зимой — тёплый пол в шале, горный воздух и снежные вершины в панорамном окне. Заезд с 15:00, выезд до 12:00.",
+      yearRoundText: `Летом — ${pool ? "бассейн, " : ""}терраса и ужин на воздухе. Осенью и зимой — тёплый пол в шале, горный воздух и снежные вершины в панорамном окне. Заезд с 15:00, выезд до 12:00.`,
       reviewsTitle: "Отзывы гостей",
       galleryTitle: "Фотогалерея",
       faqTitle: "Вопросы перед поездкой",
@@ -74,9 +82,9 @@ export const dictionaries = {
       offersSaving: "Ваша выгода",
     },
     pages: {
-      rooms: { title: "Проживание: шале и глэмпинг", lead: "Двадцать отдельных домиков на 9 гектарах. Выберите формат и забронируйте — бассейн включён в проживание." },
+      rooms: { title: "Проживание: шале и глэмпинг", lead: `Двадцать отдельных домиков на 9 гектарах. Выберите формат и забронируйте${pool ? " — бассейн включён в проживание" : ""}.` },
       services: { title: "Сервисы и инфраструктура", lead: "Зоны отдыха, еда, спорт и активности для полноценного дня на территории." },
-      about: { title: "О курорте", lead: "Горный курорт на высоте 1700 м в 45 минутах от Ташкента — шале, глэмпинг, бассейн и 9 гектаров тишины." },
+      about: { title: "О курорте", lead: `Горный курорт на высоте 1700 м в 45 минутах от Ташкента — шале, глэмпинг, ${pool ? "бассейн" : "ресторан"} и 9 гектаров тишины.` },
       place: { title: "Места и впечатления рядом", lead: "Горы, прогулки и сезонные маршруты вокруг курорта." },
       contact: { title: "Контакты", lead: "Свяжитесь с администратором, чтобы уточнить даты, формат отдыха и дорогу." },
       booking: { title: "Забронировать отдых", lead: "Выберите даты и забронируйте — подтвердим бронь и ответим на все вопросы." },
@@ -164,12 +172,12 @@ export const dictionaries = {
       roomsTitle: "Qayerda yashaysiz",
       roomsText: "Ikki kishilik A-frame glemping, 6 kishigacha davra uchun ikki yotoqxonali shale — formatni tanlang va bron qiling.",
       thingsTitle: "Kurortda nima qilish",
-      thingsText: "Ertalab basseyn, kechqurun terrasada ovqat, hududda mangal va qozon, yaqinida esa tog' marshrutlari, ot minish va Chimgon kanat yo'llari.",
+      thingsText: `${pool ? "Ertalab basseyn, kechqurun" : "Kechqurun"} terrasada ovqat, hududda ${picnic ? "mangal va qozon" : "tubing gorkasi"}, yaqinida esa tog' marshrutlari, ot minish va Chimgon kanat yo'llari.`,
       territoryTitle: "Tabiat, havo va xususiylik",
       territoryText: "Chimgon tog'lari orasida 9 gektar: qarag'aylar, toza havo va Toshkentdan 45 daqiqalik osoyishtalik. Hududda 680 m² basseyn, yozgi restoran va piknik zonali tubing gorkasi bor. Har bir uycha alohida turadi — o'z terrasasi va tizma manzarasi bilan.",
       territoryPills: ["Shale", "Glemping", "Basseyn", "Restoran"],
       yearRoundTitle: "Yil davomida tog'larda",
-      yearRoundText: "Yozda — basseyn, terrasa va ochiq havoda kechki ovqat. Kuz va qishda — shaledagi issiq pol, tog' havosi va panoramali derazadagi qorli cho'qqilar. Kirish 15:00 dan, chiqish 12:00 gacha.",
+      yearRoundText: `Yozda — ${pool ? "basseyn, " : ""}terrasa va ochiq havoda kechki ovqat. Kuz va qishda — shaledagi issiq pol, tog' havosi va panoramali derazadagi qorli cho'qqilar. Kirish 15:00 dan, chiqish 12:00 gacha.`,
       reviewsTitle: "Mehmonlar fikri",
       galleryTitle: "Fotogalereya",
       faqTitle: "Safar oldidan savollar",
@@ -181,9 +189,9 @@ export const dictionaries = {
       offersSaving: "Sizning foydangiz",
     },
     pages: {
-      rooms: { title: "Yashash: shale va glemping", lead: "9 gektarda yigirma alohida uycha. Formatni tanlang va bron qiling — basseyn yashash narxiga kiritilgan." },
+      rooms: { title: "Yashash: shale va glemping", lead: `9 gektarda yigirma alohida uycha. Formatni tanlang va bron qiling${pool ? " — basseyn yashash narxiga kiritilgan" : ""}.` },
       services: { title: "Xizmatlar va infratuzilma", lead: "Hududda to'liq kun uchun dam olish, taom, sport va faoliyatlar." },
-      about: { title: "Kurort haqida", lead: "Toshkentdan 45 daqiqada, 1700 m balandlikdagi tog' kurorti — shale, glemping, basseyn va 9 gektar osoyishtalik." },
+      about: { title: "Kurort haqida", lead: `Toshkentdan 45 daqiqada, 1700 m balandlikdagi tog' kurorti — shale, glemping, ${pool ? "basseyn" : "restoran"} va 9 gektar osoyishtalik.` },
       place: { title: "Yaqindagi joylar va taassurotlar", lead: "Kurort atrofidagi tog'lar, sayrlar va mavsumiy marshrutlar." },
       contact: { title: "Aloqa", lead: "Sana, dam olish formati va yo'l bo'yicha administrator bilan bog'laning." },
       booking: { title: "Dam olishni bron qilish", lead: "Sanalarni tanlang va bron qiling — bronni tasdiqlaymiz va barcha savollarga javob beramiz." },
@@ -271,12 +279,12 @@ export const dictionaries = {
       roomsTitle: "Where you'll stay",
       roomsText: "A-frame glamping for two, a two-bedroom chalet for a group of up to 6 — pick a format and book it.",
       thingsTitle: "What to do at the resort",
-      thingsText: "Mornings by the pool, dinner on the terrace, BBQ and kazan on the grounds — and mountain trails, horse rides, and the Chimgan cable cars close by.",
+      thingsText: `${pool ? "Mornings by the pool, dinner" : "Dinner"} on the terrace, ${picnic ? "BBQ and kazan" : "the tubing hill"} on the grounds — and mountain trails, horse rides, and the Chimgan cable cars close by.`,
       territoryTitle: "Nature, air, and privacy",
       territoryText: "Nine hectares among the Chimgan mountains: pines, clean air, and quiet 45 minutes from Tashkent. On the grounds: a 680 m² pool, a summer restaurant and the tubing hill with its picnic area. Every cabin stands on its own — with its own terrace and a view of the ridge.",
       territoryPills: ["Chalets", "Glamping", "Pool", "Restaurant"],
       yearRoundTitle: "Year-round in the mountains",
-      yearRoundText: "In summer — the pool, the terrace, and dinner in the open air. In autumn and winter — heated floors in the chalet, mountain air, and snowy peaks through the panoramic window. Check-in from 15:00, check-out by 12:00.",
+      yearRoundText: `In summer — ${pool ? "the pool, " : ""}the terrace, and dinner in the open air. In autumn and winter — heated floors in the chalet, mountain air, and snowy peaks through the panoramic window. Check-in from 15:00, check-out by 12:00.`,
       reviewsTitle: "Guest reviews",
       galleryTitle: "Photo gallery",
       faqTitle: "Questions before the trip",
@@ -288,9 +296,9 @@ export const dictionaries = {
       offersSaving: "You save",
     },
     pages: {
-      rooms: { title: "Stays: chalets and glamping", lead: "Twenty standalone cabins on nine hectares. Pick a format and book it — the pool comes with every stay." },
+      rooms: { title: "Stays: chalets and glamping", lead: `Twenty standalone cabins on nine hectares. Pick a format and book it${pool ? " — the pool comes with every stay" : ""}.` },
       services: { title: "Services and infrastructure", lead: "Rest zones, food, sport, and activities for a complete resort day." },
-      about: { title: "About the resort", lead: "A mountain resort at 1,700 m, 45 minutes from Tashkent — chalets, glamping, a pool, and nine hectares of quiet." },
+      about: { title: "About the resort", lead: `A mountain resort at 1,700 m, 45 minutes from Tashkent — chalets, glamping, ${pool ? "a pool" : "a restaurant"}, and nine hectares of quiet.` },
       place: { title: "Nearby attractions", lead: "Mountains, walks, and seasonal routes around the resort." },
       contact: { title: "Contacts", lead: "Contact the administrator to confirm dates, trip format, and directions." },
       booking: { title: "Book your stay", lead: "Pick your dates and book — we'll confirm your reservation and answer any questions." },

@@ -1,4 +1,8 @@
 import type { PageSeo } from "./types";
+import { poolClosure } from "./pool-closure";
+
+// Пока бассейн закрыт (pool-closure.ts), описания его не обещают.
+const pool = !poolClosure.closed;
 
 /**
  * Page titles here must NOT include the brand — the root layout applies the
@@ -18,9 +22,9 @@ export const pageSeo = {
       en: "CHIMGAN DARBAZA, Tashkent — Official website",
     },
     description: {
-      ru: "Шале и A-frame глэмпинг на высоте 1700 м в 45 минутах от Ташкента: бассейн включён в проживание, кухня на территории, панорама Чимгана с террасы.",
-      uz: "Toshkentdan 45 daqiqada, 1700 m balandlikda shale va A-frame glemping: basseyn narxga kiritilgan, hududda oshxona, terrasadan Chimg'on panoramasi.",
-      en: "Chalets and A-frame glamping at 1,700 m, 45 minutes from Tashkent: pool included with every stay, kitchen on site, Chimgan views from your terrace.",
+      ru: `Шале и A-frame глэмпинг на высоте 1700 м в 45 минутах от Ташкента: ${pool ? "бассейн" : "завтрак"} включён в проживание, кухня на территории, панорама Чимгана с террасы.`,
+      uz: `Toshkentdan 45 daqiqada, 1700 m balandlikda shale va A-frame glemping: ${pool ? "basseyn" : "nonushta"} narxga kiritilgan, hududda oshxona, terrasadan Chimg'on panoramasi.`,
+      en: `Chalets and A-frame glamping at 1,700 m, 45 minutes from Tashkent: ${pool ? "pool" : "breakfast"} included with every stay, kitchen on site, Chimgan views from your terrace.`,
     },
   },
   rooms: {
@@ -54,9 +58,9 @@ export const pageSeo = {
       en: "About the resort in the Chimgan mountains",
     },
     description: {
-      ru: "Проживание в шале и глэмпинге на высоте 1700 м в 45 минутах от Ташкента — 9 гектаров, бассейн, кухня и горы Чимгана.",
-      uz: "Toshkentdan 45 daqiqada, 1700 m balandlikda shale va glempingda yashash — 9 gektar, basseyn, oshxona va Chimg'on tog'lari.",
-      en: "Chalet and glamping stays at 1,700 m, 45 minutes from Tashkent — nine hectares, a pool, a kitchen, and the Chimgan mountains.",
+      ru: `Проживание в шале и глэмпинге на высоте 1700 м в 45 минутах от Ташкента — 9 гектаров, ${pool ? "бассейн, " : ""}кухня и горы Чимгана.`,
+      uz: `Toshkentdan 45 daqiqada, 1700 m balandlikda shale va glempingda yashash — 9 gektar, ${pool ? "basseyn, " : ""}oshxona va Chimg'on tog'lari.`,
+      en: `Chalet and glamping stays at 1,700 m, 45 minutes from Tashkent — nine hectares, ${pool ? "a pool, " : ""}a kitchen, and the Chimgan mountains.`,
     },
   },
   place: {
@@ -91,9 +95,9 @@ export const pageSeo = {
       en: "Booking — CHIMGAN DARBAZA, Tashkent — Official website",
     },
     description: {
-      ru: "Бронирование шале, глэмпинга и бассейна: выберите даты — администратор подтвердит бронь в ближайшее время.",
-      uz: "Shale, glemping va basseynni bron qilish: sanalarni tanlang — administrator bronni tez orada tasdiqlaydi.",
-      en: "Book a chalet, a glamping cabin, or the pool: pick the dates and our team will confirm shortly.",
+      ru: `Бронирование ${pool ? "шале, глэмпинга и бассейна" : "шале и глэмпинга"}: выберите даты — администратор подтвердит бронь в ближайшее время.`,
+      uz: `${pool ? "Shale, glemping va basseynni" : "Shale va glempingni"} bron qilish: sanalarni tanlang — administrator bronni tez orada tasdiqlaydi.`,
+      en: `Book a chalet${pool ? ", a glamping cabin, or the pool" : " or a glamping cabin"}: pick the dates and our team will confirm shortly.`,
     },
   },
 } satisfies Record<string, PageSeo>;

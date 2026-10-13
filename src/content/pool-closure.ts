@@ -17,6 +17,9 @@ import { openInstead, topchanClosure } from "./topchan-closure";
  * Чтобы открыть бассейн обратно — поставить closed: false. Больше ничего
  * менять не нужно.
  */
+/** Ролики, снятые у бассейна: пока он закрыт, на сайте не показываются. */
+export const poolVideoKeys: readonly string[] = ["tubing-1", "tubing-5"];
+
 export const poolClosure = {
   closed: true,
   /** Дата распоряжения оператора — попадает в примечание и в брифинг ИИ. */
