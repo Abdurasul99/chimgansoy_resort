@@ -31,7 +31,7 @@ import { getRoomPrices, priceChip } from "@/lib/room-price";
 import { clock } from "@/components/ui/Clock";
 import { stayRules } from "@/content/pricing";
 import { poolClosure } from "@/content/pool-closure";
-import { topchanClosure } from "@/content/topchan-closure";
+import { topchanClosure, topchanPhotos } from "@/content/topchan-closure";
 
 /**
  * Revalidated every six hours because the «от …» chip is a LIVE price.
@@ -424,7 +424,7 @@ export default async function HomePage({ params }: PageProps) {
               came round three times on one scroll. Same component the
               day-product pages use. See the note on homeGallery for why seven. */}
           <div className="mt-12 motion-reveal" data-delay="140">
-            <MediaArchive locale={locale} images={homeGallery} />
+            <MediaArchive locale={locale} images={homeGallery} exclude={topchanClosure.closed ? topchanPhotos : []} />
           </div>
         </div>
       </section>
@@ -433,7 +433,7 @@ export default async function HomePage({ params }: PageProps) {
       <section className="overflow-hidden bg-[var(--surface)] py-2">
         <div
           data-lenis-prevent-touch
-          className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-none lg:grid lg:grid-cols-5 lg:overflow-visible"
+          className={`flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-none lg:grid ${topchanClosure.closed ? "lg:grid-cols-4" : "lg:grid-cols-5"} lg:overflow-visible`}
         >
           {/* A day here in five frames: wake up, breakfast, the afternoon on a
               topchan, the grill, the kids' room.
@@ -451,7 +451,10 @@ export default async function HomePage({ params }: PageProps) {
             // включён, но показывать его этим снимком значит обещать не то:
             // гость ждёт накрытый стол, а получает набор снеков.
             { image: "chaletKitchen", caption: locale === "uz" ? "Shalede\nsneklar" : locale === "en" ? "Snacks\nin the chalet" : "Снеки\nв шале" },
-            { image: "galTopchanSwing", caption: locale === "uz" ? "Topchanda\nkun" : locale === "en" ? "A day\non the topchan" : "День\nна топчане" },
+            // Топчаны закрыты до сезона (topchan-closure.ts) — кадр с ними не показываем.
+            ...(topchanClosure.closed
+              ? []
+              : [{ image: "galTopchanSwing", caption: locale === "uz" ? "Topchanda\nkun" : locale === "en" ? "A day\non the topchan" : "День\nна топчане" }] as const),
             { image: "galMangalFire", caption: locale === "uz" ? "Mangal\nyonida kecha" : locale === "en" ? "An evening\nat the grill" : "Вечер\nу мангала" },
             // Was galKidsSwing — a stranger sitting on a swing looking at his
             // phone, which is not a picture of anything we sell.

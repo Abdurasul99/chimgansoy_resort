@@ -8,6 +8,7 @@ import { topchanClosure } from "@/content/topchan-closure";
 import { poolClosure } from "@/content/pool-closure";
 import { mainNavigation, footerNavigation } from "@/content/navigation";
 import { faqItems } from "@/content/faq";
+import { homeShowcase } from "@/content/home-showcase";
 import { resolvePricing } from "@/lib/pricing-resolve";
 import { money, venueFacts, venueCore } from "@/lib/venue-facts";
 
@@ -42,6 +43,12 @@ describe("топчаны закрыты", () => {
       // Закрытый бассейн больше не отсылает к закрытым топчанам.
       if (poolClosure.closed) expect(text).not.toMatch(/предлож\S* топчан/i);
     }
+  });
+
+  it("рассказ о территории на главной не зовёт в пикник-зону и бассейн", () => {
+    const s = JSON.stringify(homeShowcase);
+    expect(s).not.toMatch(/пикник|piknik|picnic/i);
+    if (poolClosure.closed) expect(s).not.toMatch(/680 м²|680 m²/);
   });
 
   it("тексты для гостя есть на всех трёх языках", () => {

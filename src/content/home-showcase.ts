@@ -1,5 +1,12 @@
 import { resortImages } from "./images";
+import { poolClosure } from "./pool-closure";
+import { topchanClosure } from "./topchan-closure";
 import type { LocalizedString } from "./types";
+
+// Закрытые до сезона бассейн и пикник-зона (pool-closure.ts, topchan-closure.ts)
+// из рассказа о территории выпадают — и возвращаются вместе с флагами.
+const pool = !poolClosure.closed;
+const picnic = !topchanClosure.closed;
 
 export type HomeShowcaseItem = {
   image: keyof typeof resortImages;
@@ -27,9 +34,9 @@ export const homeShowcase: HomeShowcaseItem[] = [
       en: "20 cabins on nine hectares in the mountains",
     },
     copy: {
-      ru: "Десять глэмпингов A-frame и десять шале с двумя спальнями. На территории — бассейн 680 м² с детским бассейном и пул-баром, летний ресторан и всесезонная тюбинг-горка с пикник-зоной. Завтрак включён в проживание, тюбинг — по одному бесплатному спуску каждому гостю, при работающей горке.",
-      uz: "O'nta A-frame glemping va ikki yotoqxonali o'nta shale. Hududda — bolalar basseyni va pul-bar bilan 680 m² basseyn, yozgi restoran va piknik zonali butun mavsumga tubing gorkasi. Nonushta yashash narxiga kiritilgan, tubing — gorka ishlayotgan bo'lsa, har bir mehmonga bittadan bepul uchish.",
-      en: "Ten A-frame glamping cabins and ten two-bedroom chalets. On the grounds: a 680 m² pool with a children's pool and a pool bar, a summer restaurant and the all-season tubing hill with its picnic area. Breakfast comes with every stay, and tubing is included — one free ride per guest, whenever the hill is running.",
+      ru: `Десять глэмпингов A-frame и десять шале с двумя спальнями. На территории — ${pool ? "бассейн 680 м² с детским бассейном и пул-баром, " : ""}летний ресторан и всесезонная тюбинг-горка${picnic ? " с пикник-зоной" : ""}. Завтрак включён в проживание, тюбинг — по одному бесплатному спуску каждому гостю, при работающей горке.`,
+      uz: `O'nta A-frame glemping va ikki yotoqxonali o'nta shale. Hududda — ${pool ? "bolalar basseyni va pul-bar bilan 680 m² basseyn, " : ""}yozgi restoran va ${picnic ? "piknik zonali " : ""}butun mavsumga tubing gorkasi. Nonushta yashash narxiga kiritilgan, tubing — gorka ishlayotgan bo'lsa, har bir mehmonga bittadan bepul uchish.`,
+      en: `Ten A-frame glamping cabins and ten two-bedroom chalets. On the grounds: ${pool ? "a 680 m² pool with a children's pool and a pool bar, " : ""}a summer restaurant and the all-season tubing hill${picnic ? " with its picnic area" : ""}. Breakfast comes with every stay, and tubing is included — one free ride per guest, whenever the hill is running.`,
     },
   },
   {

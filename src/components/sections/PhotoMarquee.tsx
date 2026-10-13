@@ -1,5 +1,6 @@
 import type { Locale } from "@/i18n/config";
 import { resortImages } from "@/content/images";
+import { topchanClosure, topchanPhotos } from "@/content/topchan-closure";
 import { text } from "@/lib/localize";
 
 /**
@@ -110,12 +111,25 @@ function Strip({ keys, reverse, locale }: { keys: readonly (keyof typeof resortI
   );
 }
 
+/**
+ * Пока топчаны закрыты (topchan-closure.ts), их три кадра из ленты уходят. Во
+ * втором ряду осталось бы три фото — короче экрана, и бесконечная лента на
+ * широком мониторе показывала бы разрыв. Поэтому оставшиеся девять делятся
+ * на ряды 5 и 4.
+ */
+const rows = (): [readonly (keyof typeof resortImages)[], readonly (keyof typeof resortImages)[]] => {
+  if (!topchanClosure.closed) return [ROW_A, ROW_B];
+  const rest = ROW_B.filter((k) => !topchanPhotos.includes(k));
+  return [ROW_A.slice(0, 5), [ROW_A[5], ...rest]];
+};
+
 export function PhotoMarquee({ locale }: { locale: Locale }) {
+  const [rowA, rowB] = rows();
   return (
     <section className="overflow-hidden py-4 sm:py-6" aria-label="Photo strip">
-      <Strip keys={ROW_A} locale={locale} />
+      <Strip keys={rowA} locale={locale} />
       <div className="h-3 sm:h-4" />
-      <Strip keys={ROW_B} reverse locale={locale} />
+      <Strip keys={rowB} reverse locale={locale} />
     </section>
   );
 }

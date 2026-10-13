@@ -38,6 +38,9 @@ export const topchanClosure = {
   } satisfies LocalizedString,
 } as const;
 
+/** Кадры с топчанами — из фотоархивов, пока топчаны закрыты, не показываются. */
+export const topchanPhotos: readonly string[] = ["galTopchanPeaks", "galTopchanRidge", "galTopchanRow", "galTopchanSwing", "galTopchanInside"];
+
 /** Что работает, пока закрыты бассейн и топчаны, — гость пришёл отдыхать, а не читать отказ. */
 export const openInstead: LocalizedString = {
   ru: "Тюбинг-горка и ресторан работают как обычно.",
