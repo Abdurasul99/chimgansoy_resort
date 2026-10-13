@@ -88,9 +88,9 @@ export function faqItems(live: LivePricing = resolvePricing()): FaqItem[] {
           en: "What is included in the stay?",
         },
         answer: {
-          ru: `Завтрак ${P.breakfast} — гостям и глэмпинга, и шале. Каждому проживающему — ${P.rides} бесплатный спуск на тюбинг-горке (при работающей горке), парковка у домика и Wi-Fi. Бассейн в летний сезон тоже входит в проживание, но сейчас он закрыт до начала летнего сезона — об открытии сообщим на сайте и в Instagram. Обед и ужин — в ресторане по меню или по тарифу «Всё включено».`,
-          uz: `Nonushta ${P.breakfast} — glemping va shale mehmonlariga. Har bir yashovchiga tubing gorkasida ${P.rides} marta bepul tushish (gorka ishlayotgan bo'lsa), uycha yonida parkovka va Wi-Fi. Yozgi mavsumda basseyn ham yashash narxiga kiradi, ammo hozir u yozgi mavsum boshlanguncha yopiq — ochilishi haqida saytda va Instagram'da xabar beramiz. Tushlik va kechki ovqat — restoranda menyu bo'yicha yoki «Hammasi kiritilgan» tarifi bo'yicha.`,
-          en: `Breakfast ${P.breakfast} for glamping and chalet guests alike. Every staying guest gets ${P.rides} free ride on the tubing hill (when the hill is running), parking by the cabin and Wi-Fi. In the summer season the pool is part of the stay too, but it is closed now until the summer season starts — we will announce the reopening on the site and on Instagram. Lunch and dinner are from the restaurant menu or on the All-Inclusive rate.`,
+          ru: `Завтрак ${P.breakfast} — гостям и глэмпинга, и шале. Каждому проживающему — ${P.rides} бесплатный спуск на тюбинг-горке (при работающей горке), парковка у домика и Wi-Fi. Обед и ужин — в ресторане по меню или по тарифу «Всё включено».`,
+          uz: `Nonushta ${P.breakfast} — glemping va shale mehmonlariga. Har bir yashovchiga tubing gorkasida ${P.rides} marta bepul tushish (gorka ishlayotgan bo'lsa), uycha yonida parkovka va Wi-Fi. Tushlik va kechki ovqat — restoranda menyu bo'yicha yoki «Hammasi kiritilgan» tarifi bo'yicha.`,
+          en: `Breakfast ${P.breakfast} for glamping and chalet guests alike. Every staying guest gets ${P.rides} free ride on the tubing hill (when the hill is running), parking by the cabin and Wi-Fi. Lunch and dinner are from the restaurant menu or on the All-Inclusive rate.`,
         },
       }
     : {
@@ -106,15 +106,17 @@ export function faqItems(live: LivePricing = resolvePricing()): FaqItem[] {
         },
       };
 
+  // Пока бассейн закрыт, ответ «на день» о нём молчит (оператор, 12.10.2026:
+  // «из поля видимости»). Пробел — в начале фразы, чтобы пустая не оставляла двойного.
   const poolDayRu = poolClosed
-    ? "Бассейн сейчас закрыт до начала летнего сезона."
-    : `Бассейн — ${P.poolAdultWeekday} и ${P.poolAdultWeekend} сум с человека, дети 5–15 вдвое дешевле, до 5 лет бесплатно, ${P.poolHours}.`;
+    ? ""
+    : ` Бассейн — ${P.poolAdultWeekday} и ${P.poolAdultWeekend} сум с человека, дети 5–15 вдвое дешевле, до 5 лет бесплатно, ${P.poolHours}.`;
   const poolDayUz = poolClosed
-    ? "Basseyn hozir yozgi mavsum boshlanguncha yopiq."
-    : `Basseyn — bir kishidan ${P.poolAdultWeekday} va ${P.poolAdultWeekend} so'm, 5–15 yosh ikki barobar arzon, 5 yoshgacha bepul, ${P.poolHours}.`;
+    ? ""
+    : ` Basseyn — bir kishidan ${P.poolAdultWeekday} va ${P.poolAdultWeekend} so'm, 5–15 yosh ikki barobar arzon, 5 yoshgacha bepul, ${P.poolHours}.`;
   const poolDayEn = poolClosed
-    ? "The pool is closed now until the summer season."
-    : `The pool is ${P.poolAdultWeekday} and ${P.poolAdultWeekend} UZS per person, half price for ages 5–15, free under five, ${P.poolHours}.`;
+    ? ""
+    : ` The pool is ${P.poolAdultWeekday} and ${P.poolAdultWeekend} UZS per person, half price for ages 5–15, free under five, ${P.poolHours}.`;
 
   return [
     {
@@ -177,9 +179,9 @@ export function faqItems(live: LivePricing = resolvePricing()): FaqItem[] {
         en: "Can we come for the day, without staying over?",
       },
       answer: {
-        ru: `Да. Ресторан открыт для всех — можно приехать просто пообедать или поужинать. ${topchanClosed ? "Топчаны в пикник-зоне закрыты до нового сезона." : `Топчан в пикник-зоне — ${topchanRu}, до 8 гостей, работает ${P.topchanHours}.`} Тюбинг-горка — ${P.ride2} сум за 2 спуска и ${P.ride4} за 4, цена одна всю неделю, горка работает ${P.tubingHours}, кататься можно только с инструктором. ${poolDayRu} Вход на территорию бесплатный; парковка платная только для тюбинга — ${P.parking} сум за автомобиль. ${topchanClosed ? "У тюбинга своя форма заявки на сайте — администратор перезвонит и подтвердит." : "У топчана и тюбинга своя форма заявки на сайте — администратор перезвонит и подтвердит. Заявку лучше оставить заранее: топчан закрепляется только после подтверждения, и приехавшим без заявки свободный не гарантирован."}`,
-        uz: `Ha. Restoran hamma uchun ochiq — shunchaki tushlik yoki kechki ovqat uchun kelish mumkin. ${topchanClosed ? "Piknik zonasidagi topchanlar yangi mavsumgacha yopiq." : `Piknik zonasidagi topchan — ${topchanUz}, 8 kishigacha, ${P.topchanHours} ishlaydi.`} Tubing gorkasi — 2 marta uchish ${P.ride2} so'm, 4 marta ${P.ride4} so'm, narx butun hafta bir xil, gorka ${P.tubingHours} ishlaydi, faqat instruktor bilan uchish mumkin. ${poolDayUz} Hududga kirish bepul; parkovka faqat tubing uchun to'lanadi — avtomobil uchun ${P.parking} so'm. ${topchanClosed ? "Tubingning saytda o'z arizasi bor — administrator qo'ng'iroq qilib tasdiqlaydi." : "Topchan va tubingning saytda o'z arizasi bor — administrator qo'ng'iroq qilib tasdiqlaydi. Arizani oldindan qoldirgan ma'qul: topchan faqat tasdiqlangandan keyin biriktiriladi, arizasiz kelganlarga bo'sh joy kafolatlanmaydi."}`,
-        en: `Yes. The restaurant is open to everyone — you can come just for lunch or dinner. ${topchanClosed ? "The topchans in the picnic area are closed until the new season." : `A topchan in the picnic area is ${topchanEn}, seating up to 8, open ${P.topchanHours}.`} The tubing hill is ${P.ride2} UZS for 2 rides and ${P.ride4} for 4, one price all week, running ${P.tubingHours}, with riding only when an instructor is present. ${poolDayEn} Entry to the grounds is free; parking is charged for tubing only, at ${P.parking} UZS per car. ${topchanClosed ? "The tubing hill has its own request form on the site, and the administrator calls back to confirm." : "The topchan and tubing each have their own request form on the site, and the administrator calls back to confirm. Send it ahead: a topchan is held only once confirmed, and arriving without a request does not guarantee a free one."}`,
+        ru: `Да. Ресторан открыт для всех — можно приехать просто пообедать или поужинать.${topchanClosed ? "" : ` Топчан в пикник-зоне — ${topchanRu}, до 8 гостей, работает ${P.topchanHours}.`} Тюбинг-горка — ${P.ride2} сум за 2 спуска и ${P.ride4} за 4, цена одна всю неделю, горка работает ${P.tubingHours}, кататься можно только с инструктором.${poolDayRu} Вход на территорию бесплатный; парковка платная только для тюбинга — ${P.parking} сум за автомобиль. ${topchanClosed ? "У тюбинга своя форма заявки на сайте — администратор перезвонит и подтвердит." : "У топчана и тюбинга своя форма заявки на сайте — администратор перезвонит и подтвердит. Заявку лучше оставить заранее: топчан закрепляется только после подтверждения, и приехавшим без заявки свободный не гарантирован."}`,
+        uz: `Ha. Restoran hamma uchun ochiq — shunchaki tushlik yoki kechki ovqat uchun kelish mumkin.${topchanClosed ? "" : ` Piknik zonasidagi topchan — ${topchanUz}, 8 kishigacha, ${P.topchanHours} ishlaydi.`} Tubing gorkasi — 2 marta uchish ${P.ride2} so'm, 4 marta ${P.ride4} so'm, narx butun hafta bir xil, gorka ${P.tubingHours} ishlaydi, faqat instruktor bilan uchish mumkin.${poolDayUz} Hududga kirish bepul; parkovka faqat tubing uchun to'lanadi — avtomobil uchun ${P.parking} so'm. ${topchanClosed ? "Tubingning saytda o'z arizasi bor — administrator qo'ng'iroq qilib tasdiqlaydi." : "Topchan va tubingning saytda o'z arizasi bor — administrator qo'ng'iroq qilib tasdiqlaydi. Arizani oldindan qoldirgan ma'qul: topchan faqat tasdiqlangandan keyin biriktiriladi, arizasiz kelganlarga bo'sh joy kafolatlanmaydi."}`,
+        en: `Yes. The restaurant is open to everyone — you can come just for lunch or dinner.${topchanClosed ? "" : ` A topchan in the picnic area is ${topchanEn}, seating up to 8, open ${P.topchanHours}.`} The tubing hill is ${P.ride2} UZS for 2 rides and ${P.ride4} for 4, one price all week, running ${P.tubingHours}, with riding only when an instructor is present.${poolDayEn} Entry to the grounds is free; parking is charged for tubing only, at ${P.parking} UZS per car. ${topchanClosed ? "The tubing hill has its own request form on the site, and the administrator calls back to confirm." : "The topchan and tubing each have their own request form on the site, and the administrator calls back to confirm. Send it ahead: a topchan is held only once confirmed, and arriving without a request does not guarantee a free one."}`,
       },
     },
   ];

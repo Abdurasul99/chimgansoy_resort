@@ -34,7 +34,11 @@ describe("топчаны закрыты", () => {
     for (const locale of ["ru", "uz", "en"] as const) {
       expect(day.answer[locale], locale).not.toContain(money(313_131));
     }
-    expect(day.answer.ru).toMatch(/топчаны в пикник-зоне закрыты до нового сезона/i);
+    // «Из поля видимости» (оператор, 12.10.2026): ответ о топчане молчит совсем.
+    for (const locale of ["ru", "uz", "en"] as const) {
+      expect(day.answer[locale], locale).not.toMatch(/топчан|topchan|пикник|piknik|picnic/i);
+      expect(day.answer[locale], locale).not.toMatch(/ {2}/);
+    }
   });
 
   it("оба брифинга ИИ знают, что топчаны закрыты, и не зовут к ним", () => {
