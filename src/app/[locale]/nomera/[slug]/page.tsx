@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
 import { BookingDrawer } from "@/components/sections/BookingDrawer";
 import { PoolRequestForm } from "@/components/sections/PoolRequestForm";
@@ -104,18 +105,30 @@ const POOL_ARCHIVE = [
 ] as const;
 
 // Only built, bookable rooms get a detail page. Anything marked
-// `available: false` in content/rooms.ts is skipped here, so its /nomera/<slug>
-// URL 404s rather than advertising something a guest cannot book.
-export const dynamicParams = false;
-
+// `available: false` in content/rooms.ts is skipped here and 404s in the page
+// itself (roomOr404), rather than advertising something a guest cannot book.
+//
+// НЕ `dynamicParams = false`. С ним в Next 16 любое сохранение в панели —
+// услуги, домики, новости, цены — делает revalidatePath("/", "layout"), и после
+// этого /nomera/glamping, /cottage и /pool отвечали 404 (Internal:
+// NoFallbackError) до перезапуска сайта: 30.09.2026 — больше двух часов после
+// правки галереи, 12.10.2026 — сразу после скрытия услуги. Неизвестный адрес
+// по-прежнему 404 — его отдаёт getRoom().
 export function generateStaticParams() {
   return rooms.filter((room) => room.available !== false).map((room) => ({ slug: room.slug }));
+}
+
+/** Домик из rooms.ts или 404 — и для неизвестного адреса, и для выключенного домика. */
+function roomOr404(slug: string) {
+  const room = getRoom(slug);
+  if (room.available === false) notFound();
+  return room;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const locale = await getLocaleParam(params);
-  const room = getRoom(slug);
+  const room = roomOr404(slug);
 
   const meta = buildMetadata(
     locale,
@@ -136,7 +149,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function RoomDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const locale = await getLocaleParam(params);
-  const room = getRoom(slug);
+  const room = roomOr404(slug);
   const dict = dictionaries[locale];
   // The pool is booked by request form, not through the booking engine.
   const isPool = room.slug === "pool";
