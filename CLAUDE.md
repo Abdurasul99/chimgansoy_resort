@@ -247,6 +247,8 @@ Defined in `src/app/globals.css`. The ones used most:
 5. **CRLF warning on Windows** — the repo is set to normalize to LF. Git will warn `CRLF will be replaced by LF` on commits; this is fine.
 6. **`assistant-knowledge.ts`** is partially out of sync with the day-use repositioning (mentions overnight, pool, etc.) — when re-aligning content, update there too.
 7. **Glamping content is paused, not deleted.** `src/content/rooms.ts`, `src/app/[locale]/nomera/[slug]/page.tsx`, the FAQ entries for cottage/glamping/checkin/cancellation/pool — all kept for the eventual return. Don't rip them out.
+8. **Never `export const dynamicParams = false`.** Every admin save calls `revalidatePath("/", "layout")`; in Next 16 a route with dynamicParams = false then answers 404 (`Internal: NoFallbackError`) until the site restarts — the cabin pages went down this way on 30.09 and 12.10.2026. Unknown slugs 404 via `notFound()` in the page; `src/lib/__tests__/no-dynamic-params-false.test.ts` guards it.
+9. **Seasonal closures are one flag each:** `src/content/pool-closure.ts` and `src/content/topchan-closure.ts` (both closed since autumn 2026). The flag hides the product from hero, home cards, nav, sitemap, FAQ, AI briefings and the bot, and the page explains the closure. Services «Бассейн», «Пикник-зона», «Мангал и казан» are additionally hidden in /admin/uslugi; the link page (chimgan-link) had its cards removed.
 
 ---
 

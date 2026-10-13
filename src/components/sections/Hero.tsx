@@ -338,7 +338,8 @@ export function Hero({ locale, pricing }: HeroProps) {
             {/* Topchan and tubing, side by side under the pool. Glass over the
                 photograph rather than gold: three solid gold blocks would fight
                 each other and the pool would stop reading as the lead. */}
-            <div className="mb-3 grid grid-cols-2 gap-2 sm:gap-3">
+            {/* Одна кнопка (топчаны закрыты) — во всю ширину, а не половинкой с пустотой рядом. */}
+            <div className={`mb-3 grid gap-2 sm:gap-3 ${ctas.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
               {ctas.map((cta) => (
                 <a
                   key={cta.href}
