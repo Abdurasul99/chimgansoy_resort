@@ -1,7 +1,17 @@
 import { contacts } from "@/content/contacts";
 import { money, openDayServices, venueCore } from "@/lib/venue-facts";
-import { bookingTermsCopy } from "@/content/booking-terms";
 import { stayRules } from "@/content/pricing";
+
+/**
+ * Подпись ссылки на правила возврата — на языке гостя и в именительном падеже.
+ * Из блока брать нельзя: там «ознакомьтесь с правилами…», и консьерж писал
+ * «см. правилами отмены и возврата».
+ */
+export const REFUND_LINK_LABEL = {
+  ru: "правила отмены и возврата",
+  uz: "bekor qilish va qaytarish qoidalari",
+  en: "cancellation and refund rules",
+} as const;
 import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
 import { poolClosure } from "@/content/pool-closure";
 import { topchanClosure } from "@/content/topchan-closure";
@@ -33,7 +43,7 @@ ${venueCore(live)}
 ССЫЛКИ (вставляй их СТРОГО в формате Markdown [текст](URL); других ссылок не выдумывай):
 - Онлайн-бронирование: [страница бронирования](/${locale}/bron)
 ${topchanClosure.closed ? "" : `- Заявка на топчан: [топчан](/${locale}/topchan)\n`}- Заявка на тюбинг: [тюбинг-горка](/${locale}/tubing)
-${poolClosure.closed ? "" : `- Заявка на бассейн: [бассейн](/${locale}/nomera/pool)\n`}- Правила отмены и возврата: [${bookingTermsCopy[locale].refund}](/${locale}/legal/payment-refund)
+${poolClosure.closed ? "" : `- Заявка на бассейн: [бассейн](/${locale}/nomera/pool)\n`}- Правила отмены и возврата: [${REFUND_LINK_LABEL[locale]}](/${locale}/legal/payment-refund)
 - Контакты и форма заявки: [контакты](/${locale}/contact)
 - Позвонить: [${contacts.phone}](${phoneHref})
 - Мессенджеры: [WhatsApp](${contacts.whatsapp}) · [Telegram](${contacts.telegram}) · [Instagram](${contacts.instagram})

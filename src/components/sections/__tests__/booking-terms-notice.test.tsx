@@ -8,7 +8,7 @@ import { poolClosure } from "@/content/pool-closure";
 import { topchanClosure } from "@/content/topchan-closure";
 import { venueCore, venueFacts } from "@/lib/venue-facts";
 import { venueTopic } from "@/lib/venue-topics";
-import { buildSystemPrompt } from "@/lib/ai-context";
+import { REFUND_LINK_LABEL, buildSystemPrompt } from "@/lib/ai-context";
 
 const LOCALES = ["ru", "uz", "en"] as const;
 
@@ -72,7 +72,7 @@ describe("ИИ говорит то же, что блок", () => {
 
   it("консьерж получает ссылку на правила отмены и возврата — с подписью на языке гостя", () => {
     for (const locale of LOCALES) {
-      expect(buildSystemPrompt(locale)).toContain(`[${bookingTermsCopy[locale].refund}](/${locale}/legal/payment-refund)`);
+      expect(buildSystemPrompt(locale)).toContain(`[${REFUND_LINK_LABEL[locale]}](/${locale}/legal/payment-refund)`);
     }
   });
 
