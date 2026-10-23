@@ -70,9 +70,18 @@ describe("ИИ говорит то же, что блок", () => {
     });
   }
 
-  it("консьерж получает ссылку на правила отмены и возврата", () => {
+  it("консьерж получает ссылку на правила отмены и возврата — с подписью на языке гостя", () => {
     for (const locale of LOCALES) {
-      expect(buildSystemPrompt(locale)).toContain(`(/${locale}/legal/payment-refund)`);
+      expect(buildSystemPrompt(locale)).toContain(`[${bookingTermsCopy[locale].refund}](/${locale}/legal/payment-refund)`);
+    }
+  });
+
+  it("правила ответа не группируют закрытые услуги с работающими", () => {
+    // Из «Цены ДНЕВНОГО отдыха (топчан, тюбинг, бассейн…)» модель собирала
+    // «дневные услуги (тюбинг, топчан, бассейн)» в ответе про возврат.
+    const prompt = buildSystemPrompt("ru");
+    if (poolClosure.closed && topchanClosure.closed) {
+      expect(prompt).not.toMatch(/\((топчан|бассейн), (тюбинг|топчан|бассейн)/);
     }
   });
 
