@@ -299,7 +299,7 @@ describe("stay rules — what the AI is briefed on", () => {
       // only "невозвратная", which is the opposite of the contract.
       expect(text).toMatch(/5 (СУТОК|суток)/);
       expect(text).toMatch(/48 (ЧАСОВ|часов)/);
-      expect(text).toMatch(/50%/);
+      expect(text).toMatch(/удерживается 50\s?%/i);
       // Day-use is the thing that IS non-refundable — kept distinct.
       expect(text).toMatch(/НЕПЕРЕНОСИМ/i);
       expect(text).toMatch(/(не автоматическое право|НЕ автоматическое право|только по согласованию)/i);

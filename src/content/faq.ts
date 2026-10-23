@@ -3,7 +3,19 @@ import { lateCheckOutNote, poolPricing, stayRules, topchanPricing, tubingPricing
 import { money } from "@/lib/venue-facts";
 import { poolClosure } from "./pool-closure";
 import { topchanClosure } from "./topchan-closure";
+import { bookingTermsCopy } from "./booking-terms";
 import { resolvePricing, type LivePricing } from "@/lib/pricing-resolve";
+
+/**
+ * Что держит домик и что вернут при отмене — теми же фразами, что в блоке
+ * «Важно перед бронированием». До 23.10.2026 здесь стояло «Предоплата
+ * невозвратная» — на сайте и в разметке для Google, — хотя подписанная Политика
+ * возврата возвращает всё за 5 суток до заезда и половину до 48 часов.
+ */
+const stayRefund = (locale: keyof typeof bookingTermsCopy) => {
+  const t = bookingTermsCopy[locale];
+  return [t.lines[2], ...t.refundLines.slice(0, 3)].join(" ");
+};
 
 export type FaqItem = {
   question: LocalizedString;
@@ -141,9 +153,9 @@ export function faqItems(live: LivePricing = resolvePricing()): FaqItem[] {
       // Онлайн-движок на /bron оператор скрыл: бронь — через «Забронировать в
       // один клик» на странице домика, а подтверждает администратор.
       answer: {
-        ru: `Выберите домик и нажмите «Забронировать в один клик» на его странице: даты, число гостей и телефон — администратор перезвонит и подтвердит бронь. Предоплата 100% стоимости вносится в течение ${P.prepay.ru} с момента оформления брони — неоплаченная в срок бронь автоматически аннулируется. Предоплата невозвратная. Туристский сбор платят только иностранные граждане и лица без гражданства — ${P.taxForeign} сум за ночь с человека по ставке, действующей на дату заезда. Он не входит в стоимость и вносится при заселении; с граждан и резидентов Узбекистана не взимается. Можно также написать в WhatsApp или Telegram.`,
-        uz: `Uychani tanlang va uning sahifasida «Bir marta bosib bron qilish» tugmasini bosing: sanalar, mehmonlar soni va telefon — administrator qo'ng'iroq qilib bronni tasdiqlaydi. Narxning 100% oldindan to'lovi bron rasmiylashtirilgandan keyin ${P.prepay.uz} ichida amalga oshiriladi — muddatida to'lanmagan bron avtomatik bekor qilinadi. Oldindan to'lov qaytarilmaydi. Turistik yig'imni faqat chet el fuqarolari va fuqaroligi bo'lmagan shaxslar to'laydi — kirish sanasida amal qiluvchi stavka bo'yicha bir kecha uchun har bir mehmondan ${P.taxForeign} so'm. U narxga kirmaydi va joylashuvda to'lanadi; O'zbekiston fuqarolari va rezidentlaridan olinmaydi. WhatsApp yoki Telegram orqali ham yozishingiz mumkin.`,
-        en: `Choose a cabin and press "Book in one click" on its page: dates, number of guests and a phone number — the administrator will call back and confirm. Payment in full is due within ${P.prepay.en} of making the booking — an unpaid booking is cancelled automatically. The prepayment is non-refundable. The tourist levy is paid only by foreign nationals and stateless persons — ${P.taxForeign} UZS per person per night at the rate in force on the arrival date. It is not part of the rate and is collected at check-in; Uzbek citizens and residents are not charged. You can also message us on WhatsApp or Telegram.`,
+        ru: `Выберите домик и нажмите «Забронировать в один клик» на его странице: даты, число гостей и телефон — администратор перезвонит и подтвердит бронь. Предоплата 100% стоимости вносится в течение ${P.prepay.ru} с момента оформления брони — неоплаченная в срок бронь автоматически аннулируется. ${stayRefund("ru")} Туристский сбор платят только иностранные граждане и лица без гражданства — ${P.taxForeign} сум за ночь с человека по ставке, действующей на дату заезда. Он не входит в стоимость и вносится при заселении; с граждан и резидентов Узбекистана не взимается. Можно также написать в WhatsApp или Telegram.`,
+        uz: `Uychani tanlang va uning sahifasida «Bir marta bosib bron qilish» tugmasini bosing: sanalar, mehmonlar soni va telefon — administrator qo'ng'iroq qilib bronni tasdiqlaydi. Narxning 100% oldindan to'lovi bron rasmiylashtirilgandan keyin ${P.prepay.uz} ichida amalga oshiriladi — muddatida to'lanmagan bron avtomatik bekor qilinadi. ${stayRefund("uz")} Turistik yig'imni faqat chet el fuqarolari va fuqaroligi bo'lmagan shaxslar to'laydi — kirish sanasida amal qiluvchi stavka bo'yicha bir kecha uchun har bir mehmondan ${P.taxForeign} so'm. U narxga kirmaydi va joylashuvda to'lanadi; O'zbekiston fuqarolari va rezidentlaridan olinmaydi. WhatsApp yoki Telegram orqali ham yozishingiz mumkin.`,
+        en: `Choose a cabin and press "Book in one click" on its page: dates, number of guests and a phone number — the administrator will call back and confirm. Payment in full is due within ${P.prepay.en} of making the booking — an unpaid booking is cancelled automatically. ${stayRefund("en")} The tourist levy is paid only by foreign nationals and stateless persons — ${P.taxForeign} UZS per person per night at the rate in force on the arrival date. It is not part of the rate and is collected at check-in; Uzbek citizens and residents are not charged. You can also message us on WhatsApp or Telegram.`,
       },
     },
     {
