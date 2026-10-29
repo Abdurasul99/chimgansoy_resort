@@ -100,9 +100,9 @@ export function faqItems(live: LivePricing = resolvePricing()): FaqItem[] {
           en: "What is included in the stay?",
         },
         answer: {
-          ru: `Завтрак ${P.breakfast} — гостям и глэмпинга, и шале. Каждому проживающему — ${P.rides} бесплатный спуск на тюбинг-горке (при работающей горке), парковка у домика и Wi-Fi. Обед и ужин — в ресторане по меню или по тарифу «Всё включено».`,
-          uz: `Nonushta ${P.breakfast} — glemping va shale mehmonlariga. Har bir yashovchiga tubing gorkasida ${P.rides} marta bepul tushish (gorka ishlayotgan bo'lsa), uycha yonida parkovka va Wi-Fi. Tushlik va kechki ovqat — restoranda menyu bo'yicha yoki «Hammasi kiritilgan» tarifi bo'yicha.`,
-          en: `Breakfast ${P.breakfast} for glamping and chalet guests alike. Every staying guest gets ${P.rides} free ride on the tubing hill (when the hill is running), parking by the cabin and Wi-Fi. Lunch and dinner are from the restaurant menu or on the All-Inclusive rate.`,
+          ru: `Завтрак ${P.breakfast} — гостям и глэмпинга, и шале. Каждому проживающему — ${P.rides} бесплатный спуск на тюбинг-горке (при работающей горке), парковка у домика и Wi-Fi. Обед и ужин — в ресторане по меню.`,
+          uz: `Nonushta ${P.breakfast} — glemping va shale mehmonlariga. Har bir yashovchiga tubing gorkasida ${P.rides} marta bepul tushish (gorka ishlayotgan bo'lsa), uycha yonida parkovka va Wi-Fi. Tushlik va kechki ovqat — restoranda menyu bo'yicha.`,
+          en: `Breakfast ${P.breakfast} for glamping and chalet guests alike. Every staying guest gets ${P.rides} free ride on the tubing hill (when the hill is running), parking by the cabin and Wi-Fi. Lunch and dinner are from the restaurant menu.`,
         },
       }
     : {

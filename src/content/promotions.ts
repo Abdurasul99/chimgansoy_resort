@@ -13,7 +13,7 @@ import { cabinOccupancy } from "./pricing";
  * акция привела гостя. Совпадает с метками на визитке из шапки Instagram.
  */
 export type Promotion = {
-  slug: "2plus1" | "chalet-october" | "all-inclusive" | "slow-weekend";
+  slug: "2plus1" | "chalet-october";
   badge: LocalizedString;
   title: LocalizedString;
   description: LocalizedString;
@@ -42,7 +42,7 @@ export type Promotion = {
    * брифинг ИИ гаснут сами: src/lib/promo-nights.ts.
    *
    * Срок ставить, только когда оператор его назвал. У «−20% на Chalet» он
-   * есть (31.10.2026), у «2+1» и «Всё включено» — нет.
+   * есть (31.10.2026), у «2+1» — нет.
    */
   until?: string;
   /**
@@ -178,95 +178,8 @@ export const promotions: Promotion[] = [
       ],
     },
   },
-  {
-    slug: "all-inclusive",
-    // Условие оператора от 24.09.2026: тариф действует с воскресенья по четверг
-    // включительно (до этого — с понедельника). Формулировка оператора — «тариф
-    // действует», а не «заезд», и она сохранена дословно: «заезд по четверг»
-    // гость прочёл бы как питание и в пятницу с субботой.
-    //
-    // Срока нет с 30.09.2026 — оператор повторил условия без даты окончания.
-    badge: { ru: "Вс–Чт", uz: "Ya–Pay", en: "Sun–Thu" },
-    title: {
-      ru: "Тариф «Всё включено»",
-      uz: "«Hammasi kiritilgan» tarifi",
-      en: "The All-Inclusive rate",
-    },
-    description: {
-      ru: "Трёхразовое питание по сет-меню на каждый полный день проживания: завтрак, обед и ужин. Не нужно думать, что приготовить и где поесть.",
-      uz: "Har bir to'liq yashash kuni uchun set-menyu bo'yicha uch mahal ovqat: nonushta, tushlik va kechki ovqat. Nima pishirish va qayerda ovqatlanishni o'ylash shart emas.",
-      en: "Three meals from our set menu for every full day of your stay: breakfast, lunch and dinner. No need to think about cooking or where to eat.",
-    },
-    howItWorks: {
-      title: { ru: "Как это работает", uz: "Qanday ishlaydi", en: "How it works" },
-      lines: {
-        ru: [
-          "1 ночь: в день заезда — ужин, утром — завтрак",
-          "2 ночи и больше: в день заезда — ужин",
-          "каждый полный день — завтрак, обед и ужин",
-          "в день выезда — завтрак",
-        ],
-        uz: [
-          "1 kecha: kelgan kuni — kechki ovqat, ertalab — nonushta",
-          "2 kecha va undan ko'p: kelgan kuni — kechki ovqat",
-          "har bir to'liq kun — nonushta, tushlik va kechki ovqat",
-          "ketish kuni — nonushta",
-        ],
-        en: [
-          "1 night: dinner on arrival, breakfast the next morning",
-          "2 nights or more: dinner on arrival",
-          "every full day — breakfast, lunch and dinner",
-          "on the day you leave — breakfast",
-        ],
-      },
-    },
-    terms: {
-      ru: [
-        "Блюда по расписанию в ресторане или с доставкой в домик",
-        "Тариф действует с воскресенья по четверг включительно",
-        "Не суммируется с другими акциями и специальными предложениями",
-      ],
-      uz: [
-        "Taomlar jadval bo'yicha restoranda yoki uyga yetkazib beriladi",
-        "Tarif yakshanbadan payshanbagacha (payshanba ham) amal qiladi",
-        "Boshqa aksiyalar va maxsus takliflar bilan jamlanmaydi",
-      ],
-      en: [
-        "Meals on schedule in the restaurant or delivered to your cabin",
-        "Valid Sunday through Thursday inclusive",
-        "Does not combine with other offers or special deals",
-      ],
-    },
-  },
-  {
-    slug: "slow-weekend",
-    badge: { ru: "Сб–Вс", uz: "Sha–Ya", en: "Sat–Sun" },
-    title: {
-      ru: "Выходной без спешки",
-      uz: "Shoshilmasdan dam olish",
-      en: "An unhurried weekend",
-    },
-    description: {
-      ru: "Поздний выезд в воскресенье и завтрак на всех проживающих. Никакой утренней суеты со сбором вещей к полудню.",
-      uz: "Yakshanba kuni kech chiqish va barcha mehmonlarga nonushta. Tushga qadar shoshilib yig'ilish shart emas.",
-      en: "Late check-out on Sunday and breakfast for every guest. No rushing to pack by noon.",
-    },
-    terms: {
-      ru: [
-        "Только при бронировании на одни сутки: с субботы на воскресенье",
-        "Точное время позднего выезда подтверждает администратор при брони",
-        "Не суммируется с другими акциями и специальными предложениями",
-      ],
-      uz: [
-        "Faqat bir kecha-kunduzga bron qilinganda: shanbadan yakshanbaga",
-        "Kech chiqishning aniq vaqtini bron paytida administrator tasdiqlaydi",
-        "Boshqa aksiyalar va maxsus takliflar bilan jamlanmaydi",
-      ],
-      en: [
-        "Saturday-to-Sunday bookings only",
-        "The exact late check-out time is confirmed by the administrator",
-        "Does not combine with other offers or special deals",
-      ],
-    },
-  },
+  // «Всё включено» (Вс–Чт, питание по сет-меню) и «Выходной без спешки» (Сб→Вс,
+  // поздний выезд) сняты владельцем 29.10.2026 — с сайта, из ответов ИИ и с
+  // визитки, полностью. Возвращать только по новому слову оператора: ИИ
+  // отвечает гостю, что этих акций сейчас нет (venue-facts.ts, promoBlock).
 ];

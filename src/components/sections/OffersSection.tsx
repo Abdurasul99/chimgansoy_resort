@@ -87,9 +87,9 @@ export function OffersSection({ locale }: Props) {
       !p.hiddenOnSite,
   );
   const cols = {
-    ru: { how: "Как считается", one: "3 ночи без акции", three: "3 ночи по акции", per: "За ночь", note: "Суммы в сумах, ночи с воскресенья по четверг. Завтрак включён, обед и ужин («Всё включено») — отдельно." },
-    uz: { how: "Qanday hisoblanadi", one: "3 kecha aksiyasiz", three: "3 kecha aksiyada", per: "Kechasi", note: "Summalar so'mda, yakshanbadan payshanbagacha bo'lgan kechalar. Nonushta kiritilgan, tushlik va kechki ovqat («Hammasi kiritilgan») — alohida." },
-    en: { how: "How it adds up", one: "3 nights, no offer", three: "3 nights, offer", per: "Per night", note: "UZS, Sunday–Thursday nights. Breakfast included; lunch and dinner (All-Inclusive) are extra." },
+    ru: { how: "Как считается", one: "3 ночи без акции", three: "3 ночи по акции", per: "За ночь", note: "Суммы в сумах, ночи с воскресенья по четверг. Завтрак включён, обед и ужин — по меню ресторана, отдельно." },
+    uz: { how: "Qanday hisoblanadi", one: "3 kecha aksiyasiz", three: "3 kecha aksiyada", per: "Kechasi", note: "Summalar so'mda, yakshanbadan payshanbagacha bo'lgan kechalar. Nonushta kiritilgan, tushlik va kechki ovqat — restoran menyusi bo'yicha, alohida." },
+    en: { how: "How it adds up", one: "3 nights, no offer", three: "3 nights, offer", per: "Per night", note: "UZS, Sunday–Thursday nights. Breakfast included; lunch and dinner are from the restaurant menu, extra." },
   }[locale];
 
   const href = (slug: string) =>
@@ -130,7 +130,7 @@ export function OffersSection({ locale }: Props) {
           {text(promo.description, locale)}
         </p>
 
-        {/* Расписание питания — у «Всё включено» и тогда, когда она ведущая. */}
+        {/* «Как это работает» по шагам — у акции, где оно задано (поле howItWorks). */}
         {promo.howItWorks ? (
           <div className={`mt-4 rounded-2xl bg-[var(--surface-warm)] px-4 py-3 ${wide ? "max-w-xl" : ""}`}>
             <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--muted)]">

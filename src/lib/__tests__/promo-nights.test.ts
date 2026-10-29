@@ -104,24 +104,15 @@ describe("срок акций", () => {
   // Правила при заданном сроке — в promo-deadline.test.ts (срок там подставлен).
   // Поведение акции без срока — в promo-open.test.ts (срок там снят).
   it("«2+1» без срока — в октябре идёт вместе с «−20% на Chalet»", () => {
-    // Оператор, 30.09.2026: в октябре четыре акции — «Всё включено», «2+1»,
-    // «−20%», «Выходной без спешки».
+    // Оператор, 30.09.2026: «2+1» идёт и в октябре, без срока.
     expect(promotions.find((p) => p.slug === "2plus1")?.until).toBeUndefined();
     expect(promoActive("2026-10-01")).toBe(true);
     expect(promoBookable("2026-10-15")).toBe(true);
     expect(rangeQualifies("2026-10-04", "2026-10-07", "2026-10-01")).toBe(true);
   });
 
-  it("в октябре четыре акции", () => {
-    expect(promotions.map((p) => p.slug).sort()).toEqual(["2plus1", "all-inclusive", "chalet-october", "slow-weekend"]);
-  });
-
-  it("«Всё включено» сроком не ограничена", () => {
-    expect(promotions.find((p) => p.slug === "all-inclusive")?.until).toBeUndefined();
-  });
-
-  it("«Выходной без спешки» сроком не ограничен", () => {
-    expect(promotions.find((p) => p.slug === "slow-weekend")?.until).toBeUndefined();
+  it("две акции: «Всё включено» и «Выходной без спешки» сняты 29.10.2026", () => {
+    expect(promotions.map((p) => p.slug).sort()).toEqual(["2plus1", "chalet-october"]);
   });
 
   it("условия без срока не называют срок", () => {
@@ -208,13 +199,3 @@ describe("«−20% на Chalet весь октябрь»", () => {
   });
 });
 
-describe("«Всё включено» — питание по дням", () => {
-  it("расписание есть, и обеда после выезда в нём нет", () => {
-    // Прежний макет обещал обед в 13:00 после выезда. Оператор 11.09.2026
-    // расписал питание заново: в день выезда только завтрак.
-    const ai = promotions.find((p) => p.slug === "all-inclusive")!;
-    const lines = ai.howItWorks!.lines.ru.join(" ");
-    expect(lines).toContain("в день выезда — завтрак");
-    expect(JSON.stringify(ai)).not.toContain("13:00");
-  });
-});
