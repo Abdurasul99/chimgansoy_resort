@@ -25,6 +25,7 @@ import {
   type InlineKeyboard,
 } from "./telegram";
 import { answerGuestQuestion } from "./staff-ai";
+import { cannotCallReply, isCallRequest } from "./call-request";
 import { getChimganWeather, t, weatherAdvice, weatherInfo } from "./bot-weather";
 import { checkAvailability } from "./exely";
 import { contacts } from "@/content/contacts";
@@ -714,6 +715,11 @@ async function handleBusinessMessage(update: TgUpdate): Promise<void> {
   // hours nobody is awake. Silence here is the correct behaviour, not a miss.
   if (!isNight()) return;
 
+  if (isCallRequest(text)) {
+    await sendMessage(chatId, esc(cannotCallReply(text)), { business_connection_id: connection });
+    return;
+  }
+
   await sendChatAction(chatId, "typing", connection);
   const ai = await answerGuestQuestion(text, { chatId });
   const reply = ai.ok
@@ -818,6 +824,13 @@ export async function handleGuestUpdate(update: TgUpdate): Promise<void> {
     if (action || text.trim().startsWith("/")) {
       const view = await viewFor(action ?? "menu");
       await sendMessage(chatId, view.text, { reply_markup: { inline_keyboard: view.keyboard } });
+      return;
+    }
+
+    // «Позвоните» — звонить бот не умеет; отвечаем сами, не спрашивая ИИ,
+    // иначе модель пообещает звонок, которого не будет (call-request.ts).
+    if (isCallRequest(text)) {
+      await sendMessage(chatId, `🤖 ${esc(cannotCallReply(text))}`);
       return;
     }
 
