@@ -108,8 +108,8 @@ export function Hero({ locale, pricing }: HeroProps) {
   const showPromo = promoBookable();
   /**
    * Акция на шале — второй карточкой под «2+1» (оператор, 30.09.2026: «−20% на
-   * Chalet весь октябрь», в октябре идут обе). Гаснет по сроку акции — 1
-   * ноября её здесь уже нет.
+   * Chalet весь октябрь», в октябре идут обе; 30.10 продлена на ноябрь). Гаснет
+   * по сроку акции — 1 декабря её здесь уже нет.
    */
   const chaletPromo = promotions.find((p) => p.slug === "chalet-october");
   const chalet =

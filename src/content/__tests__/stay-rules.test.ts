@@ -602,20 +602,24 @@ describe("акции", () => {
     const october = venueFacts(undefined, "2026-10-29");
     expect(october).toContain("«2+1» — оплачиваются 2 ночи");
     expect(october).toContain("дата окончания не объявлена");
-    expect(october).toContain("«−20% на Chalet весь октябрь»");
+    expect(october).toContain("«−20% на Chalet весь октябрь и ноябрь»");
     expect(october).toContain("«Всё включено» и «Выходной без спешки» СНЯТЫ");
     for (const text of [october, venueCore()]) {
       expect(text).not.toMatch(/трёхразовое питание|поздний выезд в воскресенье/i);
     }
   });
 
-  it("ИИ знает «−20% на Chalet» весь октябрь и не суммирует её с другими", () => {
+  it("ИИ знает «−20% на Chalet» в октябре и ноябре и не суммирует её с другими", () => {
     const october = venueFacts(undefined, "2026-10-05");
-    expect(october).toContain("«−20% на Chalet весь октябрь»");
+    expect(october).toContain("«−20% на Chalet весь октябрь и ноябрь»");
+    expect(october).toContain("в октябре и ноябре");
+    expect(october).toContain("Действует до 30 ноября");
     expect(october).toContain("3 000 000 → 2 400 000 сум за ночь");
     expect(october).toContain("НЕ суммируется с другими акциями");
-    // С ноября бот её не предлагает.
-    expect(venueFacts(undefined, "2026-11-01")).not.toContain("«−20% на Chalet весь октябрь»");
+    // Владелец продлил акцию на ноябрь (30.10.2026): в ноябре бот её знает,
+    // с декабря — не предлагает.
+    expect(venueFacts(undefined, "2026-11-30")).toContain("«−20% на Chalet весь октябрь и ноябрь»");
+    expect(venueFacts(undefined, "2026-12-01")).not.toContain("−20% на Chalet");
   });
 
   it("ИИ считает цену «2+1» за домик: шале на четверых, а не «на двоих»", () => {
