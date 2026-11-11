@@ -47,9 +47,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "cottage",
     keywords: ["шале", "коттедж", "коттеджи", "дом", "домик", "shale", "shalet", "chalet", "kottej", "uy", "uycha", "cottage", "house", "cabin"],
     answer: {
-      ru: "🏡 Шале: стандарт 4 гостя, максимум 6 (пятое и шестое места за доплату). Две отдельные спальни (двуспальная кровать 180×200 и две односпальные) со своими санузлами, кухня-зал с диваном и терраса 42 м². Есть кондиционер, тёплый пол, Wi-Fi, телевизор, холодильник и полный кухонный набор. Подойдёт для семьи или компании друзей.",
-      uz: "🏡 Shale: standart 4 mehmon, maksimum 6 (beshinchi va oltinchi joylar qo'shimcha to'lov bilan). Ikkita alohida yotoqxona (ikki kishilik karavot 180×200 va ikkita bir kishilik) o'z hammomi bilan, divanli oshxona-zal va 42 m² terrasa. Konditsioner, issiq pol, Wi-Fi, televizor, muzlatkich va to'liq oshxona to'plami bor. Oila yoki do'stlar uchun ajoyib.",
-      en: "🏡 The chalet: the rate covers 4 guests, up to 6 in total (the fifth and sixth places are charged). Two separate bedrooms (a double bed 180×200 and two singles) each with its own bathroom, a kitchen-lounge with a sofa, and a 42 m² terrace. It has air conditioning, a heated floor, Wi-Fi, TV, fridge, and a full kitchen set. Great for families or groups of friends.",
+      ru: "🏡 Шале: стандарт 4 гостя, максимум 6 (пятое и шестое места за доплату). Две отдельные спальни (двуспальная кровать 180×200 и две односпальные) со своими санузлами, кухня-зал с диваном и терраса. Площадь домика — 41 м². Есть кондиционер, тёплый пол, Wi-Fi, телевизор, холодильник и полный кухонный набор. Подойдёт для семьи или компании друзей.",
+      uz: "🏡 Shale: standart 4 mehmon, maksimum 6 (beshinchi va oltinchi joylar qo'shimcha to'lov bilan). Ikkita alohida yotoqxona (ikki kishilik karavot 180×200 va ikkita bir kishilik) o'z hammomi bilan, divanli oshxona-zal va terrasa. Uycha maydoni — 41 m². Konditsioner, issiq pol, Wi-Fi, televizor, muzlatkich va to'liq oshxona to'plami bor. Oila yoki do'stlar uchun ajoyib.",
+      en: "🏡 The chalet: the rate covers 4 guests, up to 6 in total (the fifth and sixth places are charged). Two separate bedrooms (a double bed 180×200 and two singles) each with its own bathroom, a kitchen-lounge with a sofa, and a terrace. 41 m² in all. It has air conditioning, a heated floor, Wi-Fi, TV, fridge, and a full kitchen set. Great for families or groups of friends.",
     },
   },
 
@@ -58,9 +58,9 @@ export const knowledge: KnowledgeEntry[] = [
     id: "glamping",
     keywords: ["глэмпинг", "глемпинг", "a-frame", "aframe", "афрейм", "палатка", "shator", "tent", "glamping"],
     answer: {
-      ru: "⛺ A-frame глэмпинг: стандарт 2 гостя, максимум 3 (третье место за доплату), 32 м² + терраса 15 м². Двуспальная кровать 180×200, собственный санузел с душем, кондиционер и Wi-Fi. Идеально для пары или маленькой семьи.",
-      uz: "⛺ A-frame glemping: standart 2 mehmon, maksimum 3 (uchinchi joy qo'shimcha to'lov bilan), 32 m² + terrasa 15 m². Ikki kishilik karavot 180×200, dushli xususiy hammom, konditsioner va Wi-Fi. Juftlik yoki kichik oila uchun ideal.",
-      en: "⛺ A-frame glamping: the rate covers 2 guests, up to 3 in total (the third place is charged), 32 m² + a 15 m² terrace. A double bed 180×200, a private ensuite shower room, air conditioning, and Wi-Fi. Perfect for couples or small families.",
+      ru: "⛺ A-frame глэмпинг: стандарт 2 гостя, максимум 3 (третье место за доплату), 32 м², своя терраса. Двуспальная кровать 180×200, собственный санузел с душем, кондиционер и Wi-Fi. Идеально для пары или маленькой семьи.",
+      uz: "⛺ A-frame glemping: standart 2 mehmon, maksimum 3 (uchinchi joy qo'shimcha to'lov bilan), 32 m², xususiy terrasa. Ikki kishilik karavot 180×200, dushli xususiy hammom, konditsioner va Wi-Fi. Juftlik yoki kichik oila uchun ideal.",
+      en: "⛺ A-frame glamping: the rate covers 2 guests, up to 3 in total (the third place is charged), 32 m² with a private terrace. A double bed 180×200, a private ensuite shower room, air conditioning, and Wi-Fi. Perfect for couples or small families.",
     },
   },
 

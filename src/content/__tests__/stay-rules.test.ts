@@ -651,39 +651,31 @@ describe("закрытый бассейн не обещают на главно�
   });
 });
 
-describe("площади домиков — с рабочего чертежа оператора", () => {
-  it("шале: 91 м² дом и 42 м² терраса — цифры оператора", () => {
-    /*
-     * Оператор назвал 91 и 42; на чертеже сумма комнат даёт 79,8, а терраса
-     * с навесом — около 35. Разница не ошибка: 91 и 42 габаритные, со стенами
-     * и перекрытием навеса. Публикуем то, что назвал оператор, — но держим обе
-     * величины рядом, чтобы следующий раз никто не «поправил» 91 на 79,8,
-     * посчитав комнаты заново.
-     */
-    const комнаты = 38.4 + 16.0 + 16.0 + 4.7 + 4.7;
-    expect(комнаты).toBeCloseTo(79.8, 1);
-
-    const chalet = rooms.find((r) => r.slug === "cottage");
-    expect(chalet?.size.ru).toContain("91 м²");
-    expect(chalet?.size.ru).toContain("42 м²");
+describe("площади домиков — владелец, 12.11.2026", () => {
+  /*
+   * Владелец: «глэмпинг = 32, шале = 41, убери размер террасы». До этого
+   * стояли цифры с чертежа оператора: шале 91 м² (комнаты 16,0 + 16,0 + 38,4 +
+   * 4,7 + 4,7 = 79,8) и терраса 42 м², глэмпинг 32 м² и терраса 15 м². С 41 м²
+   * метраж комнат шале не сходится, поэтому комнаты — без площадей.
+   */
+  it("глэмпинг 32 м², шале 41 м²", () => {
+    expect(rooms.find((r) => r.slug === "glamping")?.size).toEqual({ ru: "32 м²", uz: "32 m²", en: "32 m²" });
+    expect(rooms.find((r) => r.slug === "cottage")?.size).toEqual({ ru: "41 м²", uz: "41 m²", en: "41 m²" });
   });
 
-  it("глэмпинг: 32 м² дом и 15 м² терраса", () => {
-    // Прежде стояло 28 м² — занижено: внутренний контур на чертеже 4840 × 6660.
-    const glamping = rooms.find((r) => r.slug === "glamping");
-    expect(glamping?.size.ru).toContain("32 м²");
-    expect(glamping?.size.ru).toContain("15 м²");
-    expect(JSON.stringify(rooms)).not.toContain("28 м²");
+  it("размера террасы и старых площадей нет ни в карточках, ни в ответах ИИ", () => {
+    const texts = [JSON.stringify(rooms), venueFacts(), venueCore()];
+    for (const t of texts) {
+      expect(t).not.toMatch(/(91|42|35|15)s*(м²|m²)/);
+      expect(t).not.toMatch(/террас[аы]s*d|d+s*(м²|m²)s*(lis*)?terras|terraces*d|d+s*m²s*terrace/i);
+    }
   });
 
-  it("шале: обе спальни одинаковые, как на плане", () => {
-    // Прежде на сайте стояли 15,9 и 15,6 — разница, которой на чертеже нет.
-    const chalet = rooms.find((r) => r.slug === "cottage");
-    const текст = chalet!.features.ru.join(" ");
-    expect(текст).toContain("Спальня 1 (16,0 м²)");
-    expect(текст).toContain("Спальня 2 (16,0 м²)");
-    expect(текст).not.toContain("15,9");
-    expect(текст).not.toContain("15.6");
+  it("шале: комнаты без метража, который спорил бы с 41 м²", () => {
+    const chalet = rooms.find((r) => r.slug === "cottage")!;
+    const текст = [chalet.features.ru, chalet.features.uz, chalet.features.en].flat().join(" ");
+    expect(текст).toContain("Спальня 1: двуспальная кровать 180×200");
+    expect(текст).not.toMatch(/16[.,]0|38[.,]4|4[.,]7/);
   });
 });
 
