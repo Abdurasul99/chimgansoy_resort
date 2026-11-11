@@ -245,6 +245,31 @@ export const partnersPage = {
     },
   },
 
+  /** Подписи персональной страницы /partners/o/<ключ>; содержимое — из админки. */
+  offer: {
+    eyebrow: { ru: "Персональное предложение", uz: "Shaxsiy taklif", en: "Personal proposal" },
+    for: { ru: "для", uz: "uchun", en: "for" },
+    programs: { ru: "Программы в предложении", uz: "Taklifdagi dasturlar", en: "Programmes in this proposal" },
+    packages: { ru: "Пакеты", uz: "Paketlar", en: "Packages" },
+    noVat: { ru: "сум без НДС", uz: "so'm, QQSsiz", en: "UZS excl. VAT" },
+    onRequest: { ru: "Цена по запросу", uz: "Narx so'rov bo'yicha", en: "Price on request" },
+    validUntil: { ru: "Предложение действует до", uz: "Taklif amal qiladi", en: "Valid until" },
+    expired: {
+      ru: "Срок этого предложения истёк. Свяжитесь с нами — обновим условия.",
+      uz: "Ushbu taklif muddati tugagan. Biz bilan bog'laning — shartlarni yangilaymiz.",
+      en: "This proposal has expired. Get in touch and we will update the terms.",
+    },
+    request: { ru: "Запросить договор", uz: "Shartnoma so'rash", en: "Request a contract" },
+    requesting: { ru: "Отправляем…", uz: "Yuborilmoqda…", en: "Sending…" },
+    requested: {
+      ru: "Запрос отправлен — менеджер свяжется с вами.",
+      uz: "So'rov yuborildi — menejer siz bilan bog'lanadi.",
+      en: "Request sent — our manager will be in touch.",
+    },
+    about: { ru: "О курорте и всех программах", uz: "Kurort va barcha dasturlar haqida", en: "About the resort and all programmes" },
+    contact: { ru: "Вопросы по предложению", uz: "Taklif bo'yicha savollar", en: "Questions about the proposal" },
+  },
+
   form: {
     title: { ru: "Обсудить партнёрство", uz: "Hamkorlikni muhokama qilish", en: "Discuss a partnership" },
     lead: {

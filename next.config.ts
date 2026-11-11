@@ -37,16 +37,21 @@ const nextConfig: NextConfig = {
       permanent: false,
     }));
     // Партнёрский раздел: владелец разослал адреса с опечатками и под другими
-    // именами (11.11.2026) — /parters, /cabinetpartners, /adminparters. Все
-    // они ведут на /partners (адрес без языка язык получает в proxy.ts, как
-    // любой другой). Админки на публичном домене нет намеренно: /adminparters
-    // ведёт на общую страницу.
-    const partners = ["parters", "partner", "cabinetpartners", "adminparters", "adminpartners"].map((alias) => ({
+    // именами (11.11.2026) — /parters, /cabinetpartners. Они ведут на
+    // /partners (адрес без языка язык получает в proxy.ts, как любой другой).
+    // /adminparters — его же опечатка в адресе админки партнёров, она живёт на
+    // этом домене (владелец: «реализуй его на chimgandarbaza»).
+    const partners = ["parters", "partner", "cabinetpartners"].map((alias) => ({
       source: `/:locale(ru|uz|en)/${alias}`,
       destination: "/:locale/partners",
       permanent: false,
     }));
-    return [...restaurant, ...partners];
+    const partnersAdmin = {
+      source: "/:locale(ru|uz|en)/adminparters",
+      destination: "/:locale/adminpartners",
+      permanent: false,
+    };
+    return [...restaurant, ...partners, partnersAdmin];
   },
 
   // Long-lived browser cache for hashed static assets — they're content-addressed
@@ -103,6 +108,27 @@ const nextConfig: NextConfig = {
       {
         source: "/:locale(ru|uz|en)/partners",
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
+        // Админка партнёров: форма пароля на публичном домене не должна
+        // попадать в поиск. Персональные страницы ещё и не кэшируются чужими
+        // прокси — там цены конкретной компании.
+        source: "/:locale(ru|uz|en)/adminpartners/:path*",
+        headers: [
+          { key: "X-Robots-Tag", value: "noindex, nofollow" },
+          { key: "Cache-Control", value: "private, no-store" },
+        ],
+      },
+      {
+        source: "/:locale(ru|uz|en)/adminpartners",
+        headers: [
+          { key: "X-Robots-Tag", value: "noindex, nofollow" },
+          { key: "Cache-Control", value: "private, no-store" },
+        ],
+      },
+      {
+        source: "/:locale(ru|uz|en)/partners/o/:key",
+        headers: [{ key: "Cache-Control", value: "private, no-store" }],
       },
     ];
   },

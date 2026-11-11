@@ -12,6 +12,7 @@ import { AnalyticsEvents } from "@/components/ui/AnalyticsEvents";
 import { LogoIntro } from "@/components/ui/LogoIntro";
 import { YandexMetrica } from "@/components/ui/YandexMetrica";
 import { HideOnBron } from "@/components/ui/HideOnBron";
+import { HideOnPartners, PartnersHeader } from "@/components/layout/PartnersChrome";
 import { restaurantListed } from "@/lib/restaurant/live";
 import { restaurantCopy } from "@/content/restaurant";
 import { dictionaries } from "@/content/translations";
@@ -216,6 +217,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         {/* Tick rail on the right edge — same --scroll-progress, no extra JS.
             Hidden on /bron so nothing floats over the Exely booking cart. */}
         <HideOnBron>
+          <HideOnPartners>
           <div className="scroll-ticks" aria-hidden="true">
             {Array.from({ length: 22 }, (_, i) => (
               <span
@@ -225,25 +227,35 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
             ))}
             <span className="scroll-ticks__cursor" />
           </div>
+          </HideOnPartners>
         </HideOnBron>
-        <Header
-          locale={locale as Locale}
-          restaurant={
-            listed
-              ? { href: "/restaurant", label: { ru: restaurantCopy.ru.navLabel, uz: restaurantCopy.uz.navLabel, en: restaurantCopy.en.navLabel } }
-              : null
-          }
-        />
+        {/* Партнёрский раздел (B2B) — без гостевой шапки, подвала и консьержа,
+            со своей шапкой: components/layout/PartnersChrome.tsx. */}
+        <HideOnPartners>
+          <Header
+            locale={locale as Locale}
+            restaurant={
+              listed
+                ? { href: "/restaurant", label: { ru: restaurantCopy.ru.navLabel, uz: restaurantCopy.uz.navLabel, en: restaurantCopy.en.navLabel } }
+                : null
+            }
+          />
+        </HideOnPartners>
+        <PartnersHeader />
         <main id="main">{children}</main>
         {/* Footer + FAQ widget hidden on /bron (Exely: no distractions on the
             booking page; the floating widget also overlaps the cart on mobile). */}
         <HideOnBron>
-          <Footer locale={locale as Locale} />
+          <HideOnPartners>
+            <Footer locale={locale as Locale} />
+          </HideOnPartners>
         </HideOnBron>
         <SmoothScroll />
         <ScrollObserver />
         <HideOnBron>
-          <FaqPanel key={locale} locale={locale} />
+          <HideOnPartners>
+            <FaqPanel key={locale} locale={locale} />
+          </HideOnPartners>
         </HideOnBron>
         <AnalyticsEvents />
         <LogoIntro locale={locale as Locale} />

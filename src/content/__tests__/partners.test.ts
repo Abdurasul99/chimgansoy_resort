@@ -75,18 +75,39 @@ describe("партнёрский раздел — содержимое", () => {
 describe("партнёрский раздел — только по ссылке", () => {
   it("ответ несёт X-Robots-Tag: noindex", async () => {
     const rules = await nextConfig.headers!();
-    const forPartners = rules.filter((r) => r.source.includes("partners"));
+    // /partners/o/:key несёт только Cache-Control — noindex ему даёт /partners/:path*.
+    const forPartners = rules.filter((r) => r.source.includes("partners") && !r.source.includes("/o/"));
     expect(forPartners.length).toBeGreaterThanOrEqual(2);
+    expect(rules.some((r) => r.source === "/:locale(ru|uz|en)/partners/:path*")).toBe(true);
     for (const r of forPartners) expect(r.headers).toContainEqual({ key: "X-Robots-Tag", value: "noindex, nofollow" });
   });
 
-  it("адреса с опечатками из рассылки ведут на /partners", async () => {
+  it("адреса с опечатками из рассылки ведут на /partners, «adminparters» — в админку", async () => {
     const redirects = await nextConfig.redirects!();
-    for (const alias of ["parters", "cabinetpartners", "adminparters"]) {
+    for (const alias of ["parters", "cabinetpartners"]) {
       expect(redirects).toContainEqual(
         expect.objectContaining({ source: `/:locale(ru|uz|en)/${alias}`, destination: "/:locale/partners" }),
       );
     }
+    expect(redirects).toContainEqual(
+      expect.objectContaining({ source: "/:locale(ru|uz|en)/adminparters", destination: "/:locale/adminpartners" }),
+    );
+  });
+
+  it("админка и персональные страницы — noindex и не кэшируются чужими прокси", async () => {
+    const rules = await nextConfig.headers!();
+    const admin = rules.filter((r) => r.source.includes("adminpartners"));
+    expect(admin).toHaveLength(2);
+    for (const r of admin) {
+      expect(r.headers).toContainEqual({ key: "X-Robots-Tag", value: "noindex, nofollow" });
+      expect(r.headers).toContainEqual({ key: "Cache-Control", value: "private, no-store" });
+    }
+    expect(rules.find((r) => r.source.endsWith("/partners/o/:key"))?.headers).toContainEqual({ key: "Cache-Control", value: "private, no-store" });
+  });
+
+  it("в robots.txt админку не светим — её защищают noindex и пароль", async () => {
+    const fs = await import("node:fs");
+    expect(fs.readFileSync("src/app/robots.ts", "utf8")).not.toContain("adminpartners");
   });
 
   it("страницы нет в карте сайта и в навигации", async () => {
