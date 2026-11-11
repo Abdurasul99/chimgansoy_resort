@@ -25,7 +25,7 @@ export const dayUse: PriceItem[] = [
   {
     key: "entry",
     icon: "car",
-    title: { ru: "Парковочное место", uz: "Parkovka joyi", en: "Parking space" },
+    title: { ru: "Парковочное место", uz: "Avtoturargoh joyi", en: "Parking space" },
     subtitle: { ru: "1 автомобиль", uz: "1 avtomobil", en: "per car" },
     // Только для тюбинга. Гостям топчана парковка бесплатная, но не
     // гарантированная — по постеру оператора.

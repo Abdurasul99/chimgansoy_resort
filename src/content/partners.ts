@@ -62,7 +62,7 @@ export const partnersPage = {
     },
     lead: {
       ru: "Семейный горный отдых на несколько часов или с ночёвкой — в 45 минутах от Ташкента. Тысячи гостей в день проходят один и тот же маршрут: дорога, въезд, катание, обед. На каждом шаге есть место для партнёра.",
-      uz: "Bir necha soatlik yoki tunab qoladigan oilaviy tog' dam olishi — Toshkentdan 45 daqiqa. Kuniga minglab mehmonlar bir xil yo'ldan o'tadi: yo'l, kirish, uchish, tushlik. Har bir qadamda hamkor uchun joy bor.",
+      uz: "Toshkentdan 45 daqiqada — oila bilan tog'da bir necha soat yoki tunab dam olish. Kuniga minglab mehmonlar bir xil marshrutni bosib o'tadi: yo'l, kirish, uchish, tushlik. Har bir qadamda hamkor uchun joy bor.",
       en: "Family mountain leisure for a few hours or overnight — 45 minutes from Tashkent. Thousands of guests a day follow the same route: the drive, the entrance, the ride, lunch. Every step has room for a partner.",
     },
     cta: { ru: "Партнёрские программы", uz: "Hamkorlik dasturlari", en: "Partnership programmes" },
@@ -82,7 +82,7 @@ export const partnersPage = {
     items: [
       { value: "3 000", label: { ru: "посещений тюбинг-зоны в пиковый день", uz: "eng gavjum kunda tubing zonasiga tashrif", en: "tubing-zone visits on a peak day" } },
       { value: "2 000", label: { ru: "посещений в день в среднем за месяц", uz: "oy davomida kuniga o'rtacha tashrif", en: "visits a day, monthly average" } },
-      { value: "45", label: { ru: "минут от Ташкента, высота 1 700 м", uz: "daqiqa Toshkentdan, balandlik 1 700 m", en: "minutes from Tashkent, at 1,700 m" } },
+      { value: "45", label: { ru: "минут от Ташкента, высота 1 700 м", uz: "daqiqa — Toshkentgacha, balandlik 1 700 m", en: "minutes from Tashkent, at 1,700 m" } },
       { value: "9", label: { ru: "гектаров: 20 домиков, тюбинг, ресторан", uz: "gektar: 20 ta uycha, tubing, restoran", en: "hectares: 20 cabins, tubing, a restaurant" } },
     ] satisfies PartnerFact[],
   },
@@ -91,9 +91,9 @@ export const partnersPage = {
     image: "chimganMountains" as ResortImageKey,
     title: { ru: "Локация", uz: "Joylashuv", en: "Location" },
     text: {
-      ru: "Курорт стоит на дороге к Чимгану, Амирсою и Бельдерсаю — главному горному направлению выходного дня из Ташкента. Для гостя это и самостоятельная цель поездки, и удобная остановка по пути: поесть, прокатиться, переночевать. Время до подъёмников добавим после замера до конкретных парковок.",
-      uz: "Kurort Chimgan, Amirsoy va Beldersoyga boradigan yo'lda — Toshkentdan dam olish kunlarining asosiy tog' yo'nalishida joylashgan. Mehmon uchun bu ham alohida sayohat maqsadi, ham yo'l ustidagi qulay to'xtash joyi: ovqatlanish, uchish, tunash. Ko'targichlargacha bo'lgan vaqtni aniq to'xtash joylarigacha o'lchagandan keyin qo'shamiz.",
-      en: "The resort sits on the road to Chimgan, Amirsoy and Beldersay — the main weekend mountain route out of Tashkent. For guests it is both a destination in itself and a convenient stop on the way: a meal, a ride, a night's stay. Travel times to the lifts will be added once measured to specific car parks.",
+      ru: "Курорт стоит на дороге к Чимгану, Амирсою и Бельдерсаю — главному горному направлению выходного дня из Ташкента. Для гостя это и самостоятельная цель поездки, и удобная остановка по пути: поесть, прокатиться, переночевать.",
+      uz: "Kurort Chimyon, Amirsoy va Beldersoyga boradigan yo'lda — Toshkentdan dam olish kunlarining asosiy tog' yo'nalishida joylashgan. Mehmon uchun bu ham alohida sayohat maqsadi, ham yo'l ustidagi qulay to'xtash joyi: ovqatlanish, uchish, tunash.",
+      en: "The resort sits on the road to Chimgan, Amirsoy and Beldersay — the main weekend mountain route out of Tashkent. For guests it is both a destination in itself and a convenient stop on the way: a meal, a ride, a night's stay.",
     },
   },
 
@@ -110,7 +110,7 @@ export const partnersPage = {
         title: { ru: "Тюбинг-горка", uz: "Tubing tepaligi", en: "Tubing hill" },
         text: {
           ru: "Всесезонная трасса 160 м с автоматическим подъёмом и вечерней подсветкой. Работает круглый год, не только по снегу.",
-          uz: "Avtomatik ko'targichli va kechki yoritilgan 160 m lik har fasl trassasi. Faqat qorda emas, yil bo'yi ishlaydi.",
+          uz: "Avtomatik ko'targichli, kechqurun yoritiladigan 160 metrlik trassa. Faqat qorda emas, yil bo'yi ishlaydi.",
           en: "An all-season 160 m track with a powered lift and evening lighting. Open all year, not only in snow.",
         },
       },
@@ -119,7 +119,7 @@ export const partnersPage = {
         title: { ru: "Ресторан «Сазанчик»", uz: "«Sazanchik» restorani", en: "Sazanchik restaurant" },
         text: {
           ru: "Узбекская и европейская кухня, рыба и шашлык на мангале. Сюда приходит большая часть гостей дня.",
-          uz: "O'zbek va Yevropa taomlari, baliq va manqalda kabob. Kunlik mehmonlarning katta qismi shu yerga keladi.",
+          uz: "O'zbek va Yevropa taomlari, baliq va mangalda kabob. Kunlik mehmonlarning katta qismi shu yerga keladi.",
           en: "Uzbek and European cuisine, fish and grilled kebabs. Most day visitors end up here.",
         },
       },
@@ -137,7 +137,7 @@ export const partnersPage = {
       title: { ru: "По готовности", uz: "Tayyor bo'lganda", en: "When ready" },
       text: {
         ru: "Трасса 250 м, саночная зона, прокат и торговые корнеры. Показываем как план развития — без сроков, пока объекты не готовы.",
-        uz: "250 m lik trassa, chana zonasi, prokat va savdo burchaklari. Obyektlar tayyor bo'lmaguncha — muddatsiz, rivojlanish rejasi sifatida ko'rsatamiz.",
+        uz: "250 metrlik trassa, chana zonasi, jihozlar ijarasi va savdo nuqtalari. Obyektlar tayyor bo'lmaguncha — muddatsiz, rivojlanish rejasi sifatida ko'rsatamiz.",
         en: "A 250 m track, a sledging zone, rentals and retail corners. Shown as a development plan — with no dates until they are ready.",
       },
     },
@@ -146,7 +146,7 @@ export const partnersPage = {
   seasons: {
     title: { ru: "Сезоны", uz: "Fasllar", en: "Seasons" },
     items: [
-      { title: { ru: "Зима", uz: "Qish", en: "Winter" }, text: { ru: "Пик посещаемости: снег, тюбинг, новогодние выходные.", uz: "Tashriflar cho'qqisi: qor, tubing, yangi yil dam olish kunlari.", en: "Peak season: snow, tubing, the New Year holidays." } },
+      { title: { ru: "Зима", uz: "Qish", en: "Winter" }, text: { ru: "Пик посещаемости: снег, тюбинг, новогодние выходные.", uz: "Tashriflar cho'qqisi: qor, tubing, Yangi yil bayrami kunlari.", en: "Peak season: snow, tubing, the New Year holidays." } },
       { title: { ru: "Весна", uz: "Bahor", en: "Spring" }, text: { ru: "Зелёные склоны, семейные поездки на выходные и праздники.", uz: "Yashil yonbag'irlar, dam olish va bayram kunlaridagi oilaviy sayohatlar.", en: "Green slopes, family trips at weekends and holidays." } },
       { title: { ru: "Лето", uz: "Yoz", en: "Summer" }, text: { ru: "Прохлада гор вместо городской жары, бассейн, отдых с ночёвкой.", uz: "Shahar issig'i o'rniga tog' salqini, basseyn, tunab dam olish.", en: "Cool mountain air instead of city heat, the pool, overnight stays." } },
       { title: { ru: "Осень", uz: "Kuz", en: "Autumn" }, text: { ru: "Краски гор, тюбинг круглый год, ресторан и домики.", uz: "Tog' ranglari, yil bo'yi tubing, restoran va uychalar.", en: "Mountain colours, year-round tubing, the restaurant and cabins." } },
@@ -164,7 +164,7 @@ export const partnersPage = {
       { title: { ru: "Дорога", uz: "Yo'l", en: "The drive" }, partner: { ru: "Транспорт, такси, навигация", uz: "Transport, taksi, navigatsiya", en: "Transport, taxis, navigation" } },
       { title: { ru: "Въезд", uz: "Kirish", en: "Arrival" }, partner: { ru: "Парковка, связь, Wi-Fi", uz: "Avtoturargoh, aloqa, Wi-Fi", en: "Parking, mobile network, Wi-Fi" } },
       { title: { ru: "Катание", uz: "Uchish", en: "The ride" }, partner: { ru: "Бренд зоны, фотозона, оплата билетов", uz: "Zona brendi, fotozona, chipta to'lovi", en: "Zone branding, photo spot, ticket payment" } },
-      { title: { ru: "Обед", uz: "Tushlik", en: "Lunch" }, partner: { ru: "Оплата, напитки, корнеры", uz: "To'lov, ichimliklar, burchaklar", en: "Payment, drinks, corners" } },
+      { title: { ru: "Обед", uz: "Tushlik", en: "Lunch" }, partner: { ru: "Оплата, напитки, корнеры", uz: "To'lov, ichimliklar, savdo nuqtalari", en: "Payment, drinks, corners" } },
       { title: { ru: "Повторный визит", uz: "Qayta tashrif", en: "The return visit" }, partner: { ru: "Кешбэк, промокоды, программы лояльности", uz: "Keshbek, promokodlar, sodiqlik dasturlari", en: "Cashback, promo codes, loyalty programmes" } },
     ],
   },
@@ -196,10 +196,10 @@ export const partnersPage = {
         id: "transport",
         title: { ru: "Поездки", uz: "Safarlar", en: "Trips" },
         who: { ru: "Такси, каршеринг, автобусы, навигация", uz: "Taksi, karshering, avtobuslar, navigatsiya", en: "Taxis, car sharing, buses, navigation" },
-        guest: { ru: "Удобная дорога в горы и обратно без своей машины.", uz: "O'z mashinasiz tog'ga va qaytib qulay yo'l.", en: "An easy trip to the mountains and back without a car of your own." },
+        guest: { ru: "Удобная дорога в горы и обратно без своей машины.", uz: "Shaxsiy mashinasiz ham tog'ga qulay borib-kelish.", en: "An easy trip to the mountains and back without a car of your own." },
         rights: {
           ru: ["Точка посадки и указатели у въезда", "Промокод «поездка в Чимган»", "Упоминание в маршруте на сайте"],
-          uz: ["Kirish yonidagi o'tirish nuqtasi va ko'rsatkichlar", "«Chimganga safar» promokodi", "Saytdagi yo'nalishda eslatma"],
+          uz: ["Kirish yonida taksiga chiqish joyi va yo'nalish ko'rsatkichlari", "«Chimyonga safar» promokodi", "Saytdagi yo'nalish sahifasida tilga olinish"],
           en: ["Pick-up point and signs at the entrance", "A “trip to Chimgan” promo code", "A mention in the route on the website"],
         },
         measure: { ru: "Завершённые поездки", uz: "Yakunlangan safarlar", en: "Completed trips" },
@@ -223,10 +223,10 @@ export const partnersPage = {
         guest: { ru: "Фотозоны, подарки, праздники — повод приехать ещё раз.", uz: "Fotozonalar, sovg'alar, bayramlar — yana kelish uchun sabab.", en: "Photo spots, gifts, celebrations — a reason to come back." },
         rights: {
           ru: ["Название зоны или трассы", "Фотозона, корнер, сэмплинг", "Спонсорство Нового года и сезонных событий"],
-          uz: ["Zona yoki trassa nomi", "Fotozona, burchak, sempling", "Yangi yil va mavsumiy tadbirlar homiyligi"],
+          uz: ["Zona yoki trassaga nom berish", "Fotozona, savdo nuqtasi, sempling", "Yangi yil va mavsumiy tadbirlar homiyligi"],
           en: ["Naming of a zone or the track", "Photo spot, corner, sampling", "Sponsorship of New Year and seasonal events"],
         },
-        measure: { ru: "Охват, продажи в корнере, упоминания", uz: "Qamrov, burchakdagi savdo, eslatmalar", en: "Reach, corner sales, mentions" },
+        measure: { ru: "Охват, продажи в корнере, упоминания", uz: "Qamrov, savdo nuqtasidagi sotuv, tilga olinishlar", en: "Reach, corner sales, mentions" },
       },
     ] satisfies PartnerProgram[],
   },
@@ -253,7 +253,8 @@ export const partnersPage = {
     packages: { ru: "Пакеты", uz: "Paketlar", en: "Packages" },
     noVat: { ru: "сум без НДС", uz: "so'm, QQSsiz", en: "UZS excl. VAT" },
     onRequest: { ru: "Цена по запросу", uz: "Narx so'rov bo'yicha", en: "Price on request" },
-    validUntil: { ru: "Предложение действует до", uz: "Taklif amal qiladi", en: "Valid until" },
+    /** {date} — дата: по-узбекски она в середине фразы и с -gacha. */
+    validUntil: { ru: "Предложение действует до {date}", uz: "Taklif {date}gacha amal qiladi", en: "Valid until {date}" },
     expired: {
       ru: "Срок этого предложения истёк. Свяжитесь с нами — обновим условия.",
       uz: "Ushbu taklif muddati tugagan. Biz bilan bog'laning — shartlarni yangilaymiz.",
@@ -281,7 +282,7 @@ export const partnersPage = {
     name: { ru: "Ваше имя", uz: "Ismingiz", en: "Your name" },
     phone: { ru: "Телефон", uz: "Telefon", en: "Phone" },
     email: { ru: "Рабочая почта", uz: "Ish pochtasi", en: "Work email" },
-    program: { ru: "Интересует", uz: "Qiziqtiradi", en: "Interested in" },
+    program: { ru: "Интересует", uz: "Qiziqtirgan dastur", en: "Interested in" },
     other: { ru: "Своя идея", uz: "O'z g'oyam", en: "Own idea" },
     message: { ru: "Коротко о задаче", uz: "Vazifa haqida qisqacha", en: "A few words about your goal" },
     privacy: {

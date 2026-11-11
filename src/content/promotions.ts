@@ -148,16 +148,16 @@ export const promotions: Promotion[] = [
     badge: { ru: "−20% · Октябрь–ноябрь", uz: "−20% · Oktabr–noyabr", en: "−20% · October–November" },
     title: {
       ru: "−20% на Chalet весь октябрь и ноябрь",
-      uz: "Butun oktabr va noyabr Chalet'ga −20%",
+      uz: "Oktabr va noyabr davomida shalega −20%",
       en: "20% off the Chalet all October and November",
     },
     description: {
       ru: "Бронируйте Chalet в октябре или ноябре и получайте скидку 20% на проживание. Большой Chalet для отдыха семьёй или компанией: отдельные спальни, кухня, санузлы и просторная терраса с видом на горы.",
-      uz: "Oktabr yoki noyabrda Chalet'ni bron qiling va yashashga 20% chegirma oling. Oila yoki do'stlar davrasida dam olish uchun katta Chalet: alohida yotoqxonalar, oshxona, sanuzellar va tog'larga qaragan keng terrasa.",
+      uz: "Oktabr yoki noyabrda shaleni bron qiling va yashash narxidan 20% chegirma oling. Oila yoki do'stlar davrasida dam olish uchun katta shale: alohida yotoqxonalar, oshxona, hammomlar va tog'larga qaragan keng terrasa.",
       en: "Book the Chalet in October or November and get 20% off your stay. A big Chalet for a family or a group of friends: separate bedrooms, a kitchen, bathrooms and a spacious terrace facing the mountains.",
     },
     discount: {
-      label: { ru: "Базовая стоимость Chalet", uz: "Chalet'ning asosiy narxi", en: "Chalet base rate" },
+      label: { ru: "Базовая стоимость Chalet", uz: "Shalening asosiy narxi", en: "Chalet base rate" },
       base: 3_000_000,
       percent: 20,
       guests: cabinOccupancy.cottage.base,
@@ -169,7 +169,7 @@ export const promotions: Promotion[] = [
         "Не суммируется с другими акциями и специальными предложениями",
       ],
       uz: [
-        "Aksiya butun oktabr va noyabr davomida Chalet'da yashash uchun amal qiladi",
+        "Aksiya oktabr va noyabr davomida shaleda yashash uchun amal qiladi",
         "Qo'shimcha joylashtirish amaldagi tariflar bo'yicha alohida to'lanadi",
         "Boshqa aksiyalar va maxsus takliflar bilan jamlanmaydi",
       ],

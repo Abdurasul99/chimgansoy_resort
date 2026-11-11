@@ -19,6 +19,19 @@ export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ locale: string; key: string }> };
 
+const UZ_MONTHS = ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentabr", "oktabr", "noyabr", "dekabr"];
+
+/**
+ * «30 ноября 2026 г.», «2026-yil 30-noyabr», «30 November 2026». Узбекский —
+ * вручную: ICU в Node отдаёт для uz «30-noyabr, 2026», а по правилам год идёт
+ * первым, с «-yil», и месяц со строчной.
+ */
+function offerDate(iso: string, locale: string): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  if (locale === "uz") return `${y}-yil ${d}-${UZ_MONTHS[m - 1]}`;
+  return new Date(`${iso}T12:00:00Z`).toLocaleDateString(locale === "en" ? "en-GB" : "ru-RU", { day: "numeric", month: "long", year: "numeric" });
+}
+
 async function load(key: string): Promise<Offer | null> {
   if (!isOfferKey(key)) return null;
   const offer = await store.getOfferByKey(key);
@@ -44,9 +57,7 @@ export default async function OfferPage({ params }: Props) {
 
   const expired = isExpired(offer);
   const programs = P.programs.items.filter((p) => offer.programs.includes(p.id));
-  const until = offer.validUntil
-    ? new Date(`${offer.validUntil}T12:00:00Z`).toLocaleDateString(locale === "en" ? "en-GB" : locale === "uz" ? "uz-UZ" : "ru-RU", { day: "numeric", month: "long", year: "numeric" })
-    : "";
+  const until = offer.validUntil ? offerDate(offer.validUntil, locale) : "";
   const labels = { request: t(P.offer.request), requesting: t(P.offer.requesting), requested: t(P.offer.requested) };
 
   return (
@@ -70,7 +81,7 @@ export default async function OfferPage({ params }: Props) {
           {offer.lead && <p className="mt-6 max-w-3xl whitespace-pre-line text-base leading-7 text-white/75 sm:text-lg">{offer.lead}</p>}
           {until && (
             <p className={`mt-6 inline-block rounded-full px-4 py-2 text-sm font-semibold ${expired ? "bg-red-500/20 text-red-200" : "bg-white/10 text-white/80"}`}>
-              {expired ? t(P.offer.expired) : `${t(P.offer.validUntil)} ${until}`}
+              {expired ? t(P.offer.expired) : t(P.offer.validUntil).replace("{date}", until)}
             </p>
           )}
         </div>

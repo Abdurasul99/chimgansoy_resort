@@ -59,7 +59,7 @@ const SERVICE_DAY_PRODUCT: Record<string, (typeof DAY_PRODUCT_PATHS)[number]> = 
  */
 const HEADER_CTA: Record<string, string> = {
   ru: "Забронировать в один клик",
-  uz: "Bir marta bosib bron qilish",
+  uz: "Bir bosishda bron qilish",
   en: "Book in one click",
 };
 

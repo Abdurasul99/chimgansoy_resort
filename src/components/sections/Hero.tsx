@@ -18,7 +18,7 @@ import { RestIcon } from "@/components/restaurant/RestIcon";
 /** Подпись под кнопкой ресторана — что там есть, без обещания сроков и цен. */
 const restaurantHint: Record<Locale, string> = {
   ru: "Кухня на огне · меню и фото",
-  uz: "Olovdagi oshxona · menyu va suratlar",
+  uz: "Olovda pishgan taomlar · menyu va suratlar",
   en: "Cooked over fire · menu and photos",
 };
 
@@ -120,7 +120,7 @@ export function Hero({ locale, pricing }: HeroProps) {
   const chaletHint = chalet
     ? {
         ru: `Ночь от ${money(chalet.d.price)} сум вместо ${money(chalet.d.base)} · при ${chalet.d.guests} гостях — ${money(chalet.d.perPerson)} с человека`,
-        uz: `Kecha ${money(chalet.d.price)} so'mdan, ${money(chalet.d.base)} o'rniga · ${chalet.d.guests} kishiga — kishi boshiga ${money(chalet.d.perPerson)}`,
+        uz: `Bir kecha ${money(chalet.d.price)} so'mdan, ${money(chalet.d.base)} o'rniga · ${chalet.d.guests} kishiga — kishi boshiga ${money(chalet.d.perPerson)}`,
         en: `A night from ${money(chalet.d.price)} UZS instead of ${money(chalet.d.base)} · ${money(chalet.d.perPerson)} per person for ${chalet.d.guests}`,
       }[locale]
     : "";
@@ -136,7 +136,7 @@ export function Hero({ locale, pricing }: HeroProps) {
      */
     hint: {
       ru: `Ночь от ${money(promoCheapestNight())} сум`,
-      uz: `Kecha ${money(promoCheapestNight())} so'mdan`,
+      uz: `Bir kecha ${money(promoCheapestNight())} so'mdan`,
       en: `A night from ${money(promoCheapestNight())} UZS`,
     }[locale],
     slug: lead.slug,

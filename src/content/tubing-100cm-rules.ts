@@ -84,7 +84,7 @@ export const tubing100cmPolicySections: TubingSafetySection[] = [
       uz: [
         "Yakka uchish: bitta tyubingda FAQAT BIR KISHI uchishi mumkin. Katta odamning bola bilan birga uchishi taqiqlanadi.",
         "To'g'ri o'tirish: faqat o'tirgan holda uchish mumkin. Markaziy chuqurchaga chuqur o'tiring, orqaga suyaning va yon tutqichlarni ikki qo'l bilan mahkam ushlang. Oyoqlar biroz ko'tarilgan bo'lishi va trassaga tegmasligi kerak.",
-        "Vazn cheklovi: kameraning yorilishi yoki boshqaruv yo'qolishining oldini olish uchun uchuvchining vazni 95 kg dan oshmasligi kerak.",
+        "Vazn cheklovi: kameraning yorilishi yoki boshqaruv yo'qolishining oldini olish uchun uchayotgan kishining vazni 95 kg dan oshmasligi kerak.",
         "Taqiqlangan holatlar: tik turib, tizzada, to'rt oyoqlab, qorin bilan, orqa yoki bosh bilan oldinga uchish taqiqlanadi. Harakat vaqtida oyoq yoki qo'l bilan tormozlash taqiqlanadi.",
       ],
       en: [
@@ -108,7 +108,7 @@ export const tubing100cmPolicySections: TubingSafetySection[] = [
         "Дети младше 5 лет к спуску не допускаются.",
       ],
       uz: [
-        "Bola mustaqil uchishi uchun 100 sm li tyubing o'lchamiga to'liq mos kelishi kerak — bo'yi 110 sm dan boshlab. Bola mustaqil ravishda chuqur o'tirishi, tyubing ichida ishonchli joylashishi va tutqichlarni zo'riqmasdan mahkam ushlashi kerak.",
+        "Bola mustaqil uchishi uchun 100 santimetrlik tyubing o'lchamiga to'liq mos kelishi kerak — bo'yi 110 sm dan boshlab. Bola mustaqil ravishda chuqur o'tirishi, tyubing ichida ishonchli joylashishi va tutqichlarni zo'riqmasdan mahkam ushlashi kerak.",
         "Agar bola tyubing ichida erkin siljisa, tutqichlarga yetmasa yoki ularni mahkam ushlay olmasa, uchish taqiqlanadi: katta odam bilan birga uchishga endi ruxsat berilmaydi.",
         "5 yoshgacha bo'lgan bolalar uchishga qo'yilmaydi.",
       ],

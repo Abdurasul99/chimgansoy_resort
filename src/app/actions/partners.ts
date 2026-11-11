@@ -20,7 +20,7 @@ const MESSAGES = {
     failed: "Не удалось отправить заявку. Позвоните нам: +998 70 176 00 11",
   },
   uz: {
-    org: "Kompaniyani kiriting",
+    org: "Kompaniya nomini kiriting",
     name: "Ismingizni kiriting",
     contact: "Telefon yoki ish pochtasini qoldiring",
     phone: "Telefon raqamini tekshiring",

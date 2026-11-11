@@ -23,7 +23,7 @@ const COPY: Record<Locale, { call: string; loading: string; failedHeading: strin
     call: "Qo'ng'iroq qilish",
     loading: "Bron moduli yuklanmoqda…",
     failedHeading: "Bron moduli yuklanmadi",
-    failedSub: "Bu O'zbekistondan tashqaridan kirishda bo'lishi mumkin. To'g'ridan-to'g'ri bron qiling — tez javob beramiz:",
+    failedSub: "Bu saytga O'zbekistondan tashqarida kirganda yuz berishi mumkin. To'g'ridan-to'g'ri bron qiling — tez javob beramiz:",
   },
   en: {
     call: "Call",

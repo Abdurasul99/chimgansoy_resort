@@ -38,7 +38,7 @@ const DISCOUNT_COPY = {
     lead: (n: number) => `${n} mehmon joylashganda:`,
     line: (price: string, n: number, pp: string) => `${price} ÷ ${n} = kishi boshiga kechasiga ${pp} so'm`,
     total: (pp: string) => `Jami ${pp} so'm / kishi / kecha`,
-    totalNote: (n: number) => `Chalet'da ${n} mehmon joylashganda.`,
+    totalNote: (n: number) => `Shaleda ${n} mehmon bo'lganda.`,
   },
   en: {
     how: "How it adds up",

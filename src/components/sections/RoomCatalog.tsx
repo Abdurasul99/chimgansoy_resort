@@ -38,7 +38,7 @@ function roomGalleryOf(room: (typeof rooms)[number]) {
 /** «Забронировать в один клик» — обещание короткой формы, а не движка. */
 const ONE_CLICK: Record<string, string> = {
   ru: "Забронировать в один клик",
-  uz: "Bir marta bosib bron qilish",
+  uz: "Bir bosishda bron qilish",
   en: "Book in one click",
 };
 

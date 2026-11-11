@@ -54,8 +54,8 @@ const copy = {
     perksTitle: "Har bir turar joyda",
     perks: [
       "Basseyn narxga kiritilgan",
-      "Derazadan Chimg'on panoramasi",
-      "Xususiy terrasa va uycha yonida parking",
+      "Derazadan Chimyon panoramasi",
+      "Xususiy terrasa va uycha yonida avtoturargoh",
       "Hududda oshxona va tayyor menyu",
     ],
   },

@@ -35,7 +35,7 @@ export const homeShowcase: HomeShowcaseItem[] = [
     },
     copy: {
       ru: `Десять глэмпингов A-frame и десять шале с двумя спальнями. На территории — ${pool ? "бассейн 680 м² с детским бассейном и пул-баром, " : ""}летний ресторан и всесезонная тюбинг-горка${picnic ? " с пикник-зоной" : ""}. Завтрак включён в проживание, тюбинг — по одному бесплатному спуску каждому гостю, при работающей горке.`,
-      uz: `O'nta A-frame glemping va ikki yotoqxonali o'nta shale. Hududda — ${pool ? "bolalar basseyni va pul-bar bilan 680 m² basseyn, " : ""}yozgi restoran va ${picnic ? "piknik zonali " : ""}butun mavsumga tubing gorkasi. Nonushta yashash narxiga kiritilgan, tubing — gorka ishlayotgan bo'lsa, har bir mehmonga bittadan bepul uchish.`,
+      uz: `O'nta A-frame glemping va ikki yotoqxonali o'nta shale. Hududda — ${pool ? "bolalar basseyni va bar bilan 680 m² basseyn, " : ""}yozgi restoran va ${picnic ? "piknik zonali " : ""}butun mavsumga tubing gorkasi. Nonushta yashash narxiga kiritilgan, tubing — gorka ishlayotgan bo'lsa, har bir mehmonga bittadan bepul uchish.`,
       en: `Ten A-frame glamping cabins and ten two-bedroom chalets. On the grounds: ${pool ? "a 680 m² pool with a children's pool and a pool bar, " : ""}a summer restaurant and the all-season tubing hill${picnic ? " with its picnic area" : ""}. Breakfast comes with every stay, and tubing is included — one free ride per guest, whenever the hill is running.`,
     },
   },
@@ -61,7 +61,7 @@ export const homeShowcase: HomeShowcaseItem[] = [
     image: "aframeTerraceView",
     title: {
       ru: "Горы Чимгана начинаются за террасой",
-      uz: "Chimgon tog'lari terrasa ortidan boshlanadi",
+      uz: "Chimyon tog'lari terrasa ortidan boshlanadi",
       en: "The Chimgan range starts off your terrace",
     },
     copy: {

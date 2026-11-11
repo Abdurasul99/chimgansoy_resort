@@ -102,7 +102,7 @@ export const tubingVideos: VideoClip[] = [
     previewSrc: `${BASE}/tubing-2-preview.mp4`,
     poster: `${BASE}/tubing-2.jpg`,
     ratio: "9/16",
-    title: { ru: "Чимганский хребет", uz: "Chimgon tizmasi", en: "The Chimgan ridge" },
+    title: { ru: "Чимганский хребет", uz: "Chimyon tizmasi", en: "The Chimgan ridge" },
     caption: {
       ru: "Вид, который открывается прямо от домика",
       uz: "To'g'ridan-to'g'ri uychadan ochiladigan manzara",
@@ -166,7 +166,7 @@ export const extraTubingVideos: VideoClip[] = [
     title: { ru: "Трасса и подъём", uz: "Trassa va ko'tarilish", en: "The track and the lift" },
     caption: {
       ru: "Подъём обратной тягой — наверх пешком идти не нужно",
-      uz: "Teskari tortish bilan ko'tarilish — yuqoriga piyoda chiqish shart emas",
+      uz: "Tros bilan yuqoriga ko'tarilish — yuqoriga piyoda chiqish shart emas",
       en: "The powered lift — nobody walks back up",
     },
   },
@@ -189,7 +189,7 @@ export const glampingVideos: VideoClip[] = [
     title: { ru: "Глэмпинг внутри", uz: "Glemping ichkarisi", en: "Inside the A-frame" },
     caption: {
       ru: "Домик A-frame целиком: кровать, санузел и терраса",
-      uz: "A-frame uycha to'liq: karavot, sanuzel va terrasa",
+      uz: "A-frame uycha to'liq: karavot, hammom va terrasa",
       en: "The whole A-frame: the bed, the bathroom and the terrace",
     },
   },

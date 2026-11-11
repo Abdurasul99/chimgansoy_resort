@@ -67,7 +67,7 @@ export const dayProducts: DayProduct[] = [
     },
     lead: {
       ru: "Свой топчан с курпачами на весь день — с видом на Чимганский хребет, мангалом рядом и кухней в двух шагах.",
-      uz: "Kun bo'yi o'z topchaningiz kurpachalar bilan — Chimgon tizmasi manzarasi, yonida mangal va ikki qadamda oshxona.",
+      uz: "Kun bo'yi o'z topchaningiz kurpachalar bilan — Chimyon tizmasi manzarasi, yonida mangal va ikki qadamda oshxona.",
       en: "Your own topchan with kurpacha cushions for the whole day — facing the Chimgan ridge, a grill beside it and the kitchen two steps away.",
     },
     /**
@@ -108,7 +108,7 @@ export const dayProducts: DayProduct[] = [
         title: { ru: "Что есть на локации", uz: "Maskanda nimalar bor", en: "What's on site" },
         body: {
           ru: "Здесь можно заказать готовые блюда по меню и некоторые позиции по предзаказу. Для самостоятельного отдыха доступны аренда казана и мангала, а также продажа дров и угля. На территории также есть глэмпинг и шале для комфортного ночлега в горах.",
-          uz: "Bu yerda menyu bo'yicha tayyor taomlar va oldindan buyurtma asosidagi ayrim taomlarni buyurtma qilish mumkin. Mustaqil ovqat tayyorlash uchun qozon va mangal ijarasi mavjud, shuningdek o'tin va ko'mir ham sotiladi. Hududda tog'larda qulay tunash uchun glamping va shale ham bor.",
+          uz: "Bu yerda menyu bo'yicha tayyor taomlar va oldindan buyurtma asosidagi ayrim taomlarni buyurtma qilish mumkin. Mustaqil ovqat tayyorlash uchun qozon va mangal ijarasi mavjud, shuningdek o'tin va ko'mir ham sotiladi. Hududda tog'larda qulay tunash uchun glemping va shale ham bor.",
           en: "You can order ready dishes from the menu, and some items by pre-order. For cooking your own, a kazan and a mangal are available to rent, and firewood and charcoal are sold on site. The grounds also have glamping cabins and chalets for a comfortable night in the mountains.",
         },
       },
@@ -172,7 +172,7 @@ export const dayProducts: DayProduct[] = [
     },
     description: {
       ru: `Трасса длиной 160 метров и шириной 6 метров, всесезонная — кататься можно круглый год. Подъём автоматический: наверх тюбинг поднимает обратной тягой, идти пешком в горку не нужно. Вечером трасса подсвечена по всей длине — кататься можно до самого закрытия. Одновременно спускаться могут до 5 человек, внизу предусмотрена безопасная остановка. Все правила безопасности учтены в конструкции трассы. Горка работает ${tubingPricing.hours}: после 20:00 катание запрещено. Спуск — только в присутствии инструктора и по его разрешению. Тюбинг берётся пакетами: 2 или 4 спуска, цена одинаковая в будни и в выходные. Вход на территорию бесплатный; для гостей тюбинга отдельно оплачивается парковочное место — за автомобиль.`,
-      uz: "Trassa uzunligi 160 metr, kengligi 6 metr, butun mavsumga mo'ljallangan — yil davomida uchish mumkin. Ko'tarilish avtomatik: tubingni yuqoriga teskari tortish ko'taradi, tepalikka piyoda chiqish shart emas. Kechqurun trassa butun uzunligi bo'ylab yoritiladi — yopilishgacha uchish mumkin. Bir vaqtning o'zida 5 kishigacha tusha oladi, pastda xavfsiz to'xtash joyi bor. Barcha xavfsizlik qoidalari trassa konstruksiyasida hisobga olingan. Tubing paketlar bilan olinadi: 2 yoki 4 marta uchish, narx ish kunlari va dam olish kunlarida bir xil. Hududga kirish bepul; tubing mehmonlari uchun parkovka joyi alohida — avtomobil uchun to'lanadi.",
+      uz: "Trassa uzunligi 160 metr, kengligi 6 metr, butun mavsumga mo'ljallangan — yil davomida uchish mumkin. Ko'tarilish avtomatik: tyubingni yuqoriga tros tortib chiqaradi, tepalikka piyoda chiqish shart emas. Kechqurun trassa butun uzunligi bo'ylab yoritiladi — yopilishgacha uchish mumkin. Bir vaqtning o'zida 5 kishigacha tusha oladi, pastda xavfsiz to'xtash joyi bor. Barcha xavfsizlik qoidalari trassa konstruksiyasida hisobga olingan. Tubing paketlar bilan olinadi: 2 yoki 4 marta uchish, narx ish kunlari va dam olish kunlarida bir xil. Hududga kirish bepul; tubing mehmonlari uchun avtoturargoh joyi alohida — avtomobil uchun to'lanadi.",
       en: `The track is 160 metres long and 6 metres wide, and runs all year — not only in snow. The lift is powered: the tube is pulled back to the top, so nobody walks up. In the evening the track is lit end to end, so runs continue until closing. Up to 5 people can descend at once, and there is a controlled stop at the bottom. Safety requirements are built into the track itself. The hill runs ${tubingPricing.hours}; riding after 20:00 is not allowed. Descents happen only with the instructor present and on their signal. Tubing is sold in packages of 2 or 4 rides, at the same price on weekdays and weekends. Entry to the grounds is free; tubing visitors pay separately for a parking space, per car.`,
     },
     highlights: {

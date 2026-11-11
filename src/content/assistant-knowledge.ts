@@ -48,7 +48,7 @@ export const knowledge: KnowledgeEntry[] = [
     keywords: ["шале", "коттедж", "коттеджи", "дом", "домик", "shale", "shalet", "chalet", "kottej", "uy", "uycha", "cottage", "house", "cabin"],
     answer: {
       ru: "🏡 Шале: стандарт 4 гостя, максимум 6 (пятое и шестое места за доплату). Две отдельные спальни (двуспальная кровать 180×200 и две односпальные) со своими санузлами, кухня-зал с диваном и терраса 42 м². Есть кондиционер, тёплый пол, Wi-Fi, телевизор, холодильник и полный кухонный набор. Подойдёт для семьи или компании друзей.",
-      uz: "🏡 Shale: standart 4 mehmon, maksimum 6 (beshinchi va oltinchi joylar qo'shimcha to'lov bilan). Ikkita alohida yotoqxona (ikki kishilik karavot 180×200 va ikkita bir kishilik) o'z sanuzeli bilan, divanli oshxona-zal va 42 m² terrasa. Konditsioner, issiq pol, Wi-Fi, televizor, muzlatkich va to'liq oshxona to'plami bor. Oila yoki do'stlar uchun ajoyib.",
+      uz: "🏡 Shale: standart 4 mehmon, maksimum 6 (beshinchi va oltinchi joylar qo'shimcha to'lov bilan). Ikkita alohida yotoqxona (ikki kishilik karavot 180×200 va ikkita bir kishilik) o'z hammomi bilan, divanli oshxona-zal va 42 m² terrasa. Konditsioner, issiq pol, Wi-Fi, televizor, muzlatkich va to'liq oshxona to'plami bor. Oila yoki do'stlar uchun ajoyib.",
       en: "🏡 The chalet: the rate covers 4 guests, up to 6 in total (the fifth and sixth places are charged). Two separate bedrooms (a double bed 180×200 and two singles) each with its own bathroom, a kitchen-lounge with a sofa, and a 42 m² terrace. It has air conditioning, a heated floor, Wi-Fi, TV, fridge, and a full kitchen set. Great for families or groups of friends.",
     },
   },
@@ -59,7 +59,7 @@ export const knowledge: KnowledgeEntry[] = [
     keywords: ["глэмпинг", "глемпинг", "a-frame", "aframe", "афрейм", "палатка", "shator", "tent", "glamping"],
     answer: {
       ru: "⛺ A-frame глэмпинг: стандарт 2 гостя, максимум 3 (третье место за доплату), 32 м² + терраса 15 м². Двуспальная кровать 180×200, собственный санузел с душем, кондиционер и Wi-Fi. Идеально для пары или маленькой семьи.",
-      uz: "⛺ A-frame glemping: standart 2 mehmon, maksimum 3 (uchinchi joy qo'shimcha to'lov bilan), 32 m² + terrasa 15 m². Ikki kishilik karavot 180×200, dushli xususiy sanuzel, konditsioner va Wi-Fi. Juftlik yoki kichik oila uchun ideal.",
+      uz: "⛺ A-frame glemping: standart 2 mehmon, maksimum 3 (uchinchi joy qo'shimcha to'lov bilan), 32 m² + terrasa 15 m². Ikki kishilik karavot 180×200, dushli xususiy hammom, konditsioner va Wi-Fi. Juftlik yoki kichik oila uchun ideal.",
       en: "⛺ A-frame glamping: the rate covers 2 guests, up to 3 in total (the third place is charged), 32 m² + a 15 m² terrace. A double bed 180×200, a private ensuite shower room, air conditioning, and Wi-Fi. Perfect for couples or small families.",
     },
   },
@@ -95,7 +95,7 @@ export const knowledge: KnowledgeEntry[] = [
       // другой час, но подписанные документы и текущий контракт на сайте остаются
       // на 15:00.
       ru: "🕑 Заезд — с 15:00, выезд — до 12:00. Ресепшн работает круглосуточно, так что приехать можно и поздно вечером. Ранний заезд и поздний выезд предоставляются за доплату и зависят от загрузки — согласуйте с администратором. При заселении понадобятся паспорта всех проживающих. Дополнительно взимается обязательный туристский сбор.",
-      uz: "🕑 Kirish — 15:00 dan, chiqish — 12:00 gacha. Resepshn 24 soat ishlaydi, shuning uchun kech kechqurun ham kelish mumkin. Erta kirish va kech chiqish qo'shimcha to'lov evaziga beriladi va bandlikka bog'liq — administrator bilan kelishing. Joylashuvda barcha yashovchilarning pasporti kerak bo'ladi. Qo'shimcha ravishda majburiy turistik yig'im olinadi.",
+      uz: "🕑 Kirish — 15:00 dan, chiqish — 12:00 gacha. Resepshn 24 soat ishlaydi, shuning uchun kech kechqurun ham kelish mumkin. Erta kirish va kech chiqish qo'shimcha to'lov evaziga beriladi va bandlikka bog'liq — administrator bilan kelishing. Joylashish paytida barcha yashovchilarning pasporti kerak bo'ladi. Qo'shimcha ravishda majburiy turistik yig'im olinadi.",
       en: "🕑 Check-in from 15:00, check-out by 12:00. Reception is staffed around the clock, so a late-evening arrival is fine. Early check-in and late check-out are charged and depend on occupancy — arrange them with the administrator. Passports of every guest are required at check-in. A mandatory tourist levy is charged on top.",
     },
   },
@@ -117,7 +117,7 @@ export const knowledge: KnowledgeEntry[] = [
     keywords: ["где", "адрес", "находится", "как добраться", "далеко", "ташкент", "qayer", "manzil", "toshkent", "where", "location", "address", "how to get", "tashkent", "directions"],
     answer: {
       ru: `📍 Курорт находится в горах Чимгана, Бостанлыкский район Ташкентской области. Дорога из Ташкента занимает около 45 минут на машине. Точку на карте откроем здесь: ${contacts.googleMapsUrl}`,
-      uz: `📍 Kurort Chimgan tog'larida, Toshkent viloyati Bo'stonliq tumanida joylashgan. Toshkentdan yo'l mashinada 45 daqiqa atrofida oladi. Xaritada nuqta: ${contacts.googleMapsUrl}`,
+      uz: `📍 Kurort Chimyon tog'larida, Toshkent viloyati Bo'stonliq tumanida joylashgan. Toshkentdan yo'l mashinada 45 daqiqa atrofida oladi. Xaritada nuqta: ${contacts.googleMapsUrl}`,
       en: `📍 The resort is in the Chimgan mountains, Bostanlyk district of Tashkent region. The drive from Tashkent takes around 45 minutes by car. Point on the map: ${contacts.googleMapsUrl}`,
     },
   },
@@ -141,7 +141,7 @@ export const knowledge: KnowledgeEntry[] = [
     keywords: ["ресторан", "еда", "питание", "кухня", "завтрак", "обед", "ужин", "restoran", "ovqat", "nonushta", "tushlik", "kechki", "restaurant", "food", "breakfast", "lunch", "dinner", "menu"],
     answer: {
       ru: "🍽️ На территории работает ресторан с уютной верандой и видом на горы. Подаются европейские и узбекские блюда. Завтрак — ежедневно с 08:00 до 11:00, для гостей глэмпинга и шале он включён в стоимость проживания. Обед и ужин — по основному меню. Возможны банкеты для групп.",
-      uz: "🍽️ Hududda tog'larga qarashli ayvonli qulay restoran ishlaydi. Yevropa va o'zbek taomlari beriladi. Nonushta — har kuni 08:00 dan 11:00 gacha, glemping va shale mehmonlari uchun u yashash narxiga kiritilgan. Tushlik va kechki ovqat — asosiy menyu bo'yicha. Guruhlar uchun banketlar mumkin.",
+      uz: "🍽️ Hududda tog'larga qaragan ayvonli qulay restoran ishlaydi. Yevropa va o'zbek taomlari beriladi. Nonushta — har kuni 08:00 dan 11:00 gacha, glemping va shale mehmonlari uchun u yashash narxiga kiritilgan. Tushlik va kechki ovqat — asosiy menyu bo'yicha. Guruhlar uchun banketlar mumkin.",
       en: "🍽️ There's a restaurant on site with a cozy veranda and mountain views, serving European and Uzbek cuisine. Breakfast is served daily from 08:00 to 11:00 and is included in the rate for glamping and chalet guests. Lunch and dinner are from the main menu. Banquets available for groups.",
     },
   },
@@ -174,7 +174,7 @@ export const knowledge: KnowledgeEntry[] = [
     keywords: ["активности", "развлечения", "что делать", "чем заняться", "досуг", "faoliyat", "ko'ngilochar", "nima qilish", "activities", "what to do", "entertainment", "things"],
     answer: {
       ru: "🎯 На территории — бассейн, мангал и казан в аренду, кухня с готовым меню, прогулочные зоны на 6 гектарах, детская площадка и панорама Чимгана с террасы. Рядом горные маршруты, конные прогулки и канатные дороги.",
-      uz: "🎯 Hududda — basseyn, ijaraga mangal va qozon, tayyor menyuli oshxona, 6 gektarda sayr zonalari, bolalar maydonchasi va terrasadan Chimgon panoramasi. Yaqinida tog' marshrutlari, ot minish va kanat yo'llari.",
+      uz: "🎯 Hududda — basseyn, ijaraga mangal va qozon, tayyor menyuli oshxona, 6 gektarda sayr zonalari, bolalar maydonchasi va terrasadan Chimyon panoramasi. Yaqinida tog' marshrutlari, ot minish va kanat yo'llari.",
       en: "🎯 On the grounds — the pool, BBQ grill and kazan to rent, a kitchen with a ready-made menu, walking areas across six hectares, a kids playground, and the Chimgan panorama from your terrace. Mountain trails, horse rides, and cable cars are nearby.",
     },
   },
@@ -185,7 +185,7 @@ export const knowledge: KnowledgeEntry[] = [
     keywords: ["зим", "снег", "тюбинг", "лыж", "санки", "qish", "qor", "winter", "snow", "ski", "tubing", "sledding"],
     answer: {
       ru: "❄️ Работаем круглый год. В шале тёплый пол, в глэмпинге кондиционер с обогревом, из панорамного окна — снежные вершины Чимгана. Кухня работает, мангал и казан можно арендовать. Снежный сезон обычно с декабря по март — точные условия зависят от погоды, лучше уточнить заранее.",
-      uz: "❄️ Yil davomida ishlaymiz. Shalede issiq pol, glempingda isitishli konditsioner, panoramali derazadan — Chimgonning qorli cho'qqilari. Oshxona ishlaydi, mangal va qozonni ijaraga olish mumkin. Qor mavsumi odatda dekabrdan martgacha — aniq sharoitlar ob-havoga bog'liq, oldindan aniqlashtirish yaxshiroq.",
+      uz: "❄️ Yil davomida ishlaymiz. Shaleda issiq pol, glempingda isitishli konditsioner, panoramali derazadan — Chimyonning qorli cho'qqilari. Oshxona ishlaydi, mangal va qozonni ijaraga olish mumkin. Qor mavsumi odatda dekabrdan martgacha — aniq sharoitlar ob-havoga bog'liq, oldindan aniqlashtirish yaxshiroq.",
       en: "❄️ We're open year-round. Heated floors in the chalets, air conditioning with heating in the glamping cabins, and the snowy Chimgan peaks through the panoramic window. The kitchen runs as usual and a BBQ grill or kazan can be rented. Snow season runs roughly December through March — exact conditions depend on the weather, best to check ahead.",
     },
   },
@@ -207,7 +207,7 @@ export const knowledge: KnowledgeEntry[] = [
     keywords: ["днем", "дневной", "на день", "без ночевки", "без проживания", "kunduzi", "kunlik", "yashamasdan", "day visit", "without stay", "without overnight", "just visit"],
     answer: {
       ru: "☀️ Дневной отдых с арендой топчана мы больше не проводим — комплекс работает как курорт с проживанием: глэмпинг A-frame и шале. Без ночёвки можно только бассейн на день (летний сезон, без лимита гостей): будни 100 000 сум, выходные 200 000 сум с человека. Заявка — формой на странице бассейна. Всё остальное на территории — для гостей, которые остановились у нас.",
-      uz: "☀️ Topchan ijarasi bilan kunlik dam olishni endi o'tkazmaymiz — majmua yashash bilan kurort sifatida ishlaydi: A-frame glemping va shale. Tunamasdan faqat basseyn — bir kunga (yozgi mavsum, mehmonlar soni cheklanmagan): ish kunlari 100 000 so'm, dam olish kunlari 200 000 so'm bir kishidan. Hududdagi qolgani — bizda to'xtagan mehmonlar uchun.",
+      uz: "☀️ Topchan ijarasi bilan kunlik dam olishni endi o'tkazmaymiz — majmua yashash bilan kurort sifatida ishlaydi: A-frame glemping va shale. Tunamasdan faqat basseyn — bir kunga (yozgi mavsum, mehmonlar soni cheklanmagan): ish kunlari 100 000 so'm, dam olish kunlari 200 000 so'm bir kishidan. Hududdagi qolgani — bizda tunab qolgan mehmonlar uchun.",
       en: "☀️ We no longer run day visits with topchan rental — the property operates as a resort with overnight stays: A-frame glamping and chalets. The only thing bookable without staying over is the pool for a day (summer season, any group size): 100 000 UZS per person on weekdays, 200 000 UZS at weekends. Everything else on the grounds is for guests staying with us.",
     },
   },

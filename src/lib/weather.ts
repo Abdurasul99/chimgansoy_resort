@@ -20,13 +20,13 @@ export function moonPhase(date: Date): { icon: string; ru: string; uz: string; e
   const cycle = 29.53058867;
   const p = (((date.getTime() - ref.getTime()) / 86400000) % cycle + cycle) % cycle;
   if (p < 1.85)  return { icon: "🌑", ru: "Новолуние",          uz: "Yangi oy",            en: "New Moon",        stargazing: false };
-  if (p < 7.38)  return { icon: "🌒", ru: "Растущий серп",       uz: "O'sib kelayotgan oy", en: "Waxing Crescent", stargazing: false };
+  if (p < 7.38)  return { icon: "🌒", ru: "Растущий серп",       uz: "O'sayotgan hilol",    en: "Waxing Crescent", stargazing: false };
   if (p < 9.22)  return { icon: "🌓", ru: "Первая четверть",     uz: "Birinchi chorak",     en: "First Quarter",   stargazing: false };
-  if (p < 14.77) return { icon: "🌔", ru: "Растущая луна",       uz: "O'sib kelayotgan",    en: "Waxing Gibbous",  stargazing: false };
+  if (p < 14.77) return { icon: "🌔", ru: "Растущая луна",       uz: "O'sayotgan oy",      en: "Waxing Gibbous",  stargazing: false };
   if (p < 16.61) return { icon: "🌕", ru: "Полнолуние",          uz: "To'lin oy",           en: "Full Moon",       stargazing: true  };
-  if (p < 22.15) return { icon: "🌖", ru: "Убывающая луна",      uz: "So'nib boruvchi",     en: "Waning Gibbous",  stargazing: false };
+  if (p < 22.15) return { icon: "🌖", ru: "Убывающая луна",      uz: "Kamayayotgan oy",    en: "Waning Gibbous",  stargazing: false };
   if (p < 23.99) return { icon: "🌗", ru: "Последняя четверть",  uz: "Oxirgi chorak",       en: "Last Quarter",    stargazing: false };
-  return           { icon: "🌘", ru: "Убывающий серп",           uz: "So'nib boruvchi oy",  en: "Waning Crescent", stargazing: false };
+  return           { icon: "🌘", ru: "Убывающий серп",           uz: "Kamayayotgan hilol", en: "Waning Crescent", stargazing: false };
 }
 
 /* AQI label */

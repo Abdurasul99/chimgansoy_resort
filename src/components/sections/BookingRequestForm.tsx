@@ -70,7 +70,7 @@ export function BookingRequestForm({
   const [staySlug, setStaySlug] = useState(initialSlug);
 
   const stayLabel =
-    locale === "ru" ? "Что бронируете" : locale === "uz" ? "Nima bron qilasiz" : "What are you booking";
+    locale === "ru" ? "Что бронируете" : locale === "uz" ? "Nimani bron qilasiz" : "What are you booking";
 
   return (
     <div className="rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] p-6 shadow-[0_8px_40px_rgba(21,29,24,0.07)] sm:p-8">

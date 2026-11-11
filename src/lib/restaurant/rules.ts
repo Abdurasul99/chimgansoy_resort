@@ -51,12 +51,12 @@ export const DEFAULT_SETTINGS: RestaurantSettings = {
   name: { ru: "Сазанчик", uz: "Sazanchik", en: "Sazanchik" },
   tagline: {
     ru: "Ресторан в CHIMGAN DARBAZA",
-    uz: "CHIMGAN DARBAZA’dagi restoran",
+    uz: "CHIMGAN DARBAZAdagi restoran",
     en: "The restaurant at CHIMGAN DARBAZA",
   },
   about: {
     ru: "Ресторан «Сазанчик» — в горах, на территории CHIMGAN DARBAZA. Открыт для всех: приезжайте пообедать или поужинать, даже если не живёте у нас.",
-    uz: "«Sazanchik» restorani — tog'larda, CHIMGAN DARBAZA hududida. Hamma uchun ochiq: biznikida yashamasangiz ham tushlik yoki kechki ovqatga keling.",
+    uz: "«Sazanchik» restorani — tog'larda, CHIMGAN DARBAZA hududida. Hamma uchun ochiq: bizda tunab qolmasangiz ham tushlik yoki kechki ovqatga keling.",
     en: "Sazanchik is in the mountains, on the grounds of CHIMGAN DARBAZA. It is open to everyone: come for lunch or dinner even if you are not staying with us.",
   },
   announcement: { ru: "", uz: "", en: "" },

@@ -8,7 +8,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Топчан с занавесями на фоне снежных вершин Чимгана",
-      uz: "Chimg'onning qorli cho'qqilari fonida pardali topchan",
+      uz: "Chimyonning qorli cho'qqilari fonida pardali topchan",
       en: "Curtained topchan against the snowy peaks of Chimgan",
     },
   },
@@ -208,7 +208,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Санузел шале со стеклянной душевой — свой у каждой спальни",
-      uz: "Shale sanuzeli shishali dush bilan — har bir yotoqxonada o'zi bor",
+      uz: "Shale hammomi shishali dush bilan — har bir yotoqxonada o'zi bor",
       en: "Chalet bathroom with a glass shower — one per bedroom",
     },
   },
@@ -235,7 +235,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Хребет Чимгана с террасы курорта",
-      uz: "Kurort terrasasidan Chimgon tizmasi",
+      uz: "Kurort terrasasidan Chimyon tizmasi",
       en: "The Chimgan ridge seen from the resort terrace",
     },
   },
@@ -293,7 +293,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Собственный санузел в глэмпинге с душем и раковиной",
-      uz: "Glempingdagi dush va rakovinali xususiy sanuzel",
+      uz: "Glempingdagi dush va rakovinali xususiy hammom",
       en: "Ensuite glamping bathroom with shower and washbasin",
     },
   },
@@ -314,7 +314,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Подача шашлыка на территории",
-      uz: "Hududda shashlik tortilishi",
+      uz: "Hududda shashlik pishirilishi",
       en: "Shashlik being served on the grounds",
     },
   },
@@ -364,7 +364,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Зелёные холмы Чимгана",
-      uz: "Chimg'onning yashil tepaliklari",
+      uz: "Chimyonning yashil tepaliklari",
       en: "Green hills of Chimgan",
     },
   },
@@ -507,7 +507,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Бассейн с пул-баром под навесом и горы за ним",
-      uz: "Soyabon ostidagi pul-bar bilan basseyn va orqasidagi tog'lar",
+      uz: "Soyabon ostidagi bar bilan basseyn va orqasidagi tog'lar",
       en: "The pool with its shaded swim-up bar and the mountains behind",
     },
   },
@@ -686,7 +686,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Шале под скальным гребнем Чимгана",
-      uz: "Chimgonning qoyali tizmasi ostidagi shalelar",
+      uz: "Chimyonning qoyali tizmasi ostidagi shalelar",
       en: "Chalets beneath the Chimgan rock face",
     },
   },
@@ -815,7 +815,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Халаты, полотенца и пледы в шкафу домика A-frame",
-      uz: "A-frame uycha shkafida xalatlar, sochiqlar va plyadlar",
+      uz: "A-frame uycha shkafida xalatlar, sochiqlar va pledlar",
       en: "Robes, towels and blankets in the A-frame wardrobe",
     },
   },
@@ -987,7 +987,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Фирменный тюбинг на покрытии трассы",
-      uz: "Trassa qoplamasidagi firma tubingi",
+      uz: "Trassa qoplamasidagi logotipli tyubing",
       en: "A branded tube resting on the track surface",
     },
   },
@@ -1007,7 +1007,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Тюбинги под навесом на пункте выдачи",
-      uz: "Berish nuqtasida soyabon ostidagi tubinglar",
+      uz: "Tyubing beriladigan joyda soyabon ostidagi tyubinglar",
       en: "Tubes stacked under the canopy at the handout point",
     },
   },

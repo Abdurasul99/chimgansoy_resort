@@ -221,7 +221,7 @@ export const poolAroundStaySection = {
       "О намерении воспользоваться бассейном до заезда или после выезда необходимо заранее уведомить администрацию.",
     ],
     uz: [
-      "Kirishdan oldin: tasdiqlangan broni bor mehmon joylashuvni kutayotib, hisob-kitob kirish vaqtigacha basseyndan foydalanishi mumkin. Alohida to'lov olinmaydi, joylashuv obyekti bu vaqtda berilmaydi.",
+      "Kirishdan oldin: tasdiqlangan broni bor mehmon joylashishni kutib turganda, belgilangan kirish vaqtigacha basseyndan foydalanishi mumkin. Alohida to'lov olinmaydi, joylashuv obyekti bu vaqtda berilmaydi.",
       "Chiqishdan keyin: basseynga tashrif yashash narxiga kirmaydi va alohida to'lanadi — bir kunlik tashrif uchun qat'iy narx Saytda e'lon qilingan Prays-varaqa bo'yicha belgilanadi.",
       "Ushbu shartlar asosiy tarifdan qat'i nazar amal qiladi va xona narxiga kiritilmagan.",
       "Kirishdan oldin yoki chiqishdan keyin basseyndan foydalanish niyati haqida ma'muriyatni oldindan ogohlantirish kerak.",

@@ -45,7 +45,7 @@ const COPY = {
     eyebrow: { ru: "Ресторан · открыт для всех", uz: "Restoran · hamma uchun ochiq", en: "Restaurant · open to everyone" } as L,
     text: {
       ru: "Приезжайте просто пообедать или поужинать: ресторан открыт для всех гостей, а не только для тех, кто живёт в комплексе. Плов, шашлык и блюда на огне — с видом на горы Чимгана.",
-      uz: "Shunchaki tushlik yoki kechki ovqat uchun keling: restoran majmuada yashovchilar uchungina emas, barcha mehmonlar uchun ochiq. Palov, shashlik va olovda pishgan taomlar — Chimgon tog'lari manzarasi bilan.",
+      uz: "Shunchaki tushlik yoki kechki ovqat uchun keling: restoran majmuada yashovchilar uchungina emas, barcha mehmonlar uchun ochiq. Palov, shashlik va olovda pishgan taomlar — Chimyon tog'lari manzarasi bilan.",
       en: "Come just for lunch or dinner: the restaurant is open to everyone, not only to guests staying with us. Plov, kebabs and dishes cooked over fire — with a view of the Chimgan mountains.",
     } as L,
     plaque: { ru: "Для всех гостей", uz: "Barcha mehmonlar uchun", en: "For every guest" } as L,
@@ -56,7 +56,7 @@ const COPY = {
     } as L,
     facts: {
       ru: ["Плов и шашлык", "Блюда на мангале", "Вид на горы Чимгана"],
-      uz: ["Palov va shashlik", "Mangalda pishgan taomlar", "Chimgon tog'lari manzarasi"],
+      uz: ["Palov va shashlik", "Mangalda pishgan taomlar", "Chimyon tog'lari manzarasi"],
       en: ["Plov and kebabs", "Dishes from the grill", "Chimgan mountain views"],
     } as LL,
     hours: { ru: "Ежедневно", uz: "Har kuni", en: "Daily" } as L,

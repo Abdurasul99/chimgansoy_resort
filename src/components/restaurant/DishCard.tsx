@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { localizePortion } from "@/lib/restaurant/portion";
 import { createPortal } from "react-dom";
 import type { Locale } from "@/i18n/config";
 import { restaurantText } from "@/content/restaurant";
@@ -54,7 +55,7 @@ export function DishCard({ dish, locale }: { dish: Dish; locale: Locale }) {
           <button type="button" onClick={openSheet} className="mt-1 text-left">
             <h3 className="line-clamp-2 text-sm leading-5 text-[#1c1c1c]">{title}</h3>
           </button>
-          {dish.portion && <p className="mt-0.5 text-[13px] text-[#8c8c8c]">{dish.portion}</p>}
+          {dish.portion && <p className="mt-0.5 text-[13px] text-[#8c8c8c]">{localizePortion(dish.portion, locale)}</p>}
         </div>
       </article>
 
@@ -128,7 +129,7 @@ function DishSheet({
         </div>
         <div className="p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:p-6">
           <h3 className="text-2xl font-bold leading-tight text-[#1c1c1c]">{title}</h3>
-          {dish.portion && <p className="mt-1 text-sm text-[#8c8c8c]">{dish.portion}</p>}
+          {dish.portion && <p className="mt-1 text-sm text-[#8c8c8c]">{localizePortion(dish.portion, locale)}</p>}
           {description && <p className="mt-3 text-[15px] leading-6 text-[#4a4a4a]">{description}</p>}
 
           {dish.availability !== "available" && (

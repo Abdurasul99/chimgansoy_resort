@@ -68,7 +68,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     promoTooLate: "Акция «2+1» действует до {until}: последний заезд по ней — {last}",
   },
   uz: {
-    title: "Bir marta bosib bron qilish",
+    title: "Bir bosishda bron qilish",
     lead: "Ariza qoldiring — qo'ng'iroq qilamiz, bo'sh sanalarni tasdiqlaymiz va narxni hisoblaymiz.",
     checkin: "Kirish",
     checkout: "Chiqish",

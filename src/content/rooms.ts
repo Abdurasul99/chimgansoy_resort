@@ -118,7 +118,7 @@ export const rooms: Room[] = [
       // Сумма здесь не называется — она живая и стоит ниже на этой же странице;
       // две цифры в двух местах разошлись бы при первой правке в админке.
       ru: "Глэмпинг создан для гостей, которым важны тишина, воздух и ощущение природы без отказа от удобств. Формат подходит для романтического отдыха, коротких перезагрузок и камерных семейных поездок. Туристский сбор в стоимость проживания не входит и оплачивается отдельно при заселении — за каждую ночь с каждого гостя.",
-      uz: "Glemping sokinlik, toza havo va qulaylikdan voz kechmasdan tabiatni his qilishni istagan mehmonlar uchun. U romantik dam olish, qisqa hordiq va kichik oilaviy safarlar uchun mos. Turistik yig'im yashash narxiga kirmaydi va joylashuvda alohida to'lanadi — har bir kecha uchun har bir mehmondan.",
+      uz: "Glemping sokinlik, toza havo va qulaylikdan voz kechmasdan tabiatni his qilishni istagan mehmonlar uchun. U romantik dam olish, qisqa hordiq va kichik oilaviy safarlar uchun mos. Turistik yig'im yashash narxiga kirmaydi va joylashish paytida alohida to'lanadi — har bir kecha uchun har bir mehmondan.",
       en: "Glamping is designed for guests who want quiet air and a close-to-nature stay without giving up comfort. It fits romantic escapes, short resets, and intimate family trips. The tourist levy is not included in the rate and is paid separately at check-in, per person per night.",
     },
     priceFrom: { ru: "Цена при бронировании", uz: "Bron qilishda narx", en: "Price at booking" },
@@ -131,12 +131,12 @@ export const rooms: Room[] = [
     // explicitly so nobody books expecting one.
     amenities: {
       ru: ["Двуспальная кровать 180×200", "Собственная терраса", "Санузел с душем", "Кондиционер", "Тёплый пол", "Телевизор", "Wi-Fi", "Бесплатная парковка"],
-      uz: ["Ikki kishilik karavot 180×200", "Xususiy terrasa", "Dushli sanuzel", "Konditsioner", "Issiq pol", "Televizor", "Wi-Fi", "Bepul parking"],
+      uz: ["Ikki kishilik karavot 180×200", "Xususiy terrasa", "Dushli hammom", "Konditsioner", "Issiq pol", "Televizor", "Wi-Fi", "Bepul avtoturargoh"],
       en: ["Double bed 180×200", "Private terrace", "Shower room", "Air conditioning", "Heated floor", "TV", "Wi-Fi", "Free parking"],
     },
     features: {
       ru: ["Стандартно 2 гостя, максимум 3 — третье место за доплату", "1 спальная комната, 32 м²", "Собственный санузел 3,6 м²", "Терраса 15 м²", "Заезд с 15:00, выезд до 12:00"],
-      uz: ["Standart 2 mehmon, maksimum 3 — uchinchi joy qo'shimcha to'lov evaziga", "1 yotoq xonasi, 32 m²", "Xususiy sanuzel 3,6 m²", "Terrasa 15 m²", "Kirish 15:00 dan, chiqish 12:00 gacha"],
+      uz: ["Standart 2 mehmon, maksimum 3 — uchinchi joy qo'shimcha to'lov evaziga", "1 yotoq xonasi, 32 m²", "Xususiy hammom 3,6 m²", "Terrasa 15 m²", "Kirish 15:00 dan, chiqish 12:00 gacha"],
       en: ["2 guests as standard, 3 maximum — the third place is charged", "1 bedroom, 32 m²", "Private bathroom 3.6 m²", "Terrace 15 m²", "Check-in from 15:00, check-out by 12:00"],
     },
     // Тюбинг: один бесплатный спуск на КАЖДОГО проживающего (оператор, голосом
@@ -170,8 +170,8 @@ export const rooms: Room[] = [
       { label: { ru: "Кондиционер", uz: "Konditsioner", en: "Air conditioning" } },
       { label: { ru: "Тёплый пол", uz: "Issiq pol", en: "Heated floor" } },
       { label: { ru: "Телевизор", uz: "Televizor", en: "TV" } },
-      { label: { ru: "Санузел с душем", uz: "Dushli sanuzel", en: "Shower room" } },
-      { label: { ru: "Бесплатная парковка", uz: "Bepul parking", en: "Free parking" } },
+      { label: { ru: "Санузел с душем", uz: "Dushli hammom", en: "Shower room" } },
+      { label: { ru: "Бесплатная парковка", uz: "Bepul avtoturargoh", en: "Free parking" } },
       { label: { ru: "Wi-Fi", uz: "Wi-Fi", en: "Wi-Fi" } },
     ],
     relatedServices: ["restaurant", "picnic-zone", "experience"],
@@ -221,7 +221,7 @@ export const rooms: Room[] = [
     },
     description: {
       ru: "Шале подходит гостям, которым нужен полноценный приватный формат. Две отдельные спальни: в одной двуспальная кровать, в другой две раздельные. К каждой спальне — свой туалет и душ. Плюс кухня-зал и собственная терраса для вечернего отдыха. Всё, что есть в глэмпинге — кондиционер, тёплый пол, телевизор, Wi-Fi и бесплатная парковка, — есть и здесь. Туристский сбор в стоимость проживания не входит и оплачивается отдельно при заселении — за каждую ночь с каждого гостя.",
-      uz: "Shale to'liq xususiy formatni istagan mehmonlar uchun. Ikkita alohida yotoqxona: birida ikki kishilik karavot, ikkinchisida ikkita alohida karavot. Har bir yotoqxonaga o'z hojatxonasi va dushi. Ustiga oshxona-zal va kechki dam olish uchun shaxsiy terrasa. Glempingdagi hamma narsa — konditsioner, issiq pol, televizor, Wi-Fi va bepul parking — bu yerda ham bor. Turistik yig'im yashash narxiga kirmaydi va joylashuvda alohida to'lanadi — har bir kecha uchun har bir mehmondan.",
+      uz: "Shale to'liq xususiy formatni istagan mehmonlar uchun. Ikkita alohida yotoqxona: birida ikki kishilik karavot, ikkinchisida ikkita alohida karavot. Har bir yotoqxonaga o'z hojatxonasi va dushi. Bundan tashqari, oshxona-zal va kechki dam olish uchun shaxsiy terrasa. Glempingdagi hamma narsa — konditsioner, issiq pol, televizor, Wi-Fi va bepul avtoturargoh — bu yerda ham bor. Turistik yig'im yashash narxiga kirmaydi va joylashish paytida alohida to'lanadi — har bir kecha uchun har bir mehmondan.",
       en: "The chalet is for guests who need a fully private format. Two separate bedrooms: a double bed in one, two single beds in the other, each bedroom with its own toilet and shower. Plus a kitchen-lounge and a private terrace for the evenings. Everything the glamping cabin has — air conditioning, heated floors, a TV, Wi-Fi and free parking — is here too. The tourist levy is not included in the rate and is paid separately at check-in, per person per night.",
     },
     priceFrom: { ru: "Цена при бронировании", uz: "Bron qilishda narx", en: "Price at booking" },
@@ -236,12 +236,12 @@ export const rooms: Room[] = [
       // Two ensuites, both with a shower — there is no bath anywhere on the
       // property, in any unit.
       ru: ["Туалет и душ в каждой спальне", "Собственная терраса", "Кондиционер", "Тёплый пол", "Телевизор", "Wi-Fi", "Бесплатная парковка", "Холодильник", "Электрическая плита", "Микроволновка", "Полный кухонный набор", "Минибар"],
-      uz: ["Har bir yotoqxonada hojatxona va dush", "Xususiy terrasa", "Konditsioner", "Issiq pol", "Televizor", "Wi-Fi", "Bepul parking", "Muzlatkich", "Elektr plita", "Mikroto'lqinli pech", "To'liq oshxona to'plami", "Minibar"],
+      uz: ["Har bir yotoqxonada hojatxona va dush", "Xususiy terrasa", "Konditsioner", "Issiq pol", "Televizor", "Wi-Fi", "Bepul avtoturargoh", "Muzlatkich", "Elektr plita", "Mikroto'lqinli pech", "To'liq oshxona to'plami", "Minibar"],
       en: ["Toilet and shower in each bedroom", "Private terrace", "Air conditioning", "Heated floor", "TV", "Wi-Fi", "Free parking", "Fridge", "Electric stove", "Microwave", "Full kitchen set", "Minibar"],
     },
     features: {
       ru: ["Стандартно 4 гостя, максимум 6 — места сверх стандарта за доплату", "Спальня 1 (16,0 м²): двуспальная кровать 180×200", "Спальня 2 (16,0 м²): две односпальные 90×200", "Кухня-гостиная 38,4 м²", "Кухня-зал с диваном", "Отдельный санузел в каждой спальне (4.7 м²)", "Заезд с 15:00, выезд до 12:00"],
-      uz: ["Standart 4 mehmon, maksimum 6 — standartdan ortiq joylar qo'shimcha to'lov evaziga", "Yotoqxona 1 (16,0 m²): ikki kishilik karavot 180×200", "Yotoqxona 2 (16,0 m²): ikkita bir kishilik karavot 90×200", "Oshxona-zal 38,4 m²", "Oshxona-zal divan bilan", "Har bir yotoqxonada alohida sanuzel (4.7 m²)", "Kirish 15:00 dan, chiqish 12:00 gacha"],
+      uz: ["Standart 4 mehmon, maksimum 6 — standartdan ortiq joylar qo'shimcha to'lov evaziga", "Yotoqxona 1 (16,0 m²): ikki kishilik karavot 180×200", "Yotoqxona 2 (16,0 m²): ikkita bir kishilik karavot 90×200", "Oshxona-zal 38,4 m²", "Oshxona-zal divan bilan", "Har bir yotoqxonada alohida hammom (4.7 m²)", "Kirish 15:00 dan, chiqish 12:00 gacha"],
       en: ["4 guests as standard, 6 maximum — places beyond the standard are charged", "Bedroom 1 (16.0 m²): double bed 180×200", "Bedroom 2 (16.0 m²): two single beds 90×200", "Kitchen-lounge 38.4 m²", "Kitchen-lounge with a sofa", "Ensuite bathroom in each bedroom (4.7 m²)", "Check-in from 15:00, check-out by 12:00"],
     },
     included: [
@@ -269,7 +269,7 @@ export const rooms: Room[] = [
       { label: { ru: "Тёплый пол", uz: "Issiq pol", en: "Heated floor" } },
       { label: { ru: "Полная кухня", uz: "To'liq oshxona", en: "Full kitchen" } },
       { label: { ru: "Терраса 42 м²", uz: "42 m² terrasa", en: "42 m² terrace" } },
-      { label: { ru: "Санузел в каждой спальне", uz: "Har bir yotoqxonada sanuzel", en: "Ensuite in every bedroom" } },
+      { label: { ru: "Санузел в каждой спальне", uz: "Har bir yotoqxonada hammom", en: "Ensuite in every bedroom" } },
       { label: { ru: "Парковка у домика", uz: "Uycha yonida parking", en: "Parking by the cabin" } },
       { label: { ru: "Wi-Fi", uz: "Wi-Fi", en: "Wi-Fi" } },
     ],
@@ -322,7 +322,7 @@ export const rooms: Room[] = [
     size: { ru: "Открытый бассейн 680 м²", uz: "680 m² ochiq basseyn", en: "680 m² outdoor pool" },
     amenities: {
       ru: ["Открытый бассейн 680 м²", "Детский бассейн", "Пул-бар с посадочными местами", "Бунгало Standard и Family у воды", "Панорама гор"],
-      uz: ["680 m² ochiq basseyn", "Bolalar basseyni", "O'tirish joylari bilan pul-bar", "Suv bo'yida Standard va Family bungalolar", "Tog' panoramasi"],
+      uz: ["680 m² ochiq basseyn", "Bolalar basseyni", "O'tirish joylari bilan bar", "Suv bo'yida Standard va Family bungalolar", "Tog' panoramasi"],
       en: ["680 m² outdoor pool", "Children's pool", "Pool bar with seating", "Standard and Family bungalows by the water", "Mountain panorama"],
     },
     features: {

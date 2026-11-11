@@ -57,7 +57,7 @@ type PageProps = {
 /** Та же надпись, что в карточке сбоку: ведёт к форме ниже на странице. */
 const oneClickCta: Record<string, string> = {
   ru: "Забронировать в один клик",
-  uz: "Bir marta bosib bron qilish",
+  uz: "Bir bosishda bron qilish",
   en: "Book in one click",
 };
 
@@ -75,7 +75,7 @@ function poolPriceChip(live: LivePricing, locale: string): string {
   return (
     {
       ru: `от ${from} сум с человека`,
-      uz: `${from} so'mdan bir kishidan`,
+      uz: `kishi boshiga ${from} so'mdan`,
       en: `from ${from} UZS per person`,
     }[locale] ?? `от ${from} сум`
   );
@@ -196,13 +196,13 @@ export default async function RoomDetailPage({ params }: PageProps) {
         uz: [
           `Standart joylashuv — ${occ.base} mehmon, maksimum ${occ.max}. Standartdan ortiq joylar — qo'shimcha to'lov evaziga.`,
           `Kirish ${stayRules.checkIn} dan, chiqish ${stayRules.checkOut} gacha. ${lateCheckOutNote.uz} Erta kirish — bandlikka qarab va qo'shimcha to'lov evaziga.`,
-          ...(poolClosure.closed ? [] : [`Basseyn: kirishdan oldin, joylashuvni kutayotib — tasdiqlangan bron bilan bepul; chiqishdan keyin — bir kun uchun ${group(livePricing.pool.afterCheckOut)} so'm. Administratorni oldindan ogohlantiring.`]),
+          ...(poolClosure.closed ? [] : [`Basseyn: kirishdan oldin, joylashishni kutib turganda — tasdiqlangan bron bilan bepul; chiqishdan keyin — bir kun uchun ${group(livePricing.pool.afterCheckOut)} so'm. Administratorni oldindan ogohlantiring.`]),
           `Bir kechaga qo'shimcha joy — ${adultFromAge} yoshdan katta mehmon uchun ${group(livePricing.extraGuest.adult)} so'm, ${childFrom}–${childTo} yoshdagi bola uchun ${group(livePricing.extraGuest.child)} so'm. 0–${freeThroughAge} yoshdagi bolalar — bepul.`,
           ...(room.slug === "cottage"
             ? [`Shalega mehmon tashrifi (tunab qolmasdan) — ${group(livePricing.extraGuest.guestVisitCottage)} so'm.`]
             : []),
-          `Turistik yig'imni faqat chet el fuqarolari va fuqaroligi bo'lmagan shaxslar to'laydi — amaldagi stavka bo'yicha bir kecha uchun har bir mehmondan ${group(livePricing.touristTax.nonResident)} so'm. Joylashuvda, yashash narxidan alohida to'lanadi. O'zbekiston fuqarolari va rezidentlaridan yig'im olinmaydi.`,
-          "Joylashuvda barcha yashovchilarning pasporti kerak bo'ladi.",
+          `Turistik yig'imni faqat chet el fuqarolari va fuqaroligi bo'lmagan shaxslar to'laydi — amaldagi stavka bo'yicha bir kecha uchun har bir mehmondan ${group(livePricing.touristTax.nonResident)} so'm. Joylashish paytida, yashash narxidan alohida to'lanadi. O'zbekiston fuqarolari va rezidentlaridan yig'im olinmaydi.`,
+          "Joylashish paytida barcha yashovchilarning pasporti kerak bo'ladi.",
         ],
         en: [
           `The rate covers ${occ.base} guests; the cabin holds up to ${occ.max}. Places beyond the standard are charged.`,

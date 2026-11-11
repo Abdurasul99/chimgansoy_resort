@@ -33,7 +33,7 @@ const COPY: Record<Locale, Copy> = {
   uz: {
     title: "Majburiy roziliklar",
     offer: (link) => <>{link} bilan tanishdim va uning shartlarini qabul qilaman.</>,
-    privacy: (link) => <>Shaxsiy ma’lumotlarimni {link}ga muvofiq qayta ishlashga roziman.</>,
+    privacy: (link) => <>Shaxsiy ma'lumotlarimni {link}ga muvofiq qayta ishlashga roziman.</>,
     tubingRules: (link) => <>{link} bilan tanishdim va ularga rioya qilishga roziman.</>,
     poolRules: (link) => <>{link} bilan tanishdim va ularga rioya qilishga roziman.</>,
     refund: (link) => <>{link} bilan tanishdim va ularni qabul qilaman.</>,

@@ -42,7 +42,7 @@ export const policies: PolicyPage[] = [
     title: { ru: "Как добраться", uz: "Qanday borish", en: "How to get there" },
     description: {
       ru: "Ориентиры и контакты для планирования поездки в CHIMGAN DARBAZA.",
-      uz: "CHIMGAN DARBAZAga safarni rejalash uchun mo'ljallar va kontaktlar.",
+      uz: "CHIMGAN DARBAZAga safarni rejalashtirish uchun mo'ljallar va kontaktlar.",
       en: "Directions and contacts for planning a trip to CHIMGAN DARBAZA.",
     },
     sections: [

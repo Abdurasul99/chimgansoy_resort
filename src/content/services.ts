@@ -86,7 +86,7 @@ export const services: Service[] = [
     title: { ru: "Горные прогулки рядом", uz: "Atrofdagi tog' sayrlari", en: "Mountain walks nearby" },
     shortDescription: {
       ru: "Лёгкие пешие маршруты, конные прогулки и канатные дороги в районе Чимгана.",
-      uz: "Yengil piyoda marshrutlar, ot minish va Chimgon hududidagi kanat yo'llari.",
+      uz: "Yengil piyoda marshrutlar, ot minish va Chimyon hududidagi kanat yo'llari.",
       en: "Easy walking routes, horse rides, and cable cars in the Chimgan area.",
     },
     description: {
@@ -96,7 +96,7 @@ export const services: Service[] = [
     },
     highlights: {
       ru: ["Пешие маршруты", "Конные прогулки", "Канатные дороги Чимгана", "Сезонные варианты"],
-      uz: ["Piyoda marshrutlar", "Ot minish", "Chimgon kanat yo'llari", "Mavsumiy variantlar"],
+      uz: ["Piyoda marshrutlar", "Ot minish", "Chimyon kanat yo'llari", "Mavsumiy variantlar"],
       en: ["Hiking routes", "Horse riding", "Chimgan cable cars", "Seasonal options"],
     },
     bestFor: { ru: "Активная половина дня", uz: "Kunning faol yarmi", en: "An active half-day" },
@@ -124,12 +124,12 @@ export const services: Service[] = [
     },
     description: {
       ru: "Пикник-зона находится у тюбинг-горки — это одно и то же место. Территория открыта для гостей на всё время проживания: прогулочные дорожки между домиками, открытые площадки с панорамой на Чимган, детская площадка и места для встреч на воздухе. Парковка — рядом с домиком, зона мангала — в нескольких шагах.",
-      uz: "Piknik zonasi tubing gorkasi yonida — bu bir joy. Hudud yashash davomida mehmonlar uchun ochiq: uychalar orasidagi sayr yo'lakchalari, Chimgon panoramasi bilan ochiq maydonlar, bolalar maydonchasi va ochiq havoda uchrashuv joylari. Parking — uycha yonida, mangal zonasi — bir necha qadamda.",
+      uz: "Piknik zonasi tubing gorkasi yonida — bu bir joy. Hudud yashash davomida mehmonlar uchun ochiq: uychalar orasidagi sayr yo'lakchalari, Chimyon panoramasi bilan ochiq maydonlar, bolalar maydonchasi va ochiq havoda uchrashuv joylari. Avtoturargoh — uycha yonida, mangal zonasi — bir necha qadamda.",
       en: "The picnic area is by the tubing hill — they are the same place. The grounds are open to guests for the whole stay: walking paths between the cabins, open lawns with a view of the Chimgan range, a kids playground, and spots to gather outdoors. Parking sits by your cabin, the BBQ area a few steps away.",
     },
     highlights: {
       ru: ["Пикник-зона у горки", "9 гектаров территории", "Сосны и панорама гор", "Детская площадка", "Парковка у домика"],
-      uz: ["Gorka yonida piknik zonasi", "9 gektar hudud", "Qarag'aylar va tog' panoramasi", "Bolalar maydonchasi", "Uycha yonida parking"],
+      uz: ["Gorka yonida piknik zonasi", "9 gektar hudud", "Qarag'aylar va tog' panoramasi", "Bolalar maydonchasi", "Uycha yonida avtoturargoh"],
       en: ["Picnic area by the hill", "Nine hectares of grounds", "Pines and mountain views", "Kids playground", "Parking by your cabin"],
     },
     bestFor: { ru: "Спокойный день на территории", uz: "Hududda sokin kun", en: "A slow day on the grounds" },
@@ -176,12 +176,12 @@ export const services: Service[] = [
     },
     description: {
       ru: "Бассейн 680 м² с детской зоной, пул-баром и бунгало вдоль воды: 8 Standard до 4 гостей и 4 Family до 10. Проживающим вход включён в стоимость; приехать только на бассейн, без ночёвки, тоже можно — тариф зависит от возраста и дня недели.",
-      uz: "680 m² basseyn, bolalar zonasi, pul-bar va suv bo'yidagi bungalolar: 4 kishilik 8 ta Standard va 10 kishilik 4 ta Family. Yashovchilar uchun kirish narxga kiritilgan; tunamasdan faqat basseynga kelish ham mumkin — tarif yosh va hafta kuniga bog'liq.",
+      uz: "680 m² basseyn, bolalar zonasi, bar va suv bo'yidagi bungalolar: 4 kishilik 8 ta Standard va 10 kishilik 4 ta Family. Yashovchilar uchun kirish narxga kiritilgan; tunamasdan faqat basseynga kelish ham mumkin — tarif yosh va hafta kuniga bog'liq.",
       en: "A 680 m² pool with a children's area, a pool bar and bungalows along the water: 8 Standard ones for up to 4 guests and 4 Family ones for up to 10. Included for staying guests; you can also come just for the pool, at a rate that depends on age and day of week.",
     },
     highlights: {
       ru: ["680 м² и детский бассейн", "Пул-бар у воды", "8 бунгало Standard и 4 Family", "Включён в проживание"],
-      uz: ["680 m² va bolalar basseyni", "Suv bo'yida pul-bar", "8 ta Standard va 4 ta Family bungalo", "Yashash narxiga kiritilgan"],
+      uz: ["680 m² va bolalar basseyni", "Suv bo'yida bar", "8 ta Standard va 4 ta Family bungalo", "Yashash narxiga kiritilgan"],
       en: ["680 m² plus a children's pool", "Pool bar by the water", "8 Standard and 4 Family bungalows", "Included with a stay"],
     },
     bestFor: { ru: "Жаркий день в горах", uz: "Tog'dagi issiq kun", en: "A hot day in the mountains" },

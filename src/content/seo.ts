@@ -23,7 +23,7 @@ export const pageSeo = {
     },
     description: {
       ru: `Шале и A-frame глэмпинг на высоте 1700 м в 45 минутах от Ташкента: ${pool ? "бассейн" : "завтрак"} включён в проживание, кухня на территории, панорама Чимгана с террасы.`,
-      uz: `Toshkentdan 45 daqiqada, 1700 m balandlikda shale va A-frame glemping: ${pool ? "basseyn" : "nonushta"} narxga kiritilgan, hududda oshxona, terrasadan Chimg'on panoramasi.`,
+      uz: `Toshkentdan 45 daqiqada, 1700 m balandlikda shale va A-frame glemping: ${pool ? "basseyn" : "nonushta"} narxga kiritilgan, hududda oshxona, terrasadan Chimyon panoramasi.`,
       en: `Chalets and A-frame glamping at 1,700 m, 45 minutes from Tashkent: ${pool ? "pool" : "breakfast"} included with every stay, kitchen on site, Chimgan views from your terrace.`,
     },
   },
@@ -35,7 +35,7 @@ export const pageSeo = {
     },
     description: {
       ru: "Глэмпинг на природе или просторное шале для компании — выберите формат и забронируйте ночь в горах Чимгана.",
-      uz: "Tabiat qo'ynidagi glemping yoki keng shale — formatni tanlang va Chimg'on tog'larida tunni bron qiling.",
+      uz: "Tabiat qo'ynidagi glemping yoki keng shale — formatni tanlang va Chimyon tog'larida tunni bron qiling.",
       en: "Glamping in nature or a spacious chalet for your group — pick a format and book a night in the Chimgan mountains.",
     },
   },
@@ -54,12 +54,12 @@ export const pageSeo = {
   about: {
     title: {
       ru: "О курорте в горах Чимгана",
-      uz: "Chimg'on tog'laridagi kurort haqida",
+      uz: "Chimyon tog'laridagi kurort haqida",
       en: "About the resort in the Chimgan mountains",
     },
     description: {
       ru: `Проживание в шале и глэмпинге на высоте 1700 м в 45 минутах от Ташкента — 9 гектаров, ${pool ? "бассейн, " : ""}кухня и горы Чимгана.`,
-      uz: `Toshkentdan 45 daqiqada, 1700 m balandlikda shale va glempingda yashash — 9 gektar, ${pool ? "basseyn, " : ""}oshxona va Chimg'on tog'lari.`,
+      uz: `Toshkentdan 45 daqiqada, 1700 m balandlikda shale va glempingda yashash — 9 gektar, ${pool ? "basseyn, " : ""}oshxona va Chimyon tog'lari.`,
       en: `Chalet and glamping stays at 1,700 m, 45 minutes from Tashkent — nine hectares, ${pool ? "a pool, " : ""}a kitchen, and the Chimgan mountains.`,
     },
   },
@@ -71,7 +71,7 @@ export const pageSeo = {
     },
     description: {
       ru: "Горные маршруты, прогулки, канатные дороги и впечатления рядом с курортом в Чимгане.",
-      uz: "Chimg'ondagi kurort yaqinidagi tog' marshrutlari, sayrlar, kanat yo'llari va taassurotlar.",
+      uz: "Chimyondagi kurort yaqinidagi tog' marshrutlari, sayrlar, kanat yo'llari va taassurotlar.",
       en: "Mountain trails, walks, cable cars, and experiences near the resort in Chimgan.",
     },
   },

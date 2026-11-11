@@ -66,7 +66,7 @@ const stats = [
   { value: "20", label: { ru: "домиков на территории", uz: "hududdagi uychalar", en: "cabins on the grounds" } },
   // 9, not 6 — corrected by the operator 2026-08-02 along with the pool area.
   { value: "9", label: { ru: "гектаров территории", uz: "gektar hudud", en: "hectares of grounds" } },
-  { value: "45", label: { ru: "мин от Ташкента", uz: "min Toshkentdan", en: "min from Tashkent" } },
+  { value: "45", label: { ru: "мин от Ташкента", uz: "daqiqa Toshkentdan", en: "min from Tashkent" } },
 ] as const;
 
 /** Everything a guest can book or visit, each on its own page. */
@@ -450,7 +450,7 @@ export default async function HomePage({ params }: PageProps) {
             // и холодильник — минибар, а не завтрак. Завтрак у нас и правда
             // включён, но показывать его этим снимком значит обещать не то:
             // гость ждёт накрытый стол, а получает набор снеков.
-            { image: "chaletKitchen", caption: locale === "uz" ? "Shalede\nsneklar" : locale === "en" ? "Snacks\nin the chalet" : "Снеки\nв шале" },
+            { image: "chaletKitchen", caption: locale === "uz" ? "Shaleda\ngazaklar" : locale === "en" ? "Snacks\nin the chalet" : "Снеки\nв шале" },
             // Топчаны закрыты до сезона (topchan-closure.ts) — кадр с ними не показываем.
             ...(topchanClosure.closed
               ? []

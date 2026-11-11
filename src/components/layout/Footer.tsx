@@ -95,7 +95,7 @@ export async function Footer({ locale }: FooterProps) {
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--muted)]">
-                {locale === "ru" ? "Горный курорт" : locale === "uz" ? "Tog' kurort" : "Mountain resort"}
+                {locale === "ru" ? "Горный курорт" : locale === "uz" ? "Tog' kurorti" : "Mountain resort"}
                 {" · "}
                 {locale === "ru" ? "Узбекистан" : locale === "uz" ? "O'zbekiston" : "Uzbekistan"}
               </p>

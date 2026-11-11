@@ -75,7 +75,7 @@ export const restaurantCopy: Record<Locale, RestaurantCopy> = {
   uz: {
     navLabel: "Restoran",
     eyebrow: "Tog'dagi restoran · 1700 m",
-    teaser: { title: "Menyu va suratlar", text: "Taomlar, porsiyalar va narxlar — restoran qanday ko'rinishi ham" },
+    teaser: { title: "Menyu va suratlar", text: "Taomlar, porsiyalar, narxlar va restoran suratlari" },
     hours: "Ish vaqti",
     hoursUnknown: "Ish vaqtini telefon orqali aniqlang",
     openNow: "Hozir ochiq",
