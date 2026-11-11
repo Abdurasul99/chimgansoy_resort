@@ -324,7 +324,7 @@ export function WeatherPanel({ locale }: { locale: string }) {
                 {label:l.wind,      val: data ? `${data.current.wind} ${l.kmh}` : null},
                 {label:l.pressure,  val: data ? `${data.current.pressure} ${l.hpa}` : null},
                 {label:l.uv,        val: data ? String(Math.round(data.current.uv)) : null},
-                {label:l.altitude,  val: "1 050 "+l.masl},
+                {label:l.altitude,  val: "1 700 "+l.masl},
                 {label:l.aqi,       val: data ? String(data.aqi)               : null, color: aqi.color},
               ].map(s=>(
                 <div key={s.label} className="rounded-xl bg-white/10 px-3 py-2.5 backdrop-blur-sm">
