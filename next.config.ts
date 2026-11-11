@@ -31,11 +31,22 @@ const nextConfig: NextConfig = {
   // редирект: постоянный браузер запомнил бы навсегда, и вернуть страницу было
   // бы нельзя.
   async redirects() {
-    return ["menu", "checkout", "tables", "order/:token*"].map((page) => ({
+    const restaurant = ["menu", "checkout", "tables", "order/:token*"].map((page) => ({
       source: `/:locale(ru|uz|en)/restaurant/${page}`,
       destination: "/:locale/restaurant",
       permanent: false,
     }));
+    // Партнёрский раздел: владелец разослал адреса с опечатками и под другими
+    // именами (11.11.2026) — /parters, /cabinetpartners, /adminparters. Все
+    // они ведут на /partners (адрес без языка язык получает в proxy.ts, как
+    // любой другой). Админки на публичном домене нет намеренно: /adminparters
+    // ведёт на общую страницу.
+    const partners = ["parters", "partner", "cabinetpartners", "adminparters", "adminpartners"].map((alias) => ({
+      source: `/:locale(ru|uz|en)/${alias}`,
+      destination: "/:locale/partners",
+      permanent: false,
+    }));
+    return [...restaurant, ...partners];
   },
 
   // Long-lived browser cache for hashed static assets — they're content-addressed
@@ -81,6 +92,17 @@ const nextConfig: NextConfig = {
       {
         source: "/icon.svg",
         headers: [{ key: "Cache-Control", value: "public, max-age=86400" }],
+      },
+      {
+        // Партнёрский раздел — только по прямой ссылке. Заголовок, а не только
+        // <meta>: его видят и поисковики, и превью мессенджеров, даже если
+        // разметку они не разбирают.
+        source: "/:locale(ru|uz|en)/partners/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
+        source: "/:locale(ru|uz|en)/partners",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
     ];
   },

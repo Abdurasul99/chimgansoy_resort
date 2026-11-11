@@ -5,10 +5,9 @@ import { adminChatIds } from "@/lib/request-delivery";
 import { esc, sendMessage } from "@/lib/telegram";
 import { validateLegalConsents } from "@/lib/legal-consent";
 import { pageLine, trafficSource } from "@/lib/request-context";
+import { escapeHtml, sendEmail } from "@/lib/send-email";
 
 export type ContactResult = { ok: true } | { ok: false; error: string };
-
-type DeliveryStatus = "sent" | "skipped" | "failed";
 
 const MESSAGES = {
   ru: {
@@ -44,55 +43,6 @@ type Lang = keyof typeof MESSAGES;
 
 // Note: the Telegram-bot notification was intentionally removed — bookings now go
 // through the Exely PMS, and admin leads from this form are delivered by email only.
-
-async function sendEmail(
-  subject: string,
-  html: string,
-  toRaw: string | undefined,
-  replyTo?: string,
-): Promise<DeliveryStatus> {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.BOOKING_EMAIL_FROM;
-  if (!apiKey || !from || !toRaw) return "skipped";
-
-  const to = toRaw.split(",").map((s) => s.trim()).filter(Boolean);
-  if (to.length === 0) return "skipped";
-
-  try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from,
-        to,
-        subject,
-        html,
-        reply_to: replyTo,
-      }),
-    });
-    if (!res.ok) {
-      const body = await res.text().catch(() => "");
-      console.error(`[contact] Resend send failed: ${res.status} ${body}`);
-      return "failed";
-    }
-    return "sent";
-  } catch (err) {
-    console.error("[contact] Resend send threw:", err);
-    return "failed";
-  }
-}
-
-function escapeHtml(input: string): string {
-  return input
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
 
 export async function submitContact(formData: FormData): Promise<ContactResult> {
   // Honeypot: a hidden field no human fills. If a bot fills it, silently

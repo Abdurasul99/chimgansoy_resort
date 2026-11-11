@@ -1,0 +1,42 @@
+# Проверка каждого пулл-реквеста и пуша в master: типы, линтер, тесты.
+#
+# Нужна прежде всего для правок через ИИ (Codex) в партнёрском разделе:
+# неверное поле в src/content/partners.ts должно покраснеть здесь, а не
+# уронить сборку на сервере. Полная сборка (next build) остаётся на сервере —
+# chimgan-patch не переключит сайт, пока она не пройдёт.
+name: check
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Типы
+        run: npx tsc --noEmit
+      # Линтер — строго по партнёрскому разделу: в остальном коде на 11.11.2026
+      # 11 старых ошибок (error.tsx, HeroSlideshow, FaqPanel…), сайт они не
+      # ломают, а проверку держали бы красной всегда. Расширять список по мере
+      # исправления.
+      - name: Линтер (партнёрский раздел)
+        run: >-
+          npx eslint --max-warnings=0
+          src/content/partners.ts
+          src/content/__tests__/partners.test.ts
+          "src/app/[locale]/partners"
+          src/app/actions/partners.ts
+          src/app/actions/partners.test.ts
+          src/components/sections/PartnerRequestForm.tsx
+          src/lib/send-email.ts
+      - name: Тесты
+        run: npx vitest run --maxWorkers=4
