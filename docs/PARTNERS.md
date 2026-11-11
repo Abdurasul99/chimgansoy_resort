@@ -161,9 +161,38 @@ git archive HEAD <изменённые файлы> | ssh -i ~/.ssh/chimgan_deplo
 
 | Куда | Как выглядит |
 |---|---|
-| Telegram-группа (`TELEGRAM_ADMIN_CHAT_ID`) | «🤝 **Партнёрство**», компания, имя, контакт, программа, задача, страница |
+| Telegram — **отдельный бот @chimgandarbaza_partners_bot** | «🤝 **Партнёрство**», компания, имя, контакт, программа, задача, страница |
 | Почта `INFO_EMAIL_TO` (info@ → manager@) | Тема «Партнёрство: <компания>», «Ответить» — сразу на почту партнёра |
 | Журнал заявок (`/var/lib/chimgan-blob/requests`) | Как «вопрос» с пометкой «Партнёрство: <компания>», виден в боте через `/zayavki` |
+
+### Партнёрский бот
+
+С 11.11.2026 заявки идут не в общую рабочую группу, а через свой бот
+**@chimgandarbaza_partners_bot** (`src/lib/partners-telegram.ts`). На сервере в
+`/etc/chimgandarbaza.env`:
+
+| Переменная | Что это |
+|---|---|
+| `TELEGRAM_PARTNERS_BOT_TOKEN` | Токен бота от @BotFather. Только на сервере — не в git и не в переписке |
+| `TELEGRAM_PARTNERS_CHAT_ID` | Кому слать: id личного чата и/или группы, через запятую |
+
+**Подключить получателя:**
+1. Человек открывает бота и нажимает «Старт». Или бота добавляют в группу и пишут в ней
+   любое сообщение.
+2. На сервере узнать id:
+   ```bash
+   set -a; . /etc/chimgandarbaza.env; set +a
+   curl -s "https://api.telegram.org/bot$TELEGRAM_PARTNERS_BOT_TOKEN/getUpdates" | grep -o '"chat":{"id":-\?[0-9]*'
+   ```
+3. Вписать id в `TELEGRAM_PARTNERS_CHAT_ID` (через запятую, если несколько).
+4. `systemctl restart chimgandarbaza` — переменные читаются при старте.
+
+**Страховка.** Пока токена или чата нет — или бот не смог доставить ни в один чат (бота
+удалили из группы, его заблокировали), — заявка уходит в общую рабочую группу через
+служебного бота. Лид не теряется.
+
+**Если токен утёк** — @BotFather → `/revoke`, новый токен вписать в env и перезапустить
+службу.
 
 **Что форма требует от партнёра:**
 - компанию и имя;
@@ -188,7 +217,7 @@ git archive HEAD <изменённые файлы> | ssh -i ~/.ssh/chimgan_deplo
 |---|---|
 | Сервер Contabo 5.189.150.167, служба `chimgandarbaza` | active; диск 13 % (85 ГБ свободно), память 7 ГБ свободно |
 | nginx `chimgandarbaza.uz` | `location /` проксирует всё в Next (:3000). Отдельные правила только у `/blob/`, `/link/`, `/_next/static/` — `/partners` они не задевают. `nginx -t` — ок |
-| Переменные доставки | `TELEGRAM_STAFF_BOT_TOKEN`, `TELEGRAM_ADMIN_CHAT_ID`, `RESEND_API_KEY`, `BOOKING_EMAIL_FROM`, `INFO_EMAIL_TO` заданы; код читает те же имена |
+| Переменные доставки | `TELEGRAM_STAFF_BOT_TOKEN`, `TELEGRAM_ADMIN_CHAT_ID`, `RESEND_API_KEY`, `BOOKING_EMAIL_FROM`, `INFO_EMAIL_TO` заданы; код читает те же имена. `TELEGRAM_PARTNERS_BOT_TOKEN` добавлен 11.11.2026, бот отвечает на getMe; копия env до правки — `/root/chimgandarbaza.env.bak-*` |
 | Почта | В журнале службы последние вопросы с сайта — `email=sent` |
 | Журнал заявок | `/var/lib/chimgan-blob/requests`, владелец www-data — запись есть |
 | Node | Сервер v22, проверка на GitHub — тоже 22 |
@@ -210,5 +239,5 @@ git archive HEAD <изменённые файлы> | ssh -i ~/.ssh/chimgan_deplo
 | Проверка на GitHub красная | Открыть её лог. Чаще всего — забытый язык или неверный ключ фото, тест пишет путь к полю (`partnersPage.programs.items[2].guest.uz`) |
 | Страница 404 после выкладки | Файла `src/app/[locale]/partners/page.tsx` нет на сервере — выложить его; `journalctl -u chimgandarbaza -n 50` |
 | Правка не видна | Страница кэшируется до 5 минут. Подождать или проверить, что выкладка дошла до «Готово» |
-| Заявка не пришла в Telegram | `journalctl -u chimgandarbaza | grep "\[partners\]"` — там видно `email=… telegram=N`. При `telegram=0` проверить бота и `TELEGRAM_ADMIN_CHAT_ID` |
+| Заявка не пришла в Telegram | `journalctl -u chimgandarbaza | grep "\[partners\]"` — там видно `email=… telegram=N`. Строка «партнёрский бот не доставил» — получатель не нажал «Старт» или бота убрали из группы; заявка при этом ушла в общую группу |
 | Страница появилась в Google | Проверить `X-Robots-Tag`. Удалить адрес — через Search Console → «Удаления» |

@@ -73,6 +73,53 @@ describe("submitPartnerRequest", () => {
     expect(mails).toHaveLength(0);
   });
 
+  describe("Telegram: свой бот партнёров", () => {
+    let calls: Array<{ bot: string; chat: string }> = [];
+    beforeEach(() => {
+      calls = [];
+      vi.stubEnv("TELEGRAM_STAFF_BOT_TOKEN", "staff-token");
+      vi.stubEnv("TELEGRAM_ADMIN_CHAT_ID", "-100staff");
+      server.use(
+        http.post("https://api.telegram.org/:bot/sendMessage", async ({ request, params }) => {
+          const body = (await request.json()) as { chat_id: string };
+          const bot = String(params.bot);
+          calls.push({ bot, chat: String(body.chat_id) });
+          // «Сломанный» чат партнёров — Telegram отвечает ошибкой.
+          if (body.chat_id === "-100broken") return HttpResponse.json({ ok: false, description: "chat not found" });
+          return HttpResponse.json({ ok: true, result: {} });
+        }),
+      );
+    });
+
+    it("настроен — заявка уходит в чаты партнёрского бота, не в общую группу", async () => {
+      vi.stubEnv("TELEGRAM_PARTNERS_BOT_TOKEN", "partners-token");
+      vi.stubEnv("TELEGRAM_PARTNERS_CHAT_ID", "111, -100partners");
+      expect(await submitPartnerRequest(form(VALID))).toEqual({ ok: true });
+      expect(calls).toEqual(
+        expect.arrayContaining([
+          { bot: "botpartners-token", chat: "111" },
+          { bot: "botpartners-token", chat: "-100partners" },
+        ]),
+      );
+      expect(calls.some((c) => c.bot === "botstaff-token")).toBe(false);
+    });
+
+    it("нет чата партнёров — общая группа, как раньше", async () => {
+      vi.stubEnv("TELEGRAM_PARTNERS_BOT_TOKEN", "partners-token");
+      vi.stubEnv("TELEGRAM_PARTNERS_CHAT_ID", "");
+      await submitPartnerRequest(form(VALID));
+      expect(calls).toEqual([{ bot: "botstaff-token", chat: "-100staff" }]);
+    });
+
+    it("бот партнёров не доставил никуда — заявка не теряется, уходит в общую группу", async () => {
+      vi.stubEnv("TELEGRAM_PARTNERS_BOT_TOKEN", "partners-token");
+      vi.stubEnv("TELEGRAM_PARTNERS_CHAT_ID", "-100broken");
+      vi.stubEnv("RESEND_API_KEY", "");
+      expect(await submitPartnerRequest(form(VALID))).toEqual({ ok: true });
+      expect(calls).toContainEqual({ bot: "botstaff-token", chat: "-100staff" });
+    });
+  });
+
   it("если не дошло никуда — ошибка с телефоном, а не ложный успех", async () => {
     vi.stubEnv("RESEND_API_KEY", "");
     const r = await submitPartnerRequest(form({ ...VALID, locale: "uz" }));

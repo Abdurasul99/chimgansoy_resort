@@ -2,8 +2,8 @@
 
 import { partnersPage } from "@/content/partners";
 import { saveRequest } from "@/lib/requests-store";
-import { adminChatIds } from "@/lib/request-delivery";
-import { esc, sendMessage } from "@/lib/telegram";
+import { esc } from "@/lib/telegram";
+import { sendPartnerTelegram } from "@/lib/partners-telegram";
 import { pageLine, trafficSource } from "@/lib/request-context";
 import { escapeHtml, sendEmail } from "@/lib/send-email";
 
@@ -44,8 +44,9 @@ const MESSAGES = {
  *
  * Отдельно от submitContact: у компании нет дат и гостей, зато есть название и
  * интересующая программа, а согласие с публичной офертой для гостей сюда не
- * относится — только на обработку персональных данных. Путь доставки тот же:
- * Telegram-группа, почта info@ и журнал заявок (как «вопрос», с пометкой).
+ * относится — только на обработку персональных данных. Доставка: свой бот
+ * @chimgandarbaza_partners_bot (lib/partners-telegram.ts; не настроен — общая
+ * группа), почта info@ и журнал заявок (как «вопрос», с пометкой).
  */
 export async function submitPartnerRequest(formData: FormData): Promise<PartnerResult> {
   // Ловушка для ботов: поле, которое человек не видит и не заполняет.
@@ -117,7 +118,7 @@ export async function submitPartnerRequest(formData: FormData): Promise<PartnerR
 
   const [emailStatus, sent] = await Promise.all([
     sendEmail(`Партнёрство: ${org}`, emailHtml, process.env.INFO_EMAIL_TO ?? process.env.BOOKING_EMAIL_TO, email || undefined),
-    Promise.all(adminChatIds().map((id) => sendMessage(id, telegramHtml))),
+    sendPartnerTelegram(telegramHtml),
     saveRequest({
       service: "inquiry",
       date: new Date(Date.now() + 5 * 3600_000).toISOString().slice(0, 10),
@@ -138,7 +139,7 @@ export async function submitPartnerRequest(formData: FormData): Promise<PartnerR
     }),
   ]);
 
-  const delivered = emailStatus === "sent" || sent.some((r) => r !== null);
-  console.log(`[partners] email=${emailStatus} telegram=${sent.filter((r) => r !== null).length} | ${org}, ${name}`);
+  const delivered = emailStatus === "sent" || sent > 0;
+  console.log(`[partners] email=${emailStatus} telegram=${sent} | ${org}, ${name}`);
   return delivered ? { ok: true } : { ok: false, error: m.failed };
 }

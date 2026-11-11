@@ -38,5 +38,6 @@ jobs:
           src/app/actions/partners.test.ts
           src/components/sections/PartnerRequestForm.tsx
           src/lib/send-email.ts
+          src/lib/partners-telegram.ts
       - name: Тесты
         run: npx vitest run --maxWorkers=4
