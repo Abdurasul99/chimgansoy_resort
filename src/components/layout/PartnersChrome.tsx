@@ -31,6 +31,9 @@ export function PartnersHeader() {
   const pathname = usePathname();
   if (!isPartnersPath(pathname)) return null;
   const [, current = "ru", ...rest] = pathname.split("/");
+  // Общая страница /partners — портал со своей шапкой (навигация, Board Memo,
+  // AI-экспорт); две шапки друг над другом не нужны.
+  if (rest.length === 1 && rest[0] === "partners") return null;
   const admin = rest[0] === "adminpartners";
   const tail = rest.join("/");
   const label = { ru: "Партнёрам", uz: "Hamkorlar uchun", en: "For partners" }[current as "ru"] ?? "Партнёрам";

@@ -20,7 +20,16 @@ const input =
 const label = "mb-1.5 block text-sm font-semibold text-[var(--ink)]";
 
 /** Заявка «Обсудить партнёрство» — в Telegram-группу, на почту и в журнал. */
-export function PartnerRequestForm({ locale }: { locale: Locale }) {
+export function PartnerRequestForm({
+  locale,
+  defaultMessage = "",
+  defaultProgram = "",
+}: {
+  locale: Locale;
+  /** Текст задачи заранее — например, выбранный слот и расчёт из калькулятора портала. */
+  defaultMessage?: string;
+  defaultProgram?: string;
+}) {
   const [state, action, pending] = useActionState(formAction, { status: "idle" } as State);
   const t = partnersPage.form;
   const tx = (s: Record<Locale, string>) => s[locale];
@@ -62,7 +71,7 @@ export function PartnerRequestForm({ locale }: { locale: Locale }) {
       </label>
       <label className="block">
         <span className={label}>{tx(t.program)}</span>
-        <select name="program" defaultValue="" className={input}>
+        <select name="program" defaultValue={defaultProgram} className={input}>
           <option value="">—</option>
           {partnersPage.programs.items.map((p) => (
             <option key={p.id} value={p.id}>
@@ -74,7 +83,7 @@ export function PartnerRequestForm({ locale }: { locale: Locale }) {
       </label>
       <label className="block sm:col-span-2">
         <span className={label}>{tx(t.message)}</span>
-        <textarea name="message" rows={4} maxLength={2000} className={input} />
+        <textarea name="message" rows={defaultMessage ? 7 : 4} maxLength={2000} defaultValue={defaultMessage} className={input} />
       </label>
 
       <label className="flex cursor-pointer items-start gap-3 text-sm text-[var(--ink)]/80 sm:col-span-2">

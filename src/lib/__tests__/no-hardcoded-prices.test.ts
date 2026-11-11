@@ -44,6 +44,7 @@ const ALLOWED: Record<string, string> = {
   "app/admin/uslugi/ServicesForm.tsx": "placeholder-примеры в полях ввода",
   "components/sections/ServicesGrid.tsx": "пример в комментарии",
   "content/assistant-knowledge.ts": "мёртвый файл, его никто не импортирует",
+  "content/partners-portal.ts": "B2B-прайс спонсорских пакетов из данных владельца — не цена для гостя, в админке её нет",
   "lib/ai-context.ts": "примеры форматирования чисел в правилах ответа",
   "lib/staff-ai.ts": "примеры форматирования чисел в правилах бота",
 };

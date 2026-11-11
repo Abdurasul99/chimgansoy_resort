@@ -43,5 +43,7 @@ jobs:
           "src/app/[locale]/adminpartners"
           src/app/actions/partner-offer.ts
           src/components/layout/PartnersChrome.tsx
+          src/components/partners
+          src/content/partners-portal.ts
       - name: Тесты
         run: npx vitest run --maxWorkers=4
