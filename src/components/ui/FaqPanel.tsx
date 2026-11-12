@@ -8,7 +8,7 @@ type Locale = "ru" | "uz" | "en";
 
 const TITLES: Record<Locale, string> = {
   ru: "Консьерж",
-  uz: "Konserj",
+  uz: "Konsyerj",
   en: "Concierge",
 };
 
@@ -20,7 +20,7 @@ const SUBTITLES: Record<Locale, string> = {
 
 const TOGGLE_LABEL: Record<Locale, string> = {
   ru: "Консьерж",
-  uz: "Konserj",
+  uz: "Konsyerj",
   en: "Concierge",
 };
 

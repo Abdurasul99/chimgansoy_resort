@@ -58,7 +58,7 @@ export const services: Service[] = [
     },
     description: {
       ru: "Кухня работает на территории: мангальные блюда, плов, узбекская классика и сезонные позиции по предзаказу. Подача на террасу домика или в зал — администратор примет заказ. Если хочется готовить самим, в шале есть полная кухня, а мангал и казан берутся в аренду.",
-      uz: "Oshxona hududda ishlaydi: mangal taomlari, palov, o'zbek klassikasi va oldindan buyurtma asosida mavsumiy taomlar. Uycha terrasasiga yoki zalga xizmat — administrator buyurtmani qabul qiladi. O'zingiz pishirmoqchi bo'lsangiz, shalede to'liq oshxona bor, mangal va qozon ijaraga olinadi.",
+      uz: "Oshxona hududda ishlaydi: mangal taomlari, palov, o'zbek klassikasi va oldindan buyurtma asosida mavsumiy taomlar. Uycha terrasasiga yoki zalga xizmat — administrator buyurtmani qabul qiladi. O'zingiz pishirmoqchi bo'lsangiz, shaleda to'liq oshxona bor, mangal va qozon ijaraga olinadi.",
       en: "The kitchen works on site: BBQ dishes, plov, Uzbek classics, and seasonal items by pre-order. Served to your cabin terrace or in the dining room. Prefer to cook? The chalet has a full kitchen, and a BBQ grill or kazan can be rented.",
     },
     highlights: {
@@ -119,17 +119,17 @@ export const services: Service[] = [
     title: { ru: "Пикник-зона и территория", uz: "Piknik zonasi va hudud", en: "Picnic area & grounds" },
     shortDescription: {
       ru: "Пикник-зона у тюбинг-горки и девять гектаров среди сосен: дорожки, открытые площадки и детская зона.",
-      uz: "Tubing gorkasi yonidagi piknik zonasi va qarag'aylar orasida to'qqiz gektar: yo'lakchalar, ochiq maydonlar va bolalar zonasi.",
+      uz: "Tyubing tepaligi yonidagi piknik zonasi va qarag'aylar orasida to'qqiz gektar: yo'lakchalar, ochiq maydonlar va bolalar zonasi.",
       en: "The picnic area by the tubing hill, and nine hectares among the pines: walking paths, open lawns and a kids area.",
     },
     description: {
       ru: "Пикник-зона находится у тюбинг-горки — это одно и то же место. Территория открыта для гостей на всё время проживания: прогулочные дорожки между домиками, открытые площадки с панорамой на Чимган, детская площадка и места для встреч на воздухе. Парковка — рядом с домиком, зона мангала — в нескольких шагах.",
-      uz: "Piknik zonasi tubing gorkasi yonida — bu bir joy. Hudud yashash davomida mehmonlar uchun ochiq: uychalar orasidagi sayr yo'lakchalari, Chimyon panoramasi bilan ochiq maydonlar, bolalar maydonchasi va ochiq havoda uchrashuv joylari. Avtoturargoh — uycha yonida, mangal zonasi — bir necha qadamda.",
+      uz: "Piknik zonasi tyubing tepaligi yonida — bu bir joy. Hudud yashash davomida mehmonlar uchun ochiq: uychalar orasidagi sayr yo'lakchalari, Chimyon panoramasi bilan ochiq maydonlar, bolalar maydonchasi va ochiq havoda uchrashuv joylari. Avtoturargoh — uycha yonida, mangal zonasi — bir necha qadamda.",
       en: "The picnic area is by the tubing hill — they are the same place. The grounds are open to guests for the whole stay: walking paths between the cabins, open lawns with a view of the Chimgan range, a kids playground, and spots to gather outdoors. Parking sits by your cabin, the BBQ area a few steps away.",
     },
     highlights: {
       ru: ["Пикник-зона у горки", "9 гектаров территории", "Сосны и панорама гор", "Детская площадка", "Парковка у домика"],
-      uz: ["Gorka yonida piknik zonasi", "9 gektar hudud", "Qarag'aylar va tog' panoramasi", "Bolalar maydonchasi", "Uycha yonida avtoturargoh"],
+      uz: ["Tepalik yonida piknik zonasi", "9 gektar hudud", "Qarag'aylar va tog' panoramasi", "Bolalar maydonchasi", "Uycha yonida avtoturargoh"],
       en: ["Picnic area by the hill", "Nine hectares of grounds", "Pines and mountain views", "Kids playground", "Parking by your cabin"],
     },
     bestFor: { ru: "Спокойный день на территории", uz: "Hududda sokin kun", en: "A slow day on the grounds" },
@@ -194,15 +194,15 @@ export const services: Service[] = [
     /** Съёмка горки от 10.08.2026 — до неё карточка показывала Чимган. */
     image: "tubingTwoLanes",
     secondImage: "tubingTubeStart",
-    title: { ru: "Тюбинг-горка", uz: "Tubing gorkasi", en: "Tubing hill" },
+    title: { ru: "Тюбинг-горка", uz: "Tyubing tepaligi", en: "Tubing hill" },
     shortDescription: {
       ru: "Всесезонная трасса 160 метров с автоматическим подъёмом — работает круглый год, не только по снегу.",
-      uz: "Avtomatik ko'targichli 160 metrlik butun mavsumga mo'ljallangan trassa — faqat qorda emas, yil davomida ishlaydi.",
+      uz: "Avtomatik ko'targichli 160 metrlik har faslda ishlaydigan trassa — faqat qorda emas, yil davomida ishlaydi.",
       en: "A 160-metre all-season track with a powered lift — open year-round, not just on snow.",
     },
     description: {
       ru: "Трасса 160 метров длиной и 6 метров шириной, всесезонная. Подъём автоматический — пешком в горку идти не нужно. Одновременно спускаются до 5 человек, внизу безопасная зона остановки. Берётся пакетами спусков, цена одинаковая всю неделю.",
-      uz: "Uzunligi 160 metr, kengligi 6 metr, butun mavsumga mo'ljallangan trassa. Ko'tarilish avtomatik — tepalikka piyoda chiqish shart emas. Bir vaqtda 5 kishigacha tushadi, pastda xavfsiz to'xtash zonasi. Uchish paketlari bilan olinadi, narx butun hafta bir xil.",
+      uz: "Uzunligi 160 metr, kengligi 6 metr, har faslda ishlaydigan trassa. Ko'tarilish avtomatik — tepalikka piyoda chiqish shart emas. Bir vaqtda 5 kishigacha tushadi, pastda xavfsiz to'xtash zonasi. Uchish paketlari bilan olinadi, narx butun hafta bir xil.",
       en: "A 160-metre track, 6 metres wide, running all year. The lift is powered, so nobody walks up. Up to 5 people descend at once, with a controlled stop at the bottom. Sold in ride packages at one price all week.",
     },
     highlights: {
@@ -218,5 +218,5 @@ export const serviceCategories = [
   { id: "all", label: { ru: "Все", uz: "Barchasi", en: "All" } },
   { id: "relax", label: { ru: "Отдых", uz: "Dam olish", en: "Relax" } },
   { id: "food", label: { ru: "Еда", uz: "Taom", en: "Food" } },
-  { id: "activity", label: { ru: "Активности", uz: "Faoliyatlar", en: "Activities" } },
+  { id: "activity", label: { ru: "Активности", uz: "Faol dam olish", en: "Activities" } },
 ] as const;

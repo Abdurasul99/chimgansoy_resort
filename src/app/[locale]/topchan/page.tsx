@@ -54,7 +54,7 @@ export default async function TopchanPage({ params }: PageProps) {
         <p className="mt-3 text-sm font-semibold leading-7 text-[var(--ink)]">{text(openInstead, locale)}</p>
         <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
           <ButtonLink href={localizePath(locale, "/tubing")} variant="primary">
-            {text({ ru: "Тюбинг-горка", uz: "Tyubing gorkasi", en: "Tubing hill" }, locale)}
+            {text({ ru: "Тюбинг-горка", uz: "Tyubing tepaligi", en: "Tubing hill" }, locale)}
           </ButtonLink>
           <ButtonLink href={localizePath(locale, "/restaurant")} variant="ghost">
             {text({ ru: "Ресторан", uz: "Restoran", en: "Restaurant" }, locale)}

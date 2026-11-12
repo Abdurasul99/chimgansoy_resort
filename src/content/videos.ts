@@ -53,7 +53,7 @@ export const tubingVideos: VideoClip[] = [
     title: { ru: "Спуск от первого лица", uz: "Birinchi shaxs ko'zi bilan", en: "The run, first person" },
     caption: {
       ru: "Вся трасса сверху донизу — так это выглядит с ватрушки",
-      uz: "Trassa boshidan oxirigacha — tubingdan qanday ko'rinadi",
+      uz: "Trassa boshidan oxirigacha — tyubingdan qanday ko'rinadi",
       en: "The whole track top to bottom, seen from the tube",
     },
   },
@@ -150,7 +150,7 @@ export const extraTubingVideos: VideoClip[] = [
     previewSrc: `${BASE}/tubing-6-preview.mp4`,
     poster: `${BASE}/tubing-6.jpg`,
     ratio: "9/16",
-    title: { ru: "На горке", uz: "Gorkada", en: "On the hill" },
+    title: { ru: "На горке", uz: "Tepalikda", en: "On the hill" },
     caption: {
       ru: "Как проходит спуск с точки зрения гостя",
       uz: "Tushish mehmon ko'zi bilan qanday ko'rinadi",

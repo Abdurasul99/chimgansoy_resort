@@ -73,7 +73,7 @@ const stats = [
 const STAY_CATEGORIES: { href: string; label: Record<string, string> }[] = [
   { href: "/nomera/glamping", label: { ru: "Глэмпинг", uz: "Glemping", en: "Glamping" } },
   { href: "/nomera/cottage", label: { ru: "Шале", uz: "Shale", en: "Chalet" } },
-  { href: "/tubing", label: { ru: "Тюбинг-горка", uz: "Tubing gorkasi", en: "Tubing hill" } },
+  { href: "/tubing", label: { ru: "Тюбинг-горка", uz: "Tyubing tepaligi", en: "Tubing hill" } },
   // The topchan keeps its own page and its own hero button; here the row names
   // the place rather than the product, which is what a guest scanning this
   // strip is choosing between.
@@ -86,7 +86,7 @@ const STAY_CATEGORIES: { href: string; label: Record<string, string> }[] = [
 const fmt = (n: number) => n.toLocaleString("ru-RU").replaceAll(",", " ");
 const poolPriceLine: Record<string, string> = {
   ru: `Пн–Чт ${fmt(poolPricing.adult.weekday)} · Пт–Вс ${fmt(poolPricing.adult.weekend)} сум со взрослого · дети 5–15 вдвое дешевле`,
-  uz: `Du–Pay ${fmt(poolPricing.adult.weekday)} · Ju–Yak ${fmt(poolPricing.adult.weekend)} so'm kattalar uchun · 5–15 yosh ikki barobar arzon`,
+  uz: `Du–Pa ${fmt(poolPricing.adult.weekday)} · Ju–Ya ${fmt(poolPricing.adult.weekend)} so'm kattalar uchun · 5–15 yosh ikki barobar arzon`,
   en: `Mon–Thu ${fmt(poolPricing.adult.weekday)} · Fri–Sun ${fmt(poolPricing.adult.weekend)} UZS per adult · ages 5–15 half price`,
 };
 
@@ -455,10 +455,10 @@ export default async function HomePage({ params }: PageProps) {
             ...(topchanClosure.closed
               ? []
               : [{ image: "galTopchanSwing", caption: locale === "uz" ? "Topchanda\nkun" : locale === "en" ? "A day\non the topchan" : "День\nна топчане" }] as const),
-            { image: "galMangalFire", caption: locale === "uz" ? "Mangal\nyonida kecha" : locale === "en" ? "An evening\nat the grill" : "Вечер\nу мангала" },
+            { image: "galMangalFire", caption: locale === "uz" ? "Mangal yonida\noqshom" : locale === "en" ? "An evening\nat the grill" : "Вечер\nу мангала" },
             // Was galKidsSwing — a stranger sitting on a swing looking at his
             // phone, which is not a picture of anything we sell.
-            { image: "chaletBedroomTwin", caption: locale === "uz" ? "Bolalarga —\no'z xonasi" : locale === "en" ? "A room of\ntheir own" : "Детям —\nсвоя комната" },
+            { image: "chaletBedroomTwin", caption: locale === "uz" ? "Bolalar uchun\nalohida xona" : locale === "en" ? "A room of\ntheir own" : "Детям —\nсвоя комната" },
           ] as const).map(({ image, caption }) => {
             const img = resortImages[image];
             return (

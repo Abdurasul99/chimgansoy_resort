@@ -26,12 +26,12 @@ export const tubingLegalPolicy: PolicyPage = {
   indexable: true,
   title: {
     ru: "Правила тюбинговой горки",
-    uz: "Tubing gorkasidan foydalanish qoidalari",
+    uz: "Tyubing tepaligidan foydalanish qoidalari",
     en: "Tubing hill rules",
   },
   description: {
     ru: "Правила пользования и требования безопасности на всесезонной тюбинговой горке CHIMGAN DARBAZA.",
-    uz: "CHIMGAN DARBAZA tubing gorkasidan foydalanish va xavfsizlik qoidalari. Rasmiy matn rus tilida.",
+    uz: "CHIMGAN DARBAZA tyubing tepaligidan foydalanish va xavfsizlik qoidalari. Rasmiy matn rus tilida.",
     en: "Use and safety rules for the CHIMGAN DARBAZA all-season tubing hill. The official text is in Russian.",
   },
   sections: [

@@ -37,7 +37,7 @@ export const knowledge: KnowledgeEntry[] = [
     keywords: ["привет", "здравствуйте", "добрый", "hi", "hello", "hey", "salom", "assalomu", "ассалому"],
     answer: {
       ru: "Здравствуйте! 👋 Я подскажу про номера, цены, активности, бронирование или контакты. Просто спросите или выберите вопрос ниже 👇",
-      uz: "Salom! 👋 Xonalar, narxlar, faoliyatlar, bron yoki aloqalar bo'yicha yordam beraman. So'rang yoki quyidan tanlang 👇",
+      uz: "Salom! 👋 Xonalar, narxlar, ko'ngilochar mashg'ulotlar, bron yoki aloqalar bo'yicha yordam beraman. So'rang yoki quyidan tanlang 👇",
       en: "Hello! 👋 Ask me anything about rooms, prices, activities, bookings, or contacts — or pick a question below 👇",
     },
   },
@@ -48,7 +48,7 @@ export const knowledge: KnowledgeEntry[] = [
     keywords: ["шале", "коттедж", "коттеджи", "дом", "домик", "shale", "shalet", "chalet", "kottej", "uy", "uycha", "cottage", "house", "cabin"],
     answer: {
       ru: "🏡 Шале: стандарт 4 гостя, максимум 6 (пятое и шестое места за доплату). Две отдельные спальни (двуспальная кровать 180×200 и две односпальные) со своими санузлами, кухня-зал с диваном и терраса. Площадь домика — 41 м². Есть кондиционер, тёплый пол, Wi-Fi, телевизор, холодильник и полный кухонный набор. Подойдёт для семьи или компании друзей.",
-      uz: "🏡 Shale: standart 4 mehmon, maksimum 6 (beshinchi va oltinchi joylar qo'shimcha to'lov bilan). Ikkita alohida yotoqxona (ikki kishilik karavot 180×200 va ikkita bir kishilik) o'z hammomi bilan, divanli oshxona-zal va terrasa. Uycha maydoni — 41 m². Konditsioner, issiq pol, Wi-Fi, televizor, muzlatkich va to'liq oshxona to'plami bor. Oila yoki do'stlar uchun ajoyib.",
+      uz: "🏡 Shale: standart 4 mehmon, maksimum 6 (beshinchi va oltinchi joylar qo'shimcha to'lov bilan). Ikkita alohida yotoqxona (ikki kishilik karavot 180×200 va ikkita bir kishilik) o'z hammomi bilan, divanli oshxona-zal va terrasa. Uycha maydoni — 41 m². Konditsioner, issiq pol, Wi-Fi, televizor, sovutgich va to'liq oshxona to'plami bor. Oila yoki do'stlar uchun ajoyib.",
       en: "🏡 The chalet: the rate covers 4 guests, up to 6 in total (the fifth and sixth places are charged). Two separate bedrooms (a double bed 180×200 and two singles) each with its own bathroom, a kitchen-lounge with a sofa, and a terrace. 41 m² in all. It has air conditioning, a heated floor, Wi-Fi, TV, fridge, and a full kitchen set. Great for families or groups of friends.",
     },
   },
@@ -95,7 +95,7 @@ export const knowledge: KnowledgeEntry[] = [
       // другой час, но подписанные документы и текущий контракт на сайте остаются
       // на 15:00.
       ru: "🕑 Заезд — с 15:00, выезд — до 12:00. Ресепшн работает круглосуточно, так что приехать можно и поздно вечером. Ранний заезд и поздний выезд предоставляются за доплату и зависят от загрузки — согласуйте с администратором. При заселении понадобятся паспорта всех проживающих. Дополнительно взимается обязательный туристский сбор.",
-      uz: "🕑 Kirish — 15:00 dan, chiqish — 12:00 gacha. Resepshn 24 soat ishlaydi, shuning uchun kech kechqurun ham kelish mumkin. Erta kirish va kech chiqish qo'shimcha to'lov evaziga beriladi va bandlikka bog'liq — administrator bilan kelishing. Joylashish paytida barcha yashovchilarning pasporti kerak bo'ladi. Qo'shimcha ravishda majburiy turistik yig'im olinadi.",
+      uz: "🕑 Kirish — 15:00 dan, chiqish — 12:00 gacha. Qabulxona 24 soat ishlaydi, shuning uchun kechqurun kech ham kelish mumkin. Erta kirish va kech chiqish qo'shimcha to'lov evaziga beriladi va bandlikka bog'liq — administrator bilan kelishing. Joylashish paytida barcha yashovchilarning pasporti kerak bo'ladi. Qo'shimcha ravishda majburiy turistik yig'im olinadi.",
       en: "🕑 Check-in from 15:00, check-out by 12:00. Reception is staffed around the clock, so a late-evening arrival is fine. Early check-in and late check-out are charged and depend on occupancy — arrange them with the administrator. Passports of every guest are required at check-in. A mandatory tourist levy is charged on top.",
     },
   },
@@ -106,7 +106,7 @@ export const knowledge: KnowledgeEntry[] = [
     keywords: ["отмен", "возврат", "вернуть", "bekor", "qaytarish", "cancel", "refund", "cancellation"],
     answer: {
       ru: "↩️ Проживание: при отмене не позднее чем за 5 суток до заезда предоплата возвращается полностью или переносится; менее чем за 5 суток, но не позднее чем за 48 часов — удерживается 50 %; менее чем за 48 часов или при неявке — предоплата не возвращается. Перенос дат не автоматическое право: только по согласованию, при наличии свободных домиков, не более одного раза и не на выходные (Пт–Вс) и праздники. Дневные услуги (бассейн, топчан, тюбинг) невозвратные и непереносимые: при отмене, опоздании или раннем уходе деньги не возвращаются и время не переносится.",
-      uz: "↩️ Yashash: kirishdan kamida 5 kun oldin bekor qilinsa — oldindan to'lov to'liq qaytariladi yoki ko'chiriladi; 5 kundan kam, lekin 48 soatdan oldin — 50 % ushlab qolinadi; 48 soatdan kam qolganda yoki kelmaganda — qaytarilmaydi. Sanalarni ko'chirish avtomatik huquq emas: faqat kelishilgan holda, bo'sh uychalar bo'lganda, bir martadan ko'p emas va dam olish (Ju–Yak) hamda bayram kunlariga emas. Kunlik xizmatlar (basseyn, topchan, tubing) qaytarilmaydi va ko'chirilmaydi.",
+      uz: "↩️ Yashash: kirishdan kamida 5 kun oldin bekor qilinsa — oldindan to'lov to'liq qaytariladi yoki ko'chiriladi; 5 kundan kam, lekin 48 soatdan oldin — 50 % ushlab qolinadi; 48 soatdan kam qolganda yoki kelmaganda — qaytarilmaydi. Sanalarni ko'chirish avtomatik huquq emas: faqat kelishilgan holda, bo'sh uychalar bo'lganda, bir martadan ko'p emas va dam olish (Ju–Ya) hamda bayram kunlariga emas. Kunlik xizmatlar (basseyn, topchan, tyubing) qaytarilmaydi va ko'chirilmaydi.",
       en: "↩️ Stays: cancel at least 5 days before check-in and the prepayment is refunded in full or moved to new dates; less than 5 days but more than 48 hours — 50 % is retained; less than 48 hours or a no-show — nothing is returned. A date transfer is not an automatic right: by agreement only, subject to free cabins, once per booking, and never on weekends (Fri–Sun) or public holidays. Day services (pool, topchan, tubing) are non-refundable and non-transferable.",
     },
   },
@@ -130,7 +130,7 @@ export const knowledge: KnowledgeEntry[] = [
       // This used to answer "we don't have a pool" — while the pool was a
       // bookable Exely room type, had its own page, and sat in the footer nav.
       ru: "🏊 Открытый бассейн с видом на горы, работает в летний сезон. Без ночёвки — дневной билет: взрослые и дети 15+ 100 000 сум в будни (Пн–Чт) и 200 000 в выходные (Пт–Вс); дети 5–15 — 50 000 и 100 000; до 5 лет бесплатно. Полотенце 30 000, бунгало Standard до 4 чел. — 300 000 сум (таких 8), бунгало Family до 10 чел. — 500 000 сум (таких 4); билеты отдельно. Работает 10:00–22:00. Заявка оставляется формой на странице бассейна. А гостям глэмпинга и шале бассейн уже включён в стоимость проживания, отдельно бронировать не нужно.",
-      uz: "🏊 Tog' manzarali ochiq basseyn, yozgi mavsumda ishlaydi. Tunamasdan — kunlik chipta: kattalar va 15+ ish kunlari (Du–Pay) 100 000, dam olish kunlari (Ju–Yak) 200 000 so'm; 5–15 yosh — 50 000 va 100 000; 5 yoshgacha bepul. Sochiq 30 000, Standard bungalo 4 kishigacha — 300 000 so'm (8 ta bor), Family bungalo 10 kishigacha — 500 000 so'm (4 ta bor); chiptalar alohida. 10:00–22:00. Ariza basseyn sahifasidagi shakl orqali. Glemping va shale mehmonlari uchun esa basseyn yashash narxiga allaqachon kiritilgan, alohida bron qilish shart emas.",
+      uz: "🏊 Tog' manzarali ochiq basseyn, yozgi mavsumda ishlaydi. Tunamasdan — kunlik chipta: kattalar va 15+ ish kunlari (Du–Pa) 100 000, dam olish kunlari (Ju–Ya) 200 000 so'm; 5–15 yosh — 50 000 va 100 000; 5 yoshgacha bepul. Sochiq 30 000, Standard bungalo 4 kishigacha — 300 000 so'm (8 ta bor), Family bungalo 10 kishigacha — 500 000 so'm (4 ta bor); chiptalar alohida. 10:00–22:00. Ariza basseyn sahifasidagi shakl orqali. Glemping va shale mehmonlari uchun esa basseyn yashash narxiga allaqachon kiritilgan, alohida bron qilish shart emas.",
       en: "🏊 An outdoor pool with mountain views, open in the summer season. Without a stay it is a day pass: adults and ages 15+ pay 100 000 UZS Mon–Thu and 200 000 Fri–Sun; ages 5–15 pay 50 000 and 100 000; under-fives free. Towel 30 000; a Standard bungalow for up to 4 is 300 000 UZS (8 of them) and a Family bungalow for up to 10 is 500 000 UZS (4 of them); tickets separate. Open 10:00–22:00. Requests go through the form on the pool page. For glamping and chalet guests the pool is already included in the room rate, with no separate booking needed.",
     },
   },
@@ -196,7 +196,7 @@ export const knowledge: KnowledgeEntry[] = [
     keywords: ["мероприят", "банкет", "праздник", "корпоратив", "свадьб", "tadbir", "bayram", "to'y", "korporativ", "event", "banquet", "party", "wedding", "corporate"],
     answer: {
       ru: "🎉 Небольшие семейные и корпоративные форматы возможны: несколько домиков под группу, кухня с предзаказом меню, гриль-зона и активности — комбинируем под программу. Свяжитесь с администратором, обсудим детали.",
-      uz: "🎉 Kichik oilaviy va korporativ formatlar mumkin: guruh uchun bir nechta uycha, menyuni oldindan buyurtma qilish bilan oshxona, gril zonasi va faoliyatlar — dasturga moslashtiramiz. Administrator bilan bog'lanib, tafsilotlarni muhokama qiling.",
+      uz: "🎉 Kichik oilaviy va korporativ formatlar mumkin: guruh uchun bir nechta uycha, menyuni oldindan buyurtma qilish bilan oshxona, gril zonasi va ko'ngilochar dastur — dasturga moslashtiramiz. Administrator bilan bog'lanib, tafsilotlarni muhokama qiling.",
       en: "🎉 Small family and corporate formats work: several cabins for the group, the kitchen with a pre-ordered menu, the grill area, and activities — combined to fit your program. Contact the administrator to discuss details.",
     },
   },
@@ -218,7 +218,7 @@ export const knowledge: KnowledgeEntry[] = [
     keywords: ["парковка", "машина", "стоянка", "avtoturargoh", "mashina", "parking", "car"],
     answer: {
       ru: "🅿️ На территории есть бесплатная парковка для гостей — у коттеджей и общая на въезде. Также доступны места для зарядки электромобилей.",
-      uz: "🅿️ Hududda mehmonlar uchun bepul avtoturargoh bor — kottejlar yonida va kirishda umumiy. Elektromobillarni zaryadlash joylari ham mavjud.",
+      uz: "🅿️ Hududda mehmonlar uchun bepul avtoturargoh bor — uychalar yonida va kirishda umumiy. Elektromobillarni zaryadlash joylari ham mavjud.",
       en: "🅿️ Free guest parking is available — by the cottages and a shared lot at the entrance. EV charging spots are also available.",
     },
   },
@@ -281,12 +281,12 @@ export const quickReplies: Record<"ru" | "uz" | "en", { label: string; id: strin
     { label: "📞 Контакты", id: "contact" },
   ],
   uz: [
-    { label: "🏡 Kottejlar", id: "cottage" },
+    { label: "🏡 Shale", id: "cottage" },
     { label: "⛺ Glemping", id: "glamping" },
     { label: "💰 Narxlar", id: "price" },
     { label: "📅 Bron qilish", id: "booking" },
     { label: "📍 Qayerda", id: "location" },
-    { label: "🎯 Faoliyatlar", id: "activities" },
+    { label: "🎯 Ko'ngilochar", id: "activities" },
     { label: "🍽️ Restoran", id: "restaurant" },
     { label: "📞 Aloqa", id: "contact" },
   ],

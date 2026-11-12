@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     {
       title: {
         ru: "Тюбинг-горка — CHIMGAN DARBAZA",
-        uz: "Tubing gorkasi — CHIMGAN DARBAZA",
+        uz: "Tyubing tepaligi — CHIMGAN DARBAZA",
         en: "Tubing hill — CHIMGAN DARBAZA",
       },
       description: product.lead,

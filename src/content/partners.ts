@@ -80,10 +80,10 @@ export const partnersPage = {
       en: "Resort data, November 2026",
     },
     items: [
-      { value: "3 000", label: { ru: "посещений тюбинг-зоны в пиковый день", uz: "eng gavjum kunda tubing zonasiga tashrif", en: "tubing-zone visits on a peak day" } },
+      { value: "3 000", label: { ru: "посещений тюбинг-зоны в пиковый день", uz: "eng gavjum kunda tyubing zonasiga tashrif", en: "tubing-zone visits on a peak day" } },
       { value: "2 000", label: { ru: "посещений в день в среднем за месяц", uz: "oy davomida kuniga o'rtacha tashrif", en: "visits a day, monthly average" } },
       { value: "45", label: { ru: "минут от Ташкента, высота 1 700 м", uz: "daqiqa — Toshkentgacha, balandlik 1 700 m", en: "minutes from Tashkent, at 1,700 m" } },
-      { value: "9", label: { ru: "гектаров: 20 домиков, тюбинг, ресторан", uz: "gektar: 20 ta uycha, tubing, restoran", en: "hectares: 20 cabins, tubing, a restaurant" } },
+      { value: "9", label: { ru: "гектаров: 20 домиков, тюбинг, ресторан", uz: "gektar: 20 ta uycha, tyubing, restoran", en: "hectares: 20 cabins, tubing, a restaurant" } },
     ] satisfies PartnerFact[],
   },
 
@@ -107,7 +107,7 @@ export const partnersPage = {
     items: [
       {
         image: "tubingDuskFamily" as ResortImageKey,
-        title: { ru: "Тюбинг-горка", uz: "Tubing tepaligi", en: "Tubing hill" },
+        title: { ru: "Тюбинг-горка", uz: "Tyubing tepaligi", en: "Tubing hill" },
         text: {
           ru: "Всесезонная трасса 160 м с автоматическим подъёмом и вечерней подсветкой. Работает круглый год, не только по снегу.",
           uz: "Avtomatik ko'targichli, kechqurun yoritiladigan 160 metrlik trassa. Faqat qorda emas, yil bo'yi ishlaydi.",
@@ -146,10 +146,10 @@ export const partnersPage = {
   seasons: {
     title: { ru: "Сезоны", uz: "Fasllar", en: "Seasons" },
     items: [
-      { title: { ru: "Зима", uz: "Qish", en: "Winter" }, text: { ru: "Пик посещаемости: снег, тюбинг, новогодние выходные.", uz: "Tashriflar cho'qqisi: qor, tubing, Yangi yil bayrami kunlari.", en: "Peak season: snow, tubing, the New Year holidays." } },
+      { title: { ru: "Зима", uz: "Qish", en: "Winter" }, text: { ru: "Пик посещаемости: снег, тюбинг, новогодние выходные.", uz: "Tashriflar cho'qqisi: qor, tyubing, Yangi yil bayrami kunlari.", en: "Peak season: snow, tubing, the New Year holidays." } },
       { title: { ru: "Весна", uz: "Bahor", en: "Spring" }, text: { ru: "Зелёные склоны, семейные поездки на выходные и праздники.", uz: "Yashil yonbag'irlar, dam olish va bayram kunlaridagi oilaviy sayohatlar.", en: "Green slopes, family trips at weekends and holidays." } },
       { title: { ru: "Лето", uz: "Yoz", en: "Summer" }, text: { ru: "Прохлада гор вместо городской жары, бассейн, отдых с ночёвкой.", uz: "Shahar issig'i o'rniga tog' salqini, basseyn, tunab dam olish.", en: "Cool mountain air instead of city heat, the pool, overnight stays." } },
-      { title: { ru: "Осень", uz: "Kuz", en: "Autumn" }, text: { ru: "Краски гор, тюбинг круглый год, ресторан и домики.", uz: "Tog' ranglari, yil bo'yi tubing, restoran va uychalar.", en: "Mountain colours, year-round tubing, the restaurant and cabins." } },
+      { title: { ru: "Осень", uz: "Kuz", en: "Autumn" }, text: { ru: "Краски гор, тюбинг круглый год, ресторан и домики.", uz: "Tog' ranglari, yil bo'yi tyubing, restoran va uychalar.", en: "Mountain colours, year-round tubing, the restaurant and cabins." } },
     ],
   },
 

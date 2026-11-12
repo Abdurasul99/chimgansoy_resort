@@ -218,7 +218,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Кухонная зона шале: холодильник, минибар и посуда",
-      uz: "Shale oshxona zonasi: muzlatkich, minibar va idishlar",
+      uz: "Shale oshxona zonasi: sovutgich, minibar va idishlar",
       en: "Chalet kitchen area: fridge, minibar and crockery",
     },
   },
@@ -293,7 +293,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Собственный санузел в глэмпинге с душем и раковиной",
-      uz: "Glempingdagi dush va rakovinali xususiy hammom",
+      uz: "Glempingdagi dush va qo'l yuvgichli xususiy hammom",
       en: "Ensuite glamping bathroom with shower and washbasin",
     },
   },
@@ -354,7 +354,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Вид на зелёные горы с территории",
-      uz: "Hududdan yashil tog'larga qarash",
+      uz: "Hududdan yashil tog'lar manzarasi",
       en: "View of green mountains from the grounds",
     },
   },
@@ -457,7 +457,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Скамья на газоне у шале",
-      uz: "Shale yonidagi maysazordagi skameyka",
+      uz: "Shale yonidagi maysazordagi o'rindiq",
       en: "A bench on the lawn by the chalets",
     },
   },
@@ -927,7 +927,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Территория курорта ночью, вид с горки",
-      uz: "Kechasi kurort hududi, gorkadan ko'rinish",
+      uz: "Kechasi kurort hududi, tepalikdan ko'rinish",
       en: "The resort at night, seen from the hill",
     },
   },
@@ -937,7 +937,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Тюбинг на старте трассы, которая уходит вниз к долине",
-      uz: "Vodiyga tushuvchi trassa boshidagi tubing",
+      uz: "Vodiyga tushuvchi trassa boshidagi tyubing",
       en: "A tube at the top of the track, which runs down towards the valley",
     },
   },
@@ -947,7 +947,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Две полосы тюбинг-горки и подъёмник между ними",
-      uz: "Tubing gorkasining ikki yo'lagi va ular orasidagi ko'targich",
+      uz: "Tyubing tepaligining ikki yo'lagi va ular orasidagi ko'targich",
       en: "The two tubing lanes with the lift running between them",
     },
   },
@@ -967,7 +967,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Вид со старта вдоль трассы тюбинга",
-      uz: "Tubing trassasi bo'ylab startdan ko'rinish",
+      uz: "Tyubing trassasi bo'ylab startdan ko'rinish",
       en: "The view from the start, down the length of the track",
     },
   },
@@ -997,7 +997,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Стойка с тюбингами на старте и трасса за ней",
-      uz: "Startdagi tubinglar javoni va orqasidagi trassa",
+      uz: "Startdagi tyubinglar javoni va orqasidagi trassa",
       en: "The rack of tubes at the top, with the track behind it",
     },
   },
@@ -1017,7 +1017,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Штабели тюбингов, за ними горы",
-      uz: "Tubinglar uyumi, orqasida tog'lar",
+      uz: "Tyubinglar uyumi, orqasida tog'lar",
       en: "Stacks of tubes with the mountains behind",
     },
   },

@@ -41,7 +41,7 @@ export const poolClosure = {
    */
   text: {
     ru: "Купальный сезон завершён — бассейн откроется с началом летнего сезона. Сейчас заявки на посещение бассейна не принимаются. Об открытии сообщим на сайте и в Instagram.",
-    uz: "Cho'milish mavsumi yakunlandi — basseyn yozgi mavsum boshlanishi bilan ochiladi. Hozircha basseynga arizalar qabul qilinmaydi. Ochilishi haqida saytda va Instagram'da xabar beramiz.",
+    uz: "Cho'milish mavsumi yakunlandi — basseyn yozgi mavsum boshlanishi bilan ochiladi. Hozircha basseynga arizalar qabul qilinmaydi. Ochilishi haqida saytda va Instagramda xabar beramiz.",
     en: "The swimming season is over — the pool reopens when the summer season starts. We are not accepting pool requests at the moment. We will announce the reopening on the site and on Instagram.",
   } satisfies LocalizedString,
 
@@ -53,7 +53,7 @@ export const poolClosure = {
     ? openInstead
     : {
         ru: "Топчаны в пикник-зоне и тюбинговая горка работают как обычно.",
-        uz: "Piknik zonasidagi topchanlar va tyubing gorkasi odatdagidek ishlaydi.",
+        uz: "Piknik zonasidagi topchanlar va tyubing tepaligi odatdagidek ishlaydi.",
         en: "The topchans in the picnic area and the tubing slope are open as usual.",
       }) satisfies LocalizedString,
 

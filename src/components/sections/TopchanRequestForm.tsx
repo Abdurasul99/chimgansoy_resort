@@ -107,7 +107,7 @@ const COPY: Record<
     poolKids: "5–15 yoshli bolalar",
     towels: "Sochiqlar",
     total: "Taxminiy to'lov",
-    freeNote: `Topchan — piknik zonasidagi kurpachali soyabonli maydoncha, yonida mangal va qozon; bu basseyn yonidagi bungalo EMAS, ular basseyn sahifasida alohida bron qilinadi. Topchan bir kishidan emas, butunlay to'lanadi: bittasiga ${topchanPricing.capacity} kishigacha sig'adi. O'z mahsulotlaringiz va mangalingizni olib kelish mumkin. Har kuni ${topchanPricing.hours} ishlaymiz.`,
+    freeNote: `Topchan — piknik zonasidagi kurpachali soyabonli maydoncha, yonida mangal va qozon; bu basseyn yonidagi bungalo EMAS, ular basseyn sahifasida alohida bron qilinadi. Topchan kishi boshiga emas, butun topchan uchun to'lanadi: bittasiga ${topchanPricing.capacity} kishigacha sig'adi. O'z mahsulotlaringiz va mangalingizni olib kelish mumkin. Har kuni ${topchanPricing.hours} ishlaymiz.`,
     parkingNote: "Topchan mehmonlari uchun avtoturargoh bepul, lekin joy kafolatlanmaydi — bo'sh joy bo'lsa taqdim etiladi.",
   },
   en: {

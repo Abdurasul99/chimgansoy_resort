@@ -31,13 +31,13 @@ const DISCOUNT_COPY = {
     how: "Qanday hisoblanadi",
     night: "/ kecha",
     discount: "Chegirma",
-    saving: "Tejash",
+    saving: "Tejaysiz",
     savingPer: "so'm har bir kecha uchun",
     breakfast: "Nonushta yashash narxiga kiritilgan.",
-    four: "Agar siz to'rt kishi bo'lsangiz",
+    four: "To'rt kishi bo'lsangiz",
     lead: (n: number) => `${n} mehmon joylashganda:`,
     line: (price: string, n: number, pp: string) => `${price} ÷ ${n} = kishi boshiga kechasiga ${pp} so'm`,
-    total: (pp: string) => `Jami ${pp} so'm / kishi / kecha`,
+    total: (pp: string) => `Atigi ${pp} so'm / kishi / kecha`,
     totalNote: (n: number) => `Shaleda ${n} mehmon bo'lganda.`,
   },
   en: {
@@ -88,7 +88,7 @@ export function OffersSection({ locale }: Props) {
   );
   const cols = {
     ru: { how: "Как считается", one: "3 ночи без акции", three: "3 ночи по акции", per: "За ночь", note: "Суммы в сумах, ночи с воскресенья по четверг. Завтрак включён, обед и ужин — по меню ресторана, отдельно." },
-    uz: { how: "Qanday hisoblanadi", one: "3 kecha aksiyasiz", three: "3 kecha aksiyada", per: "Kechasi", note: "Summalar so'mda, yakshanbadan payshanbagacha bo'lgan kechalar. Nonushta kiritilgan, tushlik va kechki ovqat — restoran menyusi bo'yicha, alohida." },
+    uz: { how: "Qanday hisoblanadi", one: "3 kecha aksiyasiz", three: "3 kecha aksiya bo'yicha", per: "Kechasi", note: "Narxlar so'mda, yakshanbadan payshanbagacha bo'lgan kechalar. Nonushta narxga kiradi, tushlik va kechki ovqat — restoran menyusi bo'yicha, alohida." },
     en: { how: "How it adds up", one: "3 nights, no offer", three: "3 nights, offer", per: "Per night", note: "UZS, Sunday–Thursday nights. Breakfast included; lunch and dinner are from the restaurant menu, extra." },
   }[locale];
 

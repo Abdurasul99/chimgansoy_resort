@@ -80,7 +80,7 @@ function dayCtas(
       href: "/tubing#request",
       closed: false,
       icon: "snowflake" as const,
-      label: { ru: "Тюбинг горка", uz: "Tubing gorkasi", en: "Tubing hill" }[locale],
+      label: { ru: "Тюбинг горка", uz: "Tyubing tepaligi", en: "Tubing hill" }[locale],
       hint: {
         ru: `${rides} спуска · от ${ride} сум`,
         uz: `${rides} marta · ${ride} so'mdan`,

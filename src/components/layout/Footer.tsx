@@ -36,7 +36,7 @@ const SERVICES_LABEL = {
 };
 const SERVICES_HINT = {
   ru: "Аренда, активности и сервисы — цены и заявка",
-  uz: "Ijara, faoliyatlar va xizmatlar — narxlar va ariza",
+  uz: "Ijara, ko'ngilochar mashg'ulotlar va xizmatlar — narxlar va ariza",
   en: "Rentals, activities and services — prices and requests",
 };
 

@@ -94,7 +94,7 @@ const T:{[l:string]:{[k:string]:string}} = {
     kmh:"km/soat",hpa:"gPa",masl:"m (dengiz sathidan)",
     openedYear:"Ochilgan yil",formats:"Formatlar",territory:"Hudud",ha:"ga",
     title:"Toshkent yaqinidagi tog' kurorti",
-    desc:`CHIMGAN DARBAZA — Chimyon tog'larida. Shale, glemping, ${poolClosure.closed ? "restoran va tubing gorkasi" : "basseyn va restoran"} Toshkentdan 45 daqiqada.`,
+    desc:`CHIMGAN DARBAZA — Chimyon tog'larida. Shale, glemping, ${poolClosure.closed ? "restoran va tyubing tepaligi" : "basseyn va restoran"} Toshkentdan 45 daqiqada.`,
   },
   en:{
     badge:"RESORT ATMOSPHERE",location:"Chimgan Darbaza, Uzbekistan",
@@ -179,7 +179,11 @@ export function WeatherPanel({ locale }: { locale: string }) {
 
   const resortToday = getResortTodayMeta();
   const moon = moonPhase(new Date(`${resortToday.isoDate}T12:00:00`));
-  const todayDate = `${days[resortToday.dayIndex]}, ${resortToday.day} ${months[resortToday.monthIndex]}`;
+  // По-узбекски дата пишется «11-noyabr»: число через дефис, месяц со строчной.
+  const todayDate =
+    locale === "uz"
+      ? `${resortToday.day}-${months[resortToday.monthIndex].toLowerCase()}, ${days[resortToday.dayIndex]}`
+      : `${days[resortToday.dayIndex]}, ${resortToday.day} ${months[resortToday.monthIndex]}`;
   const todayForecast = data?.daily.find((day)=>day.date === resortToday.isoDate) ?? data?.daily[0];
   const bestIdx = data ? bestDayIdx(data.daily) : 0;
   const aqi = data ? aqiLabel(data.aqi, locale) : {text:"",color:"#22c55e"};

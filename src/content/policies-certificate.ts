@@ -55,7 +55,7 @@ export const certificatePolicy: PolicyPage = {
         uz: [
           "«CHIMGAN DARBAZA» dam olish zonasining mehmonxona xizmatlari O'z MSt 958:2026 standarti talablariga muvofiq.",
           "Joylashtirish vositasiga toifa berildi.",
-          "Sertifikat 20 ta kottedj va 60 ta joyga taalluqli.",
+          "Sertifikat 20 ta kottej va 60 ta joyga taalluqli.",
         ],
         en: [
           "Hotel services of the CHIMGAN DARBAZA resort meet the requirements of standard O'z MSt 958:2026.",

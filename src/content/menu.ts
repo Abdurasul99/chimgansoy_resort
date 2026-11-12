@@ -48,7 +48,7 @@ export const menuGroups: MenuGroup[] = [
     items: [
       { ru: "Чизбургер", uz: "Chizburger", en: "Cheeseburger" },
       { ru: "Шницель бургер", uz: "Shnitsel burger", en: "Schnitzel burger" },
-      { ru: "С рваной говядиной", uz: "Yirtilgan mol go'shti bilan", en: "Pulled beef" },
+      { ru: "С рваной говядиной", uz: "Dimlangan mol go'shtli", en: "Pulled beef" },
     ],
   },
   {
@@ -58,7 +58,7 @@ export const menuGroups: MenuGroup[] = [
     items: [
       { ru: "Клаб", uz: "Klab", en: "Club" },
       { ru: "По-домашнему", uz: "Uy uslubida", en: "Home-style" },
-      { ru: "С рваной говядиной", uz: "Yirtilgan mol go'shti bilan", en: "Pulled beef" },
+      { ru: "С рваной говядиной", uz: "Dimlangan mol go'shtli", en: "Pulled beef" },
     ],
   },
   {

@@ -69,7 +69,7 @@ const COPY: Record<
       "Цена пакетов одинаковая в будни и выходные. Трасса всесезонная, 160 м, с автоматическим подъёмом — одновременно спускаются до 5 человек.",
   },
   uz: {
-    eyebrow: `Tubing gorkasi · ${tubingPricing.hours}`,
+    eyebrow: `Tyubing tepaligi · ${tubingPricing.hours}`,
     title: "Ariza qoldiring",
     lead: "Sana va uchishlar sonini tanlang — administrator qo'ng'iroq qilib, vaqtni va trassa holatini tasdiqlaydi.",
     date: "Tashrif sanasi",
@@ -83,14 +83,14 @@ const COPY: Record<
     sending: "Yuborilmoqda…",
     successTitle: "Ariza qabul qilindi",
     successText: "Administrator tez orada bog'lanib, bronni tasdiqlaydi.",
-    note: `Ariza — bu hali to'lov emas. Bronni administrator tasdiqlaydi. Gorka ${tubingPricing.hours} ishlaydi; uchish faqat instruktor ishtirokida va uning ruxsati bilan.`,
+    note: `Ariza — bu hali to'lov emas. Bronni administrator tasdiqlaydi. Tepalik ${tubingPricing.hours} ishlaydi; uchish faqat instruktor ishtirokida va uning ruxsati bilan.`,
     failed: `Arizani yuborib bo'lmadi. Bizga qo'ng'iroq qiling: ${contacts.phone}`,
     priceTitle: "Tarif",
     packLabel: (r) => `${r} marta uchish`,
     parkingNote: (price) => `Avtoturargoh pullik — har bir avtomobil uchun ${price} so'm. Alohida to'lanadi va ariza summasiga kiritilmaydi.`,
     total: "Taxminiy to'lov",
     seasonNote:
-      "Paket narxi ish kunlari va dam olish kunlarida bir xil. Trassa butun mavsumga mo'ljallangan, 160 m, avtomatik ko'targich bilan — bir vaqtda 5 kishigacha tushadi.",
+      "Paket narxi ish kunlari va dam olish kunlarida bir xil. Trassa har faslda ishlaydigan, 160 m, avtomatik ko'targich bilan — bir vaqtda 5 kishigacha tushadi.",
   },
   en: {
     eyebrow: `Tubing hill · ${tubingPricing.hours}`,

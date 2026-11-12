@@ -39,7 +39,7 @@ export function TestimonialsCarousel({ locale }: Props) {
 
   const t = testimonials[active];
   const mapsCopy =
-    locale === "uz" ? "Google Maps'da o'qish" : locale === "en" ? "Read on Google Maps" : "Читать в Google Maps";
+    locale === "uz" ? "Google Mapsda o'qish" : locale === "en" ? "Read on Google Maps" : "Читать в Google Maps";
   const allReviewsCopy = locale === "uz" ? "Barcha fikrlar" : locale === "en" ? "All reviews" : "Все отзывы";
 
   return (

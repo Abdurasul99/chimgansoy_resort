@@ -31,7 +31,7 @@ export const contacts = {
   // can promise a 24-hour desk and why Booking's check-in window runs late.
   schedule: {
     ru: "Ресепшн круглосуточно · заезд с 15:00, выезд до 12:00",
-    uz: "Resepshn 24 soat · kirish 15:00 dan, chiqish 12:00 gacha",
+    uz: "Qabulxona 24 soat · kirish 15:00 dan, chiqish 12:00 gacha",
     en: "Reception open 24/7 · check-in from 15:00, check-out by 12:00",
   } satisfies LocalizedString,
   mapCoordinates: "41.518880, 69.990573",

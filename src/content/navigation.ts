@@ -40,7 +40,7 @@ const ALL_MAIN: NavigationItem[] = [
   },
   {
     href: "/about",
-    label: { ru: "О месте", uz: "Joy haqida", en: "About" },
+    label: { ru: "О месте", uz: "Kurort haqida", en: "About" },
   },
   {
     href: "/place",
@@ -73,7 +73,7 @@ const ALL_FOOTER = [
     links: [
       { href: "/topchan", label: { ru: "Топчан", uz: "Topchan", en: "Topchan" } },
       { href: "/nomera/pool", label: { ru: "Бассейн", uz: "Basseyn", en: "Pool" } },
-      { href: "/tubing", label: { ru: "Тюбинг-горка", uz: "Tubing gorkasi", en: "Tubing hill" } },
+      { href: "/tubing", label: { ru: "Тюбинг-горка", uz: "Tyubing tepaligi", en: "Tubing hill" } },
     ],
   },
   {
@@ -82,7 +82,7 @@ const ALL_FOOTER = [
       { href: "/services/restaurant", label: { ru: "Кухня и меню", uz: "Oshxona va menyu", en: "Kitchen & menu" } },
       { href: "/services/outdoor-cooking", label: { ru: "Мангал и казан", uz: "Mangal va qozon", en: "BBQ & kazan" } },
       { href: "/services/picnic-zone", label: { ru: "Зоны отдыха", uz: "Dam olish zonalari", en: "Lounge areas" } },
-      { href: "/services/experience", label: { ru: "Активности", uz: "Faoliyatlar", en: "Activities" } },
+      { href: "/services/experience", label: { ru: "Активности", uz: "Faol dam olish", en: "Activities" } },
       { href: "/place", label: { ru: "Места рядом", uz: "Atrofdagi joylar", en: "Nearby attractions" } },
     ],
   },
@@ -93,7 +93,7 @@ const ALL_FOOTER = [
       { href: "/legal/sertifikat", label: { ru: "Сертификат соответствия", uz: "Muvofiqlik sertifikati", en: "Certificate of conformity" } },
       { href: "/legal/privacy-policy", label: { ru: "Политика конфиденциальности", uz: "Maxfiylik siyosati", en: "Privacy policy" } },
       { href: "/legal/payment-refund", label: { ru: "Возврат и отмена", uz: "Qaytarish va bekor qilish", en: "Refund & cancellation" } },
-      { href: "/legal/how-to-get-there", label: { ru: "Как добраться", uz: "Qanday borish", en: "How to get there" } },
+      { href: "/legal/how-to-get-there", label: { ru: "Как добраться", uz: "Qanday yetib borish mumkin", en: "How to get there" } },
     ],
   },
 ];

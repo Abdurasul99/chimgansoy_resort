@@ -109,7 +109,7 @@ export const rooms: Room[] = [
       // "Шатры/tents/chodirlar" contradicted the photos: these are solid timber
       // A-frame cabins with tiled floors, AC and an ensuite — not tents.
       ru: "Отдельные домики A-frame с гостиничным комфортом, панорамным окном и быстрым доступом к активностям.",
-      uz: "Mehmonxona qulayligi, panoramali deraza va faoliyatlarga tez chiqish imkoni bo'lgan alohida A-frame uychalari.",
+      uz: "Mehmonxona qulayligi, panoramali deraza va ko'ngilochar joylarga yaqin alohida A-frame uychalari.",
       en: "Standalone A-frame cabins with hotel-level comfort, a panoramic window, and quick access to resort activities.",
     },
     description: {
@@ -163,7 +163,7 @@ export const rooms: Room[] = [
       {
         label: {
           ru: "Тюбинг: спуск каждому гостю",
-          uz: "Tubing: har bir mehmonga uchish",
+          uz: "Tyubing: har bir mehmonga bir uchish",
           en: "Tubing: a ride for every guest",
         },
         highlight: true,
@@ -238,7 +238,7 @@ export const rooms: Room[] = [
       // Two ensuites, both with a shower — there is no bath anywhere on the
       // property, in any unit.
       ru: ["Туалет и душ в каждой спальне", "Собственная терраса", "Кондиционер", "Тёплый пол", "Телевизор", "Wi-Fi", "Бесплатная парковка", "Холодильник", "Электрическая плита", "Микроволновка", "Полный кухонный набор", "Минибар"],
-      uz: ["Har bir yotoqxonada hojatxona va dush", "Xususiy terrasa", "Konditsioner", "Issiq pol", "Televizor", "Wi-Fi", "Bepul avtoturargoh", "Muzlatkich", "Elektr plita", "Mikroto'lqinli pech", "To'liq oshxona to'plami", "Minibar"],
+      uz: ["Har bir yotoqxonada hojatxona va dush", "Xususiy terrasa", "Konditsioner", "Issiq pol", "Televizor", "Wi-Fi", "Bepul avtoturargoh", "Sovutgich", "Elektr plita", "Mikroto'lqinli pech", "To'liq oshxona to'plami", "Minibar"],
       en: ["Toilet and shower in each bedroom", "Private terrace", "Air conditioning", "Heated floor", "TV", "Wi-Fi", "Free parking", "Fridge", "Electric stove", "Microwave", "Full kitchen set", "Minibar"],
     },
     features: {
@@ -263,7 +263,7 @@ export const rooms: Room[] = [
       {
         label: {
           ru: "Тюбинг: спуск каждому гостю",
-          uz: "Tubing: har bir mehmonga uchish",
+          uz: "Tyubing: har bir mehmonga bir uchish",
           en: "Tubing: a ride for every guest",
         },
         highlight: true,
@@ -272,7 +272,7 @@ export const rooms: Room[] = [
       { label: { ru: "Полная кухня", uz: "To'liq oshxona", en: "Full kitchen" } },
       { label: { ru: "Собственная терраса", uz: "Xususiy terrasa", en: "Private terrace" } },
       { label: { ru: "Санузел в каждой спальне", uz: "Har bir yotoqxonada hammom", en: "Ensuite in every bedroom" } },
-      { label: { ru: "Парковка у домика", uz: "Uycha yonida parking", en: "Parking by the cabin" } },
+      { label: { ru: "Парковка у домика", uz: "Uycha yonida avtoturargoh", en: "Parking by the cabin" } },
       { label: { ru: "Wi-Fi", uz: "Wi-Fi", en: "Wi-Fi" } },
     ],
     // Was ["kids-playground", "outdoor-cooking", "mini-football"]. Two of those
@@ -311,7 +311,7 @@ export const rooms: Room[] = [
       // the weekend rate, so the page was quoting a price the form would not
       // honour.
       ru: "Гостям глэмпинга и шале бассейн включён в стоимость проживания — отдельно бронировать не нужно. Приехать только на бассейн, без ночёвки, тоже можно, гостей без ограничения. Тариф с человека зависит от дня недели, дети 5–15 лет вдвое дешевле, до 5 лет бесплатно — суммы в форме заявки ниже. Оставьте заявку ниже — администратор перезвонит и подтвердит время. Рядом кухня и зона мангала.",
-      uz: "Glemping va shale mehmonlari uchun basseyn yashash narxiga kiritilgan — alohida bron qilish shart emas. Faqat basseynga, tunamasdan kelish ham mumkin, mehmonlar soni cheklanmagan. Bir kishidan tarif hafta kuniga bog'liq, 5–15 yoshli bolalar ikki barobar arzon, 5 yoshgacha bepul — summalar quyidagi ariza shaklida. Quyida ariza qoldiring — administrator qo'ng'iroq qilib, vaqtni tasdiqlaydi. Yaqinida oshxona va mangal zonasi.",
+      uz: "Glemping va shale mehmonlari uchun basseyn yashash narxiga kiritilgan — alohida bron qilish shart emas. Faqat basseynga, tunamasdan kelish ham mumkin, mehmonlar soni cheklanmagan. Kishi boshiga tarif hafta kuniga bog'liq, 5–15 yoshli bolalar ikki barobar arzon, 5 yoshgacha bepul — summalar quyidagi ariza shaklida. Quyida ariza qoldiring — administrator qo'ng'iroq qilib, vaqtni tasdiqlaydi. Yaqinida oshxona va mangal zonasi.",
       en: "For glamping and chalet guests the pool is included in the room rate — no separate booking needed. Coming just for the pool, without an overnight stay, also works, with no cap on group size. The per-person rate depends on the day of the week, children 5–15 are half price and under-fives are free — the figures are in the request form below. Send a request below and our administrator will call back to confirm the time. The kitchen and BBQ area are nearby.",
     },
     // Fixed tariff now — the engine no longer prices this one.
@@ -319,7 +319,7 @@ export const rooms: Room[] = [
     // тарифа (poolPriceChip), а этот текст — запасной вариант, если тариф
     // почему-то не прочитался. Цифра в двух местах разошлась бы при первой же
     // правке в админке.
-    priceFrom: { ru: "тариф с человека", uz: "bir kishidan tarif", en: "per-person rate" },
+    priceFrom: { ru: "тариф с человека", uz: "kishi boshiga tarif", en: "per-person rate" },
     capacity: { ru: "без ограничения по гостям", uz: "mehmonlar soni cheklanmagan", en: "any group size" },
     size: { ru: "Открытый бассейн 680 м²", uz: "680 m² ochiq basseyn", en: "680 m² outdoor pool" },
     amenities: {

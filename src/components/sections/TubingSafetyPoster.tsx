@@ -34,10 +34,10 @@ const COPY: Record<
   uz: {
     eyebrow: "Xavfsizlik",
     title: "Tyubingdan foydalanish qoidalari",
-    body: "Ariza yuborishdan oldin diametri 100 sm bo‘lgan tyubinglar qoidalari bilan tanishing: bir kishi uchadi, vazn 95 kg gacha.",
-    alt: "Diametri 100 sm bo‘lgan tyubinglardan foydalanish qoidalari yozilgan plakat",
-    open: "Plakatni to‘liq ochish",
-    caption: "Plakat yangi oynada to‘liq hajmda ochiladi — u yerda hammasi o‘qiladi.",
+    body: "Ariza yuborishdan oldin diametri 100 sm bo'lgan tyubinglar qoidalari bilan tanishing: bir kishi uchadi, vazn 95 kg gacha.",
+    alt: "Diametri 100 sm bo'lgan tyubinglardan foydalanish qoidalari yozilgan plakat",
+    open: "Plakatni to'liq ochish",
+    caption: "Plakat yangi oynada to'liq hajmda ochiladi — u yerda hammasi o'qiladi.",
   },
   en: {
     eyebrow: "Safety",

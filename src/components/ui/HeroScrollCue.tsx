@@ -10,7 +10,7 @@ const LABEL: Record<Locale, string> = {
 
 const ARIA: Record<Locale, string> = {
   ru: "Перейти к содержимому",
-  uz: "Kontentga o'tish",
+  uz: "Asosiy qismga o'tish",
   en: "Scroll to content",
 };
 

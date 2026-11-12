@@ -43,6 +43,8 @@ export const bookingTermsCopy = {
       `Отмена не позднее чем за ${days} суток до заезда (отсчёт от ${checkIn} дня заезда) — предоплата возвращается полностью.`,
       `Менее чем за ${days} суток, но не позднее чем за ${hours} часов — удерживается ${pct} %, остальное возвращается.`,
       `Менее чем за ${hours} часов до заезда или неявка — предоплата не возвращается.`,
+      // Владелец, 12.11.2026 — дословно его формулировка.
+      "Внимание: предоплата за бронирование с субботы на воскресенье является невозвратной без исключений (независимо от сроков отмены).",
       "Отмена и перенос дат — только письменно: в Telegram, WhatsApp или через форму на сайте. По телефону не принимаются.",
     ],
     read: "Перед отправкой ознакомьтесь с",
@@ -56,7 +58,7 @@ export const bookingTermsCopy = {
   uz: {
     title: "Ariza yuborishdan oldin muhim",
     bookingTitle: "Bron qilishdan oldin muhim",
-    first: "Sayt orqali ariza — bu bron ham, joylashuv tasdig'i ham emas.",
+    first: "Sayt orqali ariza — bu bron ham, joylashtirish tasdig'i ham emas.",
     firstBooking: "Sayt orqali bron uychani sizga faqat to'lovdan keyin biriktiradi.",
     contact: "Arizadan so'ng xodimimiz siz bilan bog'lanadi: tafsilotlarni aniqlaydi va to'lov usulini kelishadi.",
     contactBooking: "Bron qilganingizdan so'ng xodimimiz siz bilan bog'lanadi: tafsilotlarni aniqlaydi va to'lov usulini kelishadi.",
@@ -70,6 +72,7 @@ export const bookingTermsCopy = {
       `Kirishdan kamida ${days} kun oldin bekor qilinsa (kirish kuni soat ${checkIn} dan hisoblanadi) — oldindan to'lov to'liq qaytariladi.`,
       `${days} kundan kam, lekin kamida ${hours} soat oldin — ${pct} % ushlab qolinadi, qolgani qaytariladi.`,
       `Kirishga ${hours} soatdan kam qolganda yoki kelinmaganda — oldindan to'lov qaytarilmaydi.`,
+      "Diqqat: shanbadan yakshanbaga o'tar kechaga qilingan bron uchun oldindan to'lov hech qanday istisnosiz qaytarilmaydi (bekor qilish muddatidan qat'i nazar).",
       "Bekor qilish va sanani ko'chirish — faqat yozma ravishda: Telegram, WhatsApp yoki saytdagi forma orqali. Telefon orqali qabul qilinmaydi.",
     ],
     read: "Yuborishdan oldin quyidagilar bilan tanishing:",
@@ -97,6 +100,7 @@ export const bookingTermsCopy = {
       `Cancel at least ${days} days before arrival (counted from ${checkIn} on the arrival day) — the prepayment is refunded in full.`,
       `Less than ${days} days but at least ${hours} hours before — ${pct}% is withheld, the rest is refunded.`,
       `Less than ${hours} hours before arrival, or a no-show — the prepayment is not refunded.`,
+      "Please note: the prepayment for a Saturday-to-Sunday night is non-refundable without exception, regardless of when you cancel.",
       "Cancellations and date changes are accepted in writing only — Telegram, WhatsApp or the form on the site. Not by phone.",
     ],
     read: "Before sending, please read the",

@@ -79,7 +79,7 @@ async function StayLevyNote({ locale }: { locale: Locale }) {
     },
     uz: {
       title: "Turistik yig'im — chet ellik mehmonlardan, yashashdan alohida",
-      body: `Yig'im glemping va shalega joylashayotgan chet el fuqarolari hamda fuqaroligi bo'lmagan shaxslardan olinadi — kirish sanasida amal qiluvchi stavka bo'yicha bir kecha uchun har bir mehmondan ${money(live.touristTax.nonResident)} so'm. U yashash narxiga kirmaydi va onlayn to'lanmaydi: resepshnda to'lanadi. O'zbekiston fuqarolari va rezidentlaridan yig'im olinmaydi.`,
+      body: `Yig'im glemping va shalega joylashayotgan chet el fuqarolari hamda fuqaroligi bo'lmagan shaxslardan olinadi — kirish sanasida amal qiluvchi stavka bo'yicha bir kecha uchun har bir mehmondan ${money(live.touristTax.nonResident)} so'm. U yashash narxiga kirmaydi va onlayn to'lanmaydi: qabulxonada to'lanadi. O'zbekiston fuqarolari va rezidentlaridan yig'im olinmaydi.`,
     },
     en: {
       title: "The tourist levy — foreign guests only, paid separately",

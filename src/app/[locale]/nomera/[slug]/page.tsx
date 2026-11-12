@@ -194,7 +194,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
           "При заселении нужны паспорта всех проживающих.",
         ],
         uz: [
-          `Standart joylashuv — ${occ.base} mehmon, maksimum ${occ.max}. Standartdan ortiq joylar — qo'shimcha to'lov evaziga.`,
+          `Standart sig'im — ${occ.base} mehmon, maksimum ${occ.max}. Standartdan ortiq joylar — qo'shimcha to'lov evaziga.`,
           `Kirish ${stayRules.checkIn} dan, chiqish ${stayRules.checkOut} gacha. ${lateCheckOutNote.uz} Erta kirish — bandlikka qarab va qo'shimcha to'lov evaziga.`,
           ...(poolClosure.closed ? [] : [`Basseyn: kirishdan oldin, joylashishni kutib turganda — tasdiqlangan bron bilan bepul; chiqishdan keyin — bir kun uchun ${group(livePricing.pool.afterCheckOut)} so'm. Administratorni oldindan ogohlantiring.`]),
           `Bir kechaga qo'shimcha joy — ${adultFromAge} yoshdan katta mehmon uchun ${group(livePricing.extraGuest.adult)} so'm, ${childFrom}–${childTo} yoshdagi bola uchun ${group(livePricing.extraGuest.child)} so'm. 0–${freeThroughAge} yoshdagi bolalar — bepul.`,
@@ -318,7 +318,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
                 {text({ ru: "Ресторан", uz: "Restoran", en: "Restaurant" }, locale)}
               </ButtonLink>
               <ButtonLink href={localizePath(locale, "/tubing")} variant="ghost">
-                {text({ ru: "Тюбинг-горка", uz: "Tyubing gorkasi", en: "Tubing hill" }, locale)}
+                {text({ ru: "Тюбинг-горка", uz: "Tyubing tepaligi", en: "Tubing hill" }, locale)}
               </ButtonLink>
             </div>
           </div>

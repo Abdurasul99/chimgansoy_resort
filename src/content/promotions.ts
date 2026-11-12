@@ -92,7 +92,7 @@ export const promotions: Promotion[] = [
     },
     description: {
       ru: "Оплачиваете две ночи, третью получаете бесплатно. Заезд в воскресенье, понедельник или вторник — три ночи в горах без спешки.",
-      uz: "Ikki kecha uchun to'laysiz, uchinchisi bepul. Kirish yakshanba, dushanba yoki seshanba — tog'larda shoshilmasdan uch kecha.",
+      uz: "Ikki kecha uchun to'laysiz, uchinchisi bepul. Kirish — yakshanba, dushanba yoki seshanba kuni: tog'larda shoshilmasdan uch kecha.",
       en: "Pay for two nights, get the third free. Arrive on Sunday, Monday or Tuesday — three unhurried nights in the mountains.",
     },
     savings: TWO_PLUS_ONE_SAVINGS,
@@ -114,15 +114,15 @@ export const promotions: Promotion[] = [
         "Дополнительное размещение оплачивается отдельно согласно тарифу за каждую ночь",
       ],
       uz: [
-        "Kirish yakshanba, dushanba yoki seshanba — aynan 3 kecha",
+        "Kirish — yakshanba, dushanba yoki seshanba kunlari, aynan 3 kecha",
         "Chiqish mumkin bo'lgan eng so'nggi kun — juma",
         "Kirish yakshanba ➔ chiqish chorshanba (3 kecha)",
         "Kirish dushanba ➔ chiqish payshanba (3 kecha)",
         "Kirish seshanba ➔ chiqish juma (3 kecha)",
-        "Boshqa aksiyalar va maxsus takliflar bilan jamlanmaydi",
-        "Nonushta kiritilgan",
-        `To'liq joylashganda — kishi boshiga kechasiga ${fmt(perPersonFrom)} so'mdan: glemping ${glampingGuests} mehmonga, shale ${chaletGuests} mehmonga`,
-        "Qo'shimcha joylashtirish har bir kecha uchun tarif bo'yicha alohida to'lanadi",
+        "Boshqa aksiyalar va maxsus takliflar bilan birga qo'llanilmaydi",
+        "Nonushta narxga kiradi",
+        `Uycha to'liq band bo'lganda — kishi boshiga kechasiga ${fmt(perPersonFrom)} so'mdan: glemping ${glampingGuests} mehmonga, shale ${chaletGuests} mehmonga`,
+        "Qo'shimcha o'rin har bir kecha uchun tarif bo'yicha alohida to'lanadi",
       ],
       en: [
         "Arrive on Sunday, Monday or Tuesday — exactly 3 nights",
@@ -172,8 +172,8 @@ export const promotions: Promotion[] = [
       ],
       uz: [
         "Aksiya noyabr davomida shaleda yashash uchun amal qiladi",
-        "Qo'shimcha joylashtirish amaldagi tariflar bo'yicha alohida to'lanadi",
-        "Boshqa aksiyalar va maxsus takliflar bilan jamlanmaydi",
+        "Qo'shimcha o'rin amaldagi tariflar bo'yicha alohida to'lanadi",
+        "Boshqa aksiyalar va maxsus takliflar bilan birga qo'llanilmaydi",
       ],
       en: [
         "Valid for Chalet stays throughout November",

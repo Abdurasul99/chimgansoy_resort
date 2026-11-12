@@ -54,7 +54,7 @@ const CELLS: Cell[] = [
   },
   {
     image: "chaletBenchLawn",
-    caption: { ru: "Скамья на газоне у шале", uz: "Shale yonidagi skameyka", en: "A bench on the chalet lawn" },
+    caption: { ru: "Скамья на газоне у шале", uz: "Shale yonidagi o'rindiq", en: "A bench on the chalet lawn" },
     span: "",
   },
   // Здесь стоял aframeGableSky (перила A-frame крупно) — владелец убрал его из

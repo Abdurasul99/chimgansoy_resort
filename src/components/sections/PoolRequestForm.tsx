@@ -129,7 +129,7 @@ const COPY: Record<
     freeNote: `Basseyn mehmonlari uchun kirish BEPUL. Shale va glempingda turuvchilar uchun kirish ham bepul. 5 yoshgacha bolalar — kattalar bilan bepul. Hududda ${B.small.count} ta ${B.small.name} bungalo (${B.small.capacity} kishigacha) va ${B.large.count} ta ${B.large.name} (${B.large.capacity} kishigacha) bor; bundan ko'pini buyurtma qilib bo'lmaydi. Bungalo ijarasi kirish chiptalarini o'z ichiga olmaydi. Basseyn tashrif buyuruvchilar uchun har kuni ${poolPricing.hours}, shale va glempingda yashovchilar uchun ${poolPricing.hoursForStayingGuests}. Basseyn hududiga o'z ovqatingiz va ichimliklaringiz bilan kirish mumkin emas — hududda bar va restoran ishlaydi.`,
     parkingNote: "Basseyn mehmonlari uchun avtoturargoh bepul.",
     dressCode:
-      "Hududdagi dress-kod: cho'milish kiyimida faqat basseyn zonasida bo'lish mumkin. Kurort hududi bo'ylab — kafe, resepshn, do'kon, umumiy zonalar — kiyim va oyoq kiyimda yuriladi.",
+      "Hududdagi dress-kod: cho'milish kiyimida faqat basseyn zonasida bo'lish mumkin. Kurort hududi bo'ylab — kafe, qabulxona, do'kon, umumiy zonalar — kiyim va oyoq kiyimda yuriladi.",
   },
   en: {
     eyebrow: "The pool · summer season",

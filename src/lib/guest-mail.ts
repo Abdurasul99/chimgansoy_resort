@@ -32,7 +32,7 @@ const COPY = {
   uz: {
     subject: (room: string) => `Bron tasdiqlandi — ${room}, CHIMGAN DARBAZA`,
     hi: (name: string) => `Assalomu alaykum, ${name}!`,
-    body: "Bronigiz tasdiqlandi, to'lov qabul qilindi. Sizni kutamiz.",
+    body: "Broningiz tasdiqlandi, to'lov qabul qilindi. Sizni kutamiz.",
     room: "Turar joy",
     unit: "Xona",
     dates: "Sanalar",

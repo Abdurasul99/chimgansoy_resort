@@ -39,7 +39,7 @@ export type PolicyPage = {
 export const policies: PolicyPage[] = [
   {
     slug: "how-to-get-there",
-    title: { ru: "Как добраться", uz: "Qanday borish", en: "How to get there" },
+    title: { ru: "Как добраться", uz: "Qanday yetib borish mumkin", en: "How to get there" },
     description: {
       ru: "Ориентиры и контакты для планирования поездки в CHIMGAN DARBAZA.",
       uz: "CHIMGAN DARBAZAga safarni rejalashtirish uchun mo'ljallar va kontaktlar.",
@@ -103,7 +103,7 @@ export const policies: PolicyPage[] = [
           ],
           uz: [
             "Cho'milish kiyimida faqat basseyn zonasida bo'lish mumkin.",
-            "Kurort hududi bo'ylab — kafe, resepshn, do'kon, umumiy zonalar — kiyim va oyoq kiyimda yuriladi.",
+            "Kurort hududi bo'ylab — kafe, qabulxona, do'kon, umumiy zonalar — kiyim va oyoq kiyimda yuriladi.",
           ],
           en: [
             "Swimwear may be worn in the pool area only.",

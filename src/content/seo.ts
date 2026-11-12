@@ -78,7 +78,7 @@ export const pageSeo = {
   contact: {
     title: {
       ru: "Контакты и как добраться",
-      uz: "Aloqa va qanday borish",
+      uz: "Aloqa va yo'l ko'rsatma",
       en: "Contacts and directions",
     },
     description: {

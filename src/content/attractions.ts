@@ -16,7 +16,7 @@ export const attractions: Attraction[] = [
     image: "chimganMountains",
     description: {
       ru: "Маршруты, виды и сезонные активности для гостей, которые хотят добавить к отдыху горный сценарий.",
-      uz: "Dam olishga tog' ssenariysini qo'shishni istagan mehmonlar uchun marshrutlar, manzaralar va mavsumiy faoliyatlar.",
+      uz: "Dam olishini tog' sayri bilan boyitmoqchi bo'lgan mehmonlar uchun marshrutlar, manzaralar va mavsumiy mashg'ulotlar.",
       en: "Routes, views, and seasonal activities for guests who want a mountain layer in their stay.",
     },
   },
@@ -46,7 +46,7 @@ export const attractions: Attraction[] = [
     image: "horseRiding",
     description: {
       ru: "Сезонный формат для гостей, которым нужен более живой контакт с природой.",
-      uz: "Tabiat bilan yanada jonli aloqa istagan mehmonlar uchun mavsumiy format.",
+      uz: "Tabiatga yanada yaqin bo'lishni istagan mehmonlar uchun mavsumiy format.",
       en: "A seasonal format for guests who want closer contact with nature.",
     },
   },

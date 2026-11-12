@@ -22,7 +22,7 @@ const COPY: Record<Locale, { eyebrow: string; title: string; subtitle: string; d
   },
   uz: {
     eyebrow: "Hududda",
-    title: "Kunni nima bilan to'ldirish",
+    title: "Kunni qanday o'tkazish mumkin",
     subtitle: "Oshxona va restoran, mangal va qozon, dam olish zonalari va yaqindagi tog' marshrutlari — kirish va chiqish orasidagi kun shundan tashkil topadi.",
     details: "Batafsil",
     viewAll: "Barcha xizmatlar",
@@ -39,7 +39,7 @@ const COPY: Record<Locale, { eyebrow: string; title: string; subtitle: string; d
 const CATEGORY_LABEL: Record<string, LocalizedString> = {
   relax: { ru: "Отдых", uz: "Dam", en: "Relax" },
   food: { ru: "Еда", uz: "Taom", en: "Food" },
-  activity: { ru: "Активности", uz: "Faollik", en: "Activity" },
+  activity: { ru: "Активности", uz: "Faol dam olish", en: "Activity" },
 };
 
 /**

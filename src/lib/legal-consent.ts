@@ -20,7 +20,7 @@ const ERRORS: Record<
   uz: {
     offer: "Ommaviy oferta shartlariga roziligingizni tasdiqlang",
     privacy: "Shaxsiy ma'lumotlarni qayta ishlashga roziligingizni tasdiqlang",
-    tubingRules: "Tubing gorkasi qoidalariga roziligingizni tasdiqlang",
+    tubingRules: "Tyubing tepaligi qoidalariga roziligingizni tasdiqlang",
     poolRules: "Basseynga tashrif qoidalariga roziligingizni tasdiqlang",
     refund: "Bekor qilish va qaytarish qoidalariga roziligingizni tasdiqlang",
   },

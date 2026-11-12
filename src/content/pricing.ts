@@ -252,9 +252,9 @@ export const poolPricing = {
     bungalow10: 500_000,
   },
 
-  weekdayLabel: { ru: "Пн–Чт", uz: "Du–Pay", en: "Mon–Thu" } satisfies LocalizedString,
-  weekendLabel: { ru: "Пт–Вс и праздники", uz: "Ju–Yak va bayramlar", en: "Fri–Sun & holidays" } satisfies LocalizedString,
-  perPersonLabel: { ru: "с человека", uz: "bir kishidan", en: "per person" } satisfies LocalizedString,
+  weekdayLabel: { ru: "Пн–Чт", uz: "Du–Pa", en: "Mon–Thu" } satisfies LocalizedString,
+  weekendLabel: { ru: "Пт–Вс и праздники", uz: "Ju–Ya va bayramlar", en: "Fri–Sun & holidays" } satisfies LocalizedString,
+  perPersonLabel: { ru: "с человека", uz: "kishi boshiga", en: "per person" } satisfies LocalizedString,
 };
 
 /**
@@ -274,8 +274,8 @@ export const parkingPricing = {
 };
 
 export const priceLabels = {
-  weekdaysLabel: { ru: "Пн–Чт", uz: "Du–Pay", en: "Mon–Thu" } satisfies LocalizedString,
-  weekendLabel: { ru: "Пт–Вс", uz: "Ju–Yak", en: "Fri–Sun" } satisfies LocalizedString,
+  weekdaysLabel: { ru: "Пн–Чт", uz: "Du–Pa", en: "Mon–Thu" } satisfies LocalizedString,
+  weekendLabel: { ru: "Пт–Вс", uz: "Ju–Ya", en: "Fri–Sun" } satisfies LocalizedString,
   currencyShort: { ru: "сум", uz: "so'm", en: "UZS" } satisfies LocalizedString,
 };
 

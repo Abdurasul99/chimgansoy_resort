@@ -79,15 +79,15 @@ const COPY = {
     book: { ru: "Забронировать топчан", uz: "Topchan bron qilish", en: "Book a topchan" } as L,
   },
   tubing: {
-    eyebrow: { ru: "Активности · круглый год", uz: "Faollik · yil davomida", en: "Activities · all year" } as L,
-    title: { ru: "Тюбинг-горка", uz: "Tubing gorkasi", en: "Tubing hill" } as L,
+    eyebrow: { ru: "Активности · круглый год", uz: "Faol dam olish · yil davomida", en: "Activities · all year" } as L,
+    title: { ru: "Тюбинг-горка", uz: "Tyubing tepaligi", en: "Tubing hill" } as L,
     plaque: { ru: "Главное", uz: "Asosiysi", en: "Key facts" } as L,
     // Проживающим — один спуск на гостя (оператор, 17.08.2026): то же, что
     // «Тюбинг: спуск каждому гостю» в плашке домиков.
     guests: { ru: "Гостям домиков — спуск бесплатно", uz: "Yashovchilarga bir marta bepul", en: "Cabin guests ride once free" } as L,
     facts: {
       ru: ["Трасса 160 м", "Автоматический подъём", "Подсветка вечером", "Ватрушка выдаётся на месте", "Детям — с 5 лет и от 110 см"],
-      uz: ["160 m trassa", "Avtomatik ko'targich", "Kechqurun yoritiladi", "Tubing joyida beriladi", "Bolalar — 5 yoshdan va 110 sm dan"],
+      uz: ["160 m trassa", "Avtomatik ko'targich", "Kechqurun yoritiladi", "Tyubing joyida beriladi", "Bolalar — 5 yoshdan va 110 sm dan"],
       en: ["160 m track", "Powered lift", "Lit in the evening", "Tube provided on site", "Children from age 5 and 110 cm"],
     } as LL,
     book: { ru: "Купить билет", uz: "Chipta sotib olish", en: "Buy a ticket" } as L,

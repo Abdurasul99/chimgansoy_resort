@@ -39,7 +39,7 @@ const COPY: Record<Locale, Copy> = {
     refund: (link) => <>{link} bilan tanishdim va ularni qabul qilaman.</>,
     offerLink: "Ommaviy oferta",
     privacyLink: "Maxfiylik siyosati",
-    tubingRulesLink: "Tubing gorkasidan foydalanish qoidalari",
+    tubingRulesLink: "Tyubing tepaligidan foydalanish qoidalari",
     poolRulesLink: "Basseynga tashrif qoidalari",
     refundLink: "Bekor qilish va qaytarish qoidalari",
   },
