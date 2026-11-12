@@ -13,7 +13,7 @@ import { cabinOccupancy } from "./pricing";
  * акция привела гостя. Совпадает с метками на визитке из шапки Instagram.
  */
 export type Promotion = {
-  slug: "2plus1" | "chalet-october";
+  slug: "2plus1" | "chalet-october" | "birthday";
   badge: LocalizedString;
   title: LocalizedString;
   description: LocalizedString;
@@ -178,6 +178,45 @@ export const promotions: Promotion[] = [
       en: [
         "Valid for Chalet stays throughout November",
         "Extra beds are charged separately at the current rates",
+        "Does not combine with other offers or special deals",
+      ],
+    },
+  },
+  {
+    // Владелец, 12.11.2026 — его текст: «Скидка 15% на День Рождения! Дарим 15%
+    // на проживание имениннику. Действует за 3 дня до и 3 дня после Дня Рождения
+    // (нужен паспорт/ID). Не действует на пакетные праздничные предложения. Не
+    // суммируется с другими акциями». Срока нет. Расчёта «было → стало» нет
+    // намеренно: скидка считается от цены выбранных дат и домика.
+    slug: "birthday",
+    badge: { ru: "−15% · День рождения", uz: "−15% · Tug'ilgan kun", en: "−15% · Birthday" },
+    title: {
+      ru: "Скидка 15% на День Рождения",
+      uz: "Tug'ilgan kunga 15% chegirma",
+      en: "15% off for your birthday",
+    },
+    description: {
+      ru: "Дарим 15% на проживание имениннику! Действует за 3 дня до и 3 дня после Дня Рождения.",
+      uz: "Tug'ilgan kun egasiga yashash narxidan 15% chegirma sovg'a qilamiz! Tug'ilgan kundan 3 kun oldin va 3 kun keyin amal qiladi.",
+      en: "A 15% gift off the stay for the birthday guest! Valid from 3 days before to 3 days after the birthday.",
+    },
+    terms: {
+      ru: [
+        "Действует за 3 дня до и 3 дня после Дня Рождения",
+        "Нужен паспорт или ID именинника",
+        "Не действует на пакетные праздничные предложения",
+        "Не суммируется с другими акциями и специальными предложениями",
+      ],
+      uz: [
+        "Tug'ilgan kundan 3 kun oldin va 3 kun keyin amal qiladi",
+        "Tug'ilgan kun egasining pasporti yoki ID kartasi kerak",
+        "Bayram paketlariga amal qilmaydi",
+        "Boshqa aksiyalar va maxsus takliflar bilan birga qo'llanilmaydi",
+      ],
+      en: [
+        "Valid from 3 days before to 3 days after the birthday",
+        "The birthday guest's passport or ID is required",
+        "Not valid for holiday package offers",
         "Does not combine with other offers or special deals",
       ],
     },

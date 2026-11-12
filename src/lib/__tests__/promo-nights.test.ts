@@ -112,7 +112,7 @@ describe("срок акций", () => {
   });
 
   it("две акции: «Всё включено» и «Выходной без спешки» сняты 29.10.2026", () => {
-    expect(promotions.map((p) => p.slug).sort()).toEqual(["2plus1", "chalet-october"]);
+    expect(promotions.map((p) => p.slug).sort()).toEqual(["2plus1", "birthday", "chalet-october"]);
   });
 
   it("условия без срока не называют срок", () => {

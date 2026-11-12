@@ -555,7 +555,7 @@ describe("акции", () => {
     // иначе статистика по одной и той же акции разъедется на два счётчика.
     // «chalet-october» пока только на сайте (оператор, 30.09.2026: «на сайт»).
     // «all-inclusive» и «slow-weekend» сняты 29.10.2026 — и с визитки тоже.
-    expect(promotions.map((p) => p.slug)).toEqual(["2plus1", "chalet-october"]);
+    expect(promotions.map((p) => p.slug)).toEqual(["2plus1", "chalet-october", "birthday"]);
   });
 
   it("связь акций объяснена на обеих карточках, а не в одной", () => {
