@@ -54,6 +54,13 @@ export type Promotion = {
    * отель даёт, — а это хуже лишней карточки.
    */
   hiddenOnSite?: boolean;
+  /**
+   * Стикер-наклейка на карточке (components/sections/PromoSticker.tsx):
+   * главная цифра акции крупно. Золотой — акции проживания, розовый —
+   * праздничные. Если бейдж начинается с той же цифры, на карточке она в
+   * бейдже не повторяется.
+   */
+  sticker?: { label: string; tone: "gold" | "rose"; icon: "moon" | "house" | "gift" };
 };
 
 /**
@@ -85,6 +92,7 @@ export const promotions: Promotion[] = [
     // «Будни» своим текстом («сохранить как было ранее») — дни заезда названы
     // рядом, в условиях, и «Вс→Ср» там стоит первым.
     badge: { ru: "Будни · −33%", uz: "Ish kunlari · −33%", en: "Weekdays · −33%" },
+    sticker: { label: "2+1", tone: "gold", icon: "moon" },
     title: {
       ru: "«2+1» — третья ночь в подарок",
       uz: "«2+1» — uchinchi kecha sovg'a",
@@ -148,6 +156,7 @@ export const promotions: Promotion[] = [
     slug: "chalet-october",
     until: "2026-11-30",
     badge: { ru: "−20% · Ноябрь", uz: "−20% · Noyabr", en: "−20% · November" },
+    sticker: { label: "−20%", tone: "gold", icon: "house" },
     title: {
       ru: "−20% на Chalet весь ноябрь",
       uz: "Noyabr davomida shalega −20%",
@@ -190,6 +199,7 @@ export const promotions: Promotion[] = [
     // намеренно: скидка считается от цены выбранных дат и домика.
     slug: "birthday",
     badge: { ru: "−15% · День рождения", uz: "−15% · Tug'ilgan kun", en: "−15% · Birthday" },
+    sticker: { label: "−15%", tone: "rose", icon: "gift" },
     title: {
       ru: "Скидка 15% на День Рождения",
       uz: "Tug'ilgan kunga 15% chegirma",

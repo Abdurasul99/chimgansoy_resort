@@ -558,6 +558,20 @@ describe("акции", () => {
     expect(promotions.map((p) => p.slug)).toEqual(["2plus1", "chalet-october", "birthday"]);
   });
 
+  it("цифра на стикере совпадает с цифрой акции", () => {
+    // Стикер рисуется из текста `sticker.label`, а скидка считается из
+    // `discount.percent`, — поменяли одно, забыли другое, и на карточке
+    // «−25%» рядом с расчётом на 20%. Бейдж тоже должен начинаться с неё же.
+    for (const p of promotions) {
+      if (!p.sticker) continue;
+      if (p.discount) expect(p.sticker.label).toBe(`−${p.discount.percent}%`);
+      if (/^−\d+%$/.test(p.sticker.label)) {
+        for (const lang of ["ru", "uz", "en"] as const) expect(p.badge[lang].startsWith(p.sticker.label)).toBe(true);
+        for (const lang of ["ru", "uz", "en"] as const) expect(p.title[lang]).toContain(p.sticker.label.replace("−", ""));
+      }
+    }
+  });
+
   it("связь акций объяснена на обеих карточках, а не в одной", () => {
     // Официальные условия оператора (пост от 08.09.2026): «Не суммируется с
     // тарифом „Всё включено“». Сайт какое-то время утверждал обратное — что
