@@ -2101,3 +2101,14 @@ html[data-header="hidden"] .rest-side {
 @media (max-width: 480px) {
   .text-\[10px\] { font-size: 11px; }
 }
+
+/* ── Печать меморандума партнёра (/partners/detail → «Сохранить в PDF») ──
+   Всё, кроме документа, скрыто классами print:hidden на странице; здесь —
+   формат листа и белый фон вместо кремового. */
+@media print {
+  @page { size: A4; margin: 14mm 14mm 16mm; }
+  html, body { background: #fff !important; }
+  .skip-link, .scroll-progress, nextjs-portal { display: none !important; }
+  .cd-memo { color: #1f2a33; font-size: 12px; }
+  .cd-memo .break-inside-avoid { break-inside: avoid; }
+}

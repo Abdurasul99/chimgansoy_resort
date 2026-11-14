@@ -63,6 +63,9 @@ export async function submitPartnerRequest(formData: FormData): Promise<PartnerR
   const email = field("email", 120);
   const message = field("message", 2000);
   const programId = field("program", 40);
+  // Сводка расчёта из рабочей панели /partners/detail — как прислал браузер,
+  // только текстом: в Telegram она уходит через esc(), в почту — через escapeHtml().
+  const calc = field("calc", 600);
 
   if (!org) return { ok: false, error: m.org };
   if (!name) return { ok: false, error: m.name };
@@ -84,6 +87,7 @@ export async function submitPartnerRequest(formData: FormData): Promise<PartnerR
     ...(email ? [["Почта", email] as [string, string]] : []),
     ...(program ? [["Интересует", program] as [string, string]] : []),
     ...(message ? [["Задача", message] as [string, string]] : []),
+    ...(calc ? [["Расчёт", calc] as [string, string]] : []),
     ...(page ? [["Страница", page] as [string, string]] : []),
     ...(source ? [["Пришёл из", source] as [string, string]] : []),
   ];
@@ -128,7 +132,7 @@ export async function submitPartnerRequest(formData: FormData): Promise<PartnerR
       adults: 0,
       kids: 0,
       toddlers: 0,
-      extras: [`Партнёрство: ${org}`, ...(program ? [`Интересует: ${program}`] : []), ...(page ? [`Страница: ${page}`] : [])],
+      extras: [`Партнёрство: ${org}`, ...(program ? [`Интересует: ${program}`] : []), ...(calc ? [`Расчёт: ${calc}`] : []), ...(page ? [`Страница: ${page}`] : [])],
       total: 0,
       tariff: "",
       message: message || undefined,

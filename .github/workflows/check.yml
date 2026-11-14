@@ -33,6 +33,9 @@ jobs:
           npx eslint --max-warnings=0
           src/content/partners.ts
           src/content/__tests__/partners.test.ts
+          src/content/partners-b2b.ts
+          src/content/__tests__/partners-b2b.test.ts
+          src/components/partners
           "src/app/[locale]/partners"
           src/app/actions/partners.ts
           src/app/actions/partners.test.ts

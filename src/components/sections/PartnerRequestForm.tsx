@@ -19,15 +19,21 @@ const input =
   "w-full rounded-xl border border-[var(--line)] bg-white px-4 py-3 text-base text-[var(--ink)] outline-none transition focus:border-[var(--sun)] focus:ring-2 focus:ring-[var(--sun)]/30";
 const label = "mb-1.5 block text-sm font-semibold text-[var(--ink)]";
 
-/** Заявка «Обсудить партнёрство» — в Telegram-группу, на почту и в журнал. */
-export function PartnerRequestForm({ locale }: { locale: Locale }) {
+/**
+ * Заявка «Обсудить партнёрство» — в Telegram-группу, на почту и в журнал.
+ *
+ * calcSummary — сводка расчёта из рабочей панели (/partners/detail): менеджер
+ * видит отрасль, пакет и ROMI, которые партнёр уже посчитал. hideProgram
+ * убирает выбор программы там, где сценарий задаёт калькулятор.
+ */
+export function PartnerRequestForm({ locale, calcSummary, hideProgram = false }: { locale: Locale; calcSummary?: string; hideProgram?: boolean }) {
   const [state, action, pending] = useActionState(formAction, { status: "idle" } as State);
   const t = partnersPage.form;
   const tx = (s: Record<Locale, string>) => s[locale];
 
   useEffect(() => {
-    if (state.status === "ok") trackEvent("partner_request_submitted", { form: "partners" });
-  }, [state.status]);
+    if (state.status === "ok") trackEvent("partner_request_submitted", { form: "partners", with_calc: Boolean(calcSummary) });
+  }, [state.status, calcSummary]);
 
   if (state.status === "ok") {
     return (
@@ -40,6 +46,7 @@ export function PartnerRequestForm({ locale }: { locale: Locale }) {
   return (
     <form action={action} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <input type="hidden" name="locale" value={locale} />
+      {calcSummary && <input type="hidden" name="calc" value={calcSummary} />}
       <PageContextFields />
       {/* Ловушка для ботов: человек это поле не видит. */}
       <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
@@ -60,6 +67,7 @@ export function PartnerRequestForm({ locale }: { locale: Locale }) {
         <span className={label}>{tx(t.email)}</span>
         <input name="email" type="email" maxLength={120} autoComplete="email" className={input} />
       </label>
+      {!hideProgram && (
       <label className="block">
         <span className={label}>{tx(t.program)}</span>
         <select name="program" defaultValue="" className={input}>
@@ -72,6 +80,7 @@ export function PartnerRequestForm({ locale }: { locale: Locale }) {
           <option value="other">{tx(t.other)}</option>
         </select>
       </label>
+      )}
       <label className="block sm:col-span-2">
         <span className={label}>{tx(t.message)}</span>
         <textarea name="message" rows={4} maxLength={2000} className={input} />

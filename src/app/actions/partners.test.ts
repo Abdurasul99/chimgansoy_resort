@@ -62,6 +62,16 @@ describe("submitPartnerRequest", () => {
     expect(mails[0].html).toContain("&lt;b&gt;500 касс&lt;/b&gt;");
   });
 
+  it("сводка расчёта с рабочей панели доходит до письма, экранированной и обрезанной", async () => {
+    const calc = "Отрасль: Банк; Пакет: Титульный; ROMI: −55 %; <img src=x>";
+    expect(await submitPartnerRequest(form({ ...VALID, program: "", calc }))).toEqual({ ok: true });
+    expect(mails[0].html).toContain("Расчёт");
+    expect(mails[0].html).toContain("ROMI: −55 %");
+    expect(mails[0].html).not.toContain("<img");
+    await submitPartnerRequest(form({ ...VALID, calc: "x".repeat(5000) }));
+    expect(mails[1].html).not.toContain("x".repeat(601));
+  });
+
   it("неизвестная программа не попадает в письмо как есть", async () => {
     await submitPartnerRequest(form({ ...VALID, program: "<script>" }));
     expect(mails[0].html).not.toContain("<script>");
