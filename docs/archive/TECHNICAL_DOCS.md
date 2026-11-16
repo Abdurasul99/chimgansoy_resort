@@ -1,3 +1,5 @@
+> Исторический документ. Сведения о хостинге, БД и админке частично устарели. Текущая навигация: [документация](../README.md), [правила](../../AGENTS.md). Относительные ссылки исходного текста сохранены как исторические.
+
 # TECHNICAL_DOCS.md — CHIMGAN DARBAZA
 
 Technical documentation for the **chimgandarbaza.uz** website.

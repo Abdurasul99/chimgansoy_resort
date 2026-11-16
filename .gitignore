@@ -34,6 +34,7 @@ yarn-error.log*
 .pnpm-debug.log*
 next-dev.log
 next-dev.err.log
+dev-output.log
 
 # env files (can opt-in for committing if needed)
 .env*
@@ -50,9 +51,16 @@ ACCESS.md
 next-env.d.ts
 .windsurf/
 
-.vercel
-.env*
-.env*.local
+# Related repositories and private handoff material kept locally in Hotel.
+/chimgan-link/
+/chimgan-uslugi/
+/Hotel.worktrees/
+/Hotel_photo/
+/CHIMGAN/
+/Инструкия Сайта Chimgan Darbaza/
+/Chimgan Darbaza — документация (для облака)/
+/Chimgan Darbaza — документация (для облака).zip
+/CHIMGAN DARBAZA — возможности сайта и админ-панели.pdf
 
 # Ad-hoc verification scripts written by agents at the repo root so that
 # playwright resolves from node_modules. Never part of the app.
