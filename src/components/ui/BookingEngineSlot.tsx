@@ -26,9 +26,17 @@ type SlotCopy = {
   failedHeading: string;
   failedSub: string;
   call: string;
+  /**
+   * Заявка на странице домика — главный путь брони на сайте («Забронировать в
+   * один клик»). Стоит в запасном экране первой: гость оставляет заявку, не
+   * уходя звонить. Добавлено 17.11.2026, когда у CDN Exely истёк сертификат и
+   * модуль перестал грузиться у всех.
+   */
+  alternatives?: { href: string; label: string }[];
 };
 
 export function BookingEngineSlot({ copy }: { copy: SlotCopy }) {
+  const alternatives = copy.alternatives ?? [];
   const [state, setState] = useState<"loading" | "ready" | "failed">("loading");
   const ref = useRef<HTMLDivElement>(null);
 
@@ -50,9 +58,12 @@ export function BookingEngineSlot({ copy }: { copy: SlotCopy }) {
     const initial = window.setTimeout(() => {
       if (hasContent()) setState("ready");
     }, 0);
-    // Give up after ~9s and show the graceful failure message.
+    // Give up after ~9s and show the graceful failure message — but keep
+    // observing: Exely's loader falls back across hosts and sometimes lands
+    // later (seen 17.11.2026 while its CDN certificate was expired: two loads
+    // in three failed, the third arrived after the timeout). Without the
+    // observer the guest saw the engine AND «не загрузился» at once.
     const timer = window.setTimeout(() => {
-      observer.disconnect();
       setState(hasContent() ? "ready" : "failed");
     }, 9000);
     return () => {
@@ -83,6 +94,15 @@ export function BookingEngineSlot({ copy }: { copy: SlotCopy }) {
             <p className="font-serif text-lg font-bold text-[var(--ink)]">{copy.failedHeading}</p>
             <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[var(--muted)]">{copy.failedSub}</p>
           </div>
+          {alternatives.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              {alternatives.map((a) => (
+                <a key={a.href} href={a.href} className={`${failBtn} bg-[var(--ink)] text-white hover:bg-[var(--ink)]/85`}>
+                  {a.label} <span aria-hidden>→</span>
+                </a>
+              ))}
+            </div>
+          )}
           {/* Direct-contact buttons — shown only when the engine fails to load. */}
           <div className="flex flex-wrap items-center justify-center gap-3">
             <a

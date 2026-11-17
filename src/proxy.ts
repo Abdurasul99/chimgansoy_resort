@@ -3,8 +3,42 @@ import { locales } from "@/i18n/config";
 import { defaultLocaleForHost } from "@/i18n/domains";
 import { adminHost, isAdminHost, requestHost } from "@/lib/admin-host";
 import { ADMIN_COOKIE, homeFor, roleCanOpen, sessionFromToken } from "@/lib/admin-session";
+import { policies } from "@/content/policies";
+import { rooms } from "@/content/rooms";
 
 const PUBLIC_SITE = "https://chimgandarbaza.uz";
+
+/**
+ * Неизвестный домик или документ — честный 404 ещё до рендера.
+ *
+ * Страницы под [locale] обёрнуты в loading.tsx (Suspense), поэтому ответ
+ * уходит потоком: код 200 отправлен раньше, чем страница доходит до
+ * notFound(). До 17.11.2026 /ru/legal/stay-rules и /ru/nomera/что-угодно
+ * отвечали 200 с «Страница не найдена» внутри — и ботам тоже; спасал только
+ * noindex, который Next дописывает в поток. Search Console считает такое
+ * «мягким 404».
+ *
+ * Списки — те же, что у самих страниц (getPolicy, roomOr404): новый документ
+ * или домик в content/ попадает сюда сам. /services/[slug] не здесь: услуги
+ * приходят из базы, и proxy их не знает.
+ */
+const KNOWN_SLUGS: Record<string, Set<string>> = {
+  legal: new Set(policies.map((p) => p.slug)),
+  nomera: new Set(rooms.filter((r) => r.available !== false).map((r) => r.slug)),
+};
+const DETAIL_PATH = /^\/[a-z]{2}\/(legal|nomera)\/([^/]+)\/?$/;
+
+/**
+ * Разделы верхнего уровня под [locale] — ровно папки src/app/[locale]/.
+ * Неизвестный раздел (/ru/nomeraa) — сразу 404, иначе ловушка [...missing]
+ * отдала бы фирменную страницу с кодом 200. Список сверяет с папками тест
+ * src/lib/__tests__/proxy-not-found.test.ts: новую страницу без строки здесь
+ * он не пропустит.
+ */
+export const LOCALE_SECTIONS = new Set([
+  "about", "adminpartners", "bron", "contact", "legal", "nomera", "notfound", "novosti",
+  "opengraph-image", "partners", "place", "restaurant", "services", "topchan", "tubing",
+]);
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -111,6 +145,15 @@ export function proxy(request: NextRequest) {
   );
 
   if (pathnameHasLocale) {
+    const section = pathname.split("/")[2];
+    const detail = pathname.match(DETAIL_PATH);
+    const unknownSection = section !== undefined && section !== "" && !LOCALE_SECTIONS.has(section);
+    if (unknownSection || (detail && !KNOWN_SLUGS[detail[1]].has(safeDecode(detail[2])))) {
+      // Фирменная страница 404 с настоящим кодом 404.
+      const url = request.nextUrl.clone();
+      url.pathname = `${pathname.slice(0, 3)}/notfound`;
+      return NextResponse.rewrite(url, { status: 404 });
+    }
     return;
   }
 
@@ -118,6 +161,14 @@ export function proxy(request: NextRequest) {
 
   request.nextUrl.pathname = `/${hostDefaultLocale}${pathname === "/" ? "" : pathname}`;
   return NextResponse.redirect(request.nextUrl);
+}
+
+function safeDecode(segment: string): string {
+  try {
+    return decodeURIComponent(segment);
+  } catch {
+    return segment;
+  }
 }
 
 /**

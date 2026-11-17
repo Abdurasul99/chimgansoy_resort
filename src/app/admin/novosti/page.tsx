@@ -8,6 +8,9 @@ export default async function Page() {
   // Newest first, by the date the operator chose rather than by save order —
   // a post backdated to last week belongs under one dated today.
   const items = [...overrides.news].sort((a, b) => b.date.localeCompare(a.date));
+  // Серверный компонент рендерится на каждый запрос — «сегодня по Ташкенту»
+  // здесь и должно браться из часов сервера.
+  // eslint-disable-next-line react-hooks/purity
   const today = new Date(Date.now() + 5 * 3600_000).toISOString().slice(0, 10);
 
   return (

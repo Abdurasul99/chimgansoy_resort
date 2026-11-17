@@ -48,7 +48,7 @@ type Props = {
 
 const SUBTITLE: Record<Locale, string> = {
   ru: "Выберите что и когда — откроется онлайн-бронирование, там подтвердите даты и оформите бронь.",
-  uz: "Nimani va qachon — tanlang, onlayn bron oynasi ochiladi, u yerda sanalarni tasdiqlab bron qilasiz.",
+  uz: "Nimani va qachon bron qilishni tanlang — onlayn bron oynasi ochiladi, u yerda sanalarni tasdiqlab, bronni rasmiylashtirasiz.",
   en: "Pick what and when — the online booking opens where you confirm the dates and complete the reservation.",
 };
 

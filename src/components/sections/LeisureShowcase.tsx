@@ -37,7 +37,7 @@ const COPY: Record<Locale, { eyebrow: string; title: string; subtitle: string; d
 };
 
 const CATEGORY_LABEL: Record<string, LocalizedString> = {
-  relax: { ru: "Отдых", uz: "Dam", en: "Relax" },
+  relax: { ru: "Отдых", uz: "Dam olish", en: "Relax" },
   food: { ru: "Еда", uz: "Taom", en: "Food" },
   activity: { ru: "Активности", uz: "Faol dam olish", en: "Activity" },
 };

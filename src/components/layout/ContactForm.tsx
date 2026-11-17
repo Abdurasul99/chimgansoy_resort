@@ -7,6 +7,7 @@ import { Icon } from "@/components/ui/Icon";
 import { LegalConsentFields } from "@/components/ui/LegalConsentFields";
 import type { Locale } from "@/i18n/config";
 import { PageContextFields } from "@/components/ui/PageContextFields";
+import { submitKeepingFields } from "@/lib/form-submit";
 
 type Dict = {
   name: string;
@@ -54,7 +55,7 @@ export function ContactForm({ dict, locale }: Props) {
   }
 
   return (
-    <form ref={formRef} action={action} className="space-y-3">
+    <form ref={formRef} onSubmit={submitKeepingFields(action)} className="space-y-3">
       <input type="hidden" name="formType" value="inquiry" />
       <PageContextFields />
       <input type="hidden" name="locale" value={locale} />

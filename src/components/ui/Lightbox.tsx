@@ -6,6 +6,13 @@ import type { ImageAsset } from "@/content/types";
 import type { Locale } from "@/i18n/config";
 import { text } from "@/lib/localize";
 
+/** Подписи кнопок для экранного диктора — до 17.11.2026 были только по-русски. */
+const LABELS: Record<Locale, { close: string; prev: string; next: string; photo: (n: number) => string }> = {
+  ru: { close: "Закрыть", prev: "Предыдущее фото", next: "Следующее фото", photo: (n) => `Фото ${n}` },
+  uz: { close: "Yopish", prev: "Oldingi surat", next: "Keyingi surat", photo: (n) => `${n}-surat` },
+  en: { close: "Close", prev: "Previous photo", next: "Next photo", photo: (n) => `Photo ${n}` },
+};
+
 /**
  * Full-screen photo viewer for a room's gallery.
  *
@@ -84,7 +91,7 @@ export function Lightbox({ images, locale, startIndex = 0, open, onClose }: Prop
         <button
           type="button"
           onClick={onClose}
-          aria-label="Закрыть"
+          aria-label={LABELS[locale].close}
           className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
         >
           <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round">
@@ -101,7 +108,7 @@ export function Lightbox({ images, locale, startIndex = 0, open, onClose }: Prop
         {images.length > 1 && (
           <button
             type="button"
-            aria-label="Предыдущее фото"
+            aria-label={LABELS[locale].prev}
             onClick={(e) => { e.stopPropagation(); go(-1); }}
             className="absolute left-2 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/25 sm:left-5"
           >
@@ -122,7 +129,7 @@ export function Lightbox({ images, locale, startIndex = 0, open, onClose }: Prop
         {images.length > 1 && (
           <button
             type="button"
-            aria-label="Следующее фото"
+            aria-label={LABELS[locale].next}
             onClick={(e) => { e.stopPropagation(); go(1); }}
             className="absolute right-2 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/25 sm:right-5"
           >
@@ -144,7 +151,7 @@ export function Lightbox({ images, locale, startIndex = 0, open, onClose }: Prop
               key={`${thumb.localSrc ?? thumb.src}-${i}`}
               type="button"
               onClick={() => setIndex(i)}
-              aria-label={`Фото ${i + 1}`}
+              aria-label={LABELS[locale].photo(i + 1)}
               aria-current={i === index}
               className={`h-14 w-20 shrink-0 overflow-hidden rounded-lg transition-all ${
                 i === index ? "ring-2 ring-[var(--sun)]" : "opacity-50 hover:opacity-90"

@@ -17,6 +17,7 @@ import { list, text } from "@/lib/localize";
 import { money, ridesRu } from "@/lib/tariff";
 import type { Locale } from "@/i18n/config";
 import { PageContextFields } from "@/components/ui/PageContextFields";
+import { submitKeepingFields } from "@/lib/form-submit";
 
 const COPY: Record<
   Locale,
@@ -90,7 +91,7 @@ const COPY: Record<
     parkingNote: (price) => `Avtoturargoh pullik — har bir avtomobil uchun ${price} so'm. Alohida to'lanadi va ariza summasiga kiritilmaydi.`,
     total: "Taxminiy to'lov",
     seasonNote:
-      "Paket narxi ish kunlari va dam olish kunlarida bir xil. Trassa har faslda ishlaydigan, 160 m, avtomatik ko'targich bilan — bir vaqtda 5 kishigacha tushadi.",
+      "Paket narxi ish kunlari va dam olish kunlarida bir xil. Trassa har faslda ishlaydi, uzunligi 160 m, avtomatik ko'targich bor — bir vaqtda 5 kishigacha tushadi.",
   },
   en: {
     eyebrow: `Tubing hill · ${tubingPricing.hours}`,
@@ -211,7 +212,7 @@ export function TubingRequestForm({
         <strong>{t.parkingNote(money(live.parking))}</strong>
       </p>
 
-      <form action={action} className="mt-7 space-y-4">
+      <form onSubmit={submitKeepingFields(action)} className="mt-7 space-y-4">
         <input type="hidden" name="locale" value={locale} />
         <PageContextFields />
         <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">

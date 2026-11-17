@@ -109,7 +109,7 @@ export const rooms: Room[] = [
       // "Шатры/tents/chodirlar" contradicted the photos: these are solid timber
       // A-frame cabins with tiled floors, AC and an ensuite — not tents.
       ru: "Отдельные домики A-frame с гостиничным комфортом, панорамным окном и быстрым доступом к активностям.",
-      uz: "Mehmonxona qulayligi, panoramali deraza va ko'ngilochar joylarga yaqin alohida A-frame uychalari.",
+      uz: "Mehmonxona qulayligiga ega, panoramali derazali va ko'ngilochar joylarga yaqin alohida A-frame uychalari.",
       en: "Standalone A-frame cabins with hotel-level comfort, a panoramic window, and quick access to resort activities.",
     },
     description: {
@@ -118,7 +118,7 @@ export const rooms: Room[] = [
       // Сумма здесь не называется — она живая и стоит ниже на этой же странице;
       // две цифры в двух местах разошлись бы при первой правке в админке.
       ru: "Глэмпинг создан для гостей, которым важны тишина, воздух и ощущение природы без отказа от удобств. Формат подходит для романтического отдыха, коротких перезагрузок и камерных семейных поездок. Туристский сбор в стоимость проживания не входит и оплачивается отдельно при заселении — за каждую ночь с каждого гостя.",
-      uz: "Glemping sokinlik, toza havo va qulaylikdan voz kechmasdan tabiatni his qilishni istagan mehmonlar uchun. U romantik dam olish, qisqa hordiq va kichik oilaviy safarlar uchun mos. Turistik yig'im yashash narxiga kirmaydi va joylashish paytida alohida to'lanadi — har bir kecha uchun har bir mehmondan.",
+      uz: "Glemping sokinlik va toza havoni qadrlaydigan, qulaylikdan voz kechmasdan tabiatni his qilishni istagan mehmonlar uchun. U romantik dam olish, qisqa hordiq va kichik oilaviy safarlar uchun mos. Turistik yig'im yashash narxiga kirmaydi va joylashish paytida alohida to'lanadi — har bir kecha uchun har bir mehmondan.",
       en: "Glamping is designed for guests who want quiet air and a close-to-nature stay without giving up comfort. It fits romantic escapes, short resets, and intimate family trips. The tourist levy is not included in the rate and is paid separately at check-in, per person per night.",
     },
     priceFrom: { ru: "Цена при бронировании", uz: "Bron qilishda narx", en: "Price at booking" },
@@ -223,7 +223,7 @@ export const rooms: Room[] = [
     },
     description: {
       ru: "Шале подходит гостям, которым нужен полноценный приватный формат. Две отдельные спальни: в одной двуспальная кровать, в другой две раздельные. К каждой спальне — свой туалет и душ. Плюс кухня-зал и собственная терраса для вечернего отдыха. Всё, что есть в глэмпинге — кондиционер, тёплый пол, телевизор, Wi-Fi и бесплатная парковка, — есть и здесь. Туристский сбор в стоимость проживания не входит и оплачивается отдельно при заселении — за каждую ночь с каждого гостя.",
-      uz: "Shale to'liq xususiy formatni istagan mehmonlar uchun. Ikkita alohida yotoqxona: birida ikki kishilik karavot, ikkinchisida ikkita alohida karavot. Har bir yotoqxonaga o'z hojatxonasi va dushi. Bundan tashqari, oshxona-zal va kechki dam olish uchun shaxsiy terrasa. Glempingdagi hamma narsa — konditsioner, issiq pol, televizor, Wi-Fi va bepul avtoturargoh — bu yerda ham bor. Turistik yig'im yashash narxiga kirmaydi va joylashish paytida alohida to'lanadi — har bir kecha uchun har bir mehmondan.",
+      uz: "Shale to'liq xususiy formatni istagan mehmonlar uchun. Ikkita alohida yotoqxona: birida ikki kishilik karavot, ikkinchisida ikkita alohida karavot. Har bir yotoqxonaning o'z hojatxonasi va dushi bor. Bundan tashqari, oshxona-zal va kechki dam olish uchun shaxsiy terrasa. Glempingdagi hamma narsa — konditsioner, issiq pol, televizor, Wi-Fi va bepul avtoturargoh — bu yerda ham bor. Turistik yig'im yashash narxiga kirmaydi va joylashish paytida alohida to'lanadi — har bir kecha uchun har bir mehmondan.",
       en: "The chalet is for guests who need a fully private format. Two separate bedrooms: a double bed in one, two single beds in the other, each bedroom with its own toilet and shower. Plus a kitchen-lounge and a private terrace for the evenings. Everything the glamping cabin has — air conditioning, heated floors, a TV, Wi-Fi and free parking — is here too. The tourist levy is not included in the rate and is paid separately at check-in, per person per night.",
     },
     priceFrom: { ru: "Цена при бронировании", uz: "Bron qilishda narx", en: "Price at booking" },
@@ -243,7 +243,7 @@ export const rooms: Room[] = [
     },
     features: {
       ru: ["Стандартно 4 гостя, максимум 6 — места сверх стандарта за доплату", "Спальня 1: двуспальная кровать 180×200", "Спальня 2: две односпальные 90×200", "Кухня-зал с диваном", "Отдельный санузел в каждой спальне", "Заезд с 15:00, выезд до 12:00"],
-      uz: ["Standart 4 mehmon, maksimum 6 — standartdan ortiq joylar qo'shimcha to'lov evaziga", "Yotoqxona 1: ikki kishilik karavot 180×200", "Yotoqxona 2: ikkita bir kishilik karavot 90×200", "Oshxona-zal divan bilan", "Har bir yotoqxonada alohida hammom", "Kirish 15:00 dan, chiqish 12:00 gacha"],
+      uz: ["Standart 4 mehmon, maksimum 6 — standartdan ortiq joylar qo'shimcha to'lov evaziga", "Yotoqxona 1: ikki kishilik karavot 180×200", "Yotoqxona 2: ikkita bir kishilik karavot 90×200", "Divanli oshxona-zal", "Har bir yotoqxonada alohida hammom", "Kirish 15:00 dan, chiqish 12:00 gacha"],
       en: ["4 guests as standard, 6 maximum — places beyond the standard are charged", "Bedroom 1: double bed 180×200", "Bedroom 2: two single beds 90×200", "Kitchen-lounge with a sofa", "Ensuite bathroom in each bedroom", "Check-in from 15:00, check-out by 12:00"],
     },
     included: [
@@ -333,7 +333,7 @@ export const rooms: Room[] = [
       // absent from this list: a guest paying for a day pass on the strength of
       // it would arrive to scaffolding.
       ru: ["Включён в проживание в шале и глэмпинге", "Или бронь на день, гостей без лимита", "8 бунгало Standard до 4 человек и 4 бунгало Family до 10", `Посетителям ${poolPricing.hours}, проживающим с ${poolPricing.hoursForStayingGuests}`, "Место подтверждает администратор — без заявки свободное не гарантировано", "В купальнике — только у бассейна; по территории в одежде и обуви"],
-      uz: ["Shale va glempingda yashashga kiritilgan", "Yoki bir kunlik bron, mehmonlar soni cheklanmagan", "4 kishilik 8 ta Standard va 10 kishilik 4 ta Family bungalo", `Tashrif buyuruvchilarga ${poolPricing.hours}, yashovchilarga ${poolPricing.hoursForStayingGuests}`, "Joyni administrator tasdiqlaydi — arizasiz bo'sh joy kafolatlanmaydi", "Cho'milish kiyimi — faqat basseyn yonida; hudud bo'ylab kiyim va oyoq kiyimda"],
+      uz: ["Shale va glempingda yashash narxiga kiritilgan", "Yoki bir kunlik bron, mehmonlar soni cheklanmagan", "4 kishilik 8 ta Standard va 10 kishilik 4 ta Family bungalo", `Tashrif buyuruvchilarga ${poolPricing.hours}, yashovchilarga ${poolPricing.hoursForStayingGuests}`, "Joyni administrator tasdiqlaydi — arizasiz bo'sh joy kafolatlanmaydi", "Cho'milish kiyimi — faqat basseyn yonida; hudud bo'ylab kiyim va oyoq kiyimda"],
       en: ["Included with chalet and glamping stays", "Or a day booking, any group size", "8 Standard bungalows for up to 4 and 4 Family ones for up to 10", `${poolPricing.hours} for visitors, ${poolPricing.hoursForStayingGuests} for staying guests`, "The administrator confirms your place — without a request a free one is not guaranteed", "Swimwear by the pool only; clothes and footwear elsewhere on site"],
     },
     relatedServices: ["outdoor-cooking", "restaurant", "picnic-zone"],

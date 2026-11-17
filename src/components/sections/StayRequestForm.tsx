@@ -11,6 +11,7 @@ import type { Locale } from "@/i18n/config";
 import { PageContextFields } from "@/components/ui/PageContextFields";
 import { trackEvent } from "@/lib/analytics";
 import { promoHint } from "@/lib/promo-nights";
+import { submitKeepingFields } from "@/lib/form-submit";
 
 /**
  * Заявка на проживание, прямо на странице домика.
@@ -80,7 +81,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     phone: "Telefon",
     email: "Pochta",
     comment: "Izoh",
-    commentPh: "Istaklar: kirish vaqti, qo'shimcha joy",
+    commentPh: "Istaklar: kirish vaqti, qo'shimcha o'rin",
     send: "Ariza yuborish",
     sending: "Yuborilmoqda…",
     done: "Ariza qabul qilindi",
@@ -89,7 +90,7 @@ const COPY: Record<Locale, Record<string, string>> = {
     opens: "Kirish 15-avgustdan qabul qilinadi — undan oldingi sanalar yopiq.",
     checking: "Bo'sh uychalarni tekshiryapmiz…",
     free: "Tanlangan sanalarga bo'sh",
-    busy: "Bu sanalarga hammasi band — boshqasini tanlang",
+    busy: "Bu sanalarga hammasi band — boshqa sanalarni tanlang",
     priceFrom: "dan",
     sum: "so'm",
     promoOffer: "Uchinchi kechani qo'shing — «2+1» aksiyasi bo'yicha u bepul",
@@ -262,7 +263,7 @@ export function StayRequestForm({
   }
 
   return (
-    <form action={action} className="rounded-3xl border border-[color:var(--line)] bg-[var(--paper)] p-6 shadow-[var(--shadow-card)] sm:p-8">
+    <form onSubmit={submitKeepingFields(action)} className="rounded-3xl border border-[color:var(--line)] bg-[var(--paper)] p-6 shadow-[var(--shadow-card)] sm:p-8">
       <h2 className="font-serif text-2xl font-bold text-[var(--ink)] sm:text-3xl">{t.title}</h2>
       <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{t.lead}</p>
       {/* Правило видно до того, как гость начал заполнять: календарь ранние даты

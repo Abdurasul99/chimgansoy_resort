@@ -1,4 +1,5 @@
 import { cache } from "react";
+import type { LocalizedString } from "@/content/types";
 import { rooms, type Room } from "@/content/rooms";
 import { resortImages } from "@/content/images";
 import { readOverrides, type OverrideData } from "@/lib/site-overrides";
@@ -34,7 +35,7 @@ import type { Locale } from "@/i18n/config";
  * a src, a position and an alt — so the page does not have to know or care
  * which photographs are the studio set and which the operator uploaded.
  */
-export type GalleryImage = { src: string; localSrc?: string; position?: string; alt: string };
+export type GalleryImage = { src: string; localSrc?: string; position?: string; alt: LocalizedString };
 
 export type LiveRoom = {
   base: Room;
@@ -71,12 +72,16 @@ function toFrame(key: string, data: OverrideData): GalleryImage | null {
       src: string;
       localSrc?: string;
       position?: string;
-      alt: { ru: string };
+      alt: LocalizedString;
     };
-    return { src: img.src, localSrc: img.localSrc, position: img.position, alt: img.alt.ru };
+    // Подпись — на всех трёх языках. До 17.11.2026 бралась только русская:
+    // на /uz и /en экранный диктор читал галерею домика по-русски.
+    return { src: img.src, localSrc: img.localSrc, position: img.position, alt: img.alt };
   }
   const up = data.photos.find((p) => p.id === key);
-  return up ? { src: up.url, alt: up.alt } : null;
+  // Фото из панели подписано одной строкой (оператор пишет по-русски) —
+  // другой подписи у него нет, она и идёт на все языки.
+  return up ? { src: up.url, alt: { ru: up.alt, uz: up.alt, en: up.alt } } : null;
 }
 
 function buildGallery(

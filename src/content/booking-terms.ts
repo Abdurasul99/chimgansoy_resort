@@ -63,7 +63,7 @@ export const bookingTermsCopy = {
     contact: "Arizadan so'ng xodimimiz siz bilan bog'lanadi: tafsilotlarni aniqlaydi va to'lov usulini kelishadi.",
     contactBooking: "Bron qilganingizdan so'ng xodimimiz siz bilan bog'lanadi: tafsilotlarni aniqlaydi va to'lov usulini kelishadi.",
     lines: [
-      `Oldindan to'lov — narxning 100 %, bron rasmiylashtirilgandan keyin ${prepay.uz} ichida. To'lov muddatida tushmasa, bron avtomatik bekor qilinadi.`,
+      `Oldindan to'lov — narxning 100 foizi, bron rasmiylashtirilgandan keyin ${prepay.uz} ichida. To'lov muddatida tushmasa, bron avtomatik bekor qilinadi.`,
       "Bron faqat to'lovdan va xodim tasdig'idan keyin tasdiqlangan hisoblanadi.",
       "To'lovgacha tanlangan uycha boshqa mehmonlar uchun ochiq qoladi.",
     ],

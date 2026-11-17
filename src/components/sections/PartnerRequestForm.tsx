@@ -7,6 +7,7 @@ import { PageContextFields } from "@/components/ui/PageContextFields";
 import { trackEvent } from "@/lib/analytics";
 import { localizePath } from "@/i18n/routing";
 import type { Locale } from "@/i18n/config";
+import { submitKeepingFields } from "@/lib/form-submit";
 
 type State = { status: "idle" | "ok" | "error"; message?: string };
 
@@ -47,7 +48,7 @@ export function PartnerRequestForm({
   }
 
   return (
-    <form action={action} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <form onSubmit={submitKeepingFields(action)} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <input type="hidden" name="locale" value={locale} />
       <PageContextFields />
       {/* Ловушка для ботов: человек это поле не видит. */}

@@ -5,6 +5,7 @@ import type { Locale } from "@/i18n/config";
 import type { GalleryImage } from "@/lib/rooms-live";
 import { frameStyle } from "@/lib/images";
 import { Lightbox } from "@/components/ui/Lightbox";
+import { text } from "@/lib/localize";
 
 /**
  * «Фотографии» на странице домика.
@@ -16,7 +17,7 @@ import { Lightbox } from "@/components/ui/Lightbox";
  */
 export function RoomGallery({ frames, locale }: { frames: GalleryImage[]; locale: Locale }) {
   const [open, setOpen] = useState<number | null>(null);
-  const images = frames.map((f) => ({ src: f.src, localSrc: f.localSrc, position: f.position, alt: { ru: f.alt, uz: f.alt, en: f.alt } }));
+  const images = frames;
 
   return (
     <>
@@ -26,7 +27,7 @@ export function RoomGallery({ frames, locale }: { frames: GalleryImage[]; locale
             key={frame.src}
             type="button"
             onClick={() => setOpen(i)}
-            aria-label={frame.alt}
+            aria-label={text(frame.alt, locale)}
             className={`cursor-zoom-in overflow-hidden rounded-xl bg-cover bg-center transition-transform duration-700 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sun)] sm:rounded-2xl ${
               i === 0 ? "col-span-2 aspect-[4/3]" : "aspect-[4/3]"
             }`}

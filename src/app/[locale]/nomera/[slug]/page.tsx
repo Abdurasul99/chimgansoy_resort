@@ -197,7 +197,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
           `Standart sig'im — ${occ.base} mehmon, maksimum ${occ.max}. Standartdan ortiq joylar — qo'shimcha to'lov evaziga.`,
           `Kirish ${stayRules.checkIn} dan, chiqish ${stayRules.checkOut} gacha. ${lateCheckOutNote.uz} Erta kirish — bandlikka qarab va qo'shimcha to'lov evaziga.`,
           ...(poolClosure.closed ? [] : [`Basseyn: kirishdan oldin, joylashishni kutib turganda — tasdiqlangan bron bilan bepul; chiqishdan keyin — bir kun uchun ${group(livePricing.pool.afterCheckOut)} so'm. Administratorni oldindan ogohlantiring.`]),
-          `Bir kechaga qo'shimcha joy — ${adultFromAge} yoshdan katta mehmon uchun ${group(livePricing.extraGuest.adult)} so'm, ${childFrom}–${childTo} yoshdagi bola uchun ${group(livePricing.extraGuest.child)} so'm. 0–${freeThroughAge} yoshdagi bolalar — bepul.`,
+          `Bir kechaga qo'shimcha o'rin — ${adultFromAge} yosh va undan katta mehmon uchun ${group(livePricing.extraGuest.adult)} so'm, ${childFrom}–${childTo} yoshdagi bola uchun ${group(livePricing.extraGuest.child)} so'm. 0–${freeThroughAge} yoshdagi bolalar — bepul.`,
           ...(room.slug === "cottage"
             ? [`Shalega mehmon tashrifi (tunab qolmasdan) — ${group(livePricing.extraGuest.guestVisitCottage)} so'm.`]
             : []),

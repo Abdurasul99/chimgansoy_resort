@@ -208,7 +208,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Санузел шале со стеклянной душевой — свой у каждой спальни",
-      uz: "Shale hammomi shishali dush bilan — har bir yotoqxonada o'zi bor",
+      uz: "Shishali dushli shale hammomi — har bir yotoqxonada alohida",
       en: "Chalet bathroom with a glass shower — one per bedroom",
     },
   },
@@ -314,7 +314,7 @@ export const resortImages = {
     position: "center",
     alt: {
       ru: "Подача шашлыка на территории",
-      uz: "Hududda shashlik pishirilishi",
+      uz: "Hududda shashlik tortilishi",
       en: "Shashlik being served on the grounds",
     },
   },

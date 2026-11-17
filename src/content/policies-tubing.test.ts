@@ -111,7 +111,8 @@ describe("плакат от 24.08.2026", () => {
     );
     expect(section).toBeDefined();
     expect(section!.items.ru).toContain("Кататься в очках запрещено.");
-    expect(section!.items.uz).toContain("Ko'zoynakda uchish taqiqlanadi.");
+    // «Ko'zoynakda» — калька «в очках»; по-узбекски «ko'zoynak taqib» (17.11.2026).
+    expect(section!.items.uz).toContain("Ko'zoynak taqib uchish taqiqlanadi.");
     expect(section!.items.en).toContain("Riding with glasses is prohibited.");
   });
 

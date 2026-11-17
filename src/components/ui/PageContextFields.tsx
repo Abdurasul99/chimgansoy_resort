@@ -66,6 +66,9 @@ export function PageContextFields() {
     // выкидывает всю страницу из статической генерации — на этом однажды
     // перестала собираться страница «О нас» из-за формы в подвале.
     const search = window.location.search;
+    // Синхронизация с внешним источником (адресная строка) — ровно то, для
+    // чего эффект и нужен; перенос в рендер дал бы расхождение с HTML сервера.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setQuery(search);
     setSource(rememberSource(search));
   }, [pathname]);

@@ -43,6 +43,8 @@
 - `DatePicker` и `GuestSelect` передают значения через hidden inputs. Сохраняйте стандартную отправку форм.
 - Палитра — CSS variables в `src/app/globals.css`: ink, paper/surface, accent, sun, line, shadow.
 - Не экспортируйте `dynamicParams = false`: после admin revalidation страницы номеров возвращали 404. Для неизвестных slug используйте `notFound()`. Есть regression test.
+- `notFound()` под `[locale]` отдаёт код 200: `loading.tsx` шлёт ответ потоком раньше. Честный 404 ставит `src/proxy.ts` — неизвестные документы, домики и разделы переписывает на `/[locale]/notfound` со статусом 404. Новая папка в `src/app/[locale]/` — добавить её в `LOCALE_SECTIONS`, иначе раздел откроется как 404 (тест `proxy-not-found` сверяет список с папками).
+- Формы заявок отправлять через `onSubmit={submitKeepingFields(action)}` (`src/lib/form-submit.ts`), не `<form action={action}>`: React 19 после ответа с ошибкой стирал всё, что гость ввёл.
 - Типы `.next` могут устареть после изменения маршрутов. Перегенерируйте кеш, не удаляйте исходные маршруты ради ошибки кеша.
 - Сохраняйте чужие локальные изменения. Очистка папки не подразумевает push, merge веток и deploy.
 

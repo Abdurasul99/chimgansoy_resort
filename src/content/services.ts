@@ -58,7 +58,7 @@ export const services: Service[] = [
     },
     description: {
       ru: "Кухня работает на территории: мангальные блюда, плов, узбекская классика и сезонные позиции по предзаказу. Подача на террасу домика или в зал — администратор примет заказ. Если хочется готовить самим, в шале есть полная кухня, а мангал и казан берутся в аренду.",
-      uz: "Oshxona hududda ishlaydi: mangal taomlari, palov, o'zbek klassikasi va oldindan buyurtma asosida mavsumiy taomlar. Uycha terrasasiga yoki zalga xizmat — administrator buyurtmani qabul qiladi. O'zingiz pishirmoqchi bo'lsangiz, shaleda to'liq oshxona bor, mangal va qozon ijaraga olinadi.",
+      uz: "Oshxona hududda ishlaydi: mangal taomlari, palov, an'anaviy o'zbek taomlari va oldindan buyurtma asosida mavsumiy taomlar. Taomlar uycha terrasasiga yoki zalga tortiladi — administrator buyurtmani qabul qiladi. O'zingiz pishirmoqchi bo'lsangiz, shaleda to'liq oshxona bor, mangal va qozon ijaraga olinadi.",
       en: "The kitchen works on site: BBQ dishes, plov, Uzbek classics, and seasonal items by pre-order. Served to your cabin terrace or in the dining room. Prefer to cook? The chalet has a full kitchen, and a BBQ grill or kazan can be rented.",
     },
     highlights: {
@@ -202,7 +202,7 @@ export const services: Service[] = [
     },
     description: {
       ru: "Трасса 160 метров длиной и 6 метров шириной, всесезонная. Подъём автоматический — пешком в горку идти не нужно. Одновременно спускаются до 5 человек, внизу безопасная зона остановки. Берётся пакетами спусков, цена одинаковая всю неделю.",
-      uz: "Uzunligi 160 metr, kengligi 6 metr, har faslda ishlaydigan trassa. Ko'tarilish avtomatik — tepalikka piyoda chiqish shart emas. Bir vaqtda 5 kishigacha tushadi, pastda xavfsiz to'xtash zonasi. Uchish paketlari bilan olinadi, narx butun hafta bir xil.",
+      uz: "Uzunligi 160 metr, kengligi 6 metr, har faslda ishlaydigan trassa. Ko'tarilish avtomatik — tepalikka piyoda chiqish shart emas. Bir vaqtda 5 kishigacha tushadi, pastda xavfsiz to'xtash zonasi bor. Uchishlar paket shaklida sotiladi, narx butun hafta bir xil.",
       en: "A 160-metre track, 6 metres wide, running all year. The lift is powered, so nobody walks up. Up to 5 people descend at once, with a controlled stop at the bottom. Sold in ride packages at one price all week.",
     },
     highlights: {

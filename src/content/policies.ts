@@ -50,7 +50,7 @@ export const policies: PolicyPage[] = [
         title: { ru: "Перед поездкой", uz: "Safar oldidan", en: "Before the trip" },
         items: {
           ru: ["Уточните актуальную дорогу и погодные условия у администратора.", "Сохраните номер телефона и геолокацию перед выездом.", "В высокий сезон рекомендуем выезжать заранее."],
-          uz: ["Administrator orqali yo'l va ob-havo holatini aniqlashtiring.", "Yo'lga chiqishdan oldin telefon raqami va geolokatsiyani saqlang.", "Yuqori mavsumda ertaroq chiqishni tavsiya qilamiz."],
+          uz: ["Administrator orqali yo'l va ob-havo holatini aniqlashtiring.", "Yo'lga chiqishdan oldin telefon raqami va geolokatsiyani saqlang.", "Yuqori mavsumda yo'lga ertaroq chiqishni tavsiya qilamiz."],
           en: ["Confirm current road and weather conditions with the administrator.", "Save the phone number and location before leaving.", "In high season, plan extra travel time."],
         },
       },

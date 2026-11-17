@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { AiChat } from "@/components/ui/AiChat";
 
@@ -46,11 +46,21 @@ function toLocale(raw: string): Locale {
   return "ru";
 }
 
+const noSubscribe = () => () => {};
+
 export function FaqPanel({ locale: rawLocale }: { locale: string }) {
   const locale = toLocale(rawLocale);
   const [open, setOpen] = useState(false);
   const [showHint, setShowHint] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  // true только в браузере: на сервере и при гидратации — false, без эффекта.
+  const mounted = useSyncExternalStore(noSubscribe, () => true, () => false);
+  // Открыли панель — подсказка больше не нужна. Подстройка прямо в рендере
+  // (так React советует для состояния, зависящего от пропа), а не эффектом.
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
+    if (open) setShowHint(false);
+  }
   // Arrival choreography.
   //   mode    — decided the instant we mount, BEFORE the star is due to launch.
   //             Deciding late let the launcher spring in, then snap back to
@@ -100,7 +110,6 @@ export function FaqPanel({ locale: rawLocale }: { locale: string }) {
   // like a small event, and an event that repeats on every page view is an
   // irritation. Repeat views just get the launcher, popped in quickly.
   useEffect(() => {
-    setMounted(true);
 
     const reduced =
       typeof window.matchMedia === "function" &&
@@ -118,7 +127,10 @@ export function FaqPanel({ locale: rawLocale }: { locale: string }) {
       timers.push(window.setTimeout(() => setShowHint(false), ms + 7000));
     };
 
+    // Режим решается по внешнему состоянию браузера (sessionStorage,
+    // prefers-reduced-motion), доступному только после монтирования.
     if (reduced || alreadyFlown) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMode("plain");
       hintAfter(2000);
       return () => timers.forEach(window.clearTimeout);
@@ -161,10 +173,6 @@ export function FaqPanel({ locale: rawLocale }: { locale: string }) {
     timers.push(window.setTimeout(launch, 420));
     return () => timers.forEach(window.clearTimeout);
   }, []);
-
-  useEffect(() => {
-    if (open) setShowHint(false);
-  }, [open]);
 
   // Close on Escape + trap Tab focus inside the panel while open (WCAG 2.4.3).
   useEffect(() => {

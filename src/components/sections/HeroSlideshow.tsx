@@ -92,6 +92,9 @@ export function HeroSlideshow() {
     // NOTE: `active` is mutated by this effect itself via setActive((prev)=>...).
     // It must NOT be in the deps array — otherwise the effect re-runs every
     // slide, recreating both intervals and leaking the previous pair.
+    // Сброс полоски при (повторном) запуске ротации — часть той же подписки
+    // на таймеры, а не производное состояние.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setProgress(0);
     const progressTimer = setInterval(() => {
       setProgress((p) => Math.min(p + 100 / (INTERVAL_MS / 50), 100));

@@ -27,7 +27,7 @@ const labels: Record<string, {
     sub: "O'zbekiston Markaziy banki rasmiy kursi",
     source: "Manba: O'zR MB",
     usd: "AQSH dollari",
-    eur: "Evro",
+    eur: "Yevro",
     rub: "Rossiya rubli",
     uzs: "O'zbek so'mi",
     inputLabel: "Miqdorni kiriting",

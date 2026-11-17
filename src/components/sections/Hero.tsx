@@ -83,7 +83,7 @@ function dayCtas(
       label: { ru: "Тюбинг горка", uz: "Tyubing tepaligi", en: "Tubing hill" }[locale],
       hint: {
         ru: `${rides} спуска · от ${ride} сум`,
-        uz: `${rides} marta · ${ride} so'mdan`,
+        uz: `${rides} marta uchish · ${ride} so'mdan`,
         en: `${rides} rides · from ${ride} UZS`,
       }[locale],
     },

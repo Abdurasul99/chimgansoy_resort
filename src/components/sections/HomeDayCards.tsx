@@ -38,7 +38,7 @@ type LL = Record<Locale, string[]>;
 const COPY = {
   heading: {
     eyebrow: { ru: "Без ночёвки", uz: "Tunamasdan", en: "No overnight stay needed" } as L,
-    title: { ru: "Ресторан и отдых на день", uz: "Restoran va kunlik dam", en: "Restaurant and day visits" } as L,
+    title: { ru: "Ресторан и отдых на день", uz: "Restoran va bir kunlik dam olish", en: "Restaurant and day visits" } as L,
   },
   restaurant: {
     badge: { ru: "Открыт для всех", uz: "Hamma uchun ochiq", en: "Open to everyone" } as L,
@@ -63,7 +63,7 @@ const COPY = {
     menu: { ru: "Меню и фото", uz: "Menyu va suratlar", en: "Menu and photos" } as L,
   },
   picnic: {
-    eyebrow: { ru: "Отдых на день · без ночёвки", uz: "Bir kunlik dam · tunamasdan", en: "A day out · no overnight stay" } as L,
+    eyebrow: { ru: "Отдых на день · без ночёвки", uz: "Bir kunlik dam olish · tunamasdan", en: "A day out · no overnight stay" } as L,
     title: { ru: "Пикник-зона", uz: "Piknik zonasi", en: "Picnic area" } as L,
     guests: {
       ru: `до ${topchanPricing.capacity} гостей на топчан`,
@@ -73,7 +73,7 @@ const COPY = {
     plaque: { ru: "Что есть на месте", uz: "Joyida nimalar bor", en: "On site" } as L,
     facts: {
       ru: ["Топчан с курпачами", "Мангал и казан в аренду", "Дрова и уголь на месте", "Можно со своими продуктами", "Блюда из ресторана"],
-      uz: ["Kurpachali topchan", "Mangal va qozon ijaraga", "O'tin va ko'mir joyida", "O'z mahsulotlaringiz bilan mumkin", "Restoran taomlari"],
+      uz: ["Kurpachali topchan", "Mangal va qozon ijaraga", "O'tin va ko'mir joyida", "O'z mahsulotlaringiz bilan kelish mumkin", "Restoran taomlari"],
       en: ["Topchan with kurpacha cushions", "Mangal and kazan to rent", "Firewood and charcoal on site", "Bring your own food", "Dishes from the restaurant"],
     } as LL,
     book: { ru: "Забронировать топчан", uz: "Topchan bron qilish", en: "Book a topchan" } as L,
@@ -84,7 +84,7 @@ const COPY = {
     plaque: { ru: "Главное", uz: "Asosiysi", en: "Key facts" } as L,
     // Проживающим — один спуск на гостя (оператор, 17.08.2026): то же, что
     // «Тюбинг: спуск каждому гостю» в плашке домиков.
-    guests: { ru: "Гостям домиков — спуск бесплатно", uz: "Yashovchilarga bir marta bepul", en: "Cabin guests ride once free" } as L,
+    guests: { ru: "Гостям домиков — спуск бесплатно", uz: "Uycha mehmonlariga bir marta uchish bepul", en: "Cabin guests ride once free" } as L,
     facts: {
       ru: ["Трасса 160 м", "Автоматический подъём", "Подсветка вечером", "Ватрушка выдаётся на месте", "Детям — с 5 лет и от 110 см"],
       uz: ["160 m trassa", "Avtomatik ko'targich", "Kechqurun yoritiladi", "Tyubing joyida beriladi", "Bolalar — 5 yoshdan va 110 sm dan"],
@@ -119,7 +119,7 @@ export async function HomeDayCards({ locale, pricing }: { locale: Locale; pricin
 
   const minRide = Math.min(...pricing.tubing.packages.map((p) => p.price));
   const rides = pricing.tubing.packages.map((p) => p.rides).join(locale === "en" ? " or " : locale === "uz" ? " yoki " : " или ");
-  const ridesLabel: L = { ru: `${rides} спуска`, uz: `${rides} marta`, en: `${rides} rides` };
+  const ridesLabel: L = { ru: `${rides} спуска`, uz: `${rides} marta uchish`, en: `${rides} rides` };
 
   return (
     <div className="mt-14 sm:mt-20">

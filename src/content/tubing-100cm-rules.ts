@@ -85,7 +85,7 @@ export const tubing100cmPolicySections: TubingSafetySection[] = [
         "Yakka uchish: bitta tyubingda FAQAT BIR KISHI uchishi mumkin. Katta odamning bola bilan birga uchishi taqiqlanadi.",
         "To'g'ri o'tirish: faqat o'tirgan holda uchish mumkin. Markaziy chuqurchaga chuqur o'tiring, orqaga suyaning va yon tutqichlarni ikki qo'l bilan mahkam ushlang. Oyoqlar biroz ko'tarilgan bo'lishi va trassaga tegmasligi kerak.",
         "Vazn cheklovi: kameraning yorilishi yoki boshqaruv yo'qolishining oldini olish uchun uchayotgan kishining vazni 95 kg dan oshmasligi kerak.",
-        "Taqiqlangan holatlar: tik turib, tizzada, to'rt oyoqlab, qorin bilan, orqa yoki bosh bilan oldinga uchish taqiqlanadi. Harakat vaqtida oyoq yoki qo'l bilan tormozlash taqiqlanadi.",
+        "Taqiqlangan holatlar: tik turib, tiz cho'kib, to'rt oyoqlab, qorinda yotib, orqa yoki bosh bilan oldinga uchish taqiqlanadi. Harakat vaqtida oyoq yoki qo'l bilan tormozlash taqiqlanadi.",
       ],
       en: [
         "Solo descent: only ONE PERSON may ride a tube. An adult riding together with a child is not allowed.",
@@ -109,7 +109,7 @@ export const tubing100cmPolicySections: TubingSafetySection[] = [
       ],
       uz: [
         "Bola mustaqil uchishi uchun 100 santimetrlik tyubing o'lchamiga to'liq mos kelishi kerak — bo'yi 110 sm dan boshlab. Bola mustaqil ravishda chuqur o'tirishi, tyubing ichida ishonchli joylashishi va tutqichlarni zo'riqmasdan mahkam ushlashi kerak.",
-        "Agar bola tyubing ichida erkin siljisa, tutqichlarga yetmasa yoki ularni mahkam ushlay olmasa, uchish taqiqlanadi: katta odam bilan birga uchishga endi ruxsat berilmaydi.",
+        "Agar bola tyubing ichida erkin siljisa, tutqichlarga yetmasa yoki ularni mahkam ushlay olmasa, uchish taqiqlanadi: katta odam bilan birga uchishga endi ruxsat berilmaydi, bunday bolani tepalikdan tushirishning boshqa usuli esa yo'q.",
         "5 yoshgacha bo'lgan bolalar uchishga qo'yilmaydi.",
       ],
       en: [
@@ -139,7 +139,7 @@ export const tubing100cmPolicySections: TubingSafetySection[] = [
         "Faqat operator ruxsatidan so'ng, trassa va to'xtash hududi avvalgi tashrif buyuruvchilardan to'liq bo'shaganida uchishni boshlash mumkin.",
         "Tyubing to'liq to'xtagach, darhol turib, tyubing bilan birga to'xtash hududini tark etish kerak. Uchish trassasi bo'ylab yuqoriga qaytish taqiqlanadi.",
         "Tyubinglarni bog'lash yoki ulash, parallel uchishda qo'l ushlash va bir-birini itarish taqiqlanadi.",
-        "Ko'zoynakda uchish taqiqlanadi.",
+        "Ko'zoynak taqib uchish taqiqlanadi.",
         "O'tkir yoki katta buyumlar va hayvonlar bilan uchish taqiqlanadi. Alkogol, giyohvand yoki zaharli moddalar ta'siridagi hamda faol jismoniy yuklamaga tibbiy qarshi ko'rsatmasi bor shaxslar uchishga qo'yilmaydi.",
       ],
       en: [

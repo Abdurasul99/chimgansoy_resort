@@ -37,7 +37,7 @@ export const knowledge: KnowledgeEntry[] = [
     keywords: ["привет", "здравствуйте", "добрый", "hi", "hello", "hey", "salom", "assalomu", "ассалому"],
     answer: {
       ru: "Здравствуйте! 👋 Я подскажу про номера, цены, активности, бронирование или контакты. Просто спросите или выберите вопрос ниже 👇",
-      uz: "Salom! 👋 Xonalar, narxlar, ko'ngilochar mashg'ulotlar, bron yoki aloqalar bo'yicha yordam beraman. So'rang yoki quyidan tanlang 👇",
+      uz: "Salom! 👋 Uychalar, narxlar, faol dam olish, bron yoki aloqalar bo'yicha yordam beraman. So'rang yoki quyidan tanlang 👇",
       en: "Hello! 👋 Ask me anything about rooms, prices, activities, bookings, or contacts — or pick a question below 👇",
     },
   },
@@ -106,7 +106,7 @@ export const knowledge: KnowledgeEntry[] = [
     keywords: ["отмен", "возврат", "вернуть", "bekor", "qaytarish", "cancel", "refund", "cancellation"],
     answer: {
       ru: "↩️ Проживание: при отмене не позднее чем за 5 суток до заезда предоплата возвращается полностью или переносится; менее чем за 5 суток, но не позднее чем за 48 часов — удерживается 50 %; менее чем за 48 часов или при неявке — предоплата не возвращается. Перенос дат не автоматическое право: только по согласованию, при наличии свободных домиков, не более одного раза и не на выходные (Пт–Вс) и праздники. Дневные услуги (бассейн, топчан, тюбинг) невозвратные и непереносимые: при отмене, опоздании или раннем уходе деньги не возвращаются и время не переносится.",
-      uz: "↩️ Yashash: kirishdan kamida 5 kun oldin bekor qilinsa — oldindan to'lov to'liq qaytariladi yoki ko'chiriladi; 5 kundan kam, lekin 48 soatdan oldin — 50 % ushlab qolinadi; 48 soatdan kam qolganda yoki kelmaganda — qaytarilmaydi. Sanalarni ko'chirish avtomatik huquq emas: faqat kelishilgan holda, bo'sh uychalar bo'lganda, bir martadan ko'p emas va dam olish (Ju–Ya) hamda bayram kunlariga emas. Kunlik xizmatlar (basseyn, topchan, tyubing) qaytarilmaydi va ko'chirilmaydi.",
+      uz: "↩️ Yashash: kirishdan kamida 5 kun oldin bekor qilinsa — oldindan to'lov to'liq qaytariladi yoki ko'chiriladi; 5 kundan kam, lekin kamida 48 soat oldin — 50 % ushlab qolinadi; 48 soatdan kam qolganda yoki kelmaganda — qaytarilmaydi. Sanalarni ko'chirish avtomatik huquq emas: faqat kelishilgan holda, bo'sh uychalar bo'lganda, bir martadan ko'p emas va dam olish (Ju–Ya) hamda bayram kunlariga emas. Kunlik xizmatlar (basseyn, topchan, tyubing) uchun to'lov qaytarilmaydi va ko'chirilmaydi: bekor qilinganda, kechikkanda yoki erta ketganda pul qaytarilmaydi, vaqt boshqa kunga ko'chirilmaydi.",
       en: "↩️ Stays: cancel at least 5 days before check-in and the prepayment is refunded in full or moved to new dates; less than 5 days but more than 48 hours — 50 % is retained; less than 48 hours or a no-show — nothing is returned. A date transfer is not an automatic right: by agreement only, subject to free cabins, once per booking, and never on weekends (Fri–Sun) or public holidays. Day services (pool, topchan, tubing) are non-refundable and non-transferable.",
     },
   },
@@ -117,7 +117,7 @@ export const knowledge: KnowledgeEntry[] = [
     keywords: ["где", "адрес", "находится", "как добраться", "далеко", "ташкент", "qayer", "manzil", "toshkent", "where", "location", "address", "how to get", "tashkent", "directions"],
     answer: {
       ru: `📍 Курорт находится в горах Чимгана, Бостанлыкский район Ташкентской области. Дорога из Ташкента занимает около 45 минут на машине. Точку на карте откроем здесь: ${contacts.googleMapsUrl}`,
-      uz: `📍 Kurort Chimyon tog'larida, Toshkent viloyati Bo'stonliq tumanida joylashgan. Toshkentdan yo'l mashinada 45 daqiqa atrofida oladi. Xaritada nuqta: ${contacts.googleMapsUrl}`,
+      uz: `📍 Kurort Chimyon tog'larida, Toshkent viloyati Bo'stonliq tumanida joylashgan. Toshkentdan mashinada taxminan 45 daqiqalik yo'l. Xaritada nuqta: ${contacts.googleMapsUrl}`,
       en: `📍 The resort is in the Chimgan mountains, Bostanlyk district of Tashkent region. The drive from Tashkent takes around 45 minutes by car. Point on the map: ${contacts.googleMapsUrl}`,
     },
   },
@@ -130,7 +130,7 @@ export const knowledge: KnowledgeEntry[] = [
       // This used to answer "we don't have a pool" — while the pool was a
       // bookable Exely room type, had its own page, and sat in the footer nav.
       ru: "🏊 Открытый бассейн с видом на горы, работает в летний сезон. Без ночёвки — дневной билет: взрослые и дети 15+ 100 000 сум в будни (Пн–Чт) и 200 000 в выходные (Пт–Вс); дети 5–15 — 50 000 и 100 000; до 5 лет бесплатно. Полотенце 30 000, бунгало Standard до 4 чел. — 300 000 сум (таких 8), бунгало Family до 10 чел. — 500 000 сум (таких 4); билеты отдельно. Работает 10:00–22:00. Заявка оставляется формой на странице бассейна. А гостям глэмпинга и шале бассейн уже включён в стоимость проживания, отдельно бронировать не нужно.",
-      uz: "🏊 Tog' manzarali ochiq basseyn, yozgi mavsumda ishlaydi. Tunamasdan — kunlik chipta: kattalar va 15+ ish kunlari (Du–Pa) 100 000, dam olish kunlari (Ju–Ya) 200 000 so'm; 5–15 yosh — 50 000 va 100 000; 5 yoshgacha bepul. Sochiq 30 000, Standard bungalo 4 kishigacha — 300 000 so'm (8 ta bor), Family bungalo 10 kishigacha — 500 000 so'm (4 ta bor); chiptalar alohida. 10:00–22:00. Ariza basseyn sahifasidagi shakl orqali. Glemping va shale mehmonlari uchun esa basseyn yashash narxiga allaqachon kiritilgan, alohida bron qilish shart emas.",
+      uz: "🏊 Tog' manzarali ochiq basseyn, yozgi mavsumda ishlaydi. Tunamasdan — kunlik chipta: kattalar va 15+ ish kunlari (Du–Pa) 100 000, dam olish kunlari (Ju–Ya) 200 000 so'm; 5–15 yosh — 50 000 va 100 000; 5 yoshgacha bepul. Sochiq 30 000, Standard bungalo 4 kishigacha — 300 000 so'm (8 ta bor), Family bungalo 10 kishigacha — 500 000 so'm (4 ta bor); chiptalar alohida. Ish vaqti: 10:00–22:00. Ariza basseyn sahifasidagi shakl orqali qoldiriladi. Glemping va shale mehmonlari uchun esa basseyn yashash narxiga allaqachon kiritilgan, alohida bron qilish shart emas.",
       en: "🏊 An outdoor pool with mountain views, open in the summer season. Without a stay it is a day pass: adults and ages 15+ pay 100 000 UZS Mon–Thu and 200 000 Fri–Sun; ages 5–15 pay 50 000 and 100 000; under-fives free. Towel 30 000; a Standard bungalow for up to 4 is 300 000 UZS (8 of them) and a Family bungalow for up to 10 is 500 000 UZS (4 of them); tickets separate. Open 10:00–22:00. Requests go through the form on the pool page. For glamping and chalet guests the pool is already included in the room rate, with no separate booking needed.",
     },
   },
@@ -152,7 +152,7 @@ export const knowledge: KnowledgeEntry[] = [
     keywords: ["дети", "ребен", "детск", "семей", "семья", "bola", "bolalar", "oila", "kids", "child", "children", "family", "playground"],
     answer: {
       ru: "👨‍👩‍👧 Для семей с детьми удобнее всего шале: две отдельные спальни и кухня-зал, до 5 гостей. На территории детская площадка, безопасные прогулочные зоны, бассейн (включён в проживание) и готовое меню от кухни. Для большой компании можно взять несколько домиков — администратор поможет собрать бронь.",
-      uz: "👨‍👩‍👧 Bolali oilalar uchun shale eng qulay: ikkita alohida yotoqxona va oshxona-zal, 5 mehmongacha. Hududda bolalar maydonchasi, xavfsiz sayr zonalari, basseyn (yashashga kiritilgan) va oshxonadan tayyor menyu. Katta guruh uchun bir nechta uycha olish mumkin — administrator bronni yig'ishga yordam beradi.",
+      uz: "👨‍👩‍👧 Bolali oilalar uchun shale eng qulay: ikkita alohida yotoqxona va oshxona-zal, 5 mehmongacha. Hududda bolalar maydonchasi, xavfsiz sayr zonalari, basseyn (yashash narxiga kiritilgan) va oshxonadan tayyor menyu. Katta guruh uchun bir nechta uycha olish mumkin — administrator bronni rasmiylashtirishga yordam beradi.",
       en: "👨‍👩‍👧 For families the chalet works best: two separate bedrooms and a kitchen-lounge, up to 5 guests. The grounds have a kids playground, safe walking areas, the pool (included in the stay), and a ready-made kitchen menu. For a bigger group you can take several cabins — the administrator will help put the booking together.",
     },
   },
@@ -196,7 +196,7 @@ export const knowledge: KnowledgeEntry[] = [
     keywords: ["мероприят", "банкет", "праздник", "корпоратив", "свадьб", "tadbir", "bayram", "to'y", "korporativ", "event", "banquet", "party", "wedding", "corporate"],
     answer: {
       ru: "🎉 Небольшие семейные и корпоративные форматы возможны: несколько домиков под группу, кухня с предзаказом меню, гриль-зона и активности — комбинируем под программу. Свяжитесь с администратором, обсудим детали.",
-      uz: "🎉 Kichik oilaviy va korporativ formatlar mumkin: guruh uchun bir nechta uycha, menyuni oldindan buyurtma qilish bilan oshxona, gril zonasi va ko'ngilochar dastur — dasturga moslashtiramiz. Administrator bilan bog'lanib, tafsilotlarni muhokama qiling.",
+      uz: "🎉 Kichik oilaviy va korporativ tadbirlar o'tkazish mumkin: guruh uchun bir nechta uycha, menyuni oldindan buyurtma qilish bilan oshxona, gril zonasi va faol dam olish — hammasini dasturingizga moslashtiramiz. Administrator bilan bog'lanib, tafsilotlarni muhokama qiling.",
       en: "🎉 Small family and corporate formats work: several cabins for the group, the kitchen with a pre-ordered menu, the grill area, and activities — combined to fit your program. Contact the administrator to discuss details.",
     },
   },
@@ -207,7 +207,7 @@ export const knowledge: KnowledgeEntry[] = [
     keywords: ["днем", "дневной", "на день", "без ночевки", "без проживания", "kunduzi", "kunlik", "yashamasdan", "day visit", "without stay", "without overnight", "just visit"],
     answer: {
       ru: "☀️ Дневной отдых с арендой топчана мы больше не проводим — комплекс работает как курорт с проживанием: глэмпинг A-frame и шале. Без ночёвки можно только бассейн на день (летний сезон, без лимита гостей): будни 100 000 сум, выходные 200 000 сум с человека. Заявка — формой на странице бассейна. Всё остальное на территории — для гостей, которые остановились у нас.",
-      uz: "☀️ Topchan ijarasi bilan kunlik dam olishni endi o'tkazmaymiz — majmua yashash bilan kurort sifatida ishlaydi: A-frame glemping va shale. Tunamasdan faqat basseyn — bir kunga (yozgi mavsum, mehmonlar soni cheklanmagan): ish kunlari 100 000 so'm, dam olish kunlari 200 000 so'm bir kishidan. Hududdagi qolgani — bizda tunab qolgan mehmonlar uchun.",
+      uz: "☀️ Topchan ijarasi bilan kunlik dam olishni endi o'tkazmaymiz — majmua yashash bilan kurort sifatida ishlaydi: A-frame glemping va shale. Tunamasdan faqat basseyn — bir kunga (yozgi mavsum, mehmonlar soni cheklanmagan): ish kunlari kishi boshiga 100 000 so'm, dam olish kunlari 200 000 so'm. Ariza — basseyn sahifasidagi shakl orqali. Hududdagi qolgan hamma narsa — bizda tunab qolgan mehmonlar uchun.",
       en: "☀️ We no longer run day visits with topchan rental — the property operates as a resort with overnight stays: A-frame glamping and chalets. The only thing bookable without staying over is the pool for a day (summer season, any group size): 100 000 UZS per person on weekdays, 200 000 UZS at weekends. Everything else on the grounds is for guests staying with us.",
     },
   },
@@ -286,7 +286,7 @@ export const quickReplies: Record<"ru" | "uz" | "en", { label: string; id: strin
     { label: "💰 Narxlar", id: "price" },
     { label: "📅 Bron qilish", id: "booking" },
     { label: "📍 Qayerda", id: "location" },
-    { label: "🎯 Ko'ngilochar", id: "activities" },
+    { label: "🎯 Faol dam olish", id: "activities" },
     { label: "🍽️ Restoran", id: "restaurant" },
     { label: "📞 Aloqa", id: "contact" },
   ],

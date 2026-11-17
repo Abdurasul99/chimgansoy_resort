@@ -9,6 +9,7 @@ import type { Locale } from "@/i18n/config";
 import type { FormField } from "@/lib/site-overrides";
 import { PageContextFields } from "@/components/ui/PageContextFields";
 import { trackEvent } from "@/lib/analytics";
+import { submitKeepingFields } from "@/lib/form-submit";
 
 /**
  * Форма заявки, собранная по описанию из панели.
@@ -154,7 +155,7 @@ export function DynamicRequestForm({
   }
 
   return (
-    <form action={action} className="rounded-3xl border border-[color:var(--line)] bg-[var(--paper)] p-6 sm:p-8">
+    <form onSubmit={submitKeepingFields(action)} className="rounded-3xl border border-[color:var(--line)] bg-[var(--paper)] p-6 sm:p-8">
       <h3 className="font-serif text-2xl font-bold text-[var(--ink)]">{t.title}</h3>
       <p className="mt-1 text-sm text-[var(--muted)]">{t.lead}</p>
 

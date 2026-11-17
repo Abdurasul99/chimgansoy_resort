@@ -116,7 +116,17 @@ export function Header({ locale, restaurant = null }: HeaderProps) {
   useEffect(() => {
     if (!isOpen) return;
     lock();
-    return () => unlock();
+    // Escape закрывает меню — как любое полноэкранное окно (WCAG 2.1.2).
+    // До 17.11.2026 с клавиатуры и экранного диктора меню закрывалось
+    // только поиском кнопки «Закрыть».
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      unlock();
+    };
   }, [isOpen]);
 
   // Прозрачная шапка — только над фото первого экрана главной. Ресторан с

@@ -44,7 +44,7 @@ const hoursSection: PolicyPage["sections"][number] = {
     uz: [
       `Shale va glempingda yashovchi mehmonlar uchun — har kuni ${poolPricing.hoursForStayingGuests}.`,
       `Tunab qolmaydigan tashrif buyuruvchilar uchun — har kuni ${poolPricing.hours}.`,
-      "Topchanli piknik zonasi o'z vaqtida ishlaydi — u topchan sahifasida ko'rsatilgan.",
+      "Topchanli piknik zonasi o'z ish vaqti bo'yicha ishlaydi — u topchan sahifasida ko'rsatilgan.",
       "Ish vaqtini Ijrochi belgilaydi va shu yerda hamda axborot stendlarida e'lon qiladi — quyidagi 5.2-band.",
     ],
     en: [

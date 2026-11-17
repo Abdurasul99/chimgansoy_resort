@@ -78,7 +78,7 @@ async function StayLevyNote({ locale }: { locale: Locale }) {
       body: `Сбор взимается с иностранных граждан и лиц без гражданства при заселении в глэмпинг и шале — ${money(live.touristTax.nonResident)} сум за ночь с человека по ставке, действующей на дату заезда. Он не входит в стоимость проживания и не оплачивается онлайн: его вносят на ресепшене. С граждан и резидентов Узбекистана сбор не взимается.`,
     },
     uz: {
-      title: "Turistik yig'im — chet ellik mehmonlardan, yashashdan alohida",
+      title: "Turistik yig'im — chet ellik mehmonlardan, yashash narxidan alohida",
       body: `Yig'im glemping va shalega joylashayotgan chet el fuqarolari hamda fuqaroligi bo'lmagan shaxslardan olinadi — kirish sanasida amal qiluvchi stavka bo'yicha bir kecha uchun har bir mehmondan ${money(live.touristTax.nonResident)} so'm. U yashash narxiga kirmaydi va onlayn to'lanmaydi: qabulxonada to'lanadi. O'zbekiston fuqarolari va rezidentlaridan yig'im olinmaydi.`,
     },
     en: {

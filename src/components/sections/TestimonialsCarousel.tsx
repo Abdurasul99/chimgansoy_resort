@@ -61,7 +61,7 @@ export function TestimonialsCarousel({ locale }: Props) {
               style={{ fontSize: "clamp(4rem,12vw,8rem)", opacity: 0.35, marginBottom: "-0.5rem" }}
               aria-hidden="true"
             >
-              "
+              {'"'}
             </p>
             <p
               className="font-serif italic leading-snug text-[var(--ink)]"

@@ -16,6 +16,7 @@ import { isWeekendISO, money } from "@/lib/tariff";
 import type { Locale } from "@/i18n/config";
 import { PageContextFields } from "@/components/ui/PageContextFields";
 import { poolClosure } from "@/content/pool-closure";
+import { submitKeepingFields } from "@/lib/form-submit";
 
 const COPY: Record<
   Locale,
@@ -335,7 +336,7 @@ export function TopchanRequestForm({
         <strong>{clock(t.parkingNote)}</strong>
       </p>
 
-      <form action={action} className="mt-7 space-y-4">
+      <form onSubmit={submitKeepingFields(action)} className="mt-7 space-y-4">
         <input type="hidden" name="locale" value={locale} />
         <PageContextFields />
         {/* Honeypot — invisible to humans, filled only by bots */}

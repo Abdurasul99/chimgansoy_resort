@@ -52,7 +52,7 @@ export function activity(code: number, temp: number, l: string): string {
     topchan:  { ru: "отдыха на топчане",            uz: "topchanda dam olish",        en: "topchan & kurpacha" },
     hike:     { ru: "прогулок по горным тропам",    uz: "tog' yo'llarida sayr",       en: "mountain hikes" },
     indoor:   { ru: "ужина в ресторане",             uz: "restoranda kechki ovqat",    en: "restaurant dinner" },
-    glamping: { ru: "наблюдения звёзд с глэмпинга", uz: "glempingdan yulduzli osmon", en: "stargazing from glamping" },
+    glamping: { ru: "наблюдения звёзд с глэмпинга", uz: "glempingdan yulduzlarni kuzatish", en: "stargazing from glamping" },
     bbq:      { ru: "барбекю на свежем воздухе",    uz: "ochiq havoda barbekyu",      en: "outdoor barbecue" },
   };
   const pick =

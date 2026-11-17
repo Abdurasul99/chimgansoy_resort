@@ -95,7 +95,7 @@ export function OffersSection({ locale }: Props) {
   );
   const cols = {
     ru: { how: "Как считается", one: "3 ночи без акции", three: "3 ночи по акции", per: "За ночь", note: "Суммы в сумах, ночи с воскресенья по четверг. Завтрак включён, обед и ужин — по меню ресторана, отдельно." },
-    uz: { how: "Qanday hisoblanadi", one: "3 kecha aksiyasiz", three: "3 kecha aksiya bo'yicha", per: "Kechasi", note: "Narxlar so'mda, yakshanbadan payshanbagacha bo'lgan kechalar. Nonushta narxga kiradi, tushlik va kechki ovqat — restoran menyusi bo'yicha, alohida." },
+    uz: { how: "Qanday hisoblanadi", one: "3 kecha aksiyasiz", three: "3 kecha aksiya bo'yicha", per: "Bir kecha uchun", note: "Narxlar so'mda, yakshanbadan payshanbagacha bo'lgan kechalar. Nonushta narxga kiradi, tushlik va kechki ovqat — restoran menyusi bo'yicha, alohida." },
     en: { how: "How it adds up", one: "3 nights, no offer", three: "3 nights, offer", per: "Per night", note: "UZS, Sunday–Thursday nights. Breakfast included; lunch and dinner are from the restaurant menu, extra." },
   }[locale];
 

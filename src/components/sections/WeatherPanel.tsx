@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { poolClosure } from "@/content/pool-closure";
 import {
   formatTemp,
@@ -85,7 +85,7 @@ const T:{[l:string]:{[k:string]:string}} = {
   uz:{
     badge:"KURORT ATMOSFERASI",location:"Chimgan Darbaza, O'zbekiston",
     sunrise:"Quyosh chiqishi",sunset:"Quyosh botishi",aqi:"AQI",
-    feelsLike:"Seziladi",todayFor:"Bugun uchun yaxshi",
+    feelsLike:"Seziladi",todayFor:"Bugun eng yaxshisi",
     humidity:"Namlik",wind:"Shamol",pressure:"Bosim",uv:"UV Indeksi",
     moonLabel:"Oy fazasi",altitude:"Kurort balandligi",
     forecast:"Haftalik prognoz",today:"Bugun",
@@ -127,6 +127,21 @@ let _wxCache: WeatherData | null = null;
 let _wxCacheAt = 0;
 const WX_TTL = 10 * 60 * 1000; // 10 minutes
 
+/**
+ * «Сегодня» на курорте — только в браузере.
+ *
+ * Главная кешируется на сервере (revalidate = 900), и дата, вписанная в HTML при
+ * сборке, к приходу гостя могла смениться: копия собрана в 23:55 по Ташкенту,
+ * открыта в 00:05. Браузер считал другую дату и фазу луны, React видел
+ * расхождение текста с HTML (ошибка #418) и перестраивал блок заново. На
+ * сервере и при гидратации здесь null — HTML и первый кадр совпадают; дата
+ * появляется следующим рендером.
+ */
+const noSubscribe = () => () => {};
+function useResortTodayIso(): string | null {
+  return useSyncExternalStore(noSubscribe, () => getResortTodayMeta().isoDate, () => null);
+}
+
 /* ── Main component ─────────────────────────────────────── */
 export function WeatherPanel({ locale }: { locale: string }) {
   const [data, setData] = useState<WeatherData|null>(_wxCache);
@@ -135,11 +150,9 @@ export function WeatherPanel({ locale }: { locale: string }) {
   const months = MONTHS[locale] ?? MONTHS.ru;
 
   useEffect(() => {
-    // Serve cache instantly — no re-fetch on language switch
-    if (_wxCache && Date.now() - _wxCacheAt < WX_TTL) {
-      setData(_wxCache);
-      return;
-    }
+    // Свежий кеш уже в состоянии: useState(_wxCache) взял его при монтировании.
+    // Повторный setData здесь только добавлял лишний рендер.
+    if (_wxCache && Date.now() - _wxCacheAt < WX_TTL) return;
 
     const base = "https://api.open-meteo.com/v1/forecast?latitude=41.6117&longitude=70.0133";
     const params = "&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m,surface_pressure,uv_index&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=Asia%2FTashkent&forecast_days=7";
@@ -177,14 +190,16 @@ export function WeatherPanel({ locale }: { locale: string }) {
     }).catch(()=>{});
   },[]);
 
-  const resortToday = getResortTodayMeta();
-  const moon = moonPhase(new Date(`${resortToday.isoDate}T12:00:00`));
+  const todayIso = useResortTodayIso();
+  const resortToday = todayIso ? getIsoDateMeta(todayIso) : null;
+  const moon = resortToday ? moonPhase(new Date(`${resortToday.isoDate}T12:00:00`)) : null;
   // По-узбекски дата пишется «11-noyabr»: число через дефис, месяц со строчной.
-  const todayDate =
-    locale === "uz"
+  const todayDate = !resortToday
+    ? ""
+    : locale === "uz"
       ? `${resortToday.day}-${months[resortToday.monthIndex].toLowerCase()}, ${days[resortToday.dayIndex]}`
       : `${days[resortToday.dayIndex]}, ${resortToday.day} ${months[resortToday.monthIndex]}`;
-  const todayForecast = data?.daily.find((day)=>day.date === resortToday.isoDate) ?? data?.daily[0];
+  const todayForecast = data?.daily.find((day)=>day.date === resortToday?.isoDate) ?? data?.daily[0];
   const bestIdx = data ? bestDayIdx(data.daily) : 0;
   const aqi = data ? aqiLabel(data.aqi, locale) : {text:"",color:"#22c55e"};
 
@@ -220,17 +235,17 @@ export function WeatherPanel({ locale }: { locale: string }) {
             </div>
 
             {/* Moon phase — unique feature */}
-            <div className={`rounded-2xl border px-5 py-4 ${moon.stargazing ? "border-yellow-400/40 bg-yellow-50/60 dark:bg-yellow-900/20" : "border-[color:var(--line)] bg-[var(--surface)]"}`}>
+            <div className={`rounded-2xl border px-5 py-4 ${moon?.stargazing ? "border-yellow-400/40 bg-yellow-50/60 dark:bg-yellow-900/20" : "border-[color:var(--line)] bg-[var(--surface)]"}`}>
               <div className="flex items-center gap-3">
-                <span className="text-2xl">{moon.icon}</span>
+                <span className="text-2xl">{moon ? moon.icon : <span className="inline-block h-7 w-7 animate-pulse rounded-full bg-[var(--line)]" />}</span>
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">{l.moonLabel}</p>
                   <p className="font-semibold text-[var(--ink)]">
-                    {(locale === "uz" ? moon.uz : locale === "en" ? moon.en : moon.ru)}
+                    {moon ? (locale === "uz" ? moon.uz : locale === "en" ? moon.en : moon.ru) : " "}
                   </p>
                 </div>
               </div>
-              {moon.stargazing && (
+              {moon?.stargazing && (
                 <p className="mt-2 text-xs font-semibold text-yellow-700 dark:text-yellow-400">
                   ✦ {l.stargazing}
                 </p>
@@ -346,7 +361,7 @@ export function WeatherPanel({ locale }: { locale: string }) {
               <div className="grid grid-cols-7 gap-1 overflow-x-auto">
                 {data ? data.daily.map((d,i)=>{
                   const dayMeta = getIsoDateMeta(d.date);
-                  const isToday = d.date === resortToday.isoDate;
+                  const isToday = d.date === resortToday?.isoDate;
                   const isBest = i === bestIdx;
                   return (
                     <div

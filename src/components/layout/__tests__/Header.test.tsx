@@ -63,6 +63,16 @@ describe("Header", () => {
     expect(burger).toHaveAttribute("aria-expanded", "true");
   });
 
+  it("Escape закрывает мобильное меню", async () => {
+    const user = userEvent.setup();
+    render(<Header locale="ru" />);
+    const burger = screen.getAllByRole("button").find((b) => b.getAttribute("aria-expanded") !== null)!;
+    await user.click(burger);
+    expect(burger).toHaveAttribute("aria-expanded", "true");
+    await user.keyboard("{Escape}");
+    expect(burger).toHaveAttribute("aria-expanded", "false");
+  });
+
   it("burger click locks body scroll (overflow: hidden)", async () => {
     const user = userEvent.setup();
     render(<Header locale="ru" />);
