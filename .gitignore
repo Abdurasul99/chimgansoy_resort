@@ -56,11 +56,7 @@ next-env.d.ts
 /chimgan-uslugi/
 /Hotel.worktrees/
 /Hotel_photo/
-/CHIMGAN/
 /Инструкия Сайта Chimgan Darbaza/
-/Chimgan Darbaza — документация (для облака)/
-/Chimgan Darbaza — документация (для облака).zip
-/CHIMGAN DARBAZA — возможности сайта и админ-панели.pdf
 
 # Ad-hoc verification scripts written by agents at the repo root so that
 # playwright resolves from node_modules. Never part of the app.
