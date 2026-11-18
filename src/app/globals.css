@@ -2107,3 +2107,16 @@ html[data-header="hidden"] .rest-side {
 @media (max-width: 480px) {
   .text-\[10px\] { font-size: 11px; }
 }
+
+/* Фоновые фото из imageStyle/frameStyle (src/lib/images.ts): ширину выбирает
+   экран — до 640 px кадр 1080 px, шире — 1920 px, оба в AVIF/WebP через
+   оптимизатор Next. Правило вне слоёв: как прежний inline background-image,
+   оно сильнее утилит Tailwind. */
+[style*="--bg-sm"] {
+  background-image: var(--bg-sm);
+}
+@media (min-width: 640px) {
+  [style*="--bg-sm"] {
+    background-image: var(--bg-lg);
+  }
+}
