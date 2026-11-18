@@ -431,9 +431,15 @@ export default async function HomePage({ params }: PageProps) {
 
       {/* ── Emotion photo strip ───────────────────────── */}
       <section className="overflow-hidden bg-[var(--surface)] py-2">
+        {/* tabIndex + role=region: на телефоне лента прокручивается вбок, а
+            внутри только фото — без фокуса её нельзя было листать с клавиатуры
+            (axe scrollable-region-focusable, 17.11.2026). */}
         <div
           data-lenis-prevent-touch
-          className={`flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-none lg:grid ${topchanClosure.closed ? "lg:grid-cols-4" : "lg:grid-cols-5"} lg:overflow-visible`}
+          tabIndex={0}
+          role="region"
+          aria-label={locale === "uz" ? "Suratlar: kurortdagi bir kun" : locale === "en" ? "Photos: a day at the resort" : "Фото: день на курорте"}
+          className={`flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--sun)] lg:grid ${topchanClosure.closed ? "lg:grid-cols-4" : "lg:grid-cols-5"} lg:overflow-visible`}
         >
           {/* A day here in five frames: wake up, breakfast, the afternoon on a
               topchan, the grill, the kids' room.
