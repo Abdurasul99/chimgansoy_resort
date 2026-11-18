@@ -8,6 +8,7 @@
 | [PARTNERS.md](./PARTNERS.md) | Партнёрский раздел |
 | [PARTNERS-PLAN.md](./PARTNERS-PLAN.md) | Исходный план; сверять с кодом |
 | [TELEGRAM_STAFF_BOT.md](./TELEGRAM_STAFF_BOT.md) | Бот сотрудников |
+| [../scripts/qa/README.md](../scripts/qa/README.md) | QA-проход: обход страниц на 9 ширинах, сценарии гостя, контраст |
 | [SRS.md](./SRS.md), [SDS.md](./SDS.md) | Исторические требования и архитектура, август 2026 |
 | [archive/TECHNICAL_DOCS.md](./archive/TECHNICAL_DOCS.md) | Ранняя техническая документация |
 | [archive/USER_GUIDE.md](./archive/USER_GUIDE.md) | Раннее руководство владельца |
