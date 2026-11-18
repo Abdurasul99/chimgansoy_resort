@@ -149,7 +149,7 @@ export function HeroSlideshow() {
             className="group flex items-center gap-2"
           >
             <div className={`h-px transition-all duration-500 ${i === active ? "w-8 bg-white" : "w-3 bg-white/30 group-hover:bg-white/60"}`} />
-            <span className={`text-[10px] font-bold tabular-nums transition-colors duration-500 ${i === active ? "text-white" : "text-white/30 group-hover:text-white/60"}`}>
+            <span className={`text-[10px] font-bold tabular-nums transition-colors duration-500 ${i === active ? "text-white" : "text-white/70 group-hover:text-white/90"}`}>
               {String(i + 1).padStart(2, "0")}
             </span>
           </button>

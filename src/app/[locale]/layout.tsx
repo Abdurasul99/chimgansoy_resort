@@ -201,10 +201,14 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
           }}
         />
 
-        <Script
+        {/* Обычный <script>, не next/script: тот вставлял разметку только после
+            гидратации, и в HTML от сервера LodgingBusiness не было — боты без
+            JavaScript (Яндекс и др.) не видели название, адрес и координаты
+            курорта (найдено 17.11.2026). «<» экранирован — текст не закроет тег. */}
+        <script
           id="schema-org"
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: schemaJson }}
+          dangerouslySetInnerHTML={{ __html: schemaJson.replace(/</g, "\\u003c") }}
         />
       </head>
       <body suppressHydrationWarning>
