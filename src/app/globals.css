@@ -21,6 +21,10 @@
   --green: #2f7a3e;
   --accent: #f4a52a;
   --accent-strong: #d98a14;
+  /* Gold for TEXT on light surfaces. --sun/--accent-strong as text were
+     1.7–2.6:1 on cream (axe, 17.11.2026); this is 4.7:1 on --mist and
+     5.4:1 on --surface-warm — WCAG AA. Gold stays for fills and borders. */
+  --accent-ink: #8a5200;
   /* Text color ON accent/sun surfaces. White on #f4a52a is only 2.04:1 —
      dark brown gives 6.8:1 (WCAG AA) and matches the Stitch reference
      (on-secondary-container #6c4400). */
@@ -68,6 +72,7 @@
 
   --accent: #f4a52a;         /* sun gold — primary CTA */
   --accent-strong: #d98a14;
+  --accent-ink: #8a5200;     /* gold for text on light surfaces — WCAG AA */
   --on-accent: #3b2a0a;      /* dark text on gold CTAs — WCAG AA 6.8:1 */
   --sun: #f4a52a;
   --sun-dark: #d98a14;
@@ -1898,6 +1903,7 @@ html { scroll-behavior: smooth; }
 /* ── Footer always dark bg — force light text tokens ─── */
 footer {
   --ink: rgba(255, 255, 255, 0.88);
+  --accent-ink: var(--sun);
   --muted: rgba(255, 255, 255, 0.50);
   --line: rgba(255, 255, 255, 0.10);
   --line-strong: rgba(255, 255, 255, 0.18);

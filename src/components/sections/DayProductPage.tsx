@@ -75,7 +75,7 @@ export async function DayProductPage({ locale, slug }: { locale: Locale; slug: "
       <section className="px-4 py-14 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">
           <div className="motion-reveal">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-ink)]">
               {ABOUT[locale] ?? ABOUT.ru}
             </p>
             <p className="mt-4 text-lg leading-8 text-[var(--muted)]">{clock(text(product.description, locale))}</p>

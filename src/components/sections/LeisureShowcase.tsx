@@ -73,7 +73,7 @@ export function LeisureShowcase({
         {/* Header */}
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="motion-reveal max-w-2xl">
-            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--accent-strong)]">{t.eyebrow}</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--accent-ink)]">{t.eyebrow}</p>
             <h2 id="leisure-title" className="motion-reveal-mask mt-3 font-serif text-4xl font-bold leading-[1.05] text-[var(--ink)] sm:text-5xl">
               {t.title}
             </h2>
@@ -81,7 +81,7 @@ export function LeisureShowcase({
           </div>
           <a
             href={localizePath(locale, "/services")}
-            className="motion-reveal group inline-flex shrink-0 items-center gap-2 self-start rounded-full border border-[color:var(--line-strong)] px-5 py-2.5 text-sm font-bold text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-strong)] lg:mb-1"
+            className="motion-reveal group inline-flex shrink-0 items-center gap-2 self-start rounded-full border border-[color:var(--line-strong)] px-5 py-2.5 text-sm font-bold text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)] lg:mb-1"
             data-delay="100"
           >
             {t.viewAll}
@@ -123,7 +123,7 @@ export function LeisureShowcase({
                 <div className="flex flex-1 flex-col p-5 sm:p-6">
                   <h3 className="font-serif text-2xl font-bold leading-tight text-[var(--ink)]">{s.title}</h3>
                   <p className="mt-2 flex-1 text-sm leading-6 text-[var(--muted)]">{s.shortDescription}</p>
-                  <span className="mt-5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--forest-dark)] transition-colors group-hover:text-[var(--accent-strong)]">
+                  <span className="mt-5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--forest-dark)] transition-colors group-hover:text-[var(--accent-ink)]">
                     {t.details}
                     <svg className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />

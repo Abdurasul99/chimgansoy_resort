@@ -92,7 +92,7 @@ function Field({ f, t }: { f: FormField; t: Record<string, string> }) {
     <label className={f.type === "textarea" ? "block sm:col-span-2" : "block"}>
       <span className={labelCls}>
         {f.label}
-        {f.required ? <span className="ml-1 font-normal normal-case text-[var(--sun-dark)]">· {t.required}</span> : null}
+        {f.required ? <span className="ml-1 font-normal normal-case text-[var(--accent-ink)]">· {t.required}</span> : null}
       </span>
 
       {f.type === "textarea" ? (
@@ -147,7 +147,7 @@ export function DynamicRequestForm({
   if (state.ok) {
     return (
       <div className="rounded-3xl border border-[color:var(--line)] bg-[var(--surface-warm)] p-8 text-center">
-        <Icon name="check" className="mx-auto h-10 w-10 text-[var(--accent-strong)]" />
+        <Icon name="check" className="mx-auto h-10 w-10 text-[var(--accent-ink)]" />
         <p className="mt-4 font-serif text-2xl font-bold text-[var(--ink)]">{t.done}</p>
         <p className="mt-2 text-sm text-[var(--muted)]">{t.doneLead}</p>
       </div>

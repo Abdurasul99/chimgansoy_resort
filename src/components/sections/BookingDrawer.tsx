@@ -70,7 +70,7 @@ export function BookingDrawer({ locale, roomTitle, roomSlug, priceFrom }: Bookin
 
   return (
     <div className="rounded-3xl border border-[color:var(--line)] bg-[var(--paper)] p-6 shadow-[var(--shadow-card)]">
-      <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGAN DARBAZA</p>
+      <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-ink)]">CHIMGAN DARBAZA</p>
       <h3 className="mt-2 font-serif text-2xl font-semibold text-[var(--ink)]">{roomTitle}</h3>
 
       {/* The price, as the second thing read after the room's name.

@@ -67,7 +67,7 @@ export function MediaArchive({ locale, images, videos = [], exclude = [] }: Prop
         <>
           <div className="flex items-baseline justify-between">
             <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]">{t.photos}</p>
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]/70">
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]">
               {t.count(assets.length)}
             </p>
           </div>

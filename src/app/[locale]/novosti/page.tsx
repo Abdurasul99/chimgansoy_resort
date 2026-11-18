@@ -88,7 +88,7 @@ export default async function NewsPage({ params }: PageProps) {
             <ul className="space-y-12">
               {items.map((n, i) => (
                 <li key={n.id} className="motion-reveal" data-delay={String(Math.min(i, 4) * 60)}>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--accent-strong)]">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--accent-ink)]">
                     {formatDate(n.date, locale)}
                   </p>
                   <h2 className="mt-2 font-serif text-2xl font-semibold leading-snug text-[var(--ink)] sm:text-3xl">

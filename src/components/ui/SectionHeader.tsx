@@ -19,7 +19,7 @@ export function SectionHeader({
     <div className={`${align === "center" ? "mx-auto text-center" : ""} max-w-3xl ${className}`}>
       {eyebrow ? (
         align === "center" ? (
-          <p className="mb-4 text-[10px] font-extrabold uppercase tracking-[0.24em] text-[var(--accent-strong)]">{eyebrow}</p>
+          <p className="mb-4 text-[10px] font-extrabold uppercase tracking-[0.24em] text-[var(--accent-ink)]">{eyebrow}</p>
         ) : (
           <p className="kicker-rule mb-4">{eyebrow}</p>
         )

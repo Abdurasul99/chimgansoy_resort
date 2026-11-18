@@ -44,12 +44,12 @@ export function PromoBand({ locale }: PromoBandProps) {
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1.1fr_0.7fr] lg:items-center">
         <div>
           {promo && (
-            <p className="text-xs font-bold uppercase text-white/62">{text(promo.title, locale)}</p>
+            <p className="text-xs font-bold uppercase text-white">{text(promo.title, locale)}</p>
           )}
           <h2 className="mt-3 max-w-3xl font-serif text-4xl font-semibold leading-tight sm:text-5xl">
             {dict.home.finalOfferTitle}
           </h2>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-white/76">{dict.home.finalOfferText}</p>
+          <p className="mt-4 max-w-2xl text-base leading-7 text-white">{dict.home.finalOfferText}</p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
           <ButtonLink href={localizePath(locale, "/bron")} variant="light" reload>

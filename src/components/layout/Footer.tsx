@@ -189,7 +189,7 @@ export async function Footer({ locale }: FooterProps) {
                 <span className="block text-sm font-bold text-[var(--paper)]">
                   {text(SERVICES_LABEL, locale)}
                 </span>
-                <span className="mt-0.5 block text-xs text-[var(--muted)]">
+                <span className="mt-0.5 block text-xs text-white/70">
                   {text(SERVICES_HINT, locale)}
                 </span>
               </span>
@@ -214,7 +214,7 @@ export async function Footer({ locale }: FooterProps) {
           <p className="text-xs text-[var(--muted)]">
             © 2026 CHIMGAN DARBAZA. {dict.footer.legalNote}
           </p>
-          <p className="text-xs text-[var(--muted)]/60">chimgandarbaza.uz</p>
+          <p className="text-xs text-[var(--muted)]">chimgandarbaza.uz</p>
         </div>
       </div>
     </footer>

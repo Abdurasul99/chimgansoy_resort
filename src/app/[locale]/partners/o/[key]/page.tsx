@@ -100,7 +100,7 @@ export default async function OfferPage({ params }: Props) {
                 <p className="mt-4 text-xs font-bold uppercase tracking-[0.14em] text-[var(--accent)]">{t(P.programs.rightsLabel)}</p>
                 <ul className="mt-2 space-y-1.5 text-sm leading-6 text-[var(--ink)]/80">
                   {p.rights[locale].map((r) => (
-                    <li key={r} className="flex gap-2"><span aria-hidden className="text-[var(--sun-dark)]">•</span><span>{r}</span></li>
+                    <li key={r} className="flex gap-2"><span aria-hidden className="text-[var(--accent-ink)]">•</span><span>{r}</span></li>
                   ))}
                 </ul>
               </article>

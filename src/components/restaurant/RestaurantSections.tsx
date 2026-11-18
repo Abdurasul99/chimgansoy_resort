@@ -88,7 +88,7 @@ export function StoreHeader({ locale, settings }: { locale: Locale; settings: Re
       <details className="group mt-4 rounded-2xl border border-[#ececec] px-4 [&_summary::-webkit-details-marker]:hidden">
         <summary className="flex h-12 cursor-pointer list-none items-center justify-between text-sm font-semibold text-[#1c1c1c]">
           {t.aboutTitle}
-          <RestIcon name="arrow" className="h-4 w-4 rotate-90 text-[#8c8c8c] transition-transform group-open:-rotate-90" />
+          <RestIcon name="arrow" className="h-4 w-4 rotate-90 text-[#6b6b6b] transition-transform group-open:-rotate-90" />
         </summary>
         <div className="grid gap-5 pb-5 pt-1 text-sm leading-6 text-[#4a4a4a] md:grid-cols-2">
           {about && <p className="md:col-span-2">{about}</p>}

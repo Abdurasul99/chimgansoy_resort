@@ -135,7 +135,7 @@ async function formAction(_prev: State, formData: FormData): Promise<State> {
 }
 
 const field =
-  "w-full min-h-14 rounded-xl border border-[color:var(--line)] bg-[var(--paper)] px-4 py-3 text-base text-[var(--ink)] outline-none transition-colors placeholder:text-[var(--muted)]/60 focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15";
+  "w-full min-h-14 rounded-xl border border-[color:var(--line)] bg-[var(--paper)] px-4 py-3 text-base text-[var(--ink)] outline-none transition-colors placeholder:text-[var(--muted)]/80 focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15";
 const labelCls =
   "mb-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]";
 export function TubingRequestForm({
@@ -177,7 +177,7 @@ export function TubingRequestForm({
         <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-[var(--muted)]">{t.successText}</p>
         <a
           href={`tel:${contacts.phone.replaceAll(" ", "")}`}
-          className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[var(--forest-dark)] hover:text-[var(--accent-strong)]"
+          className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[var(--forest-dark)] hover:text-[var(--accent-ink)]"
         >
           <Icon name="phone" className="h-4 w-4" />
           {contacts.phone}
@@ -188,7 +188,7 @@ export function TubingRequestForm({
 
   return (
     <div className="rounded-3xl border border-[color:var(--line)] bg-[var(--surface-warm)] p-6 shadow-[var(--shadow-card)] sm:p-9">
-      <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--accent-strong)]">{clock(t.eyebrow)}</p>
+      <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--accent-ink)]">{clock(t.eyebrow)}</p>
       <h3 className="mt-3 font-serif text-3xl font-semibold leading-tight text-[var(--ink)] sm:text-4xl">{t.title}</h3>
       <p className="mt-3 max-w-xl text-sm leading-6 text-[var(--muted)] sm:text-base sm:leading-7">{t.lead}</p>
 
@@ -296,7 +296,7 @@ export function TubingRequestForm({
           <ul className="mt-2 space-y-1.5 text-sm leading-6">
             {list(tubing100cmFormSummary, locale).map((item) => (
               <li key={item} className="flex gap-2">
-                <span aria-hidden="true" className="font-bold text-[var(--sun-dark)]">•</span>
+                <span aria-hidden="true" className="font-bold text-[var(--accent-ink)]">•</span>
                 <span>{item}</span>
               </li>
             ))}

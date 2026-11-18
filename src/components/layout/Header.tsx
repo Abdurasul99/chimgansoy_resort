@@ -219,7 +219,7 @@ export function Header({ locale, restaurant = null }: HeaderProps) {
                         ? "text-white active"
                         : "text-white/85 hover:text-white"
                       : isActive
-                        ? "text-[var(--sun-dark)] active"
+                        ? "text-[var(--accent-ink)] active"
                         : "text-[var(--ink)] hover:text-[var(--sun)]"
                   }${heroShadow}`}
                 >

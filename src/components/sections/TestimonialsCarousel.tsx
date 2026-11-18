@@ -80,13 +80,13 @@ export function TestimonialsCarousel({ locale }: Props) {
               ))}
             </div>
             <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[var(--sun)]/15 font-serif text-2xl font-bold text-[var(--sun-dark)]">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[var(--sun)]/15 font-serif text-2xl font-bold text-[var(--accent-ink)]">
                 {t.name.charAt(0)}
               </div>
               <div>
                 <p className="text-base font-bold text-[var(--ink)]">{t.name}</p>
                 <p className="mt-0.5 text-sm text-[var(--muted)]">{text(t.meta, locale)}</p>
-                <p className="mt-1 text-xs font-bold uppercase tracking-[0.16em] text-[var(--sun-dark)]">
+                <p className="mt-1 text-xs font-bold uppercase tracking-[0.16em] text-[var(--accent-ink)]">
                   {text(t.sourceLabel, locale)}
                 </p>
               </div>
@@ -96,7 +96,7 @@ export function TestimonialsCarousel({ locale }: Props) {
               href={t.sourceUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="testimonial-maps-link inline-flex items-center gap-2 rounded-full border border-[var(--sun)]/35 bg-[var(--sun)]/10 px-4 py-2 text-sm font-semibold text-[var(--sun-dark)] transition-all hover:border-[var(--sun)]/60 hover:bg-[var(--sun)]/18"
+              className="testimonial-maps-link inline-flex items-center gap-2 rounded-full border border-[var(--sun)]/35 bg-[var(--sun)]/10 px-4 py-2 text-sm font-semibold text-[var(--accent-ink)] transition-all hover:border-[var(--sun)]/60 hover:bg-[var(--sun)]/18"
             >
               {mapsCopy}
               <svg className="h-3 w-3 text-[var(--sun)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -150,7 +150,7 @@ export function TestimonialsCarousel({ locale }: Props) {
             href="https://maps.app.goo.gl/x2WWhzho3Pob6oD46"
             target="_blank"
             rel="noopener noreferrer"
-            className="testimonial-maps-link flex items-center gap-2 rounded-full border border-[var(--sun)]/35 bg-[var(--sun)]/10 px-4 py-2 text-sm font-semibold text-[var(--sun-dark)] transition-all hover:border-[var(--sun)]/60 hover:bg-[var(--sun)]/18"
+            className="testimonial-maps-link flex items-center gap-2 rounded-full border border-[var(--sun)]/35 bg-[var(--sun)]/10 px-4 py-2 text-sm font-semibold text-[var(--accent-ink)] transition-all hover:border-[var(--sun)]/60 hover:bg-[var(--sun)]/18"
           >
             <span>{allReviewsCopy}</span>
             <svg className="h-3 w-3 text-[var(--sun)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

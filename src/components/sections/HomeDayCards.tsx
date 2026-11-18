@@ -123,7 +123,7 @@ export async function HomeDayCards({ locale, pricing }: { locale: Locale; pricin
 
   return (
     <div className="mt-14 sm:mt-20">
-      <div className="motion-reveal mb-8 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--accent-strong)]">
+      <div className="motion-reveal mb-8 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--accent-ink)]">
         <span>{COPY.heading.eyebrow[locale]}</span>
         <span className="h-px w-10 bg-[var(--accent-strong)]/40" />
       </div>
@@ -155,7 +155,7 @@ export async function HomeDayCards({ locale, pricing }: { locale: Locale; pricin
           <div className="mt-6 rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3.5">
             <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/55">{r.plaque[locale]}</p>
             <ul className="mt-2.5 flex flex-wrap gap-1.5">
-              <li className="inline-flex items-center gap-1.5 rounded-full border border-[var(--sun)]/60 bg-[var(--sun)]/20 px-3 py-1.5 text-[13px] font-bold text-[var(--sun)]">
+              <li className="inline-flex items-center gap-1.5 rounded-full border border-[var(--sun)]/60 bg-[var(--sun)]/20 px-3 py-1.5 text-[13px] font-bold text-[#ffcf73]">
                 <Icon name="check" className="h-3.5 w-3.5 shrink-0" />
                 {r.open[locale]}
               </li>
@@ -277,7 +277,7 @@ function DayCard({
               {clock(c)}
             </span>
           ))}
-          <span className="rounded-full bg-[var(--sun)]/15 px-4 py-2 text-sm font-bold text-[var(--sun-dark)]">{price}</span>
+          <span className="rounded-full bg-[var(--sun)]/15 px-4 py-2 text-sm font-bold text-[var(--accent-ink)]">{price}</span>
         </div>
 
         {/* Плашка — в той же рамке, что «Включено в стоимость» у домиков. */}

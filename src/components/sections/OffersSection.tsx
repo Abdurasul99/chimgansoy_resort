@@ -166,7 +166,7 @@ export function OffersSection({ locale }: Props) {
           {badge ? (
             <span
               className={`relative inline-block rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider ${
-                rose ? "bg-[#ff4d6d] text-white" : lead || discount ? "bg-[var(--sun)] text-[var(--ink)]" : "bg-[var(--ink)] text-white"
+                rose ? "bg-[#d6264f] text-white" : lead || discount ? "bg-[var(--sun)] text-[var(--ink)]" : "bg-[var(--ink)] text-white"
               }`}
             >
               {badge}
@@ -231,7 +231,7 @@ export function OffersSection({ locale }: Props) {
                         </span>
                         {money(r.total)}
                       </td>
-                      <td className="py-2 pl-2 text-right text-base font-bold tabular-nums text-[var(--accent)] sm:text-lg">
+                      <td className="py-2 pl-2 text-right text-base font-bold tabular-nums text-[var(--accent-ink)] sm:text-lg">
                         {money(r.perNight)}
                       </td>
                     </tr>
@@ -304,7 +304,7 @@ export function OffersSection({ locale }: Props) {
             <ul className="mt-2 space-y-1.5 text-[12.5px] leading-[1.45] text-[var(--muted)]">
               {terms.map((t) => (
                 <li key={t} className="flex gap-2">
-                  <span aria-hidden className={rose ? "text-[#ff4d6d]" : "text-[var(--sun-dark)]"}>
+                  <span aria-hidden className={rose ? "text-[#ff4d6d]" : "text-[var(--accent-ink)]"}>
                     ·
                   </span>
                   <span>{t}</span>
@@ -320,7 +320,7 @@ export function OffersSection({ locale }: Props) {
   return (
     <section className="bg-[var(--surface-warm)] px-4 py-16 sm:px-6 lg:px-8" id="offers">
       <div className="mx-auto max-w-7xl">
-        <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--accent)]">
+        <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--accent-ink)]">
           {dict.home.offersEyebrow}
         </p>
         <h2 className="mt-3 font-serif text-3xl font-semibold leading-tight text-[var(--ink)] sm:text-4xl">
@@ -348,8 +348,8 @@ function DiscountCalc({ d, label, locale }: { d: DiscountMath; label: string; lo
         <p className="mt-2 text-[13px] text-[var(--muted)]">{label}</p>
         <p className="mt-0.5 flex flex-wrap items-baseline gap-x-2 tabular-nums">
           <s className="text-[var(--muted)] decoration-[var(--muted)]/60">{money(d.base)}</s>
-          <span aria-hidden="true" className="text-[var(--sun-dark)]">→</span>
-          <b className="text-xl font-bold text-[var(--accent)]">{money(d.price)}</b>
+          <span aria-hidden="true" className="text-[var(--accent-ink)]">→</span>
+          <b className="text-xl font-bold text-[var(--accent-ink)]">{money(d.price)}</b>
           <span className="text-[13px] text-[var(--muted)]">
             {cur} {c.night}
           </span>
@@ -365,7 +365,7 @@ function DiscountCalc({ d, label, locale }: { d: DiscountMath; label: string; lo
         <p className="mt-2 text-[12.5px] text-[var(--muted)]">{c.breakfast}</p>
       </div>
       <div className="rounded-2xl border border-[var(--sun)]/40 bg-[var(--sun)]/10 px-4 py-3">
-        <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--sun-dark)]">{c.four}</p>
+        <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--accent-ink)]">{c.four}</p>
         <p className="mt-2 text-[13.5px] text-[var(--ink)]">{c.lead(d.guests)}</p>
         <p className="mt-0.5 text-[13.5px] tabular-nums text-[var(--ink)]">{c.line(money(d.price), d.guests, money(d.perPerson))}</p>
         {/* Не font-serif: у Cormorant цифры «старинные», и «600 000» читалось как «6оо ооо». */}
@@ -389,7 +389,7 @@ function BirthdayWindow({ locale }: { locale: Locale }) {
           d === 0 ? (
             <li
               key={d}
-              className="flex h-10 items-center justify-center rounded-xl bg-[#ff4d6d] text-white shadow-[0_8px_16px_-8px_rgba(255,77,109,0.8)]"
+              className="flex h-10 items-center justify-center rounded-xl bg-[#d6264f] text-white shadow-[0_8px_16px_-8px_rgba(255,77,109,0.8)]"
             >
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 2.5c1.1 1.3 1.1 2.6 0 3.3-1.1-.7-1.1-2 0-3.3z" fill="currentColor" />

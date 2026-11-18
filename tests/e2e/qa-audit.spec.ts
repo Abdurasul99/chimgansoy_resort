@@ -84,8 +84,9 @@ test.describe("SEO", () => {
 
   test("JSON-LD schema is valid LodgingBusiness", async ({ page }) => {
     await page.goto("/ru", { waitUntil: "load" });
-    const json = await page.locator('script[type="application/ld+json"]').first().textContent();
-    const parsed = JSON.parse(json ?? "{}");
+    // На главной блоков JSON-LD несколько (FAQPage стоит первым) — ищем нужный.
+    const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();
+    const parsed = blocks.map((b) => JSON.parse(b)).find((j) => j["@type"] === "LodgingBusiness") ?? {};
     expect(parsed["@type"]).toBe("LodgingBusiness");
     expect(parsed.name).toBeTruthy();
     expect(parsed.geo?.latitude).toBeTruthy();

@@ -27,7 +27,7 @@ export async function RestaurantTeaser({ locale }: { locale: Locale }) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={heroImage(settings)} alt="" loading="lazy" className="h-24 w-24 shrink-0 rounded-2xl object-cover sm:h-32 sm:w-48" />
         <div className="min-w-0 flex-1">
-          <p className="text-[13px] text-[#8c8c8c]">{t.eyebrow}</p>
+          <p className="text-[13px] text-[#6b6b6b]">{t.eyebrow}</p>
           <p className="mt-0.5 truncate text-2xl font-bold text-[#1c1c1c]">{name}</p>
           <p className="mt-1 line-clamp-2 text-sm text-[#6b6b6b]">{t.teaser.text}</p>
         </div>

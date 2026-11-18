@@ -142,7 +142,7 @@ export function GuestSelect({ name, label, defaultValue = "2", locale }: GuestSe
                 }}
                 className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm font-semibold transition-colors ${
                   isSelected
-                    ? "bg-[var(--accent)]/10 text-[var(--accent-strong)]"
+                    ? "bg-[var(--accent)]/10 text-[var(--accent-ink)]"
                     : "text-[var(--ink)] hover:bg-[var(--surface)]"
                 }`}
               >

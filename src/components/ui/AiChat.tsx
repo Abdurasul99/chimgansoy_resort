@@ -27,7 +27,7 @@ function AnswerLink({ href, children }: { href: string; children: ReactNode }) {
     <a
       href={href}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-      className="font-semibold text-[var(--accent-strong)] underline decoration-[var(--accent)]/40 underline-offset-2 transition-colors hover:decoration-[var(--accent-strong)]"
+      className="font-semibold text-[var(--accent-ink)] underline decoration-[var(--accent)]/40 underline-offset-2 transition-colors hover:decoration-[var(--accent-strong)]"
     >
       {children}
     </a>
@@ -261,7 +261,7 @@ export function AiChat({ locale }: { locale: Locale }) {
                 href={contacts.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full bg-[#25D366]/10 px-3 py-1.5 text-[#128C4B] hover:bg-[#25D366]/20"
+                className="rounded-full bg-[#25D366]/10 px-3 py-1.5 text-[#0b6b37] hover:bg-[#25D366]/20"
               >
                 WhatsApp
               </a>
@@ -269,7 +269,7 @@ export function AiChat({ locale }: { locale: Locale }) {
                 href={contacts.telegram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full bg-[#229ED9]/10 px-3 py-1.5 text-[#0088CC] hover:bg-[#229ED9]/20"
+                className="rounded-full bg-[#229ED9]/10 px-3 py-1.5 text-[#0a5f8f] hover:bg-[#229ED9]/20"
               >
                 Telegram
               </a>
@@ -311,10 +311,10 @@ export function AiChat({ locale }: { locale: Locale }) {
               <a href={`tel:${contacts.phone.replaceAll(" ", "")}`} className="rounded-full border border-[color:var(--line)] px-3 py-1 text-[var(--ink)] hover:border-[var(--accent)]">
                 {contacts.phone}
               </a>
-              <a href={contacts.whatsapp} target="_blank" rel="noopener noreferrer" className="rounded-full bg-[#25D366]/10 px-3 py-1 text-[#128C4B] hover:bg-[#25D366]/20">
+              <a href={contacts.whatsapp} target="_blank" rel="noopener noreferrer" className="rounded-full bg-[#25D366]/10 px-3 py-1 text-[#0b6b37] hover:bg-[#25D366]/20">
                 WhatsApp
               </a>
-              <a href={contacts.telegram} target="_blank" rel="noopener noreferrer" className="rounded-full bg-[#229ED9]/10 px-3 py-1 text-[#0088CC] hover:bg-[#229ED9]/20">
+              <a href={contacts.telegram} target="_blank" rel="noopener noreferrer" className="rounded-full bg-[#229ED9]/10 px-3 py-1 text-[#0a5f8f] hover:bg-[#229ED9]/20">
                 Telegram
               </a>
             </div>

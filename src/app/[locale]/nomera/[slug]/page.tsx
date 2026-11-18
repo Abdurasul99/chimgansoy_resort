@@ -355,7 +355,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
             <div>
               {/* Description */}
               <div className="motion-reveal">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-ink)]">
                   {locale === "ru" ? "Об апартаментах" : locale === "uz" ? "Xona haqida" : "About the room"}
                 </p>
                 <p className="mt-4 text-lg leading-8 text-[var(--muted)]">{text(room.description, locale)}</p>
@@ -511,7 +511,7 @@ export default async function RoomDetailPage({ params }: PageProps) {
       <section className="bg-[var(--paper)] px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-10 motion-reveal">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGAN DARBAZA</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-ink)]">CHIMGAN DARBAZA</p>
             <h2 className="mt-2 font-serif text-4xl font-semibold text-[var(--ink)]">{dict.detailLabels.relatedServices}</h2>
           </div>
           <ServicesGrid

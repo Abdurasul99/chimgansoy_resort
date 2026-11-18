@@ -91,7 +91,7 @@ export function MenuBoard({ locale }: { locale: Locale }) {
     <section className="bg-[var(--surface)] px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="motion-reveal max-w-2xl">
-          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--accent-strong)]">
+          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--accent-ink)]">
             {text(menuCopy.eyebrow, locale)}
           </p>
           <h2 className="mt-3 font-serif text-[clamp(2rem,5vw,3.2rem)] font-semibold leading-tight text-[var(--ink)]">
@@ -111,7 +111,7 @@ export function MenuBoard({ locale }: { locale: Locale }) {
               data-delay={`${Math.min(i, 5) * 60}`}
             >
               <div className="flex items-center gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--accent)]/12 text-[var(--accent-strong)]">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--accent)]/12 text-[var(--accent-ink)]">
                   <GroupIcon name={g.icon} />
                 </span>
                 <h3 className="font-serif text-xl font-semibold text-[var(--ink)]">
@@ -137,7 +137,7 @@ export function MenuBoard({ locale }: { locale: Locale }) {
           {text(menuCopy.priceNote, locale)}
           <a
             href={`tel:${contacts.phone.replaceAll(" ", "")}`}
-            className="font-bold text-[var(--forest-dark)] hover:text-[var(--accent-strong)]"
+            className="font-bold text-[var(--forest-dark)] hover:text-[var(--accent-ink)]"
           >
             {contacts.phone}
           </a>

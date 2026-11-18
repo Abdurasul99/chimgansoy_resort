@@ -168,7 +168,7 @@ export default async function HomePage({ params }: PageProps) {
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="motion-reveal max-w-2xl">
-              <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--accent-strong)]">
+              <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--accent-ink)]">
                 <span>{dict.home.stayEyebrow}</span>
                 <span className="h-px w-10 bg-[var(--accent-strong)]/40" />
                 {/* Часы заезда собираются из stayRules, а не вписаны цифрами:
@@ -196,7 +196,7 @@ export default async function HomePage({ params }: PageProps) {
                   <li key={c.href}>
                     <Link
                       href={localizePath(locale, c.href)}
-                      className="inline-flex min-h-10 items-center rounded-full border border-[color:var(--line-strong)] bg-[var(--surface-warm)] px-4 py-1.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-strong)]"
+                      className="inline-flex min-h-10 items-center rounded-full border border-[color:var(--line-strong)] bg-[var(--surface-warm)] px-4 py-1.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)]"
                     >
                       {c.label[locale]}
                     </Link>
@@ -306,7 +306,7 @@ export default async function HomePage({ params }: PageProps) {
                 className="motion-reveal flex flex-col gap-1.5 sm:gap-2 lg:px-8 lg:first:pl-0 lg:last:pr-0"
                 data-delay={String(i * 80)}
               >
-                <span className="font-serif text-sm italic text-[var(--muted)]/70">
+                <span className="font-serif text-sm italic text-[var(--muted)]">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <p className="motion-reveal-mask font-serif text-[clamp(2.75rem,11vw,5.5rem)] font-bold leading-none tracking-tight text-[var(--ink)]">

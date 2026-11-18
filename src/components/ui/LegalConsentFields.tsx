@@ -99,7 +99,7 @@ export function LegalConsentFields({
   const linkClass =
     tone === "dark"
       ? "font-semibold text-[#f0c26a] underline decoration-[#f0c26a]/45 underline-offset-2 transition-colors hover:text-white"
-      : "font-semibold text-[var(--accent-strong)] underline decoration-[var(--accent-strong)]/35 underline-offset-2 transition-colors hover:text-[var(--sun-dark)]";
+      : "font-semibold text-[var(--accent-ink)] underline decoration-[var(--accent-strong)]/35 underline-offset-2 transition-colors hover:text-[var(--ink)]";
   const link = (href: string, label: string) => (
     <a
       href={localizePath(locale, href)}

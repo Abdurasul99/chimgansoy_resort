@@ -45,7 +45,7 @@ export default async function AttractionsPage({ params }: PageProps) {
               <article key={text(item.title, locale)} className="grid overflow-hidden rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] shadow-[var(--shadow-card)] transition-shadow duration-500 hover:shadow-[var(--shadow-card-hover)] sm:grid-cols-[0.9fr_1.1fr]">
                 <ImageFrame image={resortImages[item.image]} locale={locale} className="min-h-64 rounded-none" />
                 <div className="p-6">
-                  <p className="text-xs font-bold uppercase text-[var(--accent-strong)]">{text(item.distance, locale)}</p>
+                  <p className="text-xs font-bold uppercase text-[var(--accent-ink)]">{text(item.distance, locale)}</p>
                   <h2 className="mt-3 font-serif text-3xl font-semibold text-[var(--ink)]">{text(item.title, locale)}</h2>
                   <p className="mt-3 text-sm leading-7 text-[var(--muted)]">{text(item.description, locale)}</p>
                   <ButtonLink href={localizePath(locale, "/services/experience")} variant="ghost" className="mt-5">

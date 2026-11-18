@@ -18,14 +18,14 @@ export function MapBlock({ locale }: MapBlockProps) {
   return (
     <div className="grid overflow-hidden rounded-2xl border border-[color:var(--line)] bg-[var(--paper)] shadow-[var(--shadow-card)] lg:grid-cols-[0.85fr_1.15fr]">
       <div className="p-6 sm:p-8">
-        <p className="text-xs font-bold uppercase text-[var(--accent-strong)]">{contacts.mapCoordinates}</p>
+        <p className="text-xs font-bold uppercase text-[var(--accent-ink)]">{contacts.mapCoordinates}</p>
         <h3 className="mt-3 font-serif text-4xl font-semibold text-[var(--ink)]">{dict.home.mapTitle}</h3>
         <p className="mt-4 text-base leading-7 text-[var(--muted)]">{text(contacts.address, locale)}</p>
         <a
           href={contacts.googleMapsUrl}
           target="_blank"
           rel="noreferrer"
-          className="mt-2 inline-flex min-h-10 items-center text-sm font-semibold text-[var(--accent-strong)] transition hover:text-[var(--green)]"
+          className="mt-2 inline-flex min-h-10 items-center text-sm font-semibold text-[var(--accent-ink)] transition hover:text-[var(--green)]"
         >
           {text(googleMapsIntegration.placeName, locale)}
         </a>

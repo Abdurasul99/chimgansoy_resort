@@ -56,7 +56,7 @@ export default async function ContactPage({ params }: PageProps) {
 
             {/* Left — contact channels */}
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGAN DARBAZA</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-ink)]">CHIMGAN DARBAZA</p>
               <h2 className="mt-3 font-serif text-3xl sm:text-4xl font-semibold text-[var(--ink)]">
                 {bronDict.contactTitle}
               </h2>
@@ -70,7 +70,7 @@ export default async function ContactPage({ params }: PageProps) {
                 <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">
                   {locale === "ru" ? "Телефон" : locale === "uz" ? "Telefon" : "Phone"}
                 </p>
-                <p className="mt-1 font-serif text-3xl font-semibold text-[var(--ink)] transition-colors group-hover:text-[var(--accent-strong)]">
+                <p className="mt-1 font-serif text-3xl font-semibold text-[var(--ink)] transition-colors group-hover:text-[var(--accent-ink)]">
                   {contacts.phone}
                 </p>
               </a>
@@ -81,7 +81,7 @@ export default async function ContactPage({ params }: PageProps) {
                   href={contacts.whatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-press flex items-center justify-center gap-2.5 rounded-full bg-[#25D366]/10 border border-[#25D366]/20 px-6 py-3.5 text-sm font-bold text-[#128C4B] transition-all duration-300 hover:bg-[#25D366]/18"
+                  className="btn-press flex items-center justify-center gap-2.5 rounded-full bg-[#25D366]/10 border border-[#25D366]/20 px-6 py-3.5 text-sm font-bold text-[#0b6b37] transition-all duration-300 hover:bg-[#25D366]/18"
                 >
                   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
@@ -93,7 +93,7 @@ export default async function ContactPage({ params }: PageProps) {
                   href={contacts.telegram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-press flex items-center justify-center gap-2.5 rounded-full bg-[#229ED9]/10 border border-[#229ED9]/20 px-6 py-3.5 text-sm font-bold text-[#0088CC] transition-all duration-300 hover:bg-[#229ED9]/18"
+                  className="btn-press flex items-center justify-center gap-2.5 rounded-full bg-[#229ED9]/10 border border-[#229ED9]/20 px-6 py-3.5 text-sm font-bold text-[#0a5f8f] transition-all duration-300 hover:bg-[#229ED9]/18"
                 >
                   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 0C5.372 0 0 5.373 0 12s5.372 12 12 12 12-5.373 12-12S18.628 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z" />

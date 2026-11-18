@@ -87,7 +87,7 @@ export default async function AboutPage({ params }: PageProps) {
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-10 sm:gap-16 lg:grid-cols-[1.1fr_1fr] lg:items-center">
             <div className="motion-reveal">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGAN DARBAZA</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-ink)]">CHIMGAN DARBAZA</p>
               <h2 className="display-md mt-3 font-serif font-semibold text-[var(--ink)]">{dict.home.aboutTitle}</h2>
               <p className="mt-6 text-base leading-8 text-[var(--muted)]">{dict.home.aboutText}</p>
               <div className="mt-10 flex flex-wrap gap-3">
@@ -120,7 +120,7 @@ export default async function AboutPage({ params }: PageProps) {
       <section className="bg-[var(--surface)] px-4 py-14 sm:py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-16 motion-reveal">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">CHIMGAN DARBAZA</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-ink)]">CHIMGAN DARBAZA</p>
             <h2 className="display-md mt-3 font-serif font-semibold text-[var(--ink)]">{dict.home.yearRoundTitle}</h2>
           </div>
           <div className="space-y-0 divide-y divide-[color:var(--line)]">
@@ -130,7 +130,7 @@ export default async function AboutPage({ params }: PageProps) {
                 className="grid gap-6 py-10 lg:grid-cols-[120px_1fr_1fr] lg:items-start motion-reveal"
                 data-delay={String(i * 100)}
               >
-                <p className="font-serif text-5xl font-bold text-[var(--mist)]">{value.num}</p>
+                <p aria-hidden="true" className="font-serif text-5xl font-bold text-[var(--mist)]">{value.num}</p>
                 <h3 className="font-serif text-2xl font-semibold text-[var(--ink)]">{text(value.title, locale)}</h3>
                 <p className="text-base leading-7 text-[var(--muted)]">{text(value.copy, locale)}</p>
               </div>

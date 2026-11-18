@@ -95,7 +95,7 @@ export function MenuBrowser({
 
   const searchField = (autoFocus: boolean) => (
     <label className="relative flex min-w-0 items-center">
-      <RestIcon name="search" className="pointer-events-none absolute left-3 h-4 w-4 text-[#8c8c8c]" />
+      <RestIcon name="search" className="pointer-events-none absolute left-3 h-4 w-4 text-[#6b6b6b]" />
       <input
         type="search"
         value={query}
@@ -103,7 +103,7 @@ export function MenuBrowser({
         placeholder={t.menu.search}
         aria-label={t.menu.search}
         autoFocus={autoFocus}
-        className={`h-10 w-full rounded-xl bg-[#f6f5f2] pl-9 pr-3 text-sm text-[#1c1c1c] outline-none ring-[#1c1c1c]/10 transition placeholder:text-[#8c8c8c] focus:bg-white focus:ring-2 ${autoFocus ? "[&::-webkit-search-cancel-button]:hidden" : ""}`}
+        className={`h-10 w-full rounded-xl bg-[#f6f5f2] pl-9 pr-3 text-sm text-[#1c1c1c] outline-none ring-[#1c1c1c]/10 transition placeholder:text-[#6b6b6b] focus:bg-white focus:ring-2 ${autoFocus ? "[&::-webkit-search-cancel-button]:hidden" : ""}`}
       />
     </label>
   );
@@ -114,7 +114,7 @@ export function MenuBrowser({
       {hasMenu && (
         <aside className="rest-side sticky hidden lg:block">
           {searchField(false)}
-          <p className="mb-2 mt-5 px-3 text-[12px] font-semibold text-[#8c8c8c]">{t.sections}</p>
+          <p className="mb-2 mt-5 px-3 text-[12px] font-semibold text-[#6b6b6b]">{t.sections}</p>
           <nav data-lenis-prevent className="max-h-[calc(100vh-12rem)] space-y-0.5 overflow-y-auto">
             {sections.map((s) => (
               <button
@@ -186,7 +186,7 @@ export function MenuBrowser({
             </div>
 
             {sections.length === 0 ? (
-              <p className="mt-10 text-center text-base text-[#8c8c8c]">{t.menu.nothingFound}</p>
+              <p className="mt-10 text-center text-base text-[#6b6b6b]">{t.menu.nothingFound}</p>
             ) : (
               sections.map((s, i) => (
                 <section

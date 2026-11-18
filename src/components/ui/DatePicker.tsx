@@ -259,7 +259,7 @@ export function DatePicker({ name, label, defaultValue = "", locale, minToday = 
           <Icon name="calendar" className="h-3.5 w-3.5" />
           {label}
         </span>
-        <span className={`text-sm font-bold ${value ? "text-[var(--ink)]" : "text-[var(--muted)]/60"}`}>
+        <span className={`text-sm font-bold ${value ? "text-[var(--ink)]" : "text-[var(--muted)]"}`}>
           {value ? displayValue(value, locale) : placeholders[locale]}
         </span>
       </button>
@@ -309,7 +309,7 @@ export function DatePicker({ name, label, defaultValue = "", locale, minToday = 
               <span
                 key={d}
                 className={`text-center text-[10px] font-bold uppercase tracking-wider ${
-                  i >= 5 ? "text-[var(--accent-strong)]/70" : "text-[var(--muted)]"
+                  i >= 5 ? "text-[var(--accent-ink)]/70" : "text-[var(--muted)]"
                 }`}
               >
                 {d}
@@ -352,7 +352,7 @@ export function DatePicker({ name, label, defaultValue = "", locale, minToday = 
                   {days && info?.price != null && !isBusy && (
                     <span
                       className={`text-[9px] font-bold leading-none ${
-                        isSelected ? "text-white/80" : "text-[var(--sun-dark)]"
+                        isSelected ? "text-white/80" : "text-[var(--accent-ink)]"
                       }`}
                     >
                       {Math.round(info.price / 1000)}к
@@ -378,7 +378,7 @@ export function DatePicker({ name, label, defaultValue = "", locale, minToday = 
             <button
               type="button"
               onClick={goToday}
-              className="text-xs font-semibold text-[var(--accent-strong)] transition-colors hover:text-[var(--accent)]"
+              className="text-xs font-semibold text-[var(--accent-ink)] transition-colors hover:text-[var(--accent)]"
             >
               {todayLabels[locale]}
             </button>

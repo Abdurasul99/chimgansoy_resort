@@ -95,9 +95,9 @@ export function ServicesGrid({ locale, items, limit, showFilters = true, slugs }
                     number: «от 150 000 сум», «по запросу» and «включено в
                     проживание» are all answers they need to be able to give. */}
                 {service.priceNote ? (
-                  <p className="mt-3 text-sm font-bold text-[var(--sun-dark)]">{service.priceNote}</p>
+                  <p className="mt-3 text-sm font-bold text-[var(--accent-ink)]">{service.priceNote}</p>
                 ) : null}
-                <span className="mt-5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--forest-dark)] transition-colors group-hover:text-[var(--accent-strong)]">
+                <span className="mt-5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--forest-dark)] transition-colors group-hover:text-[var(--accent-ink)]">
                   {dict.details}
                   <svg className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />

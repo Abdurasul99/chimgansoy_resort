@@ -172,10 +172,11 @@ test.describe("performance", () => {
 
 // ─── Booking page reachability ─────────────────────────
 test.describe("booking page", () => {
-  test("booking page loads + contains a form element", async ({ page }) => {
+  // На /bron своей формы нет — там модуль Exely (#be-booking-form), а если он
+  // не загрузился, запасной экран со ссылками на заявку по домикам.
+  test("booking page loads the Exely slot", async ({ page }) => {
     await gotoAndHydrate(page, "/uz/bron");
-    const forms = await page.locator("form").count();
-    expect(forms).toBeGreaterThan(0);
+    await expect(page.locator("#be-booking-form")).toHaveCount(1);
   });
 
   test("contact page loads", async ({ page }) => {

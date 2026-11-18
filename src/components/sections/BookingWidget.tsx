@@ -60,7 +60,7 @@ export function BookingWidget({ locale, variant = "compact", searchParams }: Boo
       >
         <div className="grid gap-5 lg:grid-cols-[0.9fr_1.7fr] lg:items-end">
           <div>
-            <p className="mb-2 text-xs font-bold uppercase text-[var(--accent-strong)]">{dict.chooseDates}</p>
+            <p className="mb-2 text-xs font-bold uppercase text-[var(--accent-ink)]">{dict.chooseDates}</p>
             <h2 id="booking-widget-title" className="font-serif text-3xl font-semibold text-[var(--ink)]">
               {dict.bookingWidget.title}
             </h2>

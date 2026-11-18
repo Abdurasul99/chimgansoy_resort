@@ -37,7 +37,7 @@ export function BookingTermsNotice({
   const title = booking ? t.bookingTitle : t.title;
   const lines = [booking ? t.firstBooking : t.first, booking ? t.contactBooking : t.contact, ...t.lines];
   const link =
-    "font-semibold text-[var(--accent-strong)] underline underline-offset-2 transition-colors hover:text-[var(--sun-dark)]";
+    "font-semibold text-[var(--accent-ink)] underline underline-offset-2 transition-colors hover:text-[var(--ink)]";
 
   const list = (items: readonly string[]) => (
     <ul className="mt-3 space-y-2">
@@ -54,7 +54,7 @@ export function BookingTermsNotice({
     <div
       className={`rounded-2xl border border-[color:var(--sun)]/40 bg-[var(--surface-warm)] p-5 sm:p-6 ${className}`}
     >
-      <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--sun-dark)]">
+      <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--accent-ink)]">
         {title}
       </p>
 
@@ -62,7 +62,7 @@ export function BookingTermsNotice({
 
       {/* Сами правила, а не только ссылка на них: гость решает здесь, и узнать
           про 5 суток и 48 часов после оплаты — значит узнать слишком поздно. */}
-      <p className="mt-5 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--sun-dark)]">
+      <p className="mt-5 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--accent-ink)]">
         {t.refundTitle}
       </p>
       {list(t.refundLines)}

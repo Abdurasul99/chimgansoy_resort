@@ -138,7 +138,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
           <div className="mx-auto max-w-3xl">
             <SectionHeader title={card.title} text={live.custom!.description} />
             {card.priceNote ? (
-              <p className="mt-6 text-lg font-bold text-[var(--sun-dark)]">{card.priceNote}</p>
+              <p className="mt-6 text-lg font-bold text-[var(--accent-ink)]">{card.priceNote}</p>
             ) : null}
 
             {/* Форма — только если оператор её собрал. Пустая форма без полей

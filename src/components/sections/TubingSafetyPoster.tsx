@@ -61,7 +61,7 @@ export function TubingSafetyPoster({ locale }: { locale: Locale }) {
     >
       <div className="mx-auto flex max-w-6xl flex-col gap-8 sm:flex-row sm:items-start sm:gap-10">
         <div className="max-w-2xl sm:flex-1">
-          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--accent-strong)]">
+          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--accent-ink)]">
             {copy.eyebrow}
           </p>
           <h2 id={headingId} className="mt-3 font-serif text-3xl font-semibold text-[var(--ink)] sm:text-4xl">

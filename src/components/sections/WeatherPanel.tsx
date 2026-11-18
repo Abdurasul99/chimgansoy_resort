@@ -211,7 +211,7 @@ export function WeatherPanel({ locale }: { locale: string }) {
           {/* ── LEFT — resort info (hidden on mobile) ──── */}
           <div className="hidden lg:flex flex-col justify-between gap-8 bg-[var(--paper)] p-8 lg:p-10">
             <div>
-              <span className="inline-block rounded-full border border-[color:var(--line)] px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[var(--accent-strong)]">
+              <span className="inline-block rounded-full border border-[color:var(--line)] px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[var(--accent-ink)]">
                 CHIMGAN DARBAZA
               </span>
               <h2 className="mt-4 font-serif text-3xl font-bold leading-tight text-[var(--ink)] lg:text-4xl">

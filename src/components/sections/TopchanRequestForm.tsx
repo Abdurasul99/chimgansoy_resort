@@ -165,7 +165,7 @@ async function formAction(_prev: State, formData: FormData): Promise<State> {
 }
 
 const field =
-  "w-full min-h-14 rounded-xl border border-[color:var(--line)] bg-[var(--paper)] px-4 py-3 text-base text-[var(--ink)] outline-none transition-colors placeholder:text-[var(--muted)]/60 focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15";
+  "w-full min-h-14 rounded-xl border border-[color:var(--line)] bg-[var(--paper)] px-4 py-3 text-base text-[var(--ink)] outline-none transition-colors placeholder:text-[var(--muted)]/80 focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15";
 const labelCls =
   "mb-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]";
 
@@ -230,7 +230,7 @@ export function TopchanRequestForm({
         <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-[var(--muted)]">{t.successText}</p>
         <a
           href={`tel:${contacts.phone.replaceAll(" ", "")}`}
-          className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[var(--forest-dark)] hover:text-[var(--accent-strong)]"
+          className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[var(--forest-dark)] hover:text-[var(--accent-ink)]"
         >
           <Icon name="phone" className="h-4 w-4" />
           {contacts.phone}
@@ -241,7 +241,7 @@ export function TopchanRequestForm({
 
   return (
     <div className="rounded-3xl border border-[color:var(--line)] bg-[var(--surface-warm)] p-6 shadow-[var(--shadow-card)] sm:p-9">
-      <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--accent-strong)]">{clock(t.eyebrow)}</p>
+      <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--accent-ink)]">{clock(t.eyebrow)}</p>
       <h3 className="mt-3 font-serif text-3xl font-semibold leading-tight text-[var(--ink)] sm:text-4xl">{t.title}</h3>
       <p className="mt-3 max-w-xl text-sm leading-6 text-[var(--muted)] sm:text-base sm:leading-7">{t.lead}</p>
 
@@ -260,7 +260,7 @@ export function TopchanRequestForm({
             <span className="border-b border-[color:var(--line)] py-2.5 pl-4 text-right text-[11px] font-bold uppercase leading-tight tracking-wider text-[var(--muted)]">
               {text(priceLabels.weekdaysLabel, locale)}
             </span>
-            <span className="border-b border-[color:var(--line)] py-2.5 pl-4 text-right text-[11px] font-bold uppercase leading-tight tracking-wider text-[var(--accent-strong)]">
+            <span className="border-b border-[color:var(--line)] py-2.5 pl-4 text-right text-[11px] font-bold uppercase leading-tight tracking-wider text-[var(--accent-ink)]">
               {text(priceLabels.weekendLabel, locale)}
             </span>
 
@@ -287,7 +287,7 @@ export function TopchanRequestForm({
                       <span className={`${cell} pl-4 text-right font-serif text-lg font-bold text-[var(--ink)]`}>
                         {money(rate.weekday)}
                       </span>
-                      <span className={`${cell} pl-4 text-right font-serif text-lg font-bold text-[var(--accent-strong)]`}>
+                      <span className={`${cell} pl-4 text-right font-serif text-lg font-bold text-[var(--accent-ink)]`}>
                         {money(rate.weekend)}
                       </span>
                     </>
@@ -319,7 +319,7 @@ export function TopchanRequestForm({
                       <span className={`${cell} pl-4 text-right font-serif text-lg font-bold text-[var(--ink)]`}>
                         {money(item.weekday)}
                       </span>
-                      <span className={`${cell} pl-4 text-right font-serif text-lg font-bold text-[var(--accent-strong)]`}>
+                      <span className={`${cell} pl-4 text-right font-serif text-lg font-bold text-[var(--accent-ink)]`}>
                         {money(item.weekend)}
                       </span>
                     </>
@@ -360,7 +360,7 @@ export function TopchanRequestForm({
           <label className="block">
             <span className={labelCls}>{t.guests}</span>
             <CountInput name="guests" min={1} max={240} value={guests} onValue={setGuests} className={field} />
-            <span className="mt-1.5 block text-xs font-semibold text-[var(--accent-strong)]">
+            <span className="mt-1.5 block text-xs font-semibold text-[var(--accent-ink)]">
               {t.guestsHint(topchans)}
             </span>
           </label>

@@ -152,7 +152,7 @@ export function RoomCatalog({ locale, limit, priceChips = {} }: RoomCatalogProps
                       Absent, not blank, when the engine gave nothing — an empty
                       chip is worse than no chip. */}
                   {priceChips[room.slug] && (
-                    <span className="rounded-full bg-[var(--sun)]/15 px-4 py-2 text-sm font-bold text-[var(--sun-dark)]">
+                    <span className="rounded-full bg-[var(--sun)]/15 px-4 py-2 text-sm font-bold text-[var(--accent-ink)]">
                       {priceChips[room.slug]}
                     </span>
                   )}

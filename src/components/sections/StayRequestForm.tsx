@@ -255,7 +255,7 @@ export function StayRequestForm({
   if (state.ok) {
     return (
       <div className="rounded-3xl border border-[color:var(--line)] bg-[var(--surface-warm)] p-8 text-center">
-        <Icon name="check" className="mx-auto h-10 w-10 text-[var(--accent-strong)]" />
+        <Icon name="check" className="mx-auto h-10 w-10 text-[var(--accent-ink)]" />
         <p className="mt-4 font-serif text-2xl font-bold text-[var(--ink)]">{t.done}</p>
         <p className="mt-2 text-sm text-[var(--muted)]">{t.doneLead}</p>
       </div>
@@ -269,7 +269,7 @@ export function StayRequestForm({
       {/* Правило видно до того, как гость начал заполнять: календарь ранние даты
           и так не предложит, но человек должен понимать почему. */}
       {now < STAY_OPENS_AT && (
-        <p className="mt-3 rounded-xl bg-[var(--sun)]/15 px-4 py-2.5 text-sm font-semibold text-[var(--sun-dark)]">
+        <p className="mt-3 rounded-xl bg-[var(--sun)]/15 px-4 py-2.5 text-sm font-semibold text-[var(--accent-ink)]">
           {t.opens}
         </p>
       )}
