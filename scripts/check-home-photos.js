@@ -46,7 +46,8 @@ const marqueeSrc = read("src/components/sections/PhotoMarquee.tsx");
 const bentoSrc = read("src/components/sections/BentoGallery.tsx");
 const showcaseSrc = read("src/content/home-showcase.ts");
 const roomsSrc = read("src/content/rooms.ts");
-const heroSrc = read("src/components/sections/HeroSlideshow.tsx");
+// Кадры слайдшоу с 18.11.2026 — в content/hero-slides.ts (их же предзагружает главная).
+const heroSrc = read("src/content/hero-slides.ts");
 const pageSrc = read("src/app/[locale]/page.tsx");
 const promoSrc = read("src/components/sections/PromoBand.tsx");
 const dayCardsSrc = read("src/components/sections/HomeDayCards.tsx");
@@ -69,8 +70,8 @@ const byPath = pathToKey();
 
 // The hero holds file paths rather than keys, so it is resolved through the
 // registry instead of going via listFrom().
-const heroBlock = heroSrc.match(/const SUMMER_SLIDES = \[([\s\S]*?)\];/);
-if (!heroBlock) throw new Error("check-home-photos: could not find HeroSlideshow SUMMER_SLIDES");
+const heroBlock = heroSrc.match(/export const HERO_SLIDES = \[([\s\S]*?)\] as const;/);
+if (!heroBlock) throw new Error("check-home-photos: could not find HERO_SLIDES in content/hero-slides.ts");
 const heroKeys = (heroBlock[1].match(/"([^"]+)"/g) || [])
   .map((s) => s.slice(1, -1))
   .map((p) => {

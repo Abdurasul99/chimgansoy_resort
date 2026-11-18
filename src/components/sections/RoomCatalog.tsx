@@ -2,6 +2,7 @@
 
 import { useMemo, useRef, useState, type ReactNode } from "react";
 import { resortImages } from "@/content/images";
+import { responsiveImg } from "@/lib/images";
 import { roomCategories, rooms, EXELY_ROOM_TYPE, INCLUDED_LABEL, includedPerks, type RoomCategory } from "@/content/rooms";
 import type { ImageAsset } from "@/content/types";
 import { dictionaries } from "@/content/translations";
@@ -299,7 +300,7 @@ function SwipeGallery({
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={photo.localSrc ?? photo.src}
+              {...responsiveImg(photo.localSrc ?? photo.src, "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 640px")}
               alt={text(photo.alt, locale)}
               loading={i === 0 ? "eager" : "lazy"}
               decoding="async"

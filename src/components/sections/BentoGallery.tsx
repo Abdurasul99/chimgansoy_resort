@@ -1,4 +1,5 @@
 import type { Locale } from "@/i18n/config";
+import { responsiveImg } from "@/lib/images";
 import { resortImages } from "@/content/images";
 import { text } from "@/lib/localize";
 
@@ -76,7 +77,7 @@ export function BentoGallery({ locale }: { locale: Locale }) {
           <figure key={cell.image} className={`bento-cell group min-w-0 ${cell.span}`}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={img.localSrc ?? img.src}
+              {...responsiveImg(img.localSrc ?? img.src, "(max-width: 640px) 100vw, 50vw")}
               alt={text(img.alt, locale)}
               loading="lazy"
               decoding="async"

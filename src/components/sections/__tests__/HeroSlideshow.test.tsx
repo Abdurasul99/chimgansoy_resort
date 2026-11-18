@@ -15,10 +15,14 @@ import { HeroSlideshow } from "../HeroSlideshow";
 // Indicator dots live in an aria-hidden container ({hidden:true} required to query)
 const getDotButtons = () => screen.getAllByRole("button", { hidden: true });
 
-/** Slide layers are plain divs; count them by the inline background-image. */
+/**
+ * Slide layers are plain divs; count them by the background variable. Since
+ * 18.11.2026 the photo is set as --bg-sm/--bg-lg (optimizer URLs, the CSS rule
+ * in globals.css picks one), not as an inline background-image.
+ */
 const countSlides = (container: HTMLElement) =>
   Array.from(container.querySelectorAll<HTMLElement>("div[style]")).filter((el) =>
-    el.style.backgroundImage.includes("/images/resort/"),
+    el.style.getPropertyValue("--bg-sm").includes(encodeURIComponent("/images/resort/")),
   ).length;
 
 /**

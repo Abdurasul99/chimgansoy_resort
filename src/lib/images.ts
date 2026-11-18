@@ -60,3 +60,27 @@ export function frameStyle(frame: { src: string; localSrc?: string; position?: s
 export function imageStyle(image: ImageAsset): CSSProperties {
   return backgroundVars(image.localSrc ? [image.localSrc, image.src] : [image.src], image.position);
 }
+
+/** Адрес оптимизатора для файла из public; прочие адреса — как есть. */
+export function optimizedSrc(src: string, width: number) {
+  return optimized(src, width);
+}
+
+/** Фон одним файлом (слайдшоу и т. п.) — те же --bg-sm/--bg-lg. */
+export function backgroundOf(src: string, position?: string): CSSProperties {
+  return backgroundVars([src], position);
+}
+
+/**
+ * Пропсы для <img>: AVIF/WebP 640/1080/1920 через srcset вместо исходного
+ * JPEG (кадры каталога домиков были по 300–600 КБ каждый). `sizes` — сколько
+ * места картинка занимает на экране, браузер по нему выбирает вариант.
+ */
+export function responsiveImg(src: string, sizes: string): { src: string; srcSet?: string; sizes?: string } {
+  if (!src.startsWith("/images/")) return { src };
+  return {
+    src: optimized(src, WIDTH_SM),
+    srcSet: [640, WIDTH_SM, WIDTH_LG].map((w) => `${optimized(src, w)} ${w}w`).join(", "),
+    sizes,
+  };
+}

@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { HERO_SLIDES } from "@/content/hero-slides";
+import { backgroundOf } from "@/lib/images";
 
 // July-2026 shoot — the finished A-frames and the ridge they look out on.
 //
@@ -38,11 +40,8 @@ import { useEffect, useState } from "react";
 // а закрытый бассейн на главной обещает то, чего гость сейчас не получит.
 // Те же три требования к кадру: 2400 px, 4:3, сюжет выживает и в десктопной
 // обрезке (~1.8:1), и в вертикали телефона (~0.46).
-const SUMMER_SLIDES = [
-  "/images/resort/2026-08/chalet-row-mountains.jpg", // ряд шале и хребет за ними
-  "/images/resort/2026-08/aframe-row-road.jpg", // A-frame вдоль дорожки
-  "/images/resort/2026-08/chalet-street-curve.jpg", // дорога вдоль шале
-];
+// Список — в content/hero-slides.ts: по нему же главная предзагружает первый кадр.
+const SUMMER_SLIDES = HERO_SLIDES;
 
 const INTERVAL_MS = 5500;
 
@@ -123,7 +122,8 @@ export function HeroSlideshow() {
             key={src}
             className="absolute inset-0 bg-cover bg-center"
             style={{
-              backgroundImage: `url(${src})`,
+              // AVIF нужной ширины через оптимизатор, а не исходный JPEG (874 КБ).
+              ...backgroundOf(src),
               ...(rotating
                 ? {
                     opacity: i === active ? 1 : 0,

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { HERO_SLIDES } from "@/content/hero-slides";
 import Link from "next/link";
 import { Hero } from "@/components/sections/Hero";
 import { RoomCatalog } from "@/components/sections/RoomCatalog";
@@ -24,7 +25,7 @@ import { dictionaries } from "@/content/translations";
 import { pageSeo } from "@/content/seo";
 import { getLocaleParam } from "@/lib/content";
 import { buildMetadata } from "@/lib/metadata";
-import { imageStyle } from "@/lib/images";
+import { imageStyle, optimizedSrc } from "@/lib/images";
 import { text } from "@/lib/localize";
 import { localizePath } from "@/i18n/routing";
 import { getRoomPrices, priceChip } from "@/lib/room-price";
@@ -137,11 +138,20 @@ export default async function HomePage({ params }: PageProps) {
     <>
       {/* Preload the first hero photo at high priority so it paints fast (LCP)
           and the dark hero base shows for as little time as possible.
-          (React 19 hoists this <link> into <head>.) */}
+          (React 19 hoists this <link> into <head>.) Тот же вариант, что выберет
+          CSS фона (lib/images.ts): до 640 px — 1080, шире — 1920. */}
       <link
         rel="preload"
         as="image"
-        href="/images/resort/2026-08/pool-panorama.jpg"
+        href={optimizedSrc(HERO_SLIDES[0], 1080)}
+        media="(max-width: 639px)"
+        fetchPriority="high"
+      />
+      <link
+        rel="preload"
+        as="image"
+        href={optimizedSrc(HERO_SLIDES[0], 1920)}
+        media="(min-width: 640px)"
         fetchPriority="high"
       />
 
