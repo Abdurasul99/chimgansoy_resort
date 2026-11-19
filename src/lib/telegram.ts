@@ -28,20 +28,42 @@ type SendOpts = {
   business_connection_id?: string;
 };
 
+/**
+ * Группа стала супергруппой — у неё новый id.
+ *
+ * Telegram сам превращает обычную группу в супергруппу, когда в ней меняют
+ * некоторые настройки (видимость истории, права админов и т. п.). Старый id
+ * после этого не принимает сообщений: «group chat was upgraded to a supergroup
+ * chat», а новый приходит в parameters.migrate_to_chat_id. Так 11.11.2026
+ * группа «Chimgan Darbaza - Заявки» перестала получать заявки — 34 штуки
+ * за неделю ушли только в архив, гость при этом видел «Заявка принята».
+ *
+ * Теперь отправка сама повторяется в новый чат и запоминает его до
+ * перезапуска; в журнал пишется, какой id вписать в TELEGRAM_ADMIN_CHAT_ID.
+ */
+const migratedChats = new Map<string, number | string>();
+
+type ApiReply<T> = { ok: boolean; result?: T; description?: string; parameters?: { migrate_to_chat_id?: number } };
+
 async function call<T = unknown>(method: string, body: Record<string, unknown>): Promise<T | null> {
   const t = token();
   if (!t) {
     console.error("[telegram] TELEGRAM_STAFF_BOT_TOKEN not set");
     return null;
   }
+  const original = body.chat_id;
+  const known = original !== undefined ? migratedChats.get(String(original)) : undefined;
+  const payload = known !== undefined ? { ...body, chat_id: known } : body;
   try {
-    const res = await fetch(`${API}/bot${t}/${method}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-      signal: AbortSignal.timeout(10_000),
-    });
-    const data = (await res.json()) as { ok: boolean; result?: T; description?: string };
+    let data = await post<T>(t, method, payload);
+    const movedTo = data.parameters?.migrate_to_chat_id;
+    if (!data.ok && movedTo !== undefined && original !== undefined && String(payload.chat_id) !== String(movedTo)) {
+      migratedChats.set(String(original), movedTo);
+      console.error(
+        `[telegram] chat ${String(original)} was upgraded to supergroup ${movedTo} — sending there; set TELEGRAM_ADMIN_CHAT_ID=${movedTo}`,
+      );
+      data = await post<T>(t, method, { ...body, chat_id: movedTo });
+    }
     if (!data.ok) {
       console.error(`[telegram] ${method} failed:`, data.description);
       return null;
@@ -51,6 +73,16 @@ async function call<T = unknown>(method: string, body: Record<string, unknown>):
     console.error(`[telegram] ${method} error:`, e);
     return null;
   }
+}
+
+async function post<T>(t: string, method: string, body: Record<string, unknown>): Promise<ApiReply<T>> {
+  const res = await fetch(`${API}/bot${t}/${method}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(10_000),
+  });
+  return (await res.json()) as ApiReply<T>;
 }
 
 export function sendMessage(chatId: number | string, text: string, opts: SendOpts = {}) {
