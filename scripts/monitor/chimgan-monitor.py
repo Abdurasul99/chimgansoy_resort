@@ -9,14 +9,15 @@
 Что проверяет:
   • журнал сайта за прошедшие 10 минут — заявка не дошла в группу Telegram,
     письмо с заявкой не ушло, форма у гостя не отправилась после выкладки,
-    партнёрская заявка не дошла, тревога не дошла, группа сменила ID;
+    тревога не дошла, группа сменила ID;
   • сайт открывается (иначе заявку оставить негде) и сервис запущен;
   • сертификаты сайта и модуля онлайн-брони Exely — 14.11.2026 у Exely
     истёк сертификат, и онлайн-бронь перестала грузиться.
 
-Куда пишет: в группу заявок (TELEGRAM_ADMIN_CHAT_ID; если она сменила ID —
-сам находит новый), а если она не принимает — через партнёрского бота в
-«ChimganDarbaza Partners». TELEGRAM_ALERT_CHAT_IDS — ещё личные чаты.
+Куда пишет: только ботом заявок — в группу заявок (TELEGRAM_ADMIN_CHAT_ID;
+если она сменила ID — сам находит новый) и в личные чаты ответственных
+(TELEGRAM_ALERT_CHAT_IDS). Партнёрского бота и его группу не трогает
+(владелец, 19.11.2026).
 
 Длительный сбой (сайт лежит, сертификат) — одно сообщение при начале,
 напоминание раз в несколько часов и одно «восстановлено». События из
@@ -52,7 +53,7 @@ INIT = "--init" in sys.argv
 # Ошибки в журнале сайта → что это значит для заявок.
 LOG_RULES = [
     ("telegram", re.compile(r"\[telegram\] sendMessage (failed|error)"),
-     "Заявки не доходят в группу заявок (Telegram). Сами заявки пришли тревогой в «ChimganDarbaza Partners»."),
+     "Заявки не доходят в группу заявок (Telegram). Сами заявки сохранены в архиве на сервере."),
     ("migrate", re.compile(r"was upgraded to supergroup"),
      "Группа заявок сменила ID (Telegram перевёл её в супергруппу). Сайт уже шлёт в новую, но надо обновить TELEGRAM_ADMIN_CHAT_ID на сервере."),
     ("email", re.compile(r"\[request\] Resend (failed|threw)|DELIVERY FAILED|email=(failed|error)"),
@@ -61,8 +62,6 @@ LOG_RULES = [
     # сканеры уязвимостей Next.js, а не гости (271 из 283 за неделю на 19.11).
     ("action", re.compile(r"Failed to find Server Action \"[0-9a-f]{20,}\""),
      "У гостей не отправилась форма заявки: страница была открыта до обновления сайта. Гость видел ошибку — заявка НЕ сохранилась."),
-    ("partners", re.compile(r"\[partners\] (telegram|партн)"),
-     "Партнёрские заявки не доходят в Telegram."),
     ("alert", re.compile(r"\[alert\] тревогу не удалось"),
      "Тревога о сбое заявки не дошла ни в один канал — проверьте архив заявок на сервере."),
 ]
@@ -128,11 +127,6 @@ def notify(env, state, text):
             state["group_chat"] = str(moved)
             d = tg_send(staff, moved, text)
         delivered = bool(d.get("ok"))
-    if not delivered:
-        ptoken = env.get("TELEGRAM_PARTNERS_BOT_TOKEN", "")
-        for chat in [c.strip() for c in env.get("TELEGRAM_PARTNERS_CHAT_ID", "").split(",") if c.strip()]:
-            if ptoken and tg_send(ptoken, chat, "⚠️ Группа заявок не принимает сообщения, пишу сюда.\n\n" + text).get("ok"):
-                delivered = True
     for chat in [c.strip() for c in env.get("TELEGRAM_ALERT_CHAT_IDS", "").split(",") if c.strip()]:
         if staff and tg_send(staff, chat, text).get("ok"):
             delivered = True

@@ -1,23 +1,18 @@
 import { lastTelegramError, sendMessage } from "@/lib/telegram";
 
 /**
- * Тревога о сбое доставки заявки — по каналу, который не зависит от группы
- * заявок.
+ * Тревога о сбое доставки заявки — только через бота заявок.
  *
  * 11–19.11.2026 группа «Chimgan Darbaza - Заявки» сменила ID, и 32 заявки
- * гостей неделю не доходили: гость видел «Заявка принята», почта тоже не
- * уходит, а узнали случайно. Поэтому при любом отказе группы:
+ * гостей неделю не доходили: гость видел «Заявка принята», а узнали случайно.
+ * Если группа не приняла заявку, тот же бот шлёт её целиком с причиной в
+ * личные чаты ответственных — TELEGRAM_ALERT_CHAT_IDS, через запятую (человек
+ * должен один раз написать боту /start; свой id бот подскажет по /chatid).
  *
- *  1. Партнёрский бот (@chimgandarbaza_partners_bot) пишет в свою группу
- *     «ChimganDarbaza Partners» — другой токен, другой чат: поломка основной
- *     группы его не задевает.
- *  2. Если задан TELEGRAM_ALERT_CHAT_IDS (личные чаты ответственных, через
- *     запятую; человек должен один раз написать боту /start) — туда же через
- *     основного бота.
- *
- * В тревоге — сама заявка целиком, чтобы её можно было обработать сразу.
- * Сторож на сервере (scripts/monitor/chimgan-monitor.py) дополнительно
- * проверяет журнал, сайт и сертификаты каждые 10 минут.
+ * Партнёрского бота и его группу не трогаем (владелец, 19.11.2026): тревоги
+ * идут только по каналам заявок. Сторож на сервере
+ * (scripts/monitor/chimgan-monitor.py) дополнительно проверяет журнал, сайт и
+ * сертификаты каждые 10 минут.
  */
 const LIMIT = 3500; // у Telegram 4096 символов на сообщение — с запасом на шапку
 
@@ -36,47 +31,24 @@ export async function alertDeliveryFailure(form: string, requestHtml: string): P
   return alert(text);
 }
 
-/** Произвольное сообщение по запасным каналам. Возвращает, дошло ли хоть куда-то. */
+/** Сообщение в личные чаты ответственных через бота заявок. Дошло ли хоть кому-то. */
 export async function alert(text: string): Promise<boolean> {
-  const results = await Promise.all([viaPartnersBot(text), ...personalChats().map((id) => sendMessage(id, text).then(Boolean))]);
-  const ok = results.some(Boolean);
-  if (!ok) console.error("[alert] тревогу не удалось доставить ни в один запасной канал");
+  const chats = alertChats();
+  if (chats.length === 0) {
+    console.error("[alert] TELEGRAM_ALERT_CHAT_IDS не задан — тревогу некуда отправить (заявка сохранена в архиве)");
+    return false;
+  }
+  const results = await Promise.all(chats.map((id) => sendMessage(id, text)));
+  const ok = results.some((r) => r !== null);
+  if (!ok) console.error("[alert] тревогу не удалось доставить ни в один личный чат");
   return ok;
 }
 
-function personalChats(): string[] {
+function alertChats(): string[] {
   return (process.env.TELEGRAM_ALERT_CHAT_IDS ?? "")
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean);
-}
-
-async function viaPartnersBot(text: string): Promise<boolean> {
-  const token = process.env.TELEGRAM_PARTNERS_BOT_TOKEN?.trim();
-  const chats = (process.env.TELEGRAM_PARTNERS_CHAT_ID ?? "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-  if (!token || chats.length === 0) return false;
-  const sent = await Promise.all(
-    chats.map(async (chatId) => {
-      try {
-        const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ chat_id: chatId, text, parse_mode: "HTML", disable_web_page_preview: true }),
-          signal: AbortSignal.timeout(10_000),
-        });
-        const data = (await res.json()) as { ok: boolean; description?: string };
-        if (!data.ok) console.error(`[alert] партнёрский бот → ${chatId}: ${data.description}`);
-        return data.ok;
-      } catch (e) {
-        console.error(`[alert] партнёрский бот → ${chatId}:`, e);
-        return false;
-      }
-    }),
-  );
-  return sent.some(Boolean);
 }
 
 function escapeHtml(s: string) {
