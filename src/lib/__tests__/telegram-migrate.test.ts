@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -21,7 +21,7 @@ describe("telegram — переезд группы в супергруппу", (
     dir = mkdtempSync(join(tmpdir(), "tg-migrate-"));
     vi.resetModules();
     vi.stubEnv("TELEGRAM_STAFF_BOT_TOKEN", "test-token");
-    vi.stubEnv("BLOB_DIR", dir);
+    vi.stubEnv("TELEGRAM_MIGRATIONS_FILE", join(dir, "telegram-chat-migrations.json"));
     vi.stubGlobal(
       "fetch",
       vi.fn(async (_url: string, init: RequestInit) => {
@@ -59,10 +59,19 @@ describe("telegram — переезд группы в супергруппу", (
     errors.mockRestore();
   });
 
+  it("из файла берутся только настоящие ID супергрупп («-100…»)", async () => {
+    writeFileSync(join(dir, "telegram-chat-migrations.json"), JSON.stringify({ [OLD]: "-123456" }));
+    const errors = vi.spyOn(console, "error").mockImplementation(() => {});
+    const { sendMessage } = await import("@/lib/telegram");
+    await sendMessage(OLD, "заявка");
+    expect(String(calls[0].chat_id)).toBe(OLD); // «-123456» не принят — шлём как настроено
+    errors.mockRestore();
+  });
+
   it("после перезапуска сайта — сразу в новый чат, без заметки и без записи в журнал", async () => {
     const errors = vi.spyOn(console, "error").mockImplementation(() => {});
     await (await import("@/lib/telegram")).sendMessage(OLD, "до перезапуска");
-    expect(JSON.parse(readFileSync(join(dir, "site", "telegram-chat-migrations.json"), "utf8"))).toEqual({ [OLD]: NEW });
+    expect(JSON.parse(readFileSync(join(dir, "telegram-chat-migrations.json"), "utf8"))).toEqual({ [OLD]: NEW });
 
     vi.resetModules(); // «перезапуск» — память модуля пустая, файл остался
     calls.length = 0;

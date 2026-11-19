@@ -38,6 +38,8 @@ import urllib.request
 
 ENV_FILE = "/etc/chimgandarbaza.env"
 STATE_FILE = os.environ.get("MONITOR_STATE", "/var/lib/chimgan-monitor/state.json")
+# Новый ID группы заявок пишет сам сайт (src/lib/telegram.ts) — вне папки, которую nginx отдаёт наружу.
+MIGRATIONS_FILE = "/var/www/chimgandarbaza/.next/cache/telegram-chat-migrations.json"
 SERVICE = "chimgandarbaza"
 SITE_URL = "https://chimgandarbaza.uz/ru"
 CERT_HOSTS = [
@@ -54,7 +56,7 @@ INIT = "--init" in sys.argv
 LOG_RULES = [
     ("telegram", re.compile(r"\[telegram\] sendMessage (failed|error)"),
      "Заявки не доходят в группу заявок (Telegram). Сами заявки сохранены в архиве на сервере."),
-    ("migrate", re.compile(r"was upgraded to supergroup"),
+    ("migrate", re.compile(r"^\[telegram\] chat -?\d+ was upgraded to supergroup -?\d+ — sending there"),
      "Группа заявок сменила ID (Telegram перевёл её в супергруппу). Сайт уже шлёт в новую, но надо обновить TELEGRAM_ADMIN_CHAT_ID на сервере."),
     ("email", re.compile(r"\[request\] Resend (failed|threw)|DELIVERY FAILED|email=(failed|error)"),
      "Письма с заявками не уходят на почту."),
@@ -218,18 +220,22 @@ def main():
     for line in lines:
         for key, rx, _ in LOG_RULES:
             if rx.search(line):
-                # Строка о переезде группы — без маски: в ней только ID чатов, а ID нужен целиком.
-                found.setdefault(key, []).append(line if key == "migrate" else mask(line))
+                found.setdefault(key, []).append(mask(line))
     # Переезд группы — не сбой: сайт сам шлёт в новую и запоминает её. Одно
     # информационное сообщение на каждый новый ID, без «🚨» и без повторов
     # (19.11.2026 после каждой выкладки приходила ложная тревога).
     if "migrate" in found:
-        lines_m = found.pop("migrate")
+        found.pop("migrate")
+        # Новый ID — только из файла, который пишет сам сайт; текст журнала мог
+        # прийти от гостя (поле формы), ему не верим. Только «-100…».
         seen = state.setdefault("migrations_seen", [])
-        for line in lines_m:
-            m = re.search(r"upgraded to supergroup (-?\d+)", line)
-            target = m.group(1) if m else ""
-            if target and target not in seen:
+        try:
+            with open(MIGRATIONS_FILE, encoding="utf-8") as f:
+                targets = [str(v) for v in json.load(f).values()]
+        except (OSError, ValueError):
+            targets = []
+        for target in targets:
+            if re.fullmatch(r"-100\d{6,}", target) and target not in seen:
                 seen.append(target)
                 notify(env, state, "ℹ️ <b>Группа заявок сменила ID</b> — Telegram перевёл её в супергруппу. Заявки доходят: сайт "
                        "сам переключился на новую группу. Чтобы убрать лишний шаг, в настройках сервера стоит обновить "

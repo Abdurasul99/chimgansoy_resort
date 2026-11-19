@@ -48,11 +48,14 @@ type SendOpts = {
  * и тревогу сторожа — ложную, заявка-то доходила.
  */
 const migratedChats = new Map<string, number | string>();
-const MIGRATIONS_FILE = path.join(
-  process.env.BLOB_DIR?.trim() || "/var/lib/chimgan-blob",
-  "site",
-  "telegram-chat-migrations.json",
-);
+// Не в /var/lib/chimgan-blob: эту папку nginx отдаёт наружу по /blob/. Кеш
+// сборки сайта переживает выкладку (chimgan-patch собирает на копии рабочей
+// папки) и наружу не отдаётся.
+const MIGRATIONS_FILE =
+  process.env.TELEGRAM_MIGRATIONS_FILE?.trim() || path.join(process.cwd(), ".next", "cache", "telegram-chat-migrations.json");
+/** Принимаем только настоящие ID: откуда — любой чат, куда — супергруппа «-100…». */
+const VALID_FROM = /^-?\d+$/;
+const VALID_TO = /^-100\d{6,}$/;
 let migrationsLoaded: Promise<void> | null = null;
 
 function loadMigrations(): Promise<void> {
@@ -60,7 +63,7 @@ function loadMigrations(): Promise<void> {
     .readFile(MIGRATIONS_FILE, "utf8")
     .then((raw) => {
       for (const [from, to] of Object.entries(JSON.parse(raw) as Record<string, number | string>)) {
-        migratedChats.set(from, to);
+        if (VALID_FROM.test(from) && VALID_TO.test(String(to))) migratedChats.set(from, to);
       }
     })
     .catch(() => undefined); // файла нет — переездов не было
