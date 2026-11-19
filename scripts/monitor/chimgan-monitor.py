@@ -218,7 +218,23 @@ def main():
     for line in lines:
         for key, rx, _ in LOG_RULES:
             if rx.search(line):
-                found.setdefault(key, []).append(mask(line))
+                # Строка о переезде группы — без маски: в ней только ID чатов, а ID нужен целиком.
+                found.setdefault(key, []).append(line if key == "migrate" else mask(line))
+    # Переезд группы — не сбой: сайт сам шлёт в новую и запоминает её. Одно
+    # информационное сообщение на каждый новый ID, без «🚨» и без повторов
+    # (19.11.2026 после каждой выкладки приходила ложная тревога).
+    if "migrate" in found:
+        lines_m = found.pop("migrate")
+        seen = state.setdefault("migrations_seen", [])
+        for line in lines_m:
+            m = re.search(r"upgraded to supergroup (-?\d+)", line)
+            target = m.group(1) if m else ""
+            if target and target not in seen:
+                seen.append(target)
+                notify(env, state, "ℹ️ <b>Группа заявок сменила ID</b> — Telegram перевёл её в супергруппу. Заявки доходят: сайт "
+                       "сам переключился на новую группу. Чтобы убрать лишний шаг, в настройках сервера стоит обновить "
+                       "<code>TELEGRAM_ADMIN_CHAT_ID=" + target + "</code>.")
+
     if found:
         parts = ["🚨 <b>Сбой с заявками на сайте</b>", ""]
         for key, rx, meaning in LOG_RULES:

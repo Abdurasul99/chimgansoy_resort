@@ -1,24 +1,32 @@
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 /**
  * Группа «Chimgan Darbaza - Заявки» 11.11.2026 стала супергруппой — старый id
  * отвечал «group chat was upgraded to a supergroup chat», и заявки неделю не
- * доходили. Отправка должна сама уйти в новый чат из migrate_to_chat_id.
+ * доходили. Отправка должна сама уйти в новый чат из migrate_to_chat_id и
+ * запомнить его в файле: после перезапуска сайта — сразу в новый чат, без
+ * повторного «группа сменила ID» и без ложной тревоги сторожа (19.11.2026).
  */
 const OLD = "-4950000000";
 const NEW = -1003972473111;
 
 describe("telegram — переезд группы в супергруппу", () => {
-  const calls: Array<{ chat_id: unknown }> = [];
+  const calls: Array<{ chat_id: unknown; text?: string }> = [];
+  let dir = "";
   beforeEach(() => {
     calls.length = 0;
+    dir = mkdtempSync(join(tmpdir(), "tg-migrate-"));
     vi.resetModules();
     vi.stubEnv("TELEGRAM_STAFF_BOT_TOKEN", "test-token");
+    vi.stubEnv("BLOB_DIR", dir);
     vi.stubGlobal(
       "fetch",
       vi.fn(async (_url: string, init: RequestInit) => {
         const body = JSON.parse(String(init.body));
-        calls.push({ chat_id: body.chat_id });
+        calls.push({ chat_id: body.chat_id, text: body.text });
         const ok = String(body.chat_id) === String(NEW);
         return new Response(
           JSON.stringify(
@@ -33,9 +41,10 @@ describe("telegram — переезд группы в супергруппу", (
   afterEach(() => {
     vi.unstubAllGlobals();
     vi.unstubAllEnvs();
+    rmSync(dir, { recursive: true, force: true });
   });
 
-  it("повторяет отправку в новый чат и дальше шлёт сразу туда", async () => {
+  it("повторяет отправку в новый чат, пишет группе один раз и дальше шлёт сразу туда", async () => {
     const { sendMessage } = await import("@/lib/telegram");
     const errors = vi.spyOn(console, "error").mockImplementation(() => {});
 
@@ -47,6 +56,22 @@ describe("telegram — переезд группы в супергруппу", (
     calls.length = 0;
     expect(await sendMessage(OLD, "заявка 2")).toEqual({ message_id: 1 });
     expect(calls.map((c) => String(c.chat_id))).toEqual([String(NEW)]); // без лишнего запроса в старый чат
+    errors.mockRestore();
+  });
+
+  it("после перезапуска сайта — сразу в новый чат, без заметки и без записи в журнал", async () => {
+    const errors = vi.spyOn(console, "error").mockImplementation(() => {});
+    await (await import("@/lib/telegram")).sendMessage(OLD, "до перезапуска");
+    expect(JSON.parse(readFileSync(join(dir, "site", "telegram-chat-migrations.json"), "utf8"))).toEqual({ [OLD]: NEW });
+
+    vi.resetModules(); // «перезапуск» — память модуля пустая, файл остался
+    calls.length = 0;
+    errors.mockClear();
+    const { sendMessage } = await import("@/lib/telegram");
+    expect(await sendMessage(OLD, "после перезапуска")).toEqual({ message_id: 1 });
+    expect(calls.map((c) => String(c.chat_id))).toEqual([String(NEW)]);
+    expect(calls.some((c) => String(c.text).includes("сменила ID"))).toBe(false);
+    expect(errors.mock.calls.some((a) => String(a[0]).includes("was upgraded"))).toBe(false);
     errors.mockRestore();
   });
 });

@@ -7,6 +7,9 @@
  * Telegram (which would make Telegram retry the same update forever).
  */
 
+import { promises as fs } from "node:fs";
+import path from "node:path";
+
 const API = "https://api.telegram.org";
 
 function token(): string | null {
@@ -38,10 +41,40 @@ type SendOpts = {
  * группа «Chimgan Darbaza - Заявки» перестала получать заявки — 34 штуки
  * за неделю ушли только в архив, гость при этом видел «Заявка принята».
  *
- * Теперь отправка сама повторяется в новый чат и запоминает его до
- * перезапуска; в журнал пишется, какой id вписать в TELEGRAM_ADMIN_CHAT_ID.
+ * Теперь отправка сама повторяется в новый чат и запоминает его в файле
+ * (MIGRATIONS_FILE) — и после перезапуска сайта шлёт сразу в новый чат. До
+ * 19.11.2026 переезд помнился только до перезапуска: после каждой выкладки
+ * первая заявка снова стучалась в старый id, а группа получала «сменила ID»
+ * и тревогу сторожа — ложную, заявка-то доходила.
  */
 const migratedChats = new Map<string, number | string>();
+const MIGRATIONS_FILE = path.join(
+  process.env.BLOB_DIR?.trim() || "/var/lib/chimgan-blob",
+  "site",
+  "telegram-chat-migrations.json",
+);
+let migrationsLoaded: Promise<void> | null = null;
+
+function loadMigrations(): Promise<void> {
+  migrationsLoaded ??= fs
+    .readFile(MIGRATIONS_FILE, "utf8")
+    .then((raw) => {
+      for (const [from, to] of Object.entries(JSON.parse(raw) as Record<string, number | string>)) {
+        migratedChats.set(from, to);
+      }
+    })
+    .catch(() => undefined); // файла нет — переездов не было
+  return migrationsLoaded;
+}
+
+async function saveMigrations(): Promise<void> {
+  try {
+    await fs.mkdir(path.dirname(MIGRATIONS_FILE), { recursive: true });
+    await fs.writeFile(MIGRATIONS_FILE, JSON.stringify(Object.fromEntries(migratedChats)), "utf8");
+  } catch (e) {
+    console.error("[telegram] не удалось сохранить новый id группы:", e);
+  }
+}
 
 /** Последняя ошибка Telegram — для текста тревоги (lib/alerts.ts). */
 let lastError = "";
@@ -58,6 +91,7 @@ async function call<T = unknown>(method: string, body: Record<string, unknown>):
     return null;
   }
   const original = body.chat_id;
+  await loadMigrations();
   const known = original !== undefined ? migratedChats.get(String(original)) : undefined;
   const payload = known !== undefined ? { ...body, chat_id: known } : body;
   try {
@@ -65,11 +99,12 @@ async function call<T = unknown>(method: string, body: Record<string, unknown>):
     const movedTo = data.parameters?.migrate_to_chat_id;
     if (!data.ok && movedTo !== undefined && original !== undefined && String(payload.chat_id) !== String(movedTo)) {
       migratedChats.set(String(original), movedTo);
+      await saveMigrations();
       console.error(
         `[telegram] chat ${String(original)} was upgraded to supergroup ${movedTo} — sending there; set TELEGRAM_ADMIN_CHAT_ID=${movedTo}`,
       );
       data = await post<T>(t, method, { ...body, chat_id: movedTo });
-      // Один раз за запуск — сказать самой группе, что она сменила ID.
+      // Один раз — при первом обнаружении переезда (дальше id берётся из файла).
       await post(t, "sendMessage", {
         chat_id: movedTo,
         parse_mode: "HTML",
