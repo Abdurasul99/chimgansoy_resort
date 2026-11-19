@@ -40,7 +40,8 @@ describe("telegram — переезд группы в супергруппу", (
     const errors = vi.spyOn(console, "error").mockImplementation(() => {});
 
     expect(await sendMessage(OLD, "заявка 1")).toEqual({ message_id: 1 });
-    expect(calls.map((c) => String(c.chat_id))).toEqual([OLD, String(NEW)]);
+    // старый чат → повтор в новый → одна заметка самой группе, что она сменила ID
+    expect(calls.map((c) => String(c.chat_id))).toEqual([OLD, String(NEW), String(NEW)]);
     expect(errors.mock.calls.some((a) => String(a[0]).includes(`TELEGRAM_ADMIN_CHAT_ID=${NEW}`))).toBe(true);
 
     calls.length = 0;

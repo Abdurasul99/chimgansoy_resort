@@ -3,6 +3,7 @@
 import { saveRequest } from "@/lib/requests-store";
 import { adminChatIds } from "@/lib/request-delivery";
 import { esc, sendMessage } from "@/lib/telegram";
+import { alertDeliveryFailure } from "@/lib/alerts";
 import { validateLegalConsents } from "@/lib/legal-consent";
 import { pageLine, trafficSource } from "@/lib/request-context";
 import { escapeHtml, sendEmail } from "@/lib/send-email";
@@ -222,6 +223,8 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   ]);
 
   const delivered = emailStatus === "sent" || sent.some((r) => r !== null);
+  // Группа заявок не приняла — тревога с заявкой по запасному каналу (lib/alerts.ts).
+  if (!sent.some((r) => r !== null)) await alertDeliveryFailure(`Форма «${formType === "booking" ? "бронь" : "вопрос"}» на сайте`, telegramHtml);
 
   console.log(
     `[contact:${formType}] email=${emailStatus} → ${emailTo || "no-email"} | name: ${name}, phone: ${phone}, dates: ${dates || "—"}, guests: ${guests || "—"}, room: ${room || "—"}`,

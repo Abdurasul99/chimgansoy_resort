@@ -9,6 +9,7 @@
  */
 
 import { sendMessage } from "@/lib/telegram";
+import { alertDeliveryFailure } from "@/lib/alerts";
 import { saveRequest, type StoredRequest } from "@/lib/requests-store";
 import { isWeekendISO, money } from "@/lib/tariff";
 
@@ -112,5 +113,10 @@ export async function deliverRequest(opts: {
     saveRequest(opts.record),
   ]);
 
-  return { telegramOk: sent.some((r) => r !== null), emailOk };
+  const telegramOk = sent.some((r) => r !== null);
+  // Группа заявок не приняла — тревога с самой заявкой по запасному каналу
+  // (lib/alerts.ts). Гость при этом видит «принята»: заявка в архиве и в тревоге.
+  if (!telegramOk) await alertDeliveryFailure(opts.emailSubject, opts.telegramHtml);
+
+  return { telegramOk, emailOk };
 }

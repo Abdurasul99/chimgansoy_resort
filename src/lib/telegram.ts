@@ -43,6 +43,12 @@ type SendOpts = {
  */
 const migratedChats = new Map<string, number | string>();
 
+/** Последняя ошибка Telegram — для текста тревоги (lib/alerts.ts). */
+let lastError = "";
+export function lastTelegramError(): string {
+  return lastError;
+}
+
 type ApiReply<T> = { ok: boolean; result?: T; description?: string; parameters?: { migrate_to_chat_id?: number } };
 
 async function call<T = unknown>(method: string, body: Record<string, unknown>): Promise<T | null> {
@@ -63,13 +69,23 @@ async function call<T = unknown>(method: string, body: Record<string, unknown>):
         `[telegram] chat ${String(original)} was upgraded to supergroup ${movedTo} — sending there; set TELEGRAM_ADMIN_CHAT_ID=${movedTo}`,
       );
       data = await post<T>(t, method, { ...body, chat_id: movedTo });
+      // Один раз за запуск — сказать самой группе, что она сменила ID.
+      await post(t, "sendMessage", {
+        chat_id: movedTo,
+        parse_mode: "HTML",
+        text:
+          "ℹ️ <b>Эта группа сменила ID</b> — Telegram перевёл её в супергруппу. Заявки уже идут сюда, " +
+          `но в настройках сервера стоит старый номер: обновите <code>TELEGRAM_ADMIN_CHAT_ID=${movedTo}</code>.`,
+      }).catch(() => undefined);
     }
     if (!data.ok) {
+      lastError = data.description ?? "unknown error";
       console.error(`[telegram] ${method} failed:`, data.description);
       return null;
     }
     return data.result ?? null;
   } catch (e) {
+    lastError = e instanceof Error ? e.message : String(e);
     console.error(`[telegram] ${method} error:`, e);
     return null;
   }
