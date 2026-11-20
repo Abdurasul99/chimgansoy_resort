@@ -45,7 +45,8 @@ type SendOpts = {
  * (MIGRATIONS_FILE) — и после перезапуска сайта шлёт сразу в новый чат. До
  * 19.11.2026 переезд помнился только до перезапуска: после каждой выкладки
  * первая заявка снова стучалась в старый id, а группа получала «сменила ID»
- * и тревогу сторожа — ложную, заявка-то доходила.
+ * и тревогу сторожа — ложную, заявка-то доходила. С 20.11.2026 в группу о
+ * переезде не пишем вовсе — сторож сообщает письмом (lib/alerts.ts).
  */
 const migratedChats = new Map<string, number | string>();
 // Не в /var/lib/chimgan-blob: эту папку nginx отдаёт наружу по /blob/. Кеш
@@ -106,15 +107,10 @@ async function call<T = unknown>(method: string, body: Record<string, unknown>):
       console.error(
         `[telegram] chat ${String(original)} was upgraded to supergroup ${movedTo} — sending there; set TELEGRAM_ADMIN_CHAT_ID=${movedTo}`,
       );
+      // В саму группу о переезде не пишем: служебные сообщения в Telegram не
+      // шлём (владелец, 20.11.2026). Об этом один раз пишет письмом сторож —
+      // он видит строку журнала выше.
       data = await post<T>(t, method, { ...body, chat_id: movedTo });
-      // Один раз — при первом обнаружении переезда (дальше id берётся из файла).
-      await post(t, "sendMessage", {
-        chat_id: movedTo,
-        parse_mode: "HTML",
-        text:
-          "ℹ️ <b>Эта группа сменила ID</b> — Telegram перевёл её в супергруппу. Заявки уже идут сюда, " +
-          `но в настройках сервера стоит старый номер: обновите <code>TELEGRAM_ADMIN_CHAT_ID=${movedTo}</code>.`,
-      }).catch(() => undefined);
     }
     if (!data.ok) {
       lastError = data.description ?? "unknown error";

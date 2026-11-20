@@ -114,7 +114,7 @@ export async function deliverRequest(opts: {
   ]);
 
   const telegramOk = sent.some((r) => r !== null);
-  // Группа заявок не приняла — тревога с самой заявкой по запасному каналу
+  // Группа заявок не приняла — тревога с самой заявкой письмом
   // (lib/alerts.ts). Гость при этом видит «принята»: заявка в архиве и в тревоге.
   if (!telegramOk) await alertDeliveryFailure(opts.emailSubject, opts.telegramHtml);
 

@@ -223,7 +223,7 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   ]);
 
   const delivered = emailStatus === "sent" || sent.some((r) => r !== null);
-  // Группа заявок не приняла — тревога с заявкой по запасному каналу (lib/alerts.ts).
+  // Группа заявок не приняла — заявка письмом на ALERT_EMAIL_TO (lib/alerts.ts).
   if (!sent.some((r) => r !== null)) await alertDeliveryFailure(`Форма «${formType === "booking" ? "бронь" : "вопрос"}» на сайте`, telegramHtml);
 
   console.log(

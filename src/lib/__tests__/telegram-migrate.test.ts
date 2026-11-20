@@ -44,13 +44,16 @@ describe("telegram — переезд группы в супергруппу", (
     rmSync(dir, { recursive: true, force: true });
   });
 
-  it("повторяет отправку в новый чат, пишет группе один раз и дальше шлёт сразу туда", async () => {
+  it("повторяет отправку в новый чат и дальше шлёт сразу туда — без служебных сообщений в группу", async () => {
     const { sendMessage } = await import("@/lib/telegram");
     const errors = vi.spyOn(console, "error").mockImplementation(() => {});
 
     expect(await sendMessage(OLD, "заявка 1")).toEqual({ message_id: 1 });
-    // старый чат → повтор в новый → одна заметка самой группе, что она сменила ID
-    expect(calls.map((c) => String(c.chat_id))).toEqual([OLD, String(NEW), String(NEW)]);
+    // старый чат → повтор в новый; о переезде группе не пишем (владелец, 20.11.2026)
+    expect(calls.map((c) => String(c.chat_id))).toEqual([OLD, String(NEW)]);
+    expect(calls.some((c) => String(c.text).includes("сменила ID"))).toBe(false);
+    // строка журнала, по которой сторож один раз пишет об этом письмом
+    expect(errors.mock.calls.some((a) => /^\[telegram\] chat -?\d+ was upgraded to supergroup -?\d+ — sending there/.test(String(a[0])))).toBe(true);
     expect(errors.mock.calls.some((a) => String(a[0]).includes(`TELEGRAM_ADMIN_CHAT_ID=${NEW}`))).toBe(true);
 
     calls.length = 0;
