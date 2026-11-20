@@ -10,16 +10,17 @@
   • журнал сайта за прошедшие 10 минут — заявка не дошла в группу Telegram,
     письмо с заявкой не ушло, форма у гостя не отправилась после выкладки,
     тревога не дошла, группа сменила ID;
-  • сайт открывается (иначе заявку оставить негде) и сервис запущен;
-  • сертификаты сайта и модуля онлайн-брони Exely — 14.11.2026 у Exely
-    истёк сертификат, и онлайн-бронь перестала грузиться.
+  • сайт открывается (иначе заявку оставить негде) и сервис запущен.
+
+Сертификаты и связь с Exely НЕ проверяет — владелец просил писать только
+о сбоях с заявками (20.11.2026).
 
 Куда пишет: только ботом заявок — в группу заявок (TELEGRAM_ADMIN_CHAT_ID;
 если она сменила ID — сам находит новый) и в личные чаты ответственных
 (TELEGRAM_ALERT_CHAT_IDS). Партнёрского бота и его группу не трогает
 (владелец, 19.11.2026).
 
-Длительный сбой (сайт лежит, сертификат) — одно сообщение при начале,
+Длительный сбой (сайт лежит, сервис остановлен) — одно сообщение при начале,
 напоминание раз в несколько часов и одно «восстановлено». События из
 журнала — одно сообщение на каждые 10 минут, где они были.
 
@@ -29,8 +30,6 @@ import datetime
 import json
 import os
 import re
-import socket
-import ssl
 import subprocess
 import sys
 import time
@@ -42,13 +41,7 @@ STATE_FILE = os.environ.get("MONITOR_STATE", "/var/lib/chimgan-monitor/state.jso
 MIGRATIONS_FILE = "/var/www/chimgandarbaza/.next/cache/telegram-chat-migrations.json"
 SERVICE = "chimgandarbaza"
 SITE_URL = "https://chimgandarbaza.uz/ru"
-CERT_HOSTS = [
-    ("chimgandarbaza.uz", "сайт chimgandarbaza.uz"),
-    ("cdn.behopenapi.com", "модуль онлайн-брони Exely (CDN)"),
-    ("uz-ibe.hopenapi.com", "модуль онлайн-брони Exely"),
-]
-CERT_WARN_DAYS = 7
-REMIND_HOURS = {"site": 2, "service": 2, "cert": 24}
+REMIND_HOURS = {"site": 2, "service": 2}
 DRY = "--dry-run" in sys.argv
 INIT = "--init" in sys.argv
 
@@ -169,21 +162,6 @@ def service_ok():
     return r.stdout.strip() == "active", r.stdout.strip()
 
 
-def cert_days(host):
-    ctx = ssl.create_default_context()
-    ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_NONE  # читаем и просроченный — чтобы сказать, когда истёк
-    with socket.create_connection((host, 443), timeout=15) as s:
-        with ctx.wrap_socket(s, server_hostname=host) as ss:
-            der = ss.getpeercert(binary_form=True)
-    # дату берём из openssl: в stdlib нет разбора DER без проверки
-    pem = ssl.DER_cert_to_PEM_cert(der)
-    out = subprocess.run(["openssl", "x509", "-noout", "-enddate"], input=pem, capture_output=True, text=True)
-    end = datetime.datetime.strptime(out.stdout.strip().split("=", 1)[1], "%b %d %H:%M:%S %Y %Z")
-    now_utc = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
-    return (end - now_utc).total_seconds() / 86400, end
-
-
 def condition(env, state, key, failing, start_text, recover_text, remind_hours):
     """Длительное состояние: тревога при начале, напоминание, «восстановлено»."""
     now = time.time()
@@ -259,21 +237,6 @@ def main():
     condition(env, state, "service", not ok,
               "🚨 <b>Сервис сайта остановлен</b> (" + info + ") — заявки не принимаются.",
               "✅ Сервис сайта снова работает", REMIND_HOURS["service"])
-
-    # 3. Сертификаты сайта и онлайн-брони — раз в 6 часов достаточно.
-    if now - state.get("cert_checked", 0) >= 6 * 3600:
-        state["cert_checked"] = now
-        for host, label in CERT_HOSTS:
-            try:
-                days, end = cert_days(host)
-                bad = days < CERT_WARN_DAYS
-                text = ("🚨 <b>Сертификат истёк</b>" if days < 0 else "⚠️ <b>Сертификат скоро истекает</b>") + \
-                       ": " + label + " (" + host + "), срок — " + end.strftime("%d.%m.%Y") + "."
-                if host != "chimgandarbaza.uz":
-                    text += " Онлайн-бронь у гостей не загрузится — напишите в поддержку Exely."
-            except Exception as e:
-                bad, text = True, "⚠️ Не удаётся проверить сертификат: " + label + " (" + host + "): " + str(e)[:100]
-            condition(env, state, "cert:" + host, bad, text, "✅ Сертификат в порядке: " + label, REMIND_HOURS["cert"])
 
     state["last_run"] = now
     save_state(state)
