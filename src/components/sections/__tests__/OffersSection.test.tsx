@@ -75,6 +75,21 @@ describe("блок акций по датам", () => {
     expect(screen.queryByText("−20% на Chalet весь ноябрь")).toBeNull();
   });
 
+  it("у каждой акции «в один клик» к форме заявки и онлайн-бронь в движке — с меткой акции", () => {
+    at("2026-11-23");
+    render(<OffersSection locale="uz" />);
+    const oneClick = screen.getAllByRole("link", { name: /Bir bosishda bron qilish/ }).map((a) => a.getAttribute("href"));
+    const engine = screen.getAllByRole("link", { name: "Onlayn bron qilish" }).map((a) => a.getAttribute("href"));
+    // −20% на Chalet — прямо к форме на странице шале, движок сразу на шале.
+    expect(oneClick).toContain("/uz/nomera/cottage?utm_source=site&utm_medium=offers&utm_content=chalet-october#zayavka");
+    expect(engine).toContain("/uz/bron?room-type=5075761&utm_source=site&utm_medium=offers&utm_content=chalet-october");
+    // Акция на любой домик (день рождения; «2+1» в этом файле снята подменённым
+    // сроком) — в каталог, где у каждого домика своя такая кнопка.
+    expect(oneClick).toContain("/uz/nomera?utm_source=site&utm_medium=offers&utm_content=birthday");
+    expect(engine).toContain("/uz/bron?utm_source=site&utm_medium=offers&utm_content=birthday");
+    expect(oneClick).toHaveLength(engine.length);
+  });
+
   it("01.10: акций со сроком 30.09 нет", () => {
     at("2026-10-01");
     render(<OffersSection locale="ru" />);

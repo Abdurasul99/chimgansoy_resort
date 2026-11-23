@@ -1,4 +1,5 @@
 import { promotions, type Promotion } from "@/content/promotions";
+import { EXELY_ROOM_TYPE } from "@/content/rooms";
 import { discountMath, promoBookable, promoBreakdown, todayTashkent, type DiscountMath } from "@/lib/promo-nights";
 import { PromoSticker, StickerConfetti } from "./PromoSticker";
 import { dictionaries } from "@/content/translations";
@@ -17,7 +18,18 @@ const BDAY_WINDOW: Record<Locale, string> = {
   uz: "3 kun oldin · sizning kuningiz · 3 kun keyin",
   en: "3 days before · your day · 3 days after",
 };
-const BOOK_LABEL: Record<Locale, string> = { ru: "Забронировать", uz: "Bron qilish", en: "Book now" };
+/**
+ * Две кнопки, как на странице домика: «в один клик» — короткая форма заявки,
+ * дальше с гостем говорит администратор; «онлайн» — движок Exely на /bron, для
+ * тех, кто оформляет сам. До 23.11.2026 у акций была одна «Забронировать» в
+ * движок — гость с акции не видел самого короткого пути (владелец).
+ */
+const ONE_CLICK: Record<Locale, string> = {
+  ru: "Забронировать в один клик",
+  uz: "Bir bosishda bron qilish",
+  en: "Book in one click",
+};
+const ENGINE_LABEL: Record<Locale, string> = { ru: "Онлайн-бронирование", uz: "Onlayn bron qilish", en: "Book online" };
 
 /** Подписи расчёта скидки («−20% на Chalet»): формулировки оператора. */
 const DISCOUNT_COPY = {
@@ -99,8 +111,21 @@ export function OffersSection({ locale }: Props) {
     en: { how: "How it adds up", one: "3 nights, no offer", three: "3 nights, offer", per: "Per night", note: "UZS, Sunday–Thursday nights. Breakfast included; lunch and dinner are from the restaurant menu, extra." },
   }[locale];
 
-  const href = (slug: string) =>
-    `${localizePath(locale, "/bron")}?utm_source=site&utm_medium=offers&utm_content=${slug}`;
+  const utm = (slug: string) => `utm_source=site&utm_medium=offers&utm_content=${slug}`;
+  /*
+   * «В один клик»: акция на один домик — к форме на его странице (якорь
+   * zayavka, как у кнопки в каталоге), на любой домик — в каталог. Метка
+   * акции остаётся в адресе страницы с формой и уходит в заявку полем page.
+   */
+  const oneClickHref = (promo: Promotion) =>
+    promo.room
+      ? `${localizePath(locale, `/nomera/${promo.room}`)}?${utm(promo.slug)}#zayavka`
+      : `${localizePath(locale, "/nomera")}?${utm(promo.slug)}`;
+  // Движок сразу на нужном домике, если акция на один домик.
+  const engineHref = (promo: Promotion) => {
+    const roomType = promo.room ? EXELY_ROOM_TYPE[promo.room] : undefined;
+    return `${localizePath(locale, "/bron")}?${roomType ? `room-type=${roomType}&` : ""}${utm(promo.slug)}`;
+  };
 
   if (!active.length) return null;
 
@@ -271,13 +296,32 @@ export function OffersSection({ locale }: Props) {
           </details>
 
           <span aria-hidden className="hidden lg:block lg:h-6" />
-          <a
-            href={href(promo.slug)}
-            className="mt-4 inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-[var(--sun)] px-5 text-sm font-bold text-[var(--ink)] shadow-[0_8px_18px_-10px_rgba(217,138,20,0.9)] transition-colors duration-200 after:absolute after:inset-0 after:content-[''] group-hover:bg-[#f7b346] sm:mt-5 lg:mt-auto"
-          >
-            {BOOK_LABEL[locale]}
-            <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-1">→</span>
-          </a>
+          {/*
+              Обёртка без relative: «растянутая» ссылка первой кнопки
+              (after:inset-0) должна накрывать всю карточку, а не ряд кнопок.
+              Вторая кнопка — relative z-10, над этим слоем. На телефоне кнопки
+              одна под другой во всю ширину: «Забронировать в один клик» рядом
+              со второй на 320 px не помещается.
+          */}
+          <div className="mt-4 flex flex-col gap-2.5 sm:mt-5 sm:flex-row sm:flex-wrap sm:items-center lg:mt-auto">
+            <a
+              href={oneClickHref(promo)}
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[var(--sun)] px-5 py-2 text-center text-sm font-bold text-[var(--ink)] shadow-[0_8px_18px_-10px_rgba(217,138,20,0.9)] transition-colors duration-200 after:absolute after:inset-0 after:content-[''] group-hover:bg-[#f7b346]"
+            >
+              {ONE_CLICK[locale]}
+              <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+            </a>
+            {/* Полная загрузка, не клиентский переход: Exely поднимается только
+                на свежей странице (см. BookingDrawer). Обычная <a> так и делает. */}
+            <a
+              href={engineHref(promo)}
+              className={`relative z-10 inline-flex min-h-11 items-center justify-center rounded-full border border-[color:var(--line-strong)] px-5 py-2 text-center text-sm font-bold text-[var(--ink)] transition-colors duration-200 hover:border-[var(--sun)] ${
+                rose ? "bg-white/70" : "bg-[var(--paper)]"
+              }`}
+            >
+              {ENGINE_LABEL[locale]}
+            </a>
+          </div>
         </div>
 
         {/*
