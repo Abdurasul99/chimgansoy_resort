@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Новый год в горах Чимгана — CHIMGAN DARBAZA (демо)</title>
+  <meta name="description" content="Демо новогоднего оформления сайта CHIMGAN DARBAZA." />
+  <meta name="theme-color" content="#0c1626" />
+  <link rel="icon" href="img/logo-light.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@1,600;1,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="img/globe-resort-dusk.jpg" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <canvas class="ambient" aria-hidden="true"></canvas>
+
+  <header class="bar">
+    <svg class="garland" aria-hidden="true"></svg>
+    <div class="bar__in">
+      <a class="logo" data-href="/" aria-label="CHIMGAN DARBAZA">
+        <img src="img/logo-light.svg" alt="CHIMGAN DARBAZA" width="112" height="70" />
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a data-href="/nomera" data-i18n="navRooms">Номера</a>
+        <a data-href="/tubing" data-i18n="navTubing">Тюбинг</a>
+        <a data-href="/restaurant" data-i18n="navRestaurant">Ресторан</a>
+      </nav>
+      <div class="bar__tools">
+        <button class="lights" type="button" data-i18n-aria="lightsToggle" aria-label="Сменить огни гирлянды">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.8V16h5v-.3c0-.7.4-1.4 1-1.8A6 6 0 0 0 12 3z"/></svg>
+        </button>
+        <div class="langs" role="group" aria-label="Language">
+          <button type="button" data-lang="ru">RU</button>
+          <button type="button" data-lang="uz">UZ</button>
+          <button type="button" data-lang="en">EN</button>
+        </div>
+        <a class="btn btn--sm" data-href="/nomera" data-i18n="bookShort">Забронировать</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero__text">
+        <h1 data-i18n="title">Новый год в горах Чимгана</h1>
+        <p class="lead" data-i18n="lead">Домик в горах, огни на склоне и тишина после полуночи. Встречайте 2027-й в CHIMGAN DARBAZA.</p>
+
+        <div class="countdown" aria-live="off">
+          <p class="countdown__label" data-i18n="until">До Нового года</p>
+          <ol class="countdown__grid">
+            <li><b data-unit="d">00</b><span data-unit-label="d">дней</span></li>
+            <li><b data-unit="h">00</b><span data-unit-label="h">часов</span></li>
+            <li><b data-unit="m">00</b><span data-unit-label="m">минут</span></li>
+            <li><b data-unit="s">00</b><span data-unit-label="s">секунд</span></li>
+          </ol>
+          <p class="countdown__done" hidden data-i18n="happy">С Новым 2027 годом!</p>
+        </div>
+
+        <div class="cta">
+          <a class="btn" data-href="/nomera" data-i18n="book">Забронировать на праздники</a>
+          <a class="btn btn--ghost" href="tel:+998701760011">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>
+            <span data-i18n="call">Позвонить</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero__globe">
+        <div class="globe" role="img" data-i18n-aria="globeAlt" aria-label="Снежный шар: CHIMGAN DARBAZA вечером">
+          <div class="globe__glass">
+            <img src="img/globe-resort-dusk.jpg" alt="" width="1000" height="1000" />
+            <canvas class="globe__snow" aria-hidden="true"></canvas>
+            <span class="globe__shine" aria-hidden="true"></span>
+          </div>
+          <div class="globe__base" aria-hidden="true"><span>CHIMGAN DARBAZA</span><span class="globe__year">2027</span></div>
+        </div>
+        <button class="shake" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20M4.9 6.5l14.2 11M4.9 17.5l14.2-11M9 3.5l3 2 3-2M9 20.5l3-2 3 2"/></svg>
+          <span data-i18n="shake">Встряхнуть шар</span>
+        </button>
+        <p class="hint" data-i18n-desktop="hintDesk" data-i18n-touch="hintTouch">Потяните шар мышкой — пойдёт снег</p>
+      </div>
+    </section>
+
+    <section class="stays" aria-labelledby="stays-title">
+      <h2 id="stays-title" data-i18n="staysTitle">Где встретить праздник</h2>
+      <ul class="cards">
+        <li>
+          <a class="card" data-href="/nomera/cottage">
+            <img src="img/chalet-hall.jpg" alt="" loading="lazy" width="720" height="900" />
+            <span class="card__body">
+              <span class="card__name" data-i18n="chalet">Шале</span>
+              <span class="card__text" data-i18n="chaletText">Большой дом для семьи или компании: спальни, кухня и терраса с видом на горы.</span>
+              <span class="card__more" data-i18n="more">Подробнее</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="card" data-href="/nomera/glamping">
+            <img src="img/aframe-bulbs.jpg" alt="" loading="lazy" width="720" height="900" />
+            <span class="card__body">
+              <span class="card__name" data-i18n="glamping">Глэмпинг A-frame</span>
+              <span class="card__text" data-i18n="glampingText">Отдельные домики A-frame с гостиничным комфортом и панорамным окном.</span>
+              <span class="card__more" data-i18n="more">Подробнее</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="card" data-href="/tubing">
+            <img src="img/tubing-evening.jpg" alt="" loading="lazy" width="720" height="900" />
+            <span class="card__body">
+              <span class="card__name" data-i18n="tubing">Тюбинг в огнях</span>
+              <span class="card__text" data-i18n="tubingText">Трасса 160 метров, вечером подсвечена по всей длине.</span>
+              <span class="card__more" data-i18n="more">Подробнее</span>
+            </span>
+          </a>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <img src="img/logo-light.svg" alt="" width="84" height="52" />
+    <a href="tel:+998701760011">+998 70 176 00 11</a>
+    <p data-i18n="demo">Демо новогоднего оформления. Настоящий сайт — chimgandarbaza.uz</p>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

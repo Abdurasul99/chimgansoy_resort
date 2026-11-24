@@ -1,0 +1,14 @@
+# Новогоднее демо — готовые файлы, без сборки. Netlify видит Next.js в
+# папке выше (основной сайт) и иначе пытается собрать его.
+[build]
+  publish = "."
+  command = ""
+
+
+[build.processing]
+  skip_processing = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
