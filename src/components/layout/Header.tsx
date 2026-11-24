@@ -129,10 +129,14 @@ export function Header({ locale, restaurant = null }: HeaderProps) {
     };
   }, [isOpen]);
 
-  // Прозрачная шапка — только над фото первого экрана главной. Ресторан с
-  // 28.09.2026 светлая витрина без тёмной обложки, у него обычная шапка.
-  const isHeroPage = pathname.split("/").length <= 2;
+  // Прозрачная шапка — над фото первого экрана главной и ресторана. Ресторан
+  // с 24.11.2026 тёмный, в стиле его Instagram (владелец): после прокрутки
+  // шапка там не белая, а тёмное стекло — белая полоса над тёмной страницей
+  // резала бы её пополам. Буквы и логотип на ней светлые, как над фото.
+  const darkPage = /\/restaurant$/.test(pathname);
+  const isHeroPage = pathname.split("/").length <= 2 || darkPage;
   const isHeaderOnHero = isHeroPage && !scrolled;
+  const onDark = isHeaderOnHero || darkPage;
   // The burger lives in the bar, so the bar has to stay put while the drawer is
   // open. Derived rather than pushed into state via an effect.
   const isHidden = hidden && !isOpen;
@@ -151,7 +155,7 @@ export function Header({ locale, restaurant = null }: HeaderProps) {
   return (
     <>
       <header
-        className={`sticky top-0 z-50 ${isHeaderOnHero ? "bg-transparent" : "glass-nav"}`}
+        className={`sticky top-0 z-50 ${isHeaderOnHero ? "bg-transparent" : darkPage ? "glass-nav-dark" : "glass-nav"}`}
         style={{
           // `translate` rather than a transform utility, so the slide is a cheap
           // composited move that can't be clobbered by Tailwind transforms.
@@ -188,7 +192,7 @@ export function Header({ locale, restaurant = null }: HeaderProps) {
                   src="/images/resort/chimgan_darbaza.svg"
                   alt="CHIMGAN DARBAZA Resort"
                   className={`logo-img absolute inset-0 block h-auto w-full transition-opacity duration-500 ${
-                    isHeaderOnHero ? "opacity-0" : "opacity-100"
+                    onDark ? "opacity-0" : "opacity-100"
                   }`}
                 />
                 <img
@@ -196,7 +200,7 @@ export function Header({ locale, restaurant = null }: HeaderProps) {
                   alt=""
                   aria-hidden="true"
                   className={`logo-img logo-img-light absolute inset-0 block h-auto w-full transition-opacity duration-500 ${
-                    isHeaderOnHero ? "opacity-100" : "opacity-0"
+                    onDark ? "opacity-100" : "opacity-0"
                   }`}
                 />
               </div>
@@ -214,7 +218,7 @@ export function Header({ locale, restaurant = null }: HeaderProps) {
                   href={href}
                   prefetch={false}
                   className={`nav-link text-[13px] font-semibold tracking-wide transition-colors duration-300 ${
-                    isHeaderOnHero
+                    onDark
                       ? isActive
                         ? "text-white active"
                         : "text-white/85 hover:text-white"
@@ -246,7 +250,7 @@ export function Header({ locale, restaurant = null }: HeaderProps) {
               {languageOptions.map((item, i) => (
                 <span key={item} className="flex items-center gap-1">
                   {i > 0 && (
-                    <span className={`text-[10px] ${isHeaderOnHero ? "text-white/50" : "text-[var(--muted)]/40"}`}>{"\u00B7"}</span>
+                    <span className={`text-[10px] ${onDark ? "text-white/50" : "text-[var(--muted)]/40"}`}>{"\u00B7"}</span>
                   )}
                   {/* Full navigation — the Exely widget must reload in the new language */}
                   {/* min-h-11 + px: the label is 19×20 px of text, which is
@@ -258,8 +262,8 @@ export function Header({ locale, restaurant = null }: HeaderProps) {
                     aria-current={item === locale ? "true" : undefined}
                     className={`inline-flex min-h-11 items-center px-1.5 text-[11px] font-bold uppercase tracking-widest transition-colors duration-300 ${
                       item === locale
-                        ? isHeaderOnHero ? "text-white" : "text-[var(--ink)]"
-                        : isHeaderOnHero ? "text-white/75 hover:text-white" : "text-[var(--muted)] hover:text-[var(--ink)]"
+                        ? onDark ? "text-white" : "text-[var(--ink)]"
+                        : onDark ? "text-white/75 hover:text-white" : "text-[var(--muted)] hover:text-[var(--ink)]"
                     }${heroShadow}`}
                   >
                     {item.toUpperCase()}
@@ -300,7 +304,7 @@ export function Header({ locale, restaurant = null }: HeaderProps) {
           <button
             type="button"
             className={`-mr-2 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors duration-300 lg:hidden ${
-              isHeaderOnHero ? "text-white" : "text-[var(--ink)]"
+              onDark ? "text-white" : "text-[var(--ink)]"
             }`}
             aria-expanded={isOpen}
             aria-label={isOpen ? dict.close : dict.menu}

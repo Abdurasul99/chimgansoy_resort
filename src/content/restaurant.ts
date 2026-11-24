@@ -40,6 +40,25 @@ export type RestaurantCopy = {
     title: string;
     open: (n: number) => string;
   };
+  /** Тёмная страница в стиле Instagram ресторана (с 24.11.2026). */
+  look: {
+    headline: string;
+    lead: string;
+    openMenu: string;
+    stories: string;
+    openStory: (title: string) => string;
+    frameOf: (n: number, total: number) => string;
+    prev: string;
+    next: string;
+    signature: string;
+    prices: (percent: number) => string;
+    extension: string;
+    extensionHint: string;
+    delivery: string;
+    takeawayTitle: string;
+    takeawayText: string;
+    follow: string;
+  };
 };
 
 export const restaurantCopy: Record<Locale, RestaurantCopy> = {
@@ -71,6 +90,24 @@ export const restaurantCopy: Record<Locale, RestaurantCopy> = {
       title: "Фото",
       open: (n) => `Открыть фото ${n}`,
     },
+    look: {
+      headline: "Гастрономическая остановка в горах",
+      lead: "Кухня, бар и завтраки в зале с окнами на Чимган. Приезжайте пообедать, даже если живёте не у нас.",
+      openMenu: "Открыть меню",
+      stories: "Истории ресторана",
+      openStory: (title) => `Смотреть: ${title}`,
+      frameOf: (n, total) => `${n} / ${total}`,
+      prev: "Назад",
+      next: "Дальше",
+      signature: "С нашей кухни",
+      prices: (percent) => `Цены в сумах. Обслуживание — ${percent}% к счёту.`,
+      extension: "Из домика",
+      extensionHint: "внутренний номер ресторана",
+      delivery: "Доставка и с собой",
+      takeawayTitle: "Любимые блюда — с собой",
+      takeawayText: "Приготовим, аккуратно упакуем и передадим через окно выдачи — домой, в дорогу или в домик.",
+      follow: "Новые блюда и вечера — в Instagram",
+    },
   },
   uz: {
     navLabel: "Restoran",
@@ -100,6 +137,24 @@ export const restaurantCopy: Record<Locale, RestaurantCopy> = {
       title: "Suratlar",
       open: (n) => `${n}-suratni ochish`,
     },
+    look: {
+      headline: "Tog'lar bag'ridagi gastronomik bekat",
+      lead: "Chimyonga qaragan derazali zalda oshxona, bar va nonushtalar. Bizda tunamasangiz ham tushlikka keling.",
+      openMenu: "Menyuni ochish",
+      stories: "Restoran hikoyalari",
+      openStory: (title) => `Ko'rish: ${title}`,
+      frameOf: (n, total) => `${n} / ${total}`,
+      prev: "Orqaga",
+      next: "Keyingisi",
+      signature: "Bizning oshxonadan",
+      prices: (percent) => `Narxlar so'mda. Xizmat haqi — hisobga ${percent}%.`,
+      extension: "Uychadan",
+      extensionHint: "restoranning ichki raqami",
+      delivery: "Yetkazib berish va olib ketish",
+      takeawayTitle: "Sevimli taomlar — olib ketish uchun",
+      takeawayText: "Tayyorlaymiz, chiroyli qadoqlaymiz va berish oynasidan uzatamiz — uyga, yo'lga yoki uychaga.",
+      follow: "Yangi taomlar va kechalar — Instagramda",
+    },
   },
   en: {
     navLabel: "Restaurant",
@@ -128,6 +183,24 @@ export const restaurantCopy: Record<Locale, RestaurantCopy> = {
     gallery: {
       title: "Photos",
       open: (n) => `Open photo ${n}`,
+    },
+    look: {
+      headline: "A gastronomic stop in the mountains",
+      lead: "Kitchen, bar and breakfasts in a hall with windows on Chimgan. Come for lunch even if you are not staying with us.",
+      openMenu: "Open the menu",
+      stories: "Restaurant stories",
+      openStory: (title) => `Watch: ${title}`,
+      frameOf: (n, total) => `${n} / ${total}`,
+      prev: "Back",
+      next: "Next",
+      signature: "From our kitchen",
+      prices: (percent) => `Prices in UZS. A ${percent}% service charge is added to the bill.`,
+      extension: "From your cabin",
+      extensionHint: "the restaurant's internal number",
+      delivery: "Delivery and takeaway",
+      takeawayTitle: "Favourite dishes to go",
+      takeawayText: "We cook, pack it carefully and hand it over at the pickup window — for home, the road or your cabin.",
+      follow: "New dishes and evenings — on Instagram",
     },
   },
 };

@@ -2100,6 +2100,96 @@ html[data-header="hidden"] .rest-side {
   top: 1rem;
 }
 
+/* ══════════════════════════════════════════════════════════════════
+   «САЗАНЧИК» В ТЁМНОМ (с 24.11.2026)
+   Владелец: «оформление из инстаграма, чтобы было вау». Палитра снята с
+   их фото: ореховое дерево зала, свет абажуров, красный логотипа, снег за
+   окном, серый камень стен. Цвета — переменными на обёртке .sz, а не
+   переменными сайта: --ink и --paper меняются зимой, ресторан — нет.
+   ══════════════════════════════════════════════════════════════════ */
+.sz {
+  --sz-walnut: #1d1410;
+  --sz-walnut-2: #271b15;
+  --sz-lamp: #e9a94f;
+  --sz-red: #c8282e;
+  --sz-snow: #f4ede3;
+  --sz-stone: #a99d90;
+  color: var(--sz-snow);
+}
+/* Фон — только у самой страницы: окна (истории, блюдо) тоже носят .sz ради
+   цветов, а фон у них свой, полупрозрачный. */
+.sz-page { background: var(--sz-walnut); }
+.sz ::selection { background: rgba(233, 169, 79, 0.35); color: #fff; }
+.sz :focus-visible { outline: 2px solid var(--sz-lamp); outline-offset: 3px; }
+
+/* Шапка над тёмной страницей после прокрутки — тёмное стекло. */
+.glass-nav-dark {
+  background: rgba(29, 20, 16, 0.86);
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  border-bottom: 1px solid rgba(244, 237, 227, 0.08);
+}
+
+/* Свет абажура над первым экраном на компьютере. */
+.sz-glow {
+  background:
+    radial-gradient(42rem 26rem at 78% 18%, rgba(233, 169, 79, 0.16), transparent 70%),
+    radial-gradient(30rem 22rem at 12% 90%, rgba(200, 40, 46, 0.12), transparent 70%);
+}
+
+/* Кольцо «актуального» — как в Instagram, но в цветах ресторана. */
+.sz-ring {
+  background: conic-gradient(from 210deg, var(--sz-lamp), var(--sz-red), #f1c27a, var(--sz-lamp));
+}
+
+/* Точки между названием блюда и ценой, как в печатном меню. */
+.sz-leader {
+  flex: 1 1 1.5rem;
+  min-width: 1.5rem;
+  align-self: baseline;
+  border-bottom: 1px dotted rgba(244, 237, 227, 0.26);
+  transform: translateY(-0.28em);
+}
+
+/* Веер карточек на первом экране: одна сцена при загрузке — карточки
+   раскрываются из стопки. Больше на странице ничего само не двигается. */
+@keyframes sz-fan-in {
+  from { transform: translate(var(--sz-from-x, 0), 1.5rem) rotate(0deg); opacity: 0; }
+  to   { transform: translate(0, 0) rotate(var(--sz-rot, 0deg)); opacity: 1; }
+}
+.sz-fan > * {
+  transform: rotate(var(--sz-rot, 0deg));
+  animation: sz-fan-in 900ms var(--ease-premium) both;
+  animation-delay: var(--sz-delay, 0ms);
+}
+
+/* Полоска кадра в историях: заполняется за показ кадра, по её концу —
+   следующий кадр. Без анимации (reduced motion) кадры листают сами гости. */
+@keyframes sz-story-bar {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+.sz-story-bar {
+  transform-origin: left center;
+  animation: sz-story-bar var(--sz-story-ms, 5200ms) linear both;
+}
+.sz-story-bar[data-paused="true"] { animation-play-state: paused; }
+
+/* Окно с блюдом и истории: на телефоне снизу, на компьютере — проявляются. */
+.sz-sheet { animation: rest-sheet-in 380ms var(--ease-premium) both; }
+@media (min-width: 640px) {
+  .sz-sheet { animation-name: rest-sheet-in-desktop; }
+}
+@keyframes sz-fade { from { opacity: 0; } to { opacity: 1; } }
+.sz-fade { animation: sz-fade 260ms ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sz-fan > *,
+  .sz-sheet,
+  .sz-fade { animation: none !important; }
+  .sz-story-bar { animation: none !important; transform: scaleX(1); }
+}
+
 /* ── Телефоны: подписи не мельче 11 px ─────────────────────────────
    Надзаголовки, подписи полей и прогноз были 10 px заглавными — на экране
    телефона это на грани читаемого. Правило вне слоёв, поэтому перекрывает
