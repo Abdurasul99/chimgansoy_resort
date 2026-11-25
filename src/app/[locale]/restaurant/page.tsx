@@ -5,7 +5,7 @@ import { buildMetadata } from "@/lib/metadata";
 import { getRestaurantMenu } from "@/lib/restaurant/live";
 import { heroImage, openNow, restaurantPage, restaurantSeo } from "@/lib/restaurant/page";
 import { pickText } from "@/lib/restaurant/rules";
-import { contacts } from "@/content/contacts";
+import { SAZANCHIK_DELIVERY_PHONE } from "@/content/restaurant-media";
 import { MenuBoard } from "@/components/restaurant/MenuBoard";
 import { RestaurantHero } from "@/components/restaurant/RestaurantHero";
 import { RestaurantInfo } from "@/components/restaurant/RestaurantInfo";
@@ -54,7 +54,7 @@ export default async function RestaurantPage({ params }: PageProps) {
     url: localizedUrl(locale, "/restaurant"),
     image: [heroImage(settings), ...settings.gallery].map((src) => new URL(src, "https://chimgandarbaza.uz").toString()),
     hasMenu: localizedUrl(locale, "/restaurant"),
-    ...(settings.phones[0] ? { telephone: settings.phones[0] } : {}),
+    telephone: settings.phones[0] ?? SAZANCHIK_DELIVERY_PHONE,
     ...(settings.hoursOpen && settings.hoursClose
       ? { openingHours: `Mo-Su ${settings.hoursOpen}-${settings.hoursClose}` }
       : {}),
@@ -75,7 +75,10 @@ export default async function RestaurantPage({ params }: PageProps) {
         name={name}
         hours={hours}
         open={openNow(settings)}
-        phone={settings.phones[0] ?? contacts.phone}
+        // Номер ресторана, а не общий номер курорта: «Позвонить» на странице
+        // ресторана вела на ресепшен (владелец, 25.11.2026). Номер из админки
+        // главнее — если ресторан его там укажет.
+        phone={settings.phones[0] ?? SAZANCHIK_DELIVERY_PHONE}
         announcement={pickText(settings.announcement, locale)}
         gallery={settings.gallery}
       />
