@@ -5,6 +5,7 @@ import { adminHost, isAdminHost, requestHost } from "@/lib/admin-host";
 import { ADMIN_COOKIE, homeFor, roleCanOpen, sessionFromToken } from "@/lib/admin-session";
 import { policies } from "@/content/policies";
 import { rooms } from "@/content/rooms";
+import { NEW_YEAR_PATH, REGULAR_SITE_COOKIE, winterDefaultOn } from "@/content/new-year";
 
 const PUBLIC_SITE = "https://chimgandarbaza.uz";
 
@@ -39,6 +40,35 @@ export const LOCALE_SECTIONS = new Set([
   "about", "adminpartners", "bron", "contact", "legal", "nomera", "notfound", "novosti",
   "novyi-god", "opengraph-image", "partners", "place", "restaurant", "services", "topchan", "tubing",
 ]);
+
+/**
+ * Роботы поисковиков и превью ссылок (мессенджеры, соцсети) зимнюю
+ * переадресацию не получают — в выдаче и в карточке ссылки остаётся обычная
+ * главная. Headless-браузеры (замеры скорости, мониторинг) — тоже.
+ * Без «yandex» и «telegram»: эти слова есть в User-Agent браузера
+ * приложения Яндекса и встроенного браузера Telegram — у живых гостей.
+ * Их роботы (YandexBot, TelegramBot) ловятся по «bot».
+ */
+const NOT_A_GUEST = /bot|crawl|spider|slurp|bingpreview|mediapartners|facebookexternalhit|embedly|whatsapp|vkshare|lighthouse|pagespeed|headless/i;
+
+/**
+ * С 1 декабря главная — зимний экран (content/new-year.ts, winterDefaultOn).
+ * Переадресация здесь, а не в странице: главная остаётся статичной и быстрой,
+ * а гость попадает на экран одним ответом, без загрузки обычной главной.
+ * 307 — временная: после сезона главная снова своя. Метки (utm) в адресе
+ * сохраняются. Выбравший «Обычный сайт» (cookie на сессию) ходит по обычному.
+ */
+function winterHome(request: NextRequest, locale: string): NextResponse | null {
+  if (request.method !== "GET" && request.method !== "HEAD") return null;
+  if (!winterDefaultOn()) return null;
+  if (request.cookies.get(REGULAR_SITE_COOKIE)?.value === "regular") return null;
+  if (NOT_A_GUEST.test(request.headers.get("user-agent") ?? "")) return null;
+  // Обычный URL, не клон nextUrl: тот помнит хвостовой «/» исходного адреса
+  // (/ru/ → /ru/novyi-god/), и был бы лишний переход.
+  const url = new URL(request.nextUrl.toString());
+  url.pathname = `/${locale}${NEW_YEAR_PATH}`;
+  return NextResponse.redirect(url, 307);
+}
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -146,6 +176,10 @@ export function proxy(request: NextRequest) {
 
   if (pathnameHasLocale) {
     const section = pathname.split("/")[2];
+    if (section === undefined || section === "") {
+      const winter = winterHome(request, pathname.split("/")[1]);
+      if (winter) return winter;
+    }
     const detail = pathname.match(DETAIL_PATH);
     const unknownSection = section !== undefined && section !== "" && !LOCALE_SECTIONS.has(section);
     if (unknownSection || (detail && !KNOWN_SLUGS[detail[1]].has(safeDecode(detail[2])))) {
@@ -158,6 +192,12 @@ export function proxy(request: NextRequest) {
   }
 
   const hostDefaultLocale = defaultLocaleForHost(requestHost(host));
+
+  // Корень сайта зимой — сразу на зимний экран, без промежуточной главной.
+  if (pathname === "/") {
+    const winter = winterHome(request, hostDefaultLocale);
+    if (winter) return winter;
+  }
 
   request.nextUrl.pathname = `/${hostDefaultLocale}${pathname === "/" ? "" : pathname}`;
   return NextResponse.redirect(request.nextUrl);

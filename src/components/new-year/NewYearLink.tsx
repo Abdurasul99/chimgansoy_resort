@@ -7,12 +7,20 @@ import { createPortal } from "react-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import type { Locale } from "@/i18n/config";
 import { localizePath } from "@/i18n/routing";
-import { NEW_YEAR_PATH, NEW_YEAR_READY_EVENT, newYearCopy } from "@/content/new-year";
+import { NEW_YEAR_PATH, NEW_YEAR_READY_EVENT, REGULAR_SITE_COOKIE, newYearCopy, winterDefaultOn } from "@/content/new-year";
 import { text } from "@/lib/localize";
 import { Snowflake } from "./Snowflake";
 
-/** Сколько ждать экран, прежде чем поднять занавес всё равно. */
+/** Сколько ждать новую страницу после перехода, прежде чем поднять занавес всё равно. */
 const FAILSAFE_MS = 4500;
+
+/**
+ * Переход — не позже этого срока после нажатия, даже если анимация занавеса
+ * ещё не закончилась (обычно она сама зовёт переход на 0,8 с). На занятом
+ * телефоне анимация может стартовать поздно, а страховка подъёма занавеса
+ * раньше считалась от нажатия — и поднимала занавес до перехода, отменяя его.
+ */
+const COVER_MAX_MS = 1100;
 
 /** Откуда гость ушёл на праздник — путь без языка, чтобы пережить смену языка. */
 const FROM_KEY = "ny-from";
@@ -46,6 +54,36 @@ function Sun({ className = "" }: { className?: string }) {
 
 function stripLocale(path: string) {
   return path.replace(/^\/(ru|uz|en)(?=\/|$)/, "") || "/";
+}
+
+/**
+ * «Обычный сайт» выбран — до конца сессии браузера главная не уводит на
+ * зимний экран (src/proxy.ts, winterHome). Следующий визит — снова зима.
+ */
+function chooseRegularSite() {
+  try {
+    document.cookie = `${REGULAR_SITE_COOKIE}=regular; path=/; samesite=lax${location.protocol === "https:" ? "; secure" : ""}`;
+  } catch {
+    // Без cookie гость просто снова увидит зиму на главной.
+  }
+  try {
+    // Гость только что видел переход «днём» — заставка с логотипом на
+    // главной (раз за сессию, layout.tsx) задержала бы его ещё на 3 с.
+    sessionStorage.setItem("cd-intro-seen", "1");
+  } catch {
+    // Без хранилища заставка просто сыграет.
+  }
+}
+
+/**
+ * Переход с кнопки. Зимой главная переадресует на зимний экран, а роутер мог
+ * уже подгрузить её заранее (логотип и «Главная» в шапке — ещё без cookie), и
+ * такой ответ вернул бы гостя сюда же. Поэтому «Обычный сайт» → главная зимой —
+ * полной загрузкой: сервер спрашивается уже с cookie.
+ */
+function navigate(router: ReturnType<typeof useRouter>, to: string, dir: Direction, homeHref: string) {
+  if (dir === "out" && to === homeHref && winterDefaultOn()) window.location.assign(to);
+  else router.push(to);
 }
 
 function readFrom(): string | null {
@@ -93,18 +131,32 @@ export function NewYearLink({
   const [target, setTarget] = useState<string | null>(null);
   const [pushed, setPushed] = useState(false);
 
-  // Туда: занавес поднимает сам экран праздника (или страховка).
-  // Обратно: страница меняется — значит, новая уже под занавесом.
+  // Туда: занавес поднимает сам экран праздника. Обратно: страница
+  // сменилась (leftHoliday ниже) — значит, новая уже под занавесом.
   useEffect(() => {
-    if (phase !== "cover") return;
+    if (phase !== "cover" || burst?.dir !== "in") return;
     const lift = () => setPhase("reveal");
-    if (burst?.dir === "in") window.addEventListener(NEW_YEAR_READY_EVENT, lift);
-    const failsafe = window.setTimeout(lift, FAILSAFE_MS);
-    return () => {
-      window.removeEventListener(NEW_YEAR_READY_EVENT, lift);
-      window.clearTimeout(failsafe);
-    };
+    window.addEventListener(NEW_YEAR_READY_EVENT, lift);
+    return () => window.removeEventListener(NEW_YEAR_READY_EVENT, lift);
   }, [phase, burst?.dir]);
+
+  // Переход не ждёт анимацию дольше COVER_MAX_MS.
+  useEffect(() => {
+    if (phase !== "cover" || pushed || !target || !burst) return;
+    const dir = burst.dir;
+    const id = window.setTimeout(() => {
+      setPushed(true);
+      navigate(router, target, dir, homeHref);
+    }, COVER_MAX_MS);
+    return () => window.clearTimeout(id);
+  }, [phase, pushed, target, burst, router, homeHref]);
+
+  // Страховка: переход отправлен, а сигнала нет — поднять занавес всё равно.
+  useEffect(() => {
+    if (phase !== "cover" || !pushed) return;
+    const id = window.setTimeout(() => setPhase("reveal"), FAILSAFE_MS);
+    return () => window.clearTimeout(id);
+  }, [phase, pushed]);
 
   const leftHoliday = burst?.dir === "out" && pushed && pathname !== nyHref;
   const shownPhase: Phase = phase === "cover" && leftHoliday ? "reveal" : phase;
@@ -114,12 +166,23 @@ export function NewYearLink({
     return from ? localizePath(locale, from) : homeHref;
   };
 
-  const warm = () => {
-    router.prefetch(here ? backTarget() : nyHref);
+  // Главную зимой не подгружаем: без cookie это ответ зимнего экрана, а
+  // переход туда всё равно полной загрузкой (go ниже).
+  const prefetch = (to: string) => {
+    if (here && to === homeHref && winterDefaultOn()) return;
+    router.prefetch(to);
   };
+
+  const warm = () => {
+    prefetch(here ? backTarget() : nyHref);
+  };
+
+  const go = (to: string, dir: Direction) => navigate(router, to, dir, homeHref);
 
   const onClick = (e: MouseEvent<HTMLAnchorElement>) => {
     onNavigate?.();
+    // Выбор темы — при любом клике, и в новой вкладке тоже.
+    if (here) chooseRegularSite();
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
     if (phase !== "idle") return;
@@ -134,7 +197,7 @@ export function NewYearLink({
       }
     }
     if (reduced) {
-      router.push(to);
+      go(to, dir);
       return;
     }
 
@@ -150,14 +213,14 @@ export function NewYearLink({
     setPushed(false);
     setTarget(to);
     setBurst({ dir, x, y, r, flakes });
-    router.prefetch(to);
+    prefetch(to);
     setPhase("cover");
   };
 
   const onCovered = () => {
-    if (phase !== "cover" || pushed || !target) return;
+    if (phase !== "cover" || pushed || !target || !burst) return;
     setPushed(true);
-    router.push(target);
+    go(target, burst.dir);
   };
 
   const label = text(here ? newYearCopy.back : newYearCopy.button, locale);

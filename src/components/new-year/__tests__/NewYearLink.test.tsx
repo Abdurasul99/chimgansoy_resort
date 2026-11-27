@@ -25,10 +25,13 @@ import { NewYearLink } from "../NewYearLink";
 describe("кнопка «Новый год» ↔ «Обычный сайт»", () => {
   beforeEach(() => {
     sessionStorage.clear();
+    // Выбор «Обычный сайт» из прошлого теста не должен подсказывать следующему.
+    document.cookie = "cd-theme=; path=/; max-age=0";
     nav.push.mockClear();
   });
   afterEach(() => {
     nav.pathname = "/ru";
+    vi.restoreAllMocks();
   });
 
   it("на праздничном экране кнопка ведёт обратно на обычный сайт", () => {
@@ -61,10 +64,29 @@ describe("кнопка «Новый год» ↔ «Обычный сайт»", (
   });
 
   it("пришли по прямой ссылке — обратно на главную", () => {
+    vi.spyOn(Date, "now").mockReturnValue(Date.parse("2026-11-28T12:00:00+05:00")); // до сезона
     nav.pathname = "/en/novyi-god";
     render(<NewYearLink locale="en" variant="icon" />);
     fireEvent.click(screen.getByRole("link", { name: "Back to the regular site" }));
     expect(nav.push).toHaveBeenLastCalledWith("/en");
+  });
+
+  it("зимой «Обычный сайт» запоминает выбор и грузит главную заново — не из кэша роутера", () => {
+    vi.spyOn(Date, "now").mockReturnValue(Date.parse("2026-12-10T12:00:00+05:00"));
+    const assign = vi.fn();
+    const realLocation = window.location;
+    Object.defineProperty(window, "location", { value: { ...realLocation, protocol: "https:", assign }, configurable: true });
+    try {
+      nav.pathname = "/ru/novyi-god";
+      render(<NewYearLink locale="ru" variant="pill" />);
+      fireEvent.click(screen.getByRole("link", { name: "Вернуться на обычный сайт" }));
+      expect(document.cookie).toContain("cd-theme=regular");
+      expect(assign).toHaveBeenCalledWith("/ru");
+      expect(nav.push).not.toHaveBeenCalled();
+    } finally {
+      Object.defineProperty(window, "location", { value: realLocation, configurable: true });
+      document.cookie = "cd-theme=; path=/; max-age=0";
+    }
   });
 
   it("Ctrl+клик — обычная ссылка, без перехвата", () => {
