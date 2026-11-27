@@ -7,7 +7,9 @@ import type { LocalizedString, PageSeo } from "@/content/types";
  * Владелец, 27.11.2026: отдельный интерактивный экран со своей ссылкой, вход —
  * кнопкой в шапке; остальной сайт не переодевается. Зимнюю тему целиком
  * (переключатель сезона, снег по всем страницам, Дед Мороз, ёлка) сняли
- * 09.09.2026 по его же просьбе — возвращать её этим экраном нельзя.
+ * 09.09.2026 по его же просьбе — возвращать её этим экраном нельзя. С 1
+ * декабря экран — главная по умолчанию (winterDefaultOn ниже); страницы
+ * сайта при этом прежние.
  *
  * Цен и праздничных пакетов здесь нет намеренно: праздничные ночи считает
  * Exely, а коммерческие цифры подтверждает Роман. Экран ведёт в каталог и на
@@ -40,6 +42,31 @@ export function tashkentDay(now = Date.now()): string {
 /** Показывать ли кнопку «Новый год» в шапке и страницу в карте сайта. */
 export function newYearButtonOn(now = Date.now()): boolean {
   return tashkentDay(now) <= NEW_YEAR_BUTTON_UNTIL;
+}
+
+/**
+ * Зима — по умолчанию (владелец, 27.11.2026: «зимняя тема должна
+ * автоматически примениться 1 декабря… чтобы ни я, ни пользователи не
+ * переводили; по дефолту всегда зимняя тема»).
+ *
+ * С первого по последний день (по Ташкенту, включительно) главная ведёт на
+ * зимний экран — переадресацией в src/proxy.ts, ещё до рендера. Кнопка
+ * «Обычный сайт» на экране ставит cookie REGULAR_SITE_COOKIE=regular на время
+ * сессии браузера: дальше гость ходит по обычному сайту, а в следующий визит
+ * снова встречает зима. Кнопка «Зима» cookie снимает. Конец — вместе с
+ * кнопкой в шапке: экран новогодний (отсчёт, «2027»), после праздников он
+ * не главная. Продлить — поменять дату здесь.
+ *
+ * Поисковые роботы и превью ссылок переадресацию не получают: в выдаче и в
+ * мессенджерах остаётся обычная главная.
+ */
+export const WINTER_DEFAULT_FROM = "2026-12-01";
+export const WINTER_DEFAULT_UNTIL = NEW_YEAR_BUTTON_UNTIL;
+export const REGULAR_SITE_COOKIE = "cd-theme";
+
+export function winterDefaultOn(now = Date.now()): boolean {
+  const day = tashkentDay(now);
+  return day >= WINTER_DEFAULT_FROM && day <= WINTER_DEFAULT_UNTIL;
 }
 
 export type CountdownUnit = "d" | "h" | "m" | "s";
@@ -154,6 +181,18 @@ export const newYearCopy = {
       ),
     },
   },
+
+  /**
+   * Акции на зимнем экране — те же, что в блоке акций на главной (27.11.2026,
+   * владелец: «перенеси все акции туда тоже»). Вторая фраза — чтобы расчёт
+   * «2+1» по будничным ночам не приняли за цену новогодней ночи.
+   */
+  offersTitle: L("Действующие акции", "Amaldagi aksiyalar", "Current offers"),
+  offersLead: L(
+    "Условия и сроки — в каждой карточке. Цену новогодних ночей покажет онлайн-бронирование.",
+    "Shartlar va muddatlar — har bir kartochkada. Yangi yil kechalari narxini onlayn bron ko'rsatadi.",
+    "Terms and dates are on each card. Online booking shows the price of New Year nights.",
+  ),
 
   wishTitle: L("Загадайте желание", "Istak tilang", "Make a wish"),
   wishText: L(

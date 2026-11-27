@@ -1,78 +1,26 @@
-import { promotions, type Promotion } from "@/content/promotions";
-import { EXELY_ROOM_TYPE } from "@/content/rooms";
-import { discountMath, promoBookable, promoBreakdown, todayTashkent, type DiscountMath } from "@/lib/promo-nights";
+import type { Promotion } from "@/content/promotions";
+import { activePromotions, discountMath, promoBreakdown, type DiscountMath } from "@/lib/promo-nights";
+import { promoLinks } from "@/lib/promo-links";
 import { PromoSticker, StickerConfetti } from "./PromoSticker";
 import { dictionaries } from "@/content/translations";
+import {
+  BDAY_WINDOW,
+  DISCOUNT_COPY,
+  ENGINE_LABEL,
+  ONE_CLICK,
+  TERMS_LABEL,
+  TWO_PLUS_ONE_COLS,
+  badgeWithoutSticker,
+} from "@/content/offers-copy";
 import type { Locale } from "@/i18n/config";
-import { localizePath } from "@/i18n/routing";
 import { text, list } from "@/lib/localize";
 import { money } from "@/lib/tariff";
 import { priceLabels } from "@/content/pricing";
 
 type Props = { locale: Locale };
 
-const TERMS_LABEL: Record<Locale, string> = { ru: "Условия акции", uz: "Aksiya shartlari", en: "Offer terms" };
-/** Подпись под полоской дней у акции «День рождения» — пересказ условия владельца. */
-const BDAY_WINDOW: Record<Locale, string> = {
-  ru: "3 дня до · ваш день · 3 дня после",
-  uz: "3 kun oldin · sizning kuningiz · 3 kun keyin",
-  en: "3 days before · your day · 3 days after",
-};
-/**
- * Две кнопки, как на странице домика: «в один клик» — короткая форма заявки,
- * дальше с гостем говорит администратор; «онлайн» — движок Exely на /bron, для
- * тех, кто оформляет сам. До 23.11.2026 у акций была одна «Забронировать» в
- * движок — гость с акции не видел самого короткого пути (владелец).
- */
-const ONE_CLICK: Record<Locale, string> = {
-  ru: "Забронировать в один клик",
-  uz: "Bir bosishda bron qilish",
-  en: "Book in one click",
-};
-const ENGINE_LABEL: Record<Locale, string> = { ru: "Онлайн-бронирование", uz: "Onlayn bron qilish", en: "Book online" };
-
-/** Подписи расчёта скидки («−20% на Chalet»): формулировки оператора. */
-const DISCOUNT_COPY = {
-  ru: {
-    how: "Как считается",
-    night: "/ ночь",
-    discount: "Скидка",
-    saving: "Экономия",
-    savingPer: "сум за каждую ночь",
-    breakfast: "Завтрак включён в стоимость проживания.",
-    four: "Если вас четверо",
-    lead: (n: number) => `При размещении ${n} гостей:`,
-    line: (price: string, n: number, pp: string) => `${price} ÷ ${n} = ${pp} сум с человека за ночь`,
-    total: (pp: string) => `Всего ${pp} сум / человек / ночь`,
-    totalNote: (n: number) => `при размещении ${n} гостей в Chalet.`,
-  },
-  uz: {
-    how: "Qanday hisoblanadi",
-    night: "/ kecha",
-    discount: "Chegirma",
-    saving: "Tejaysiz",
-    savingPer: "so'm har bir kecha uchun",
-    breakfast: "Nonushta yashash narxiga kiritilgan.",
-    four: "To'rt kishi bo'lsangiz",
-    lead: (n: number) => `${n} mehmon joylashganda:`,
-    line: (price: string, n: number, pp: string) => `${price} ÷ ${n} = kishi boshiga kechasiga ${pp} so'm`,
-    total: (pp: string) => `Atigi ${pp} so'm / kishi / kecha`,
-    totalNote: (n: number) => `Shaleda ${n} mehmon bo'lganda.`,
-  },
-  en: {
-    how: "How it adds up",
-    night: "/ night",
-    discount: "Discount",
-    saving: "You save",
-    savingPer: "UZS every night",
-    breakfast: "Breakfast is included in the rate.",
-    four: "If there are four of you",
-    lead: (n: number) => `With ${n} guests:`,
-    line: (price: string, n: number, pp: string) => `${price} ÷ ${n} = ${pp} UZS per person per night`,
-    total: (pp: string) => `Just ${pp} UZS / person / night`,
-    totalNote: (n: number) => `with ${n} guests in the Chalet.`,
-  },
-} as const;
+// Подписи, расчёт и ссылки — общие с зимним экраном (WinterOffers):
+// content/offers-copy.ts, lib/promo-nights.ts (activePromotions), lib/promo-links.ts.
 
 /**
  * Действующие акции.
@@ -91,41 +39,12 @@ const DISCOUNT_COPY = {
  */
 export function OffersSection({ locale }: Props) {
   const dict = dictionaries[locale];
-  /*
-   * Просроченная акция уходит со страницы сама. Дата — по Ташкенту: сайт
-   * живёт там, а не там, где сервер.
-   *
-   * У «2+1» мерилом служит последний заезд, а не дата срока: при сроке три
-   * ночи с заезда за день до него уже за сроком, и карточка звала бы на даты,
-   * которых нет. Остальные акции живут до своей даты.
-   */
-  const today = todayTashkent();
-  const active = promotions.filter(
-    (p) =>
-      (p.slug === "2plus1" ? promoBookable(today) : !p.until || today <= p.until) &&
-      !p.hiddenOnSite,
-  );
-  const cols = {
-    ru: { how: "Как считается", one: "3 ночи без акции", three: "3 ночи по акции", per: "За ночь", note: "Суммы в сумах, ночи с воскресенья по четверг. Завтрак включён, обед и ужин — по меню ресторана, отдельно." },
-    uz: { how: "Qanday hisoblanadi", one: "3 kecha aksiyasiz", three: "3 kecha aksiya bo'yicha", per: "Bir kecha uchun", note: "Narxlar so'mda, yakshanbadan payshanbagacha bo'lgan kechalar. Nonushta narxga kiradi, tushlik va kechki ovqat — restoran menyusi bo'yicha, alohida." },
-    en: { how: "How it adds up", one: "3 nights, no offer", three: "3 nights, offer", per: "Per night", note: "UZS, Sunday–Thursday nights. Breakfast included; lunch and dinner are from the restaurant menu, extra." },
-  }[locale];
-
-  const utm = (slug: string) => `utm_source=site&utm_medium=offers&utm_content=${slug}`;
-  /*
-   * «В один клик»: акция на один домик — к форме на его странице (якорь
-   * zayavka, как у кнопки в каталоге), на любой домик — в каталог. Метка
-   * акции остаётся в адресе страницы с формой и уходит в заявку полем page.
-   */
-  const oneClickHref = (promo: Promotion) =>
-    promo.room
-      ? `${localizePath(locale, `/nomera/${promo.room}`)}?${utm(promo.slug)}#zayavka`
-      : `${localizePath(locale, "/nomera")}?${utm(promo.slug)}`;
-  // Движок сразу на нужном домике, если акция на один домик.
-  const engineHref = (promo: Promotion) => {
-    const roomType = promo.room ? EXELY_ROOM_TYPE[promo.room] : undefined;
-    return `${localizePath(locale, "/bron")}?${roomType ? `room-type=${roomType}&` : ""}${utm(promo.slug)}`;
-  };
+  // Какие акции показывать (сроки по Ташкенту, «2+1» — по последнему заезду)
+  // и куда ведут кнопки — общие правила с зимним экраном.
+  const active = activePromotions();
+  const cols = TWO_PLUS_ONE_COLS[locale];
+  const oneClickHref = (promo: Promotion) => promoLinks(promo, locale, "offers").oneClick;
+  const engineHref = (promo: Promotion) => promoLinks(promo, locale, "offers").engine;
 
   if (!active.length) return null;
 
@@ -150,9 +69,7 @@ export function OffersSection({ locale }: Props) {
     const bday = promo.slug === "birthday";
     const rose = sticker?.tone === "rose";
     // Цифра уже на стикере — в бейдже её не повторяем: «−20% · Ноябрь» → «Ноябрь».
-    const badgeFull = text(promo.badge, locale);
-    const badge =
-      sticker && badgeFull.startsWith(sticker.label) ? badgeFull.slice(sticker.label.length).replace(/^\s*·\s*/, "") : badgeFull;
+    const badge = badgeWithoutSticker(text(promo.badge, locale), sticker?.label);
     return (
       /*
        * Карточка — article со «растянутой» ссылкой (кнопка внизу, after:inset-0),

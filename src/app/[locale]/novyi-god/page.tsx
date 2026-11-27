@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { NewYearScene } from "@/components/new-year/NewYearScene";
 import { StayCards, type StayCard } from "@/components/new-year/StayCards";
 import { WishSky } from "@/components/new-year/WishSky";
+import { WinterOffers } from "@/components/new-year/WinterOffers";
 import { NEW_YEAR_PATH, newYearCopy, newYearSeo } from "@/content/new-year";
 import { resortImages } from "@/content/images";
 import { SAZANCHIK_DELIVERY_PHONE } from "@/content/restaurant-media";
@@ -14,7 +15,9 @@ import { text } from "@/lib/localize";
 /**
  * Новогодний экран (владелец, 27.11.2026): вход — кнопкой «Новый год» в шапке.
  * Снежный шар, гирлянда, отсчёт до полуночи по Ташкенту, где встретить
- * праздник и салют по нажатию. Цен нет: праздничные ночи считает Exely.
+ * праздник, действующие акции и салют по нажатию. Цены праздничных ночей
+ * не пишем — их считает Exely; суммы есть только в расчёте акций (из тарифа,
+ * те же, что на главной), и подпись блока говорит, что это не цена ночи 31-го.
  */
 
 type PageProps = { params: Promise<{ locale: string }> };
@@ -74,6 +77,11 @@ export default async function NewYearPage({ params }: PageProps) {
         lead={text(newYearCopy.staysLead, locale)}
         more={text(newYearCopy.more, locale)}
         cards={cards}
+      />
+      <WinterOffers
+        locale={locale}
+        title={text(newYearCopy.offersTitle, locale)}
+        lead={text(newYearCopy.offersLead, locale)}
       />
       <WishSky locale={locale} bookHref={bookHref} />
     </div>
