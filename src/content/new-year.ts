@@ -90,6 +90,11 @@ export const newYearCopy = {
   /** Строка в мобильном меню. */
   drawer: L("Новый год в горах", "Tog'larda Yangi yil", "New Year in the mountains"),
   drawerHint: L("Снежный шар, отсчёт и салют", "Qorli shar, sanoq va mushakbozlik", "Snow globe, countdown and fireworks"),
+  /** Та же кнопка на самом новогоднем экране — обратно на обычный сайт. */
+  back: L("Обычный сайт", "Oddiy sayt", "Regular site"),
+  backAria: L("Вернуться на обычный сайт", "Oddiy saytga qaytish", "Back to the regular site"),
+  backDrawer: L("Вернуться на обычный сайт", "Oddiy saytga qaytish", "Back to the regular site"),
+  backDrawerHint: L("Туда, откуда пришли на праздник", "Bayramga qayerdan kelgan bo'lsangiz, o'sha yerga", "Where you came from"),
 
   title: L("Новый год в горах Чимгана", "Chimyon tog'larida Yangi yil", "New Year in the Chimgan mountains"),
   lead: L(
