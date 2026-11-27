@@ -6,6 +6,7 @@ import { text } from "@/lib/localize";
 import { clock } from "@/components/ui/Clock";
 import { getGoogleMapsEmbedUrl } from "@/lib/maps";
 import { ContactActions } from "@/components/ui/ContactActions";
+import { LazyMapFrame } from "./LazyMapFrame";
 
 type MapBlockProps = {
   locale: Locale;
@@ -34,16 +35,11 @@ export function MapBlock({ locale }: MapBlockProps) {
           <ContactActions locale={locale} compact />
         </div>
       </div>
-      <div className="relative min-h-80 bg-[var(--mist)]">
-        <iframe
-          title={text(googleMapsIntegration.placeName, locale)}
-          src={mapSrc}
-          loading="lazy"
-          allowFullScreen
-          referrerPolicy="no-referrer-when-downgrade"
-          className="absolute inset-0 h-full w-full border-0"
-        />
-      </div>
+      <LazyMapFrame
+        title={text(googleMapsIntegration.placeName, locale)}
+        src={mapSrc}
+        className="relative min-h-80 bg-[var(--mist)]"
+      />
     </div>
   );
 }

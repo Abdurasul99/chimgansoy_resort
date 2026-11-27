@@ -16,6 +16,7 @@ import { HideOnPartners, PartnersHeader } from "@/components/layout/PartnersChro
 import { restaurantListed } from "@/lib/restaurant/live";
 import { restaurantCopy } from "@/content/restaurant";
 import { newYearButtonOn } from "@/content/new-year";
+import { lazyBackgroundsScript } from "@/lib/lazy-backgrounds";
 import { dictionaries } from "@/content/translations";
 import { isLocale, locales, type Locale } from "@/i18n/config";
 import { localizedUrl, originForLocale } from "@/i18n/domains";
@@ -167,12 +168,20 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
             React loads so the logo intro is always the first thing seen.
             Plain inline <script> (not next/script) — must run synchronously
             during HTML parsing, before first paint. The 4s failsafe unhides
-            the site if the JS bundle ever fails to load. */}
+            the site if the JS bundle ever fails to load.
+            Once per browser session (27.11.2026): the gate holds the home page
+            blank until the JS bundle arrives and then for 3.2 s of intro, so a
+            reload or a second visit from the same tab read as "the site is
+            slow". The first visit of a session still gets the intro. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var d=document.documentElement;var p=location.pathname.replace(/\\/+$/,"")||"/";var h=/^\\/(ru|uz|en)$/.test(p);var rm=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;if(h&&!rm){d.setAttribute("data-intro","pending");setTimeout(function(){if(d.getAttribute("data-intro")==="pending"){d.removeAttribute("data-intro")}},4000);setTimeout(function(){if(d.getAttribute("data-intro")){d.removeAttribute("data-intro")}},6000)}}catch(e){}})();`,
+            __html: `(function(){try{var d=document.documentElement;var p=location.pathname.replace(/\\/+$/,"")||"/";var h=/^\\/(ru|uz|en)$/.test(p);var rm=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;var seen=false;try{seen=sessionStorage.getItem("cd-intro-seen")==="1";if(h&&!rm&&!seen)sessionStorage.setItem("cd-intro-seen","1")}catch(e){}if(h&&!rm&&!seen){d.setAttribute("data-intro","pending");setTimeout(function(){if(d.getAttribute("data-intro")==="pending"){d.removeAttribute("data-intro")}},4000);setTimeout(function(){if(d.getAttribute("data-intro")){d.removeAttribute("data-intro")}},6000)}}catch(e){}})();`,
           }}
         />
+        {/* Фоновые фото — только рядом с экраном: src/lib/lazy-backgrounds.ts.
+            Здесь, в <head>, чтобы правило «фон выключен» стояло до первой
+            отрисовки — иначе браузер успеет запросить все кадры страницы. */}
+        <script dangerouslySetInnerHTML={{ __html: lazyBackgroundsScript }} />
         {/* Resource hints — establish connections to external domains early */}
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="" />
         <link rel="dns-prefetch" href="https://cbu.uz" />
