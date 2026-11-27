@@ -50,7 +50,7 @@ describe("кнопка «Новый год» ↔ «Обычный сайт»", (
   it("возвращает туда, откуда ушли на праздник — даже после смены языка", () => {
     nav.pathname = "/ru/nomera/cottage";
     const first = render(<NewYearLink locale="ru" variant="pill" />);
-    fireEvent.click(screen.getByRole("link", { name: /Новый год в горах Чимгана/ }));
+    fireEvent.click(screen.getByRole("link", { name: /Зима в горах Чимгана/ }));
     expect(nav.push).toHaveBeenLastCalledWith("/ru/novyi-god");
     first.unmount();
 

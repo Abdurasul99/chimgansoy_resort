@@ -124,7 +124,10 @@ describe("Header", () => {
       expect(links.every((a) => a.getAttribute("href") === "/uz/novyi-god")).toBe(true);
       // Иконка без текста — имя для экранного диктора из aria-label.
       const icon = links.find((a) => a.getAttribute("data-new-year-link") === "icon")!;
-      expect(icon.getAttribute("aria-label")).toMatch(/Yangi yil/);
+      expect(icon.getAttribute("aria-label")).toMatch(/qish/);
+      // Надпись на кнопке — «Зима», не «Новый год» (просьба владельца 27.11.2026).
+      const pill = links.find((a) => a.getAttribute("data-new-year-link") === "pill")!;
+      expect(pill.textContent).toBe("Qish");
       now.mockRestore();
     });
 

@@ -80,15 +80,15 @@ export function unitLabel(locale: Locale, unit: CountdownUnit, n: number): strin
 const L = (ru: string, uz: string, en: string): LocalizedString => ({ ru, uz, en });
 
 export const newYearCopy = {
-  /** Кнопка в шапке. */
-  button: L("Новый год", "Yangi yil", "New Year"),
+  /** Кнопка в шапке. 27.11.2026 владелец: «Новый год замени на зиму». */
+  button: L("Зима", "Qish", "Winter"),
   buttonAria: L(
-    "Новый год в горах Чимгана — новогодний экран",
-    "Chimyon tog'larida Yangi yil — bayram sahifasi",
-    "New Year in the Chimgan mountains — holiday page",
+    "Зима в горах Чимгана — праздничный экран",
+    "Chimyon tog'larida qish — bayram sahifasi",
+    "Winter in the Chimgan mountains — holiday page",
   ),
   /** Строка в мобильном меню. */
-  drawer: L("Новый год в горах", "Tog'larda Yangi yil", "New Year in the mountains"),
+  drawer: L("Зима в горах", "Tog'larda qish", "Winter in the mountains"),
   drawerHint: L("Снежный шар, отсчёт и салют", "Qorli shar, sanoq va mushakbozlik", "Snow globe, countdown and fireworks"),
   /** Та же кнопка на самом новогоднем экране — обратно на обычный сайт. */
   back: L("Обычный сайт", "Oddiy sayt", "Regular site"),
