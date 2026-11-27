@@ -37,7 +37,7 @@ const DETAIL_PATH = /^\/[a-z]{2}\/(legal|nomera)\/([^/]+)\/?$/;
  */
 export const LOCALE_SECTIONS = new Set([
   "about", "adminpartners", "bron", "contact", "legal", "nomera", "notfound", "novosti",
-  "opengraph-image", "partners", "place", "restaurant", "services", "topchan", "tubing",
+  "novyi-god", "opengraph-image", "partners", "place", "restaurant", "services", "topchan", "tubing",
 ]);
 
 export function proxy(request: NextRequest) {

@@ -15,6 +15,7 @@ import { HideOnBron } from "@/components/ui/HideOnBron";
 import { HideOnPartners, PartnersHeader } from "@/components/layout/PartnersChrome";
 import { restaurantListed } from "@/lib/restaurant/live";
 import { restaurantCopy } from "@/content/restaurant";
+import { newYearButtonOn } from "@/content/new-year";
 import { dictionaries } from "@/content/translations";
 import { isLocale, locales, type Locale } from "@/i18n/config";
 import { localizedUrl, originForLocale } from "@/i18n/domains";
@@ -243,6 +244,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
                 ? { href: "/restaurant", label: { ru: restaurantCopy.ru.navLabel, uz: restaurantCopy.uz.navLabel, en: restaurantCopy.en.navLabel } }
                 : null
             }
+            newYear={newYearButtonOn()}
           />
         </HideOnPartners>
         <PartnersHeader />

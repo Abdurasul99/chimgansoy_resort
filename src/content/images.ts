@@ -931,6 +931,18 @@ export const resortImages = {
       en: "The resort at night, seen from the hill",
     },
   },
+  /* Квадратная обрезка вечернего кадра с горки (09.09.2026) — внутрь снежного
+     шара на новогоднем экране /novyi-god. Логотип-вотермарк остался за кадром. */
+  newYearGlobe: {
+    src: "/images/resort/new-year/globe-resort-dusk.jpg",
+    localSrc: "/images/resort/new-year/globe-resort-dusk.jpg",
+    position: "center",
+    alt: {
+      ru: "Курорт вечером: огни в долине под хребтом",
+      uz: "Kechki kurort: tizma ostidagi vodiyda chiroqlar",
+      en: "The resort in the evening: lights in the valley below the ridge",
+    },
+  },
   tubingTubeStart: {
     src: "/images/resort/tubing-2026-08/tube-start-valley.jpg",
     localSrc: "/images/resort/tubing-2026-08/tube-start-valley.jpg",

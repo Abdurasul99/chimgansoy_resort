@@ -73,8 +73,14 @@ const nextConfig: NextConfig = {
         key: "Permissions-Policy",
         // Lock down browser features we don't use. Camera/microphone/geolocation
         // are explicitly denied; opens up only what the site actually needs.
+        //
+        // accelerometer/gyroscope — (self), не (): снежный шар на /novyi-god
+        // встряхивают самим телефоном (devicemotion требует оба). Политика
+        // действует на документ, а на праздничный экран приходят из шапки без
+        // перезагрузки — поэтому разрешение на весь сайт, но только своему
+        // источнику: встроенные чужие окна датчиков не получают.
         value:
-          "camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()",
+          "camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(self), accelerometer=(self)",
       },
       { key: "X-DNS-Prefetch-Control", value: "on" },
     ];

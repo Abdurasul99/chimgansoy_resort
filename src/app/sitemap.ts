@@ -8,6 +8,7 @@ import { poolClosure } from "@/content/pool-closure";
 import { topchanClosure } from "@/content/topchan-closure";
 import { policies } from "@/content/policies";
 import { restaurantListed } from "@/lib/restaurant/live";
+import { NEW_YEAR_PATH, newYearButtonOn } from "@/content/new-year";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPaths = [
@@ -21,6 +22,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Day products, each with its own request form.
     ...(topchanClosure.closed ? [] : ["/topchan"]),
     "/tubing",
+    // Новогодний экран — пока кнопка в шапке видна (до 10.01.2027).
+    ...(newYearButtonOn() ? [NEW_YEAR_PATH] : []),
   ];
   // Пока бассейн закрыт, его страница не идёт в карту сайта: она объясняет
   // закрытие, а не продаёт услугу, и в выдаче ей делать нечего.

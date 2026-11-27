@@ -2210,3 +2210,40 @@ html[data-header="hidden"] .rest-side {
     background-image: var(--bg-lg);
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   НОВЫЙ ГОД — кнопка в шапке и экран /novyi-god (27.11.2026)
+   Только opacity и transform: кнопка висит на каждой странице сайта, и её
+   мерцание не должно стоить кадров прокрутки. Переменные --t/--d задаются
+   на самом элементе, не на <html> (см. правила движка прокрутки).
+   ══════════════════════════════════════════════════════════════════ */
+@keyframes ny-spin { to { transform: rotate(360deg); } }
+@keyframes ny-sheen {
+  0%, 62% { transform: translateX(-120%); }
+  100% { transform: translateX(320%); }
+}
+@keyframes ny-twinkle {
+  0%, 100% { opacity: 1; }
+  45% { opacity: 0.3; }
+  55% { opacity: 0.4; }
+}
+.ny-spin { animation: ny-spin 16s linear infinite; }
+.ny-sheen { animation: ny-sheen 5.5s ease-in-out infinite; }
+.ny-twinkle { animation: ny-twinkle var(--t, 2.4s) ease-in-out var(--d, 0s) infinite; }
+
+/* Тексты экрана: заголовок курсивом, как на всём сайте, но крупнее. */
+.ny-title {
+  font-family: var(--font-serif), "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: clamp(2.6rem, 9.5vw, 5.6rem);
+  line-height: 0.98;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ny-spin,
+  .ny-sheen,
+  .ny-twinkle { animation: none !important; }
+}

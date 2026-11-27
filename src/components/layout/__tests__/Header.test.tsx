@@ -112,4 +112,41 @@ describe("Header", () => {
     window.dispatchEvent(new Event("scroll"));
     await waitFor(() => expect(header.style.translate).toBe("0 0"));
   });
+
+  describe("кнопка «Новый год» (27.11.2026)", () => {
+    const nyLinks = (container: HTMLElement) => [...container.querySelectorAll("[data-new-year-link]")];
+
+    it("ведёт на /novyi-god: надпись и иконка на компьютере, иконка и строка меню на телефоне", () => {
+      const now = vi.spyOn(Date, "now").mockReturnValue(Date.parse("2026-12-20T07:00:00Z"));
+      const { container } = render(<Header locale="uz" newYear />);
+      const links = nyLinks(container);
+      expect(links.map((a) => a.getAttribute("data-new-year-link")).sort()).toEqual(["drawer", "icon", "icon", "pill"]);
+      expect(links.every((a) => a.getAttribute("href") === "/uz/novyi-god")).toBe(true);
+      // Иконка без текста — имя для экранного диктора из aria-label.
+      const icon = links.find((a) => a.getAttribute("data-new-year-link") === "icon")!;
+      expect(icon.getAttribute("aria-label")).toMatch(/Yangi yil/);
+      now.mockRestore();
+    });
+
+    it("без разрешения сервера кнопки нет", () => {
+      const { container } = render(<Header locale="ru" />);
+      expect(nyLinks(container)).toHaveLength(0);
+    });
+
+    it("после 10 января браузер прячет кнопку, даже если страница собрана раньше", () => {
+      const now = vi.spyOn(Date, "now").mockReturnValue(Date.parse("2027-01-11T06:00:00Z"));
+      const { container } = render(<Header locale="ru" newYear />);
+      expect(nyLinks(container)).toHaveLength(0);
+      now.mockRestore();
+    });
+
+    it("с кнопкой промежутки меню уже — иначе с рестораном меню переносится", () => {
+      const now = vi.spyOn(Date, "now").mockReturnValue(Date.parse("2026-12-20T07:00:00Z"));
+      const { container } = render(<Header locale="ru" newYear />);
+      const nav = container.querySelector('nav[aria-label="Main navigation"]')!;
+      expect(nav.className).toContain("gap-4");
+      expect(nav.className).not.toContain("gap-8");
+      now.mockRestore();
+    });
+  });
 });

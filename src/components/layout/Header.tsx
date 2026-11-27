@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import { contacts } from "@/content/contacts";
+import { NEW_YEAR_PATH, newYearButtonOn } from "@/content/new-year";
+import { NewYearLink } from "@/components/new-year/NewYearLink";
 import { mainNavigation } from "@/content/navigation";
 import type { NavigationItem } from "@/content/types";
 import { dictionaries } from "@/content/translations";
@@ -22,7 +24,14 @@ type HeaderProps = {
    * ресторане не знает.
    */
   restaurant?: NavigationItem | null;
+  /**
+   * Кнопка «Новый год» (экран /novyi-god). Решает сервер по дате; после
+   * гидратации браузер сверяет дату сам — страница могла собраться раньше.
+   */
+  newYear?: boolean;
 };
+
+const noSubscribe = () => () => {};
 
 /**
  * Day products are sold by request form on their own page, not through the
@@ -63,8 +72,12 @@ const HEADER_CTA: Record<string, string> = {
   en: "Book in one click",
 };
 
-export function Header({ locale, restaurant = null }: HeaderProps) {
+export function Header({ locale, restaurant = null, newYear = false }: HeaderProps) {
   const pathname = usePathname();
+  // Сервер отдаёт решение на момент сборки страницы; браузер прячет кнопку,
+  // если праздники уже прошли. useSyncExternalStore — без расхождения разметки
+  // при гидратации: сначала серверное значение, потом своё.
+  const showNewYear = useSyncExternalStore(noSubscribe, () => newYear && newYearButtonOn(), () => newYear);
   // Ресторан встаёт после «Услуг»: это тоже то, за чем приезжают на территорию.
   const nav = restaurant
     ? mainNavigation.flatMap((item) => (item.href === "/services" ? [item, restaurant] : [item]))
@@ -133,7 +146,8 @@ export function Header({ locale, restaurant = null }: HeaderProps) {
   // с 24.11.2026 тёмный, в стиле его Instagram (владелец): после прокрутки
   // шапка там не белая, а тёмное стекло — белая полоса над тёмной страницей
   // резала бы её пополам. Буквы и логотип на ней светлые, как над фото.
-  const darkPage = /\/restaurant$/.test(pathname);
+  // Новогодний экран — ночное небо, шапка над ним такая же, как над рестораном.
+  const darkPage = /\/restaurant$/.test(pathname) || pathname.endsWith(NEW_YEAR_PATH);
   const isHeroPage = pathname.split("/").length <= 2 || darkPage;
   const isHeaderOnHero = isHeroPage && !scrolled;
   const onDark = isHeaderOnHero || darkPage;
@@ -208,7 +222,13 @@ export function Header({ locale, restaurant = null }: HeaderProps) {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden items-center gap-8 lg:flex" aria-label="Main navigation">
+          {/* С кнопкой «Новый год» промежутки уже: шапка ограничена 1280 px, и
+              с рестораном в меню даже круглая иконка переносила пункты на две
+              строки (замер на живом сайте, 27.11.2026). */}
+          <nav
+            className={`hidden items-center lg:flex ${showNewYear ? "gap-4 xl:gap-5" : "gap-8"}`}
+            aria-label="Main navigation"
+          >
             {nav.map((item) => {
               const href = localizePath(locale, item.href);
               const isActive = pathname === href || (item.href !== "/" && pathname.startsWith(href));
@@ -242,8 +262,15 @@ export function Header({ locale, restaurant = null }: HeaderProps) {
                 «Забронировать» is the longest of the three labels. The toggle
                 is the one decorative item here; the language switcher and the
                 booking button both have to stay. */}
-            <div className="hidden xl:block">
-            </div>
+            {/* Новый год (27.11.2026) — на месте бывшего переключателя сезона.
+                Надпись «Новый год» — от 1360 px, уже — круглая иконка: надпись
+                (~120 px) в шапку 1280 px с рестораном в меню не помещается. */}
+            {showNewYear && (
+              <>
+                <NewYearLink locale={locale} variant="pill" className="hidden min-[1360px]:inline-flex" />
+                <NewYearLink locale={locale} variant="icon" className="inline-flex min-[1360px]:hidden" />
+              </>
+            )}
 
             {/* Language switcher */}
             <div className="flex items-center gap-1" aria-label="Language switcher">
@@ -299,6 +326,13 @@ export function Header({ locale, restaurant = null }: HeaderProps) {
             <span className="sm:hidden">{cta.short}</span>
             <span className="hidden sm:inline">{cta.label}</span>
           </a>
+
+          {/* Новый год на телефоне — круглая иконка между бронью и «☰». На
+              экране уже 360 px она выталкивала бы «☰» за край (см. правила
+              мобильной шапки), там вход — первой строкой в меню. */}
+          {showNewYear && (
+            <NewYearLink locale={locale} variant="icon" className="hidden min-[360px]:inline-flex lg:hidden" />
+          )}
 
           {/* Mobile burger */}
           <button
@@ -383,6 +417,9 @@ export function Header({ locale, restaurant = null }: HeaderProps) {
         </nav>
 
         <div className="px-6 pb-10 space-y-4">
+          {showNewYear && (
+            <NewYearLink locale={locale} variant="drawer" onNavigate={() => setIsOpen(false)} />
+          )}
           <a
             href={bookHref}
             className="btn-press flex items-center justify-center rounded-full bg-[var(--sun)] py-4 text-base font-bold text-[var(--on-accent)] transition-all duration-300 hover:bg-[var(--sun-dark)]"
